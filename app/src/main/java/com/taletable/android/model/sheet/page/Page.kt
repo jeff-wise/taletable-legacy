@@ -3,6 +3,7 @@ package com.taletable.android.model.sheet.page
 
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import com.taletable.android.db.*
@@ -24,6 +25,8 @@ import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -147,7 +150,22 @@ data class Page(override val id : UUID,
     {
         val layout = this.viewLayout(entityId, context)
 
-        this.groups.forEach { layout.addView(it.view(entityId, context)) }
+        this.groups.forEach {
+
+            val trigger = it.trigger()
+            when (trigger) {
+                is Just -> {
+                    val isActive = trigger.value.isActive(entityId)
+                    if (isActive) {
+                        layout.addView(it.view(entityId, context))
+                    }
+                }
+                is Nothing -> {
+                    layout.addView(it.view(entityId, context))
+                }
+            }
+
+        }
 
         return layout
     }

@@ -40,7 +40,7 @@ types:
       type: 
         type: custom_coll_type
         custom_coll_type: variable
-      presence: required
+      presence: optional
       description: >
         The game's authors.
     - name: engine
@@ -61,6 +61,12 @@ types:
         custom_coll_type: book_content_id 
       presence: optional
       description: A brief description of the game rules.
+    - name: groups
+      type: 
+        type: custom_coll_type
+        custom_coll_type: group
+      presence: optional
+      description: The groups.
     - name: chapters
       type: 
         type: custom_coll_type
@@ -138,7 +144,6 @@ types:
     base_type: 
       type: prim_type
       prim_type: string
-
 - type: product_type
   product_type:
     name: book_content
@@ -158,10 +163,10 @@ types:
         prim_type: string
       presence: required
       description: The content id.
-    - name: groups
+    - name: group_references
       type:
         type: custom_coll_type
-        custom_coll_type: group
+        custom_coll_type: group_reference
       presence: required
       description: The chapter id.
 - type: product_type

@@ -2,7 +2,6 @@
 package com.taletable.android.model.engine.variable
 
 
-import android.util.Log
 import com.taletable.android.app.*
 import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
@@ -37,7 +36,6 @@ import java.io.Serializable
 import java.util.*
 
 
-//typealias VariableOnUpdateListener = () -> Unit
 
 /**
  * Variable
@@ -120,7 +118,7 @@ sealed class Variable : ProdType, ToDocument, Serializable
                     variableId : VariableId,
                     entityId : EntityId)
     {
-        this.relationToVariableId.put(relation, variableId)
+        this.relationToVariableId[relation] = variableId
 
         variable(variableId, entityId) apDo {
             it.addRelatedParent(this.variableId())
@@ -230,6 +228,9 @@ sealed class Variable : ProdType, ToDocument, Serializable
     abstract fun engineValue(entityId : EntityId) : AppEff<EngineValue>
 
 
+    abstract fun isContextual() : Boolean
+
+
     // -----------------------------------------------------------------------------------------
     // VALUE STRING
     // -----------------------------------------------------------------------------------------
@@ -248,7 +249,8 @@ data class BooleanVariable(override val id : UUID,
                            private var description : VariableDescription,
                            private val tags : MutableList<VariableTag>,
                            private val relation : Maybe<VariableRelation>,
-                           private var variableValue : BooleanVariableValue)
+                           private var variableValue : BooleanVariableValue,
+                           private val isContextual : VariableIsContextual)
                             : Variable()
 {
 
@@ -266,14 +268,16 @@ data class BooleanVariable(override val id : UUID,
                 description : VariableDescription,
                 tags : List<VariableTag>,
                 relation : Maybe<VariableRelation>,
-                value : BooleanVariableValue)
+                value : BooleanVariableValue,
+                isContextual : VariableIsContextual)
         : this(UUID.randomUUID(),
                variableId,
                label,
                description,
                tags.toMutableList(),
                relation,
-               value)
+               value,
+               isContextual)
 
 
     companion object : Factory<BooleanVariable>
@@ -298,7 +302,11 @@ data class BooleanVariable(override val id : UUID,
                             effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
                             { apply(::Just, VariableRelation.fromDocument(it)) }),
                       // Value
-                      doc.at("value") ap { BooleanVariableValue.fromDocument(it) }
+                      doc.at("value") ap { BooleanVariableValue.fromDocument(it) },
+                      // Is Contextual?
+                      split(doc.maybeAt("is_contextual"),
+                            effValue(VariableIsContextual(false)),
+                            { VariableIsContextual.fromDocument(it) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -401,12 +409,8 @@ data class BooleanVariable(override val id : UUID,
 
     override fun onAddToState(entityId : EntityId, parentVariable : Variable?)
     {
-        val rel = this.relation()
-        when (rel)
-        {
-            is Just -> {
-                parentVariable?.setRelation(rel.value, this.variableId(), entityId)
-            }
+        this.relation().doMaybe {
+            parentVariable?.setRelation(it, this.variableId(), entityId)
         }
     }
 
@@ -417,6 +421,9 @@ data class BooleanVariable(override val id : UUID,
 
     override fun engineValue(entityId : EntityId) : AppEff<EngineValue> =
         apply(::EngineValueBoolean, this.value())
+
+
+    override fun isContextual() = this.isContextual.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -607,6 +614,9 @@ data class DiceRollVariable(override val id : UUID,
 
     override fun engineValue(entityId : EntityId) : AppEff<EngineValue> =
             effValue(EngineValueDiceRoll(this.value()))
+
+
+    override fun isContextual() = false
 
 
     // -----------------------------------------------------------------------------------------
@@ -825,6 +835,8 @@ data class NumberVariable(override val id : UUID,
             }
         }
 
+
+    override fun isContextual() = false
 
 
     // -----------------------------------------------------------------------------------------
@@ -1113,6 +1125,9 @@ data class NumberListVariable(override val id : UUID,
         apply(::EngineNumberListValue, this.value(entityId))
 
 
+    override fun isContextual() = false
+
+
     // -----------------------------------------------------------------------------------------
     // HISTORY
     // -----------------------------------------------------------------------------------------
@@ -1342,6 +1357,9 @@ data class TextVariable(override val id : UUID,
                 else    -> effError<AppError,EngineValue>(AppStateError(VariableDoesNotHaveValue(this.variableId)))
             }
         }
+
+
+    override fun isContextual() = false
 
 
     // -----------------------------------------------------------------------------------------
@@ -1652,6 +1670,9 @@ data class TextListVariable(override val id : UUID,
     }
 
 
+    override fun isContextual() = false
+
+
     // -----------------------------------------------------------------------------------------
     // HISTORY
     // -----------------------------------------------------------------------------------------
@@ -1828,6 +1849,7 @@ sealed class VariableReference : ToDocument, SQLSerializable, Serializable
                 "variable_tag"         -> VariableTag.fromDocument(doc) as ValueParser<VariableReference>
                 "variable_context"     -> VariableContext.fromDocument(doc) as ValueParser<VariableReference>
                 "related_variable"     -> RelatedVariable.fromDocument(doc) as ValueParser<VariableReference>
+                "variable_reference_contextual"     -> VariableReferenceContextual.fromDocument(doc) as ValueParser<VariableReference>
                 "related_variable_set" -> RelatedVariableSet.fromDocument(doc) as ValueParser<VariableReference>
                 else                   -> effError(UnknownCase(doc.case(), doc.path))
             }
@@ -1971,6 +1993,77 @@ data class VariableTag(val value : String) : VariableReference(), Serializable
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Variable Reference Contextual
+ */
+data class VariableReferenceContextual(val id : VariableId,
+                                       val context : Maybe<VariableContext>)
+                                        : VariableReference(), Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(id : String, context : String)
+        : this(VariableId(id), Just(VariableContext(context)))
+
+
+    companion object : Factory<VariableReferenceContextual>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<VariableReferenceContextual> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::VariableReferenceContextual,
+                      // Id
+                      doc.at("id") ap { VariableId.fromDocument(it) },
+                      // Context
+                      split(doc.maybeAt("context"),
+                            effValue<ValueError,Maybe<VariableContext>>(Nothing()),
+                            { apply(::Just, VariableContext.fromDocument(it)) })
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.id().toDocument()
+    ))
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun id() : VariableId = this.id
+
+
+    fun context() : Maybe<VariableContext> = this.context
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
+
+    override fun toString() : String = "${this.context()}::${this.id().toString()}"
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ this.toString() })
 
 }
 
@@ -2315,6 +2408,35 @@ data class VariableTagSet(val variables : List<VariableTag>) : SQLSerializable, 
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
+
+}
+
+
+/**
+ * Variable Is Contextual
+ */
+data class VariableIsContextual(val value : Boolean) : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<VariableIsContextual>
+    {
+        override fun fromDocument(doc : SchemaDoc): ValueParser<VariableIsContextual> = when (doc)
+        {
+            is DocBoolean -> effValue(VariableIsContextual(doc.boolean))
+            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocBoolean(this.value)
 
 }
 

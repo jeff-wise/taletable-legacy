@@ -1622,6 +1622,8 @@ types:
       description: A variable tag
     - type: variable_context 
       description: A variable in a context.
+    - type: variable_reference_contextual 
+      description: A contextual variable.
     - type: related_variable 
       description: A related variable.
     - type: related_variable_set
@@ -1685,6 +1687,12 @@ types:
       type: 
         type: prim_type
         prim_type: string
+      presence: optional
+      description: Relation name
+    - name: is_contextual
+      type: 
+        type: prim_type
+        prim_type: boolean
       presence: optional
       description: Relation name
 - type: sum_type
@@ -1939,6 +1947,25 @@ types:
         prim_type: string
       presence: optional
       description: The namespace.
+- type: product_type
+  product_type:
+    name: variable_reference_contextual
+    label: Contextual Variable
+    description: Related variable.
+    group: 'Variable'
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: variable_id
+      presence: required
+      description: Variable id.
+    - name: context
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Variable relation.
 - type: product_type
   product_type:
     name: related_variable
@@ -2678,7 +2705,7 @@ types:
     - name: trigger
       type: 
         type: custom_type
-        custom_type: task_trigger
+        custom_type: trigger
       presence: required
       description: Task trigger.
 - type: sum_type
@@ -2705,20 +2732,20 @@ types:
       description: The boolean variables.
 - type: sum_type
   sum_type:
-    name: task_trigger
+    name: trigger
     label: Task Trigger
     description: Task trigger
     group: Value
     cases:
-    - type: task_trigger_state
+    - type: trigger_state
       description: State trigger
-    - type: task_trigger_and
+    - type: trigger_and
       description: And trigger
-    - type: task_trigger_or
+    - type: trigger_or
       description: Or trigger
 - type: product_type
   product_type:
-    name: task_trigger_state
+    name: trigger_state
     label: 'Task Trigger: State'
     description: State trigger
     group: 'Trigger'
@@ -2737,7 +2764,7 @@ types:
       description: Constraint
 - type: product_type
   product_type:
-    name: task_trigger_and
+    name: trigger_and
     label: 'Task Trigger: And'
     description: And trigger
     group: 'Trigger'
@@ -2745,12 +2772,12 @@ types:
     - name: triggers
       type: 
         type: custom_coll_type
-        custom_coll_type: task_trigger
+        custom_coll_type: trigger
       presence: required
       description: Triggers
 - type: product_type
   product_type:
-    name: task_trigger_or
+    name: trigger_or
     label: 'Task Trigger: Or'
     description: Or trigger
     group: 'Trigger'
@@ -2758,7 +2785,7 @@ types:
     - name: triggers
       type: 
         type: custom_coll_type
-        custom_coll_type: task_trigger
+        custom_coll_type: trigger
       presence: required
       description: Triggers
 - type: product_type

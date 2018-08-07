@@ -50,7 +50,7 @@
                         android:paddingBottom="12dp">
 
                         <ImageView
-                            android:id="@+id/menuLeft"
+                            android:id="@+id/toolbar_menu_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
@@ -204,6 +204,13 @@
         </FrameLayout>
 
     </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/left_nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/light_theme_light_blue_grey_9" />
 
     <android.support.design.widget.NavigationView
         android:id="@+id/right_nav_view"

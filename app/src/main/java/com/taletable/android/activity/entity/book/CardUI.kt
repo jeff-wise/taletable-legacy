@@ -21,7 +21,7 @@ import com.taletable.android.model.theme.ColorTheme
 import com.taletable.android.model.theme.ThemeColorId
 import com.taletable.android.model.theme.ThemeId
 import com.taletable.android.rts.entity.colorOrBlack
-
+import com.taletable.android.rts.entity.groups
 
 
 class CardUI(val book : Book,
@@ -154,7 +154,7 @@ class CardUI(val book : Book,
         val scrollView = this.cardScrollView()
         val cardLayout = this.cardLayout()
 
-        content.groups().forEach {
+        groups(content.groupReferences(), book.entityId()).forEach {
             cardLayout.addView(it.view(book.entityId(), context))
         }
 

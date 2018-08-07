@@ -228,7 +228,7 @@ class PlayUI(val theme : Theme,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
         titleView.color              = theme.colorOrBlack(nameColorTheme)
 
-        titleView.sizeSp             = 26f
+        titleView.sizeSp             = 22f
 
         return titleView.textView(context)
     }
@@ -267,6 +267,7 @@ class PlayUI(val theme : Theme,
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_85"))))
         layout.backgroundColor      = theme.colorOrBlack(bgColorTheme)
+        layout.backgroundColor      = Color.WHITE
 
         layout.addRule(RelativeLayout.ALIGN_PARENT_END)
 
@@ -290,9 +291,12 @@ class PlayUI(val theme : Theme,
                                                     TextFontStyle.Regular,
                                                     context)
 
-        labelView.color             = Color.WHITE
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+        labelView.color         = theme.colorOrBlack(labelColorTheme)
 
-        labelView.sizeSp            = 18f
+        labelView.sizeSp            = 19f
 
         labelView.margin.rightDp    = 4f
 
@@ -304,7 +308,10 @@ class PlayUI(val theme : Theme,
 
         iconView.image              = R.drawable.icon_arrow_right
 
-        iconView.color              = Color.WHITE
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+        iconView.color              = theme.colorOrBlack(iconColorTheme)
 
         iconView.margin.topDp       = 1f
 
@@ -374,8 +381,6 @@ class PlayUI(val theme : Theme,
 //        view.color              = theme.colorOrBlack(nameColorTheme)
 
         layout.margin.topDp     = 40f
-        layout.margin.leftDp    = 8f
-        layout.margin.rightDp   = 8f
 
         return layout.linearLayout(context)
     }
@@ -408,6 +413,7 @@ class PlayUI(val theme : Theme,
         view.sizeSp             = 17f
 
         view.margin.bottomDp    = 4f
+        view.margin.leftDp      = 12f
 
         return view.textView(context)
     }
@@ -442,9 +448,11 @@ class PlayUI(val theme : Theme,
 
         layout.backgroundColor      = Color.WHITE
 
-        layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
+        // layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
 
-        layout.margin.topDp         = 2.5f
+        layout.margin.topDp         = 8f
+
+        layout.elevation            = 2f
 
         return layout.linearLayout(context)
     }
@@ -490,8 +498,8 @@ class PlayUI(val theme : Theme,
 
         layout.orientation          = LinearLayout.VERTICAL
 
-        layout.padding.leftDp       = 8f
-        layout.padding.rightDp      = 8f
+        layout.padding.leftDp       = 12f
+        layout.padding.rightDp      = 12f
 
         layout.padding.topDp        = 8f
         layout.padding.bottomDp     = 8f
@@ -510,15 +518,15 @@ class PlayUI(val theme : Theme,
         view.text               = name
 
         view.font               = Font.typeface(TextFont.RobotoCondensed,
-                                                TextFontStyle.SemiBold,
+                                                TextFontStyle.Regular,
                                                 context)
 
         val nameColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
         view.color              = theme.colorOrBlack(nameColorTheme)
 
-        view.sizeSp             = 18.5f
+        view.sizeSp             = 21f
 
         return view.textView(context)
     }
@@ -539,10 +547,10 @@ class PlayUI(val theme : Theme,
 
         val nameColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         view.color              = theme.colorOrBlack(nameColorTheme)
 
-        view.sizeSp             = 17.5f
+        view.sizeSp             = 17f
 
         return view.textView(context)
     }
@@ -559,14 +567,28 @@ class PlayUI(val theme : Theme,
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.gravity              = Gravity.CENTER_VERTICAL or Gravity.END
+        layout.gravity              = Gravity.CENTER_VERTICAL
+        layout.layoutGravity        = Gravity.END
 
         layout.margin.rightDp       = 4f
         layout.margin.topDp         = 6f
-        layout.margin.bottomDp      = 4f
+        layout.margin.bottomDp      = 6f
+
+//        layout.padding.topDp        = 4f
+//        layout.padding.bottomDp     = 4f
+//        layout.padding.leftDp       = 8f
+//        layout.padding.rightDp      = 8f
+
+        layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_tint_2"))))
+        layout.backgroundColor      = theme.colorOrBlack(bgColorTheme)
+        layout.backgroundColor      = Color.WHITE
 
         layout.child(labelView)
 
@@ -584,10 +606,10 @@ class PlayUI(val theme : Theme,
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_tint_1"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_tint_2"))))
         labelView.color             = theme.colorOrBlack(labelColorTheme)
 
-        labelView.sizeSp            = 15.5f
+        labelView.sizeSp            = 15f
 
         return layout.linearLayout(context)
     }

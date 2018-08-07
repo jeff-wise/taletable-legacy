@@ -1,0 +1,4627 @@
+groups:
+- id: '920e6a83-f7b9-47fa-b502-f7567a4a2c4b'
+  name: 'Field: Is Critical Hit'
+  summary: 'Is critical hit field'
+  rows:
+  - format:
+      element_format:
+        padding:
+          left: 8
+          right: 8
+          top: 12
+          bottom: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_16
+            font_style: medium
+            size: 18
+            element_format:
+              horizontal_alignment: left
+        value_variable_id: field_label_is_critical_hit
+    - type: widget_boolean
+      widget_boolean:
+        value_variables_reference:
+          type: variable_id
+          variable_id: rapier_is_critical_hit
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: right
+              padding:
+                left: 8
+                right: 8
+              width:
+                type: width_justify
+                width_justify: justify
+          true_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_4
+              corners:
+                top_left_radius: 2
+                top_right_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              padding:
+                top: 2
+                bottom: 2
+                left: 8
+                right: 8
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_21
+              - theme_id: light
+                color_id: green
+            font_style: semi_bold
+            size: 16
+          false_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_4
+              corners:
+                top_left_radius: 2
+                top_right_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              padding:
+                top: 2
+                bottom: 2
+                left: 8
+                right: 8
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_21
+              - theme_id: light
+                color_id: dark_grey_22
+            font_style: semi_bold
+            size: 16
+          true_text: 'YES'
+          false_text: 'NO'
+- id: '6126d564-c3d7-496a-a6ff-dc4660af8746'
+  name: 'Field: Is Sneak Attack'
+  summary: 'Is sneak attack field'
+  rows:
+  - format:
+      element_format:
+        padding:
+          left: 8
+          right: 8
+          top: 12
+          bottom: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_16
+            font_style: medium
+            size: 18
+            element_format:
+              horizontal_alignment: left
+        value_variable_id: field_label_is_sneak_attack
+    - type: widget_boolean
+      widget_boolean:
+        value_variables_reference:
+          type: variable_reference_contextual
+          variable_reference_contextual:
+            id: is_sneak_attack
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: right
+              padding:
+                left: 8
+                right: 8
+              width:
+                type: width_justify
+                width_justify: justify
+          true_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_4
+              corners:
+                top_left_radius: 2
+                top_right_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              padding:
+                top: 2
+                bottom: 2
+                left: 8
+                right: 8
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_21
+              - theme_id: light
+                color_id: green
+            font_style: semi_bold
+            size: 16
+          false_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_4
+              corners:
+                top_left_radius: 2
+                top_right_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              padding:
+                top: 2
+                bottom: 2
+                left: 8
+                right: 8
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_21
+              - theme_id: light
+                color_id: dark_grey_22
+            font_style: semi_bold
+            size: 16
+          true_text: 'YES'
+          false_text: 'NO'
+- id: '8fad7940-97d7-4c0b-b87a-6312cb319b0d'
+  name: 'Rapier'
+  summary: 'A rapier'
+  tags:
+  - weapon
+  context: rapier
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Rapier"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_rapier
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+        - rows:
+          - widgets:
+            - type: widget_tab
+              widget_tab:
+                format:
+                  tab_bar_format:
+                    border:
+                      bottom:
+                        color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: light_grey_7
+                        thickness: 1
+                  selected_tab_format:
+                    font_style: medium
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: dark_grey_12
+                  unselected_tab_format:
+                    font_style: medium
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: dark_grey_22
+                  tab_format:
+                    underline_thickness: 2
+                    underline_color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: dark_grey_18
+                tabs:
+                - name: Attack
+                  group_references:
+                  - type: group
+                    group:
+                      format:
+                        element_format:
+                          padding:
+                            top: 10
+                            left: 8
+                            right: 8
+                      rows:
+                      - widgets:
+                        - type: widget_text
+                          widget_text:
+                            format:
+                              value_format:
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: dark_grey_14
+                                font_style: regular
+                                size: 17
+                                element_format:
+                                  horizontal_alignment: left
+                              widget_format:
+                                element_format:
+                                  horizontal_alignment: left
+                            value_variable_id: description_attack_roll
+                  - type: group
+                    group:
+                      format:
+                        element_format:
+                          padding:
+                            top: 10
+                            bottom: 12
+                            left: 8
+                            right: 8
+                      rows:
+                      - format:
+                          element_format:
+                            horizontal_alignment: right
+                            margins:
+                              top: 10
+                        widgets:
+                        - type: widget_roll
+                          widget_roll:
+                            format:
+                              widget_format:
+                                element_format:
+                                  height: 38
+                                  width:
+                                    type: width_wrap
+                                    width_wrap: wrap
+                              roll_text_location: button
+                              view_type: inline_right_button
+                              button_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_blue
+                                  corners:
+                                    top_right_radius: 4
+                                    bottom_right_radius: 4
+                                  padding:
+                                    right: 13
+                                    left: 13
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                icon_format:
+                                  color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: white
+                                  size:
+                                    width: 22
+                                    height: 22
+                                font_style: semi_bold
+                                size: 20
+                              button_roll_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: purple_90
+                                  corners:
+                                    top_right_radius: 4
+                                    bottom_right_radius: 4
+                                  padding:
+                                    right: 13
+                                    left: 13
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                icon_format:
+                                  color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: white
+                                  size:
+                                    width: 20
+                                    height: 20
+                                font_style: semi_bold
+                                size: 21
+                              description_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_blue_tint_2
+                                  corners:
+                                    top_left_radius: 4
+                                    bottom_left_radius: 4
+                                  padding:
+                                    right: 15
+                                    left: 15
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                font_style: semi_bold
+                                size: 18
+                              description_roll_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: purple_80
+                                  corners:
+                                    top_left_radius: 4
+                                    bottom_left_radius: 4
+                                  padding:
+                                    right: 15
+                                    left: 15
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                font_style: semi_bold
+                                size: 18
+                              roll_text_format:
+                                element_format:
+                                  padding:
+                                    left: 5
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                font_style: semi_bold
+                                size: 21
+                            roll_group:
+                              roll_references:
+                              - type: summation_id
+                                summation_id: weapon_rapier_attack_roll
+                            description: 'Attack'
+                            result_description: 'Attack Roll'
+                - name: Damage
+                  group_references:
+                  - type: group
+                    group:
+                      format:
+                        element_format:
+                          horizontal_alignment: right
+                          padding:
+                            top: 12
+                            bottom: 12
+                            left: 8
+                            right: 8
+                      rows:
+                      - format:
+                          border:
+                            top:
+                              color_theme:
+                                theme_color_ids:
+                                - theme_id: light
+                                  color_id: light_grey_5
+                              thickness: 1
+                          element_format:
+                            horizontal_alignment: left
+                            padding:
+                              left: 10
+                              right: 10
+                              top: 14
+                        widgets:
+                        - type: widget_text
+                          widget_text:
+                            format:
+                              value_format:
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: dark_grey_14
+                                font_style: regular
+                                size: 17
+                                element_format:
+                                  horizontal_alignment: left
+                              widget_format:
+                                element_format:
+                                  horizontal_alignment: left
+                            value_variable_id: description_damage_roll
+                  - type: group_set_id
+                    group_set_id: '23ecfb58-5c89-4299-85c6-3d03cee6f859'
+                  - type: group
+                    group:
+                      format:
+                        element_format:
+                          horizontal_alignment: right
+                          padding:
+                            top: 12
+                            bottom: 12
+                            left: 8
+                            right: 8
+                      rows:
+                      - format:
+                          element_format:
+                            horizontal_alignment: right
+                        widgets:
+                        - type: widget_roll
+                          widget_roll:
+                            format:
+                              widget_format:
+                                element_format:
+                                  height: 38
+                                  width:
+                                    type: width_wrap
+                                    width_wrap: wrap
+                              roll_text_location: button
+                              view_type: inline_right_button
+                              button_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_blue
+                                  corners:
+                                    top_right_radius: 4
+                                    bottom_right_radius: 4
+                                  padding:
+                                    right: 13
+                                    left: 13
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                icon_format:
+                                  color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: white
+                                  size:
+                                    width: 22
+                                    height: 22
+                                font_style: medium
+                                size: 18
+                              button_roll_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: purple_90
+                                  corners:
+                                    top_right_radius: 4
+                                    bottom_right_radius: 4
+                                  padding:
+                                    right: 13
+                                    left: 13
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                icon_format:
+                                  color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: white
+                                  size:
+                                    width: 20
+                                    height: 20
+                                font_style: semi_bold
+                                size: 20
+                              description_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_blue_tint_2
+                                  corners:
+                                    top_left_radius: 4
+                                    bottom_left_radius: 4
+                                  padding:
+                                    right: 15
+                                    left: 15
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                font_style: semi_bold
+                                size: 18
+                              description_roll_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: purple_80
+                                  corners:
+                                    top_left_radius: 4
+                                    bottom_left_radius: 4
+                                  padding:
+                                    right: 15
+                                    left: 15
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                font_style: semi_bold
+                                size: 18
+                              roll_text_format:
+                                element_format:
+                                  padding:
+                                    left: 5
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: light
+                                    color_id: white
+                                font_style: bold
+                                size: 18
+                                roll_format: normal
+                            roll_group:
+                              roll_references:
+                              - type: summation_id
+                                summation_id: weapon_rapier_damage_roll
+                            description: 'Damage'
+                            result_description: 'Damage'
+                - name: Properties
+                  group_references:
+                  - type: group
+                    group:
+                      rows:
+                      - format:
+                          element_format:
+                            padding:
+                              left: 10
+                              right: 10
+                              top: 14
+                              bottom: 14
+                        widgets:
+                        - type: widget_story
+                          widget_story:
+                            format:
+                              line_spacing: 4
+                              line_height: 36
+                              widget_format:
+                                element_format:
+                                  horizontal_alignment: left
+                                  width:
+                                    type: width_justify
+                                    width_justify: justify
+                            story:
+                            - type: story_part_span
+                              story_part_span:
+                                text: 'Finesse.'
+                                text_format:
+                                  color_theme:
+                                    theme_color_ids:
+                                    - theme_id: dark
+                                      color_id: light_grey_14
+                                    - theme_id: light
+                                      color_id: dark_grey_12
+                                  font_style: semi_bold
+                                  size: 17
+                            - type: story_part_span
+                              story_part_span:
+                                text: 'You may use your Strength or Dexterity modifier as a bonus to attack and damage rolls.'
+                                text_format:
+                                  color_theme:
+                                    theme_color_ids:
+                                    - theme_id: dark
+                                      color_id: light_grey_14
+                                    - theme_id: light
+                                      color_id: dark_grey_12
+                                  size: 16
+                      - format:
+                          element_format:
+                            padding:
+                              top: 8
+                              bottom: 14
+                              left: 10
+                              right: 10
+                        widgets:
+                        - type: widget_boolean
+                          widget_boolean:
+                            value_variables_reference:
+                              type: variable_id
+                              variable_id: rapier_use_finesse
+                            format:
+                              widget_format:
+                                element_format:
+                                  horizontal_alignment: right
+                                  padding:
+                                    left: 8
+                                    right: 8
+                                  width:
+                                    type: width_justify
+                                    width_justify: justify
+                              view_type: simple_toggle
+                              left_toggle_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_5
+                                  corners:
+                                    top_left_radius: 2
+                                    bottom_left_radius: 2
+                                  padding:
+                                    top: 3
+                                    bottom: 3
+                                    left: 10
+                                    right: 10
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: dark
+                                    color_id: light_grey_21
+                                  - theme_id: light
+                                    color_id: dark_grey_22
+                                font_style: semi_bold
+                                size: 16
+                              right_toggle_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_5
+                                  corners:
+                                    top_right_radius: 2
+                                    bottom_right_radius: 2
+                                  padding:
+                                    top: 3
+                                    bottom: 3
+                                    left: 10
+                                    right: 10
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: dark
+                                    color_id: light_grey_21
+                                  - theme_id: light
+                                    color_id: dark_grey_22
+                                font_style: semi_bold
+                                size: 16
+                              true_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_2
+                                  corners:
+                                    top_right_radius: 2
+                                    bottom_right_radius: 2
+                                  padding:
+                                    top: 3
+                                    bottom: 3
+                                    left: 10
+                                    right: 10
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: dark
+                                    color_id: light_grey_21
+                                  - theme_id: light
+                                    color_id: green_90
+                                font_style: semi_bold
+                                size: 16
+                              false_format:
+                                element_format:
+                                  background_color_theme:
+                                    theme_color_ids:
+                                    - theme_id: light
+                                      color_id: light_grey_2
+                                  corners:
+                                    top_left_radius: 2
+                                    bottom_left_radius: 2
+                                  padding:
+                                    top: 3
+                                    bottom: 3
+                                    left: 10
+                                    right: 10
+                                color_theme:
+                                  theme_color_ids:
+                                  - theme_id: dark
+                                    color_id: light_grey_21
+                                  - theme_id: light
+                                    color_id: green_90
+                                font_style: semi_bold
+                                size: 16
+                              false_text: 'Strength'
+                              true_text: 'Dexterity'
+
+- id: 'b2fdb47a-9895-4b21-bc0a-2cc1361a3f8b'
+  name: 'Club'
+  summary: 'A club.'
+  tags:
+  - weapon
+  - melee_weapon
+  - simple_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Light Crossbow"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_crossbow_light
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '4b8954d1-41b5-4a01-9426-a7d9b3c118f1'
+  name: 'Dagger'
+  summary: 'A dagger'
+  tags:
+  - weapon
+  - melee_weapon
+  - simple_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '5e004c5d-9557-4874-a5f8-c7e3f5a4308f'
+  name: 'Greatclub'
+  summary: 'A greatclub.'
+  tags:
+  - weapon
+  - melee_weapon
+  - simple_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Light Crossbow"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_crossbow_light
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: 'ac327ad8-9127-4449-bfc4-d0b1213783fe'
+  name: 'Handaxe'
+  summary: 'A handaxe.'
+  tags:
+  - weapon
+  - melee_weapon
+  - simple_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Light Crossbow"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_crossbow_light
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '9645890f-299e-4dde-ab08-3a1c23866599'
+  name: 'Javelin'
+  summary: 'A javelin.'
+  tags:
+  - weapon
+  - melee_weapon
+  - simple_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Light Crossbow"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_crossbow_light
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: 'e3cb9210-fa47-4567-8745-3d8ed06fcb41'
+  name: 'Light Hammer'
+  summary: 'A light hammer.'
+  tags:
+  - weapon
+  - melee_weapon
+  - simple_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Light Crossbow"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_crossbow_light
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: 'df7cde93-943c-4a00-9672-3b255fd8d560'
+  name: 'Mace'
+  summary: 'A mace.'
+  tags:
+  - weapon
+  - melee_weapon
+  - simple_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Light Crossbow"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_crossbow_light
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '45f44b7c-39cb-462b-a71d-d72aa8667403'
+  name: 'Quarterstaff'
+  summary: 'A quarterstaff.'
+  tags:
+  - weapon
+  - melee_weapon
+  - simple_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Light Crossbow"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_crossbow_light
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: 'bf17704e-2a4a-484a-842c-5ffbff15877d'
+  name: 'Sickle'
+  summary: 'A sickle.'
+  tags:
+  - weapon
+  - melee_weapon
+  - simple_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Light Crossbow"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_crossbow_light
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '59c672b4-d655-4d73-8a8a-31e63d7e35d4'
+  name: 'Spear'
+  summary: 'A spear.'
+  tags:
+  - weapon
+  - melee_weapon
+  - simple_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Light Crossbow"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_crossbow_light
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+        - id: '59c672b4-d655-4d73-8a8a-31e63d7e35d4'
+  name: 'Spear'
+  summary: 'A spear.'
+  tags:
+  - weapon
+  - melee_weapon
+  - simple_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Light Crossbow"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_crossbow_light
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '197df758-949d-49c3-a61a-630b335d819c'
+  name: 'Light Crossbow'
+  summary: 'A light crossbow.'
+  tags:
+  - weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Light Crossbow"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_crossbow_light
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '9bafa2f5-e56b-431f-9a18-7458baec64ae'
+  name: 'Dagger (thrown)'
+  summary: 'A thrown dagger.'
+  tags:
+  - weapon
+  - simple_weapon
+  - ranged_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            font_style: semi_bold
+            size: 18.5
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '6a19efc8-68be-4c43-b756-2b1072339baf'
+  name: 'Dart'
+  summary: 'A dart.'
+  tags:
+  - weapon
+  - simple_weapon
+  - ranged_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '5e163861-44d6-42e8-8037-90f5ecfe52d4'
+  name: 'Shortbow'
+  summary: 'A shortbow.'
+  tags:
+  - weapon
+  - simple_weapon
+  - ranged_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: 'fa6d9b4f-a8a5-4133-a42f-612b83b12887'
+  name: 'Battleaxe'
+  summary: 'A battleaxe.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: 'db9caf22-a47a-4065-a83b-e482f853029b'
+  name: 'Flail'
+  summary: 'A flail.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '63fd56a9-279c-4721-a0e2-66b360b30738'
+  name: 'Glaive'
+  summary: 'A glaive.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '01dd6304-2f95-41e7-bad2-318df064679c'
+  name: 'Greataxe'
+  summary: 'A greataxe.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: 'c5c5fe2a-b042-4113-81fe-6d0f67b3953c'
+  name: 'Greatsword'
+  summary: 'A greatsword.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: 'c6662c52-2088-42cf-9379-56439eaf5ee0'
+  name: 'Halberd'
+  summary: 'A halberd.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: 'b2945b23-e023-4194-b7fd-854ed2b7575e'
+  name: 'Lance'
+  summary: 'A lance.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '96757e14-dbc4-418c-9c9d-f079f14a4cb0'
+  name: 'Longsword'
+  summary: 'A longsword.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '98c530e5-6030-4270-9b06-1dfae3bd1bd7'
+  name: 'Maul'
+  summary: 'A maul.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '8f984fb2-23ff-41f2-9d69-99033de602a3'
+  name: 'Morningstar'
+  summary: 'A morningstar.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: 'a973d291-ca3d-488d-b593-71d545baa657'
+  name: 'Pike'
+  summary: 'A pike.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '8530acdf-a201-48e5-96d0-5e98975589da'
+  name: 'Rapier'
+  summary: 'A rapier.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '2dc7dee0-8190-43eb-91e7-df9b780c9cfe'
+  name: 'Scimitar'
+  summary: 'A scimitar.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: 'dd777555-74df-4cb4-b742-098252bd46d3'
+  name: 'Shortsword'
+  summary: 'A shortsword.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '49b4045f-1760-4bab-a218-37238bcd6157'
+  name: 'Trident'
+  summary: 'A trident.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '7bacdb4f-5e10-4c3f-bfd6-59b6625423be'
+  name: 'War Pick'
+  summary: 'A war pick.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '7aed2695-f7f2-4071-9246-26a7c11fa3e3'
+  name: 'Warhammer'
+  summary: 'A warhammer.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: 'd9399c5e-12ab-4eef-af2f-e1e3ca3e2e4e'
+  name: 'Whip'
+  summary: 'A whip.'
+  tags:
+  - weapon
+  - martial_weapon
+  - melee_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '31e11951-d104-4abd-99f1-4f1db95909aa'
+  name: 'Blowgun'
+  summary: 'A blowgun.'
+  tags:
+  - weapon
+  - martial_weapon
+  - ranged_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '3c1e622c-b3c2-4fc9-8078-494cc1ea37a1'
+  name: 'Hand Crossbow'
+  summary: 'A hand crossbow.'
+  tags:
+  - weapon
+  - martial_weapon
+  - ranged_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '8d49da73-0922-4ab9-a0af-139290cfb0ec'
+  name: 'Heavy Crossbow'
+  summary: 'A heavy crossbow'
+  tags:
+  - weapon
+  - martial_weapon
+  - ranged_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '235d2507-d6b1-4424-bb4b-3a4242cffeae'
+  name: 'Longbow'
+  summary: 'A longbow'
+  tags:
+  - weapon
+  - martial_weapon
+  - ranged_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+- id: '766cf3ca-e32c-4eca-8e46-a864c6bdec4b'
+  name: 'Net'
+  summary: 'A net.'
+  tags:
+  - weapon
+  - martial_weapon
+  - ranged_weapon
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 8
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Dagger (thrown)"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_dagger_thrown
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 6
+                right: 8
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 2
+                top_left_radius: 2
+              padding:
+                top: 8
+                bottom: 8
+                right: 8
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: medium
+            size: 19
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        groups:
+group_sets:
+- id: '23ecfb58-5c89-4299-85c6-3d03cee6f859'
+  group_ids:
+  - '6126d564-c3d7-496a-a6ff-dc4660af8746'
+  - '920e6a83-f7b9-47fa-b502-f7567a4a2c4b'

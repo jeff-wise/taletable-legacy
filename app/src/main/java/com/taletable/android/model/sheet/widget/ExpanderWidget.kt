@@ -389,7 +389,7 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
             headerView.setOnClickListener { onClick(contentLayout) }
             contentLayout.addView(headerView)
             expanderWidget.groups().forEach {
-                contentLayout.addView(it.view(entityId, context))
+                contentLayout.addView(it.view(entityId, context, expanderWidget.groupContext))
             }
         }
     }

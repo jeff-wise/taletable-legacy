@@ -834,7 +834,7 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
     fun infoView() : View
     {
-        var layout : ViewGroup = this.infoViewLayout()
+        var layout : ViewGroup = this.infoViewLayout(pointsWidget.format().infoFormat().format())
 
         val currentPointsString = pointsWidget.currentValueString(entityId)
         val limitPointsString = pointsWidget.limitValueString(entityId)
@@ -1007,19 +1007,19 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
     }
 
 
-    private fun infoViewLayout() : RelativeLayout
+    private fun infoViewLayout(format : TextFormat) : RelativeLayout
     {
         val layout              = RelativeLayoutBuilder()
 
         layout.id               = R.id.points_above_bar_layout
 
         layout.layoutType       = LayoutType.LINEAR
-        layout.weight           = 1f
-        layout.height           = 0
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
 
-        layout.gravity          = Gravity.TOP
+        layout.gravity          = format.elementFormat().alignment().gravityConstant() or
+                                    format.elementFormat().verticalAlignment().gravityConstant()
 
         return layout.relativeLayout(context)
     }

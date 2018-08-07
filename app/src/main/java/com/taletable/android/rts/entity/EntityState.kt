@@ -53,6 +53,9 @@ class EntityState(val entityId : EntityId,
     private val variableById : MutableMap<VariableId,Variable> = mutableMapOf()
     private val variablesByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
 
+    private val contextualVariableById : MutableMap<VariableId,Variable> = mutableMapOf()
+    private val contextualVariableByContext : MutableMap<Pair<VariableContext,VariableId>,Variable> = mutableMapOf()
+
     private val companionVariableIdsByVariableId : MutableMap<VariableId,MutableSet<VariableId>> = mutableMapOf()
 
     private val listenersById : MutableMap<VariableId,MutableSet<Variable>> = mutableMapOf()
@@ -79,6 +82,8 @@ class EntityState(val entityId : EntityId,
     private val tasksByVariableId : MutableMap<VariableId,MutableSet<Task>> = mutableMapOf()
 
     private val activeTasks : MutableSet<Task> = mutableSetOf()
+
+    private val completedTasks : MutableSet<Task> = mutableSetOf()
 
 
     // Search Indexes
@@ -140,13 +145,11 @@ class EntityState(val entityId : EntityId,
 
     private fun indexTasks()
     {
-        Log.d("****ENTITY STATE", "index tasks")
         this.tasks.forEach { task ->
 
             task.trigger.variableReferences().forEach {
                 when (it) {
                     is VariableId -> {
-                        Log.d("****ENTITY STATE", "index task at var id: $it")
                         if (!this.tasksByVariableId.containsKey(it))
                             this.tasksByVariableId.put(it, mutableSetOf())
 
@@ -163,6 +166,28 @@ class EntityState(val entityId : EntityId,
     // -----------------------------------------------------------------------------------------
     // VARIABLES
     // -----------------------------------------------------------------------------------------
+
+
+    fun addContextualVariable(variable : Variable)
+    {
+        Log.d("***ENTITY STATE", "state: ${entityId} ADDing contextual var: ${variable.variableId()}")
+        this.contextualVariableById[variable.variableId()] = variable
+    }
+
+
+    fun setContextualVariable(variableId : VariableId, context : VariableContext)
+    {
+        Log.d("***ENTITY STATE", "state: ${entityId} setting contextual var: ${this.contextualVariableById}")
+        this.contextualVariableById[variableId]?.let { variable ->
+            Log.d("***ENTITY STATE", "setting contextual var: ${variable.variableId()}")
+            when (variable) {
+                is BooleanVariable -> {
+                    val newVariable = variable.copy()
+                    this.contextualVariableByContext[Pair(context,variableId)] = newVariable
+                }
+            }
+        }
+    }
 
 
     /**
@@ -527,6 +552,24 @@ class EntityState(val entityId : EntityId,
     fun activeTasks() : Set<Task> = this.activeTasks
 
 
+    fun completedTasks() : List<Task> = this.completedTasks.toList()
+
+
+    fun completeTask(task : Task)
+    {
+        // Unindex task
+        task.trigger.variableReferences().forEach {
+            when (it) {
+                is VariableId -> {
+                    this.tasksByVariableId[it]?.remove(task)
+                }
+            }
+        }
+
+        this.completedTasks.add(task)
+    }
+
+
     fun onVariableUpdate(variable : Variable)
     {
 
@@ -745,8 +788,6 @@ class EntityState(val entityId : EntityId,
             {
                 if (listener.lastUpdateId != updateId)
                 {
-                    Log.d("****WIDGET", "updating variable: ${listener.variableId()}")
-//                    listener.onUpdate()
                     onVariableChange(listener.variableId())
                     listener.lastUpdateId = updateId
                     this.updateListeners(listener, updateId)
@@ -829,9 +870,7 @@ class EntityState(val entityId : EntityId,
         {
             // TODO avoid duplicate checks
             this.tasksByVariableId[variableId]?.forEach { task ->
-                Log.d("****ENTITY STATE", "updating task for: ${variableId}")
                 if (task.trigger().isActive(entityId)) {
-                    Log.d("****ENTITY STATE", "is active for: ${variableId}")
                     this.activeTasks.add(task)
                 }
             }
@@ -899,6 +938,24 @@ class EntityState(val entityId : EntityId,
         {
             is VariableId      -> effApply(::setOf, this.variable(variableReference))
             is VariableTag     -> this.variablesWithTag(variableReference)
+            is VariableReferenceContextual -> {
+                Log.d("***WIDGET", "find variable ref contextual")
+                val context = variableReference.context
+                when (context)
+                {
+                    is Just -> {
+                        Log.d("***WIDGET", "found context: ${this.contextualVariableByContext}")
+                        val variableSet = mutableSetOf<Variable>()
+                        val key = Pair(context.value, variableReference.id)
+                        this.contextualVariableByContext[key]?.let {
+                            Log.d("***ENTITY STATE", "found contextual variable")
+                            variableSet.add(it)
+                        }
+                        effValue<AppError,Set<Variable>>(variableSet)
+                    }
+                    is Nothing -> effValue(setOf())
+                }
+            }
             is VariableContext -> {
                 when (context) {
                     is Just -> {

@@ -59,8 +59,7 @@ class NewSessionActivity : AppCompatActivity()
 
     private var step : Int = 1
 
-    private val defaultGameId = EntityId(UUID.fromString("85f6da8e-e497-4aa2-a3c3-c2eab32d2839"))
-
+    private val defaultGameId = EntityId(UUID.fromString("ae94f23c-1ff5-48cc-a977-4dd2f7e81341"))
 
     private var newSessionUI : NewSessionUI? = null
 
@@ -404,7 +403,7 @@ class NewSessionUI(private var step : Int,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_8"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_7"))))
         layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
 
         return layout.linearLayout(context)
@@ -472,7 +471,7 @@ class NewSessionUI(private var step : Int,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_8"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_7"))))
         layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
 
         layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
@@ -569,7 +568,7 @@ class NewSessionUI(private var step : Int,
         stepView.color                 = Color.WHITE
 
         stepView.font                  = Font.typeface(TextFont.RobotoCondensed,
-                                                       TextFontStyle.SemiBold,
+                                                       TextFontStyle.Bold,
                                                        context)
 
         stepView.text                  = step.toString()
@@ -638,8 +637,8 @@ class NewSessionUI(private var step : Int,
         layout.backgroundColor  = Color.WHITE
 
         layout.padding.rightDp  = 10f
-        layout.padding.topDp    = 10f
-        layout.padding.bottomDp = 10f
+        layout.padding.topDp    = 12f
+        layout.padding.bottomDp = 12f
 
         layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
 
@@ -764,7 +763,7 @@ class NewSessionUI(private var step : Int,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
         view.color              = theme.colorOrBlack(colorTheme)
 
-        view.sizeSp             = 17f
+        view.sizeSp             = 18f
 
         return view.textView(context)
     }
@@ -973,6 +972,7 @@ class NewSessionUI(private var step : Int,
             sessionLoader.entityIds.forEach { entityId ->
                 manifest.persistedEntity(entityId).doMaybe { persistedEntity ->
                     layout.addView(this.entityLoaderView(persistedEntity.category, persistedEntity.name))
+                    layout.addView(this.entityBottomBorderView())
                 }
             }
         } }
@@ -1005,11 +1005,11 @@ class NewSessionUI(private var step : Int,
     {
         val layout = this.entityLoaderViewLayout()
 
-        // Category
-        layout.addView(this.entityLoaderCategoryView(category))
-
         // Name
         layout.addView(this.entityLoaderNameView(name))
+
+        // Category
+        layout.addView(this.entityLoaderCategoryView(category))
 
         return layout
     }
@@ -1041,15 +1041,17 @@ class NewSessionUI(private var step : Int,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_4"))))
         view.backgroundColor    = theme.colorOrBlack(bgColorTheme)
 
         view.padding.leftDp     = 8f
         view.padding.rightDp    = 8f
-        view.padding.topDp      = 7f
-        view.padding.bottomDp   = 7f
+        view.padding.topDp      = 4f
+        view.padding.bottomDp   = 4f
 
-        view.corners            = Corners(3.0, 0.0, 0.0, 3.0)
+        view.margin.leftDp      = 4f
+
+        view.corners            = Corners(2.0, 2.0, 2.0, 2.0)
 
         view.text               = category
 
@@ -1057,9 +1059,13 @@ class NewSessionUI(private var step : Int,
                                                 TextFontStyle.Regular,
                                                 context)
 
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         view.color                = Color.WHITE
+        view.color                  = theme.colorOrBlack(colorTheme)
 
-        view.sizeSp               = 17f
+        view.sizeSp               = 16f
 
         return view.textView(context)
     }
@@ -1074,15 +1080,16 @@ class NewSessionUI(private var step : Int,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
         view.backgroundColor    = theme.colorOrBlack(bgColorTheme)
+        view.backgroundColor    = Color.WHITE
 
-        view.corners            = Corners(0.0, 3.0, 3.0, 0.0)
+        view.corners            = Corners(3.0, 0.0, 0.0, 3.0)
 
-        view.padding.leftDp     = 8f
+        //view.padding.leftDp     = 8f
         view.padding.rightDp    = 8f
-        view.padding.topDp      = 7f
-        view.padding.bottomDp   = 7f
+        view.padding.topDp      = 8f
+        view.padding.bottomDp   = 8f
 
         view.text               = label
 
@@ -1092,12 +1099,30 @@ class NewSessionUI(private var step : Int,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_tint_1"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_7"))))
         view.color                = theme.colorOrBlack(colorTheme)
 
-        view.sizeSp               = 17f
+        view.sizeSp               = 18f
 
         return view.textView(context)
     }
+
+
+    private fun entityBottomBorderView() : LinearLayout
+    {
+        val layout          = LinearLayoutBuilder()
+
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.heightDp     = 1
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_4"))))
+        layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
+
+        return layout.linearLayout(context)
+    }
+
+
 
 }

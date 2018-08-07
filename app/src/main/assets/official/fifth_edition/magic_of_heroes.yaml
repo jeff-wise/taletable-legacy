@@ -6136,6 +6136,19 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: rapier_is_critical_hit
+    - type: summation_term_conditional_function
+      summation_term_conditional_function:
+        term_name: Sneak Attack Damage
+        formula_modifier:
+          type: multiply_dice
+          multiply_dice: 3
+        condition:
+          type: variable_reference
+          variable_reference:
+            type: variable_reference_contextual
+            variable_reference_contextual:
+              id: is_sneak_attack
+              context: rapier
   - summation_id: strength
     summation_name: Strength
     terms:

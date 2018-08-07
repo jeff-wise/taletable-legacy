@@ -22,8 +22,10 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import com.taletable.android.R
+import com.taletable.android.activity.AppOptionsUI
 import com.taletable.android.activity.entity.engine.procedure.ProcedureUpdateDialog
 import com.taletable.android.activity.session.SessionActivity
+import com.taletable.android.activity.sheet.history.HistoryPagerAdapter
 import com.taletable.android.activity.sheet.page.PagePagerAdapter
 import com.taletable.android.activity.sheet.task.TaskPagerAdapter
 import com.taletable.android.lib.ui.*
@@ -321,6 +323,21 @@ class SheetActivity : AppCompatActivity()
     {
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
 
+        // Left Sidebar
+        // -------------------------------------------------------------------------------------
+        val menuLeft = this.findViewById<ImageView>(R.id.toolbar_menu_button)
+
+        val leftNavView = this.findViewById<NavigationView>(R.id.left_nav_view)
+        val appOptionsViewBuilder = AppOptionsUI(this)
+        leftNavView.addView(appOptionsViewBuilder.view())
+
+        menuLeft.setOnClickListener {
+            if (drawerLayout.isDrawerOpen(GravityCompat.START))
+                drawerLayout.closeDrawer(GravityCompat.START)
+            else
+                drawerLayout.openDrawer(GravityCompat.START)
+        }
+
         // Right Sidebar
         // -------------------------------------------------------------------------------------
         val menuRight = this.findViewById<ImageView>(R.id.toolbar_options_button)
@@ -374,7 +391,7 @@ class SheetActivity : AppCompatActivity()
         // Toolbar > Icons
         var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
 
-        val menuLeftButton = this.findViewById<ImageView>(R.id.menuLeft)
+        val menuLeftButton = this.findViewById<ImageView>(R.id.toolbar_menu_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
 //        val navButton = this.findViewById(R.id.toolbar_nav_button) as ImageView
@@ -510,6 +527,15 @@ class MainTabBarUI(val sheetId : EntityId,
                 tasksTabTextView?.setTextColor(theme.colorOrBlack(selectedColorTheme))
                 historyTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
             }
+            3 -> {
+                pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+                historyTabLayoutView?.setBackgroundColor(Color.WHITE)
+
+                pagesTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
+                tasksTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
+                historyTabTextView?.setTextColor(theme.colorOrBlack(selectedColorTheme))
+            }
         }
 
     }
@@ -521,7 +547,11 @@ class MainTabBarUI(val sheetId : EntityId,
 
         // Pages
         val pagesOnClick = View.OnClickListener {
-            sheetActivity.findViewById<View>(R.id.tab_layout)?.visibility = View.VISIBLE
+
+            val tabLayout = sheetActivity.findViewById<TabLayout>(R.id.tab_layout)
+            tabLayout?.visibility = View.VISIBLE
+            tabLayout?.tabMode = TabLayout.MODE_SCROLLABLE
+
             val viewPager = sheetActivity.findViewById<View>(R.id.view_pager) as ViewPager?
             viewPager?.adapter = sheetActivity.pagePagerAdapter
             this.setSelectedTab(1)
@@ -542,7 +572,15 @@ class MainTabBarUI(val sheetId : EntityId,
         layout.addView(tasksTabView)
 
         // History
-        val historyOnClick = View.OnClickListener {  }
+        val historyOnClick = View.OnClickListener {
+
+            val tabLayout = sheetActivity.findViewById<TabLayout>(R.id.tab_layout)
+            tabLayout?.visibility = View.VISIBLE
+            tabLayout?.tabMode = TabLayout.MODE_FIXED
+            val viewPager = sheetActivity.findViewById<View>(R.id.view_pager) as ViewPager?
+            viewPager?.adapter = HistoryPagerAdapter(sheetActivity.supportFragmentManager, sheetId)
+            this.setSelectedTab(3)
+        }
         val historyTabView = this.buttonView(R.string.history, 3, historyOnClick)
         this.historyTabLayoutView = historyTabView
         layout.addView(historyTabView)

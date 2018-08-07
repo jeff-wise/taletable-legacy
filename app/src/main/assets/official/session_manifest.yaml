@@ -57,3 +57,64 @@ summaries:
   - '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
   main_entity_kind_id: player_character
   main_entity_id: '41aaaa67-8277-462c-8e33-a06da8ad930f'
+## ---------------------------------------------------------------------------------------------
+## | Pathfinder 2 Playtest
+## ---------------------------------------------------------------------------------------------
+- session_id: "56897634-288a-478e-bb59-eedf09d8aab6"
+  session_name: Casmey Dalseya
+  info:
+    summary: >-
+      A circus performer as a kid and a pirate as a teengaer, Casmey is now a reluctant adult looking for a
+      new adventure
+    description: >-
+      A circus performer as a kid and a pirate as a teengaer, Casmey is now a reluctant adult looking for a
+      new adventure. That shouldn't be hard though -- she's always been quite talented at finding trouble. Since her days
+      on the trapeze, she's been most comfortable perched in precarious situations, where a tiny mistake
+      leads to a painful fall. When she does fall -- and she has many times -- she tends
+      to land on her feet, ready to climb back up.
+    primary_tag: 'Level 1'
+    secondary_tags:
+    - Human
+    - Rogue
+    tagline: '1st Level Human Rogue'
+  game_id: 'ffae52cd-6684-42d0-b733-80e006e1c4be'
+  entity_ids:
+  # PC - Casmey
+  - '7259bcfa-76f9-42bb-b9d3-50a698850e8d'
+  # Campaign - Isara
+  - '425e1222-1744-41b0-9ae0-9452d1078b4a'
+  # Game - Pathfinder 2 Playtest
+  - 'ffae52cd-6684-42d0-b733-80e006e1c4be'
+  # Book - Rulebook
+  - '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+  main_entity_kind_id: player_character
+  main_entity_id: '7259bcfa-76f9-42bb-b9d3-50a698850e8d'
+- session_id: "ea7363fa-776a-407e-9b2c-dd1d8225860e"
+  session_name: Sanson Alavidril
+  info:
+    summary: >-
+      A precocious young wizard, Sanson hungers for the power to change the world for the better. After
+      the unexpected death
+    description: >-
+      A precocious young wizard, Sanson hungers for the power to change the world for the better. After
+      the unexpected death of his younger sister, he started to wonder how so much tragedy can befall
+      the world when the power of magic to do good is so great? He studies hard with the singular purpose
+      to wield magic with such power and finesse to shape the world to his own morality. The cost of his
+      focus are the things that magic cannot change -- friendships, health, and wisdom.
+    primary_tag: 'Level 1'
+    secondary_tags:
+    - Human
+    - Wizard
+    tagline: '1st Level Human Wizard'
+  game_id: '85f6da8e-e497-4aa2-a3c3-c2eab32d2839'
+  entity_ids:
+  # PC - Sanson
+  - 'e983de7a-a729-45c7-b6fc-87c44a0fada5'
+  # Campaign - Isara
+  - '425e1222-1744-41b0-9ae0-9452d1078b4a'
+  # Game - Pathfinder 2 Playtest
+  - 'ffae52cd-6684-42d0-b733-80e006e1c4be'
+  # Book - Rulebook
+  - '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+  main_entity_kind_id: player_character
+  main_entity_id: 'e983de7a-a729-45c7-b6fc-87c44a0fada5'

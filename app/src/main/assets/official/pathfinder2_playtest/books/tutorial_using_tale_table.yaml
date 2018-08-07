@@ -1,0 +1,2866 @@
+book_id: '829bce54-aba6-4611-b73b-9f9b1a8fac6f'
+book_info:
+  title: 'Using Tale Table with the Pathfinder 2 Playtest'
+  summary: 'How to use Tale Table to learn and play with the Pathfinder 2 Playtest rules.'
+  authors:
+  - name: Jeff Wise
+  abstract: >-
+    The Core rules for the Magic of Heroes. Includes information for both players and
+    dungeon masters such as rules for races, classes, spells, monsters, and adventuring.
+introduction:
+- introduction
+settings:
+  theme_id: light
+engine:
+  value_sets:
+  tasks:
+  mechanics:
+  mechanic_categories:
+  functions:
+  programs:
+  summations:
+  procedures:
+variables:
+- type: variable_text
+  variable_text:
+    id: introduction_summary
+    label: Introduction Summary
+    description: Introduction summary
+    value:
+      type: text_literal
+      text_literal: >-
+        The adventure begins now. In the following chapters we are going explore a world of magic
+        filled with intriguing conflict. From village-sized dungeon crawls to reality-bending planar
+        adventures, the words written in books and timeless tales passed down from generations will
+        speak of a few protagonists, heroes with both the ability and the willpower to do things
+        that others could not. Let's learn about how to create our heroes and the world they live in,
+        including the races, creatuers, weapons, spells, and more.
+- type: variable_text
+  variable_text:
+    id: section_weapons_introduction
+    label: Section Weapons Summary
+    description: Section Weapons summary
+    value:
+      type: text_literal
+      text_literal: >-
+        Your class grants proficiency in certain weapons, reflecting both the class’s focus and the tools you are most likely to use. Whether you favor a longsword or a longbow, your weapon and your ability to wield it effectively can mean the difference between life and death while adventuring.
+
+
+        The Weapons table shows the most common weapons used in the fantasy gaming worlds, their price and weight, the damage they deal when they hit, and any special properties they possess. Every weapon is classified as either melee or ranged. A melee weapon is used to attack a target within 5 feet of you, whereas a ranged weapon is used to attack a target at a distance.
+- type: variable_text
+  variable_text:
+    id: subsection_weapon_proficiency_text
+    label: Section Weapons Proficiency Text
+    description: Section Weapons Proficiency Text
+    value:
+      type: text_literal
+      text_literal: >-
+        Your race, class, and feats can grant you proficiency with certain weapons or categories of weapons. The two categories are simple and martial. Most people can use simple weapons with proficiency. These weapons include clubs, maces, and other weapons often found in the hands of commoners. Martial weapons, including swords, axes, and polearms, require more specialized training to use effectively. Most warriors use martial weapons because these weapons put their fighting style and training to best use.
+
+
+        Proficiency with a weapon allows you to add your proficiency bonus to the attack roll for any attack you make with that weapon. If you make an attack roll using a weapon with which you lack proficiency, you do not add your proficiency bonus to the attack roll.
+- type: variable_text
+  variable_text:
+    id: subsection_weapon_properties_header_all_properties
+    label: Section Weapons Properties Header All Properties
+    description: Section Weapons Properties Header All Properties
+    value:
+      type: text_literal
+      text_literal: 'All Properties'
+- type: variable_text
+  variable_text:
+    id: subsection_weapon_properties_header_improvised_weapons
+    label: Section Weapons Properties Header Improvised Weapons
+    description: Section Weapons Properties Header improvised weapons.
+    value:
+      type: text_literal
+      text_literal: 'Improvised Weapons'
+- type: variable_text
+  variable_text:
+    id: subsection_weapon_properties_improvised_weapons_text
+    label: Section Weapons Properties Improvised Weapons Text
+    description: Section Weapons Properties improvised weapons text.
+    value:
+      type: text_literal
+      text_literal: >-
+        Sometimes characters don’t have their weapons and have to attack with whatever is at hand. An improvised weapon includes any object you can wield in one or two hands, such as broken glass, a table leg, a frying pan, a wagon wheel, or a dead goblin.
+
+
+        Often, an improvised weapon is similar to an actual weapon and can be treated as such. For example, a table leg is akin to a club. At the GM’s option, a character proficient with a weapon can use a similar object as if it were that weapon and use his or her proficiency bonus.
+
+
+        An object that bears no resemblance to a weapon deals 1d4 damage (the GM assigns a damage type appropriate to the object). If a character uses a ranged weapon to make a melee attack, or throws a melee weapon that does not have the thrown property, it also deals 1d4 damage. An improvised thrown weapon has a normal range of 20 feet and a long range of 60 feet.
+- type: variable_text
+  variable_text:
+    id: subsection_weapon_properties_silvered_weapons_header
+    label: Section Weapons Properties Silvered Weapons Header
+    description: Section Weapons Properties silvered weapons header.
+    value:
+      type: text_literal
+      text_literal: 'Silvered Weapons'
+- type: variable_text
+  variable_text:
+    id: subsection_weapon_properties_silvered_weapons_text
+    label: Section Weapons Properties Silvered Weapons Text
+    description: Section Weapons Properties silvered weapons text.
+    value:
+      type: text_literal
+      text_literal: >-
+        Some monsters that have immunity or resistance to nonmagical weapons are susceptible to silver weapons, so cautious adventurers invest extra coin to plate their weapons with silver. You can silver a single weapon or ten pieces of ammunition for 100 gp. This cost represents not only the price of the silver, but the time and expertise needed to add silver to the weapon without making it less effective.
+- type: variable_text
+  variable_text:
+    id: subsection_weapon_list_simple_melee_weapons_table_header
+    label: Section Weapons List Simple Melee Weapons Table Header
+    description: Description.
+    value:
+      type: text_literal
+      text_literal: 'Simple Melee Weapons'
+- type: variable_text
+  variable_text:
+    id: subsection_weapon_list_simple_ranged_weapons_table_header
+    label: Section Weapons List Simple Ranged Weapons Table Header
+    description: Description.
+    value:
+      type: text_literal
+      text_literal: 'Simple Ranged Weapons'
+- type: variable_text
+  variable_text:
+    id: subsection_weapon_list_martial_melee_weapons_table_header
+    label: Section Weapons List Martial Melee Weapons Table Header
+    description: Description.
+    value:
+      type: text_literal
+      text_literal: 'Martial Melee Weapons'
+- type: variable_text
+  variable_text:
+    id: subsection_weapon_list_martial_ranged_weapons_table_header
+    label: Section Weapons List Martial Ranged Weapons Table Header
+    description: Description.
+    value:
+      type: text_literal
+      text_literal: 'Martial Ranged Weapons'
+- type: variable_text
+  variable_text:
+    id: humans_introduction
+    label: Humans Introduction
+    description: Humans introduction
+    value:
+      type: text_literal
+      text_literal: >-
+        It’s hard to make generalizations about humans, but your human character has these traits.
+- type: variable_text
+  variable_text:
+    id: humans_ability_score_increase_header
+    label: Humans Ability Score Increase Header
+    description: Humans ability score increase header
+    value:
+      type: text_literal
+      text_literal: 'Ability Score Increase'
+- type: variable_text
+  variable_text:
+    id: humans_ability_score_increase_content
+    label: Humans Ability Score Increase Content
+    description: Humans ability score increase content.
+    value:
+      type: text_literal
+      text_literal: 'Your ability scores each increase by 1.'
+- type: variable_text
+  variable_text:
+    id: humans_age_header
+    label: Humans Age Header
+    description: Humans age header
+    value:
+      type: text_literal
+      text_literal: 'Age'
+- type: variable_text
+  variable_text:
+    id: humans_age_content
+    label: Humans Age Content
+    description: Humans age content.
+    value:
+      type: text_literal
+      text_literal: 'Humans reach adulthood in their late teens and live less than a century.'
+- type: variable_text
+  variable_text:
+    id: humans_alignment_header
+    label: Humans Alignment Header
+    description: Humans alignment header
+    value:
+      type: text_literal
+      text_literal: 'Alignment'
+- type: variable_text
+  variable_text:
+    id: humans_alignment_content
+    label: Humans Alignment Content
+    description: Humans alignment content
+    value:
+      type: text_literal
+      text_literal: 'Humans tend toward no particular alignment. The best and the
+                     worst are found among them.'
+- type: variable_text
+  variable_text:
+    id: humans_size_header
+    label: Humans Size Header
+    description: Humans size header
+    value:
+      type: text_literal
+      text_literal: 'Size'
+- type: variable_text
+  variable_text:
+    id: humans_size_content
+    label: Humans Size Content
+    description: Humans size content
+    value:
+      type: text_literal
+      text_literal: >-
+        Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall.
+        Regardless of your position in that range, your size is Medium.
+- type: variable_text
+  variable_text:
+    id: humans_speed_header
+    label: Humans Speed Header
+    description: Humans speed header
+    value:
+      type: text_literal
+      text_literal: 'Speed'
+- type: variable_text
+  variable_text:
+    id: humans_speed_content
+    label: Humans Speed Content
+    description: Humans speed content
+    value:
+      type: text_literal
+      text_literal: 'Your base walking speed is 30 feet.'
+- type: variable_text
+  variable_text:
+    id: humans_languages_header
+    label: Humans Languages Header
+    description: Humans languages header
+    value:
+      type: text_literal
+      text_literal: 'Languages'
+- type: variable_text
+  variable_text:
+    id: humans_languages_content
+    label: Humans Languages Content
+    description: Humans languages Content
+    value:
+      type: text_literal
+      text_literal: >-
+        You can speak, read, and write Common and one extra language of your choice. Humans
+        typically learn the languages of other peoples they deal with, including obscure dialects.
+        They are fond of sprinkling their speech with words borrowed from other tongues: Orc
+        curses, Elvish musical expressions, Dwarvish military phrases, and so on.
+- type: variable_text
+  variable_text:
+    id: gear_cost_label
+    label: gear_cost_label
+    description: 'Gear Cost Label'
+    value:
+      type: text_literal
+      text_literal: 'Cost'
+- type: variable_text
+  variable_text:
+    id: gear_weight_label
+    label: gear_weight_label
+    description: 'Gear Weight Label'
+    value:
+      type: text_literal
+      text_literal: 'Weight'
+- type: variable_text
+  variable_text:
+    id: gear_bedroll_description
+    label: 'Gear Bedroll Description'
+    description: 'Gear Bedroll Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        A bedroll is a pad that can be rolled up to be carried easily while traveling. It typically
+        comes with a waterproof shell both for protection from the ground and for folding over to
+        project from inclement weather.
+- type: variable_text
+  variable_text:
+    id: gear_bedroll_cost
+    label: gear_bedroll_cost
+    description: 'Gear Bedroll Cost'
+    value:
+      type: text_literal
+      text_literal: '1 gp'
+- type: variable_text
+  variable_text:
+    id: gear_bedroll_weight
+    label: gear_bedroll_weight
+    description: 'Gear Bedroll Weight'
+    value:
+      type: text_literal
+      text_literal: '7 lb'
+- type: variable_text
+  variable_text:
+    id: weapon_damage_label
+    label: weapon_damage_label
+    description: 'Weapon Damage Label'
+    value:
+      type: text_literal
+      text_literal: 'Damage'
+- type: variable_text
+  variable_text:
+    id: weapon_cost_label
+    label: weapon_cost_label
+    description: 'Weapon Cost Label'
+    value:
+      type: text_literal
+      text_literal: 'Cost'
+- type: variable_text
+  variable_text:
+    id: weapon_weight_label
+    label: weapon_weight_label
+    description: 'Weapon Weight Label'
+    value:
+      type: text_literal
+      text_literal: 'Weight'
+- type: variable_text
+  variable_text:
+    id: weapon_rapier_description
+    label: weapon_rapier_description
+    description: 'Rapier summary'
+    value:
+      type: text_literal
+      text_literal: >-
+        A rapier is a slender sword that ends in a sharp point. It is primarily designed for
+        thrusting, though there are variants which may be used effectively for slashing or
+        cutting. A light and nimble weapon, it is often utilized in situations where speed and
+        finesse are major factors and where heavier blades may be comparitively clumsy.
+- type: variable_text
+  variable_text:
+    id: weapon_rapier_damage
+    label: weapon_rapier_damage
+    description: 'Rapier damage'
+    value:
+      type: text_literal
+      text_literal: '1d8 piercing'
+- type: variable_text
+  variable_text:
+    id: weapon_rapier_cost
+    label: weapon_rapier_cost
+    description: 'Rapier cost'
+    value:
+      type: text_literal
+      text_literal: '25 gp'
+- type: variable_text
+  variable_text:
+    id: weapon_rapier_weight
+    label: weapon_rapier_weight
+    description: 'Rapier weight'
+    value:
+      type: text_literal
+      text_literal: '2 lb'
+- type: variable_text
+  variable_text:
+    id: armor_ac_label
+    label: armor_ac_label
+    description: 'Leather Armor Armor Class Label'
+    value:
+      type: text_literal
+      text_literal: 'Armor Class (AC)'
+- type: variable_text
+  variable_text:
+    id: armor_cost_label
+    label: armor_cost_label
+    description: 'Leather Armor Cost Label'
+    value:
+      type: text_literal
+      text_literal: 'Cost'
+- type: variable_text
+  variable_text:
+    id: armor_weight_label
+    label: armor_weight_label
+    description: 'Leather Armor Weight Label'
+    value:
+      type: text_literal
+      text_literal: 'Weight'
+- type: variable_text
+  variable_text:
+    id: armor_leather_description
+    label: armor_leather_description
+    description: 'Leather Armor Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The breastplate and shoulder protectors of this armor are made of leather that has
+        been stiffened by being boiled in oil. The rest of the armor is made of softer and
+        more flexible materials
+- type: variable_text
+  variable_text:
+    id: armor_leather_ac
+    label: armor_leather_ac
+    description: 'Leather Armor Armor Class'
+    value:
+      type: text_literal
+      text_literal: '11 + Dex modifier'
+- type: variable_text
+  variable_text:
+    id: armor_leather_cost
+    label: armor_leather_cost
+    description: 'Leather Armor Cost'
+    value:
+      type: text_literal
+      text_literal: '10 gp'
+- type: variable_text
+  variable_text:
+    id: armor_leather_weight
+    label: armor_leather_weight
+    description: 'Leather Armor Weight'
+    value:
+      type: text_literal
+      text_literal: '10 lb'
+content:
+- id: section_weapons_introduction
+  title: 'Weapons'
+  groups:
+  - rows:
+    - widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+          value_variable_id: section_weapons_introduction
+- id: subsection_weapon_properties
+  title: 'Weapon Properties'
+  groups:
+  - format:
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: white
+        corners:
+          top_left_radius: 2
+          top_right_radius: 2
+          bottom_right_radius: 2
+          bottom_left_radius: 2
+        margins:
+          left: 6
+          right: 6
+          top: 8
+        padding:
+          left: 8
+          right: 8
+          top: 8
+          bottom: 8
+    rows:
+    - format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          horizontal_alignment: left
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 20
+              font_style: regular
+          value_variable_id: subsection_weapon_properties_header_all_properties
+    - format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_story
+        widget_story:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          story:
+          - type: story_part_span
+            story_part_span:
+              text: 'Ammunition.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_10
+                font_style: bold
+                size: 16
+          - type: story_part_span
+            story_part_span:
+              text: >-
+                You can use a weapon that has the ammunition property to make a ranged attack only if you have ammunition to fire from the weapon. Each time you attack with the weapon, you expend one piece of ammunition. Drawing the ammunition from a quiver, case, or other container is part of the attack (you need a free hand to load a one-handed weapon). At the end of the battle, you can recover half your expended ammunition by taking a minute to search the battlefield.
+
+
+                If you use a weapon that has the ammunition property to make a melee attack, you treat the weapon as an improvised weapon (see “Improvised Weapons” later in the section). A sling must be loaded to deal any damage when used in this way.
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 16
+    - format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_story
+        widget_story:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          story:
+          - type: story_part_span
+            story_part_span:
+              text: 'Finesse.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_10
+                font_style: bold
+                size: 16
+          - type: story_part_span
+            story_part_span:
+              text: >-
+                When making an attack with a finesse weapon, you use your choice of your Strength or Dexterity modifier for the attack and damage rolls. You must use the same modifier for both rolls.
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 16
+    - format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_story
+        widget_story:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          story:
+          - type: story_part_span
+            story_part_span:
+              text: 'Heavy.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_10
+                font_style: bold
+                size: 16
+          - type: story_part_span
+            story_part_span:
+              text: >-
+                Small creatures have disadvantage on attack rolls with heavy weapons. A heavy weapon’s size and bulk make it too large for a Small creature to use effectively.
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 16
+    - format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_story
+        widget_story:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          story:
+          - type: story_part_span
+            story_part_span:
+              text: 'Light.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_10
+                font_style: bold
+                size: 16
+          - type: story_part_span
+            story_part_span:
+              text: >-
+                A light weapon is small and easy to handle, making it ideal for use when fighting with two weapons.
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 16
+    - format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_story
+        widget_story:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          story:
+          - type: story_part_span
+            story_part_span:
+              text: 'Loading.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_10
+                font_style: bold
+                size: 16
+          - type: story_part_span
+            story_part_span:
+              text: >-
+                Because of the time required to load this weapon, you can fire only one piece of ammunition from it when you use an action, bonus action, or reaction to fire it, regardless of the number of attacks you can normally make.
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 16
+    - format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_story
+        widget_story:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          story:
+          - type: story_part_span
+            story_part_span:
+              text: 'Range.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_10
+                font_style: bold
+                size: 16
+          - type: story_part_span
+            story_part_span:
+              text: >-
+                 A weapon that can be used to make a ranged attack has a range in parentheses after the ammunition or thrown property. The range lists two numbers. The first is the weapon’s normal range in feet, and the second indicates the weapon’s long range. When attacking a target beyond normal range, you have disadvantage on the attack roll. You can’t attack a target beyond the weapon’s long range.
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 16
+    - format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_story
+        widget_story:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          story:
+          - type: story_part_span
+            story_part_span:
+              text: 'Reach.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_10
+                font_style: bold
+                size: 16
+          - type: story_part_span
+            story_part_span:
+              text: >-
+                This weapon adds 5 feet to your reach when you attack with it, as well as when determining your reach for opportunity attacks with it.
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 16
+    - format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_story
+        widget_story:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          story:
+          - type: story_part_span
+            story_part_span:
+              text: 'Special.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_10
+                font_style: bold
+                size: 16
+          - type: story_part_span
+            story_part_span:
+              text: >-
+                A weapon with the special property has unusual rules governing its use, explained in the weapon’s description (see “Special Weapons” later in this section).
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 16
+    - format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_story
+        widget_story:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          story:
+          - type: story_part_span
+            story_part_span:
+              text: 'Thrown.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_10
+                font_style: bold
+                size: 16
+          - type: story_part_span
+            story_part_span:
+              text: >-
+                If a weapon has the thrown property, you can throw the weapon to make a ranged attack. If the weapon is a melee weapon, you use the same ability modifier for that attack roll and damage roll that you would use for a melee attack with the weapon. For example, if you throw a handaxe, you use your Strength, but if you throw a dagger, you can use either your Strength or your Dexterity, since the dagger has the finesse property.
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 16
+    - format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_story
+        widget_story:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          story:
+          - type: story_part_span
+            story_part_span:
+              text: 'Two-Handed.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_10
+                font_style: bold
+                size: 16
+          - type: story_part_span
+            story_part_span:
+              text: >-
+                This weapon requires two hands when you attack with it.
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 16
+    - format:
+        element_format:
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_story
+        widget_story:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          story:
+          - type: story_part_span
+            story_part_span:
+              text: 'Versatile.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_10
+                font_style: bold
+                size: 16
+          - type: story_part_span
+            story_part_span:
+              text: >-
+                This weapon can be used with one or two hands. A damage value in parentheses appears with the property—the damage when the weapon is used with two hands to make a melee attack.
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 16
+  - format:
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: white
+        corners:
+          top_left_radius: 2
+          top_right_radius: 2
+          bottom_right_radius: 2
+          bottom_left_radius: 2
+        margins:
+          left: 6
+          right: 6
+          top: 8
+        padding:
+          left: 8
+          right: 8
+          top: 8
+          bottom: 8
+    rows:
+    - format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          horizontal_alignment: left
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 20
+              font_style: regular
+          value_variable_id: subsection_weapon_properties_header_improvised_weapons
+    - format:
+        element_format:
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+          value_variable_id: subsection_weapon_properties_improvised_weapons_text
+  - format:
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: white
+        corners:
+          top_left_radius: 2
+          top_right_radius: 2
+          bottom_right_radius: 2
+          bottom_left_radius: 2
+        margins:
+          left: 6
+          right: 6
+          top: 8
+        padding:
+          left: 8
+          right: 8
+          top: 8
+          bottom: 8
+    rows:
+    - format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          horizontal_alignment: left
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 20
+              font_style: regular
+          value_variable_id: subsection_weapon_properties_silvered_weapons_header
+    - format:
+        element_format:
+          padding:
+            top: 6
+            bottom: 6
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+          value_variable_id: subsection_weapon_properties_silvered_weapons_text
+- id: subsection_weapon_proficiency
+  title: 'Weapons Proficiency'
+  groups:
+  - rows:
+    - widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+          value_variable_id: subsection_weapon_proficiency_text
+- id: subsection_weapon_list
+  title: 'Weapon List'
+  groups:
+  - format:
+      element_format:
+        margins:
+          left: 6
+          right: 6
+          top: 8
+    rows:
+    - widgets:
+      - type: widget_table
+        widget_table:
+          title_variable_id: subsection_weapon_list_simple_melee_weapons_table_header
+          format:
+            title_bar_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_left_radius: 2
+                top_right_radius: 2
+              padding:
+                left: 8
+                right: 12
+                top: 16
+                bottom: 4
+            title_format:
+              size: 18
+              font_style: semi_bold
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_12
+            edit_button_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_22
+              size: 16
+              font_style: medium
+            header_format:
+              text_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_6
+                    - theme_id: light
+                      color_id: white
+                  padding:
+                    left: 8
+                    right: 8
+                    top: 10
+                    bottom: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_24
+                font_style: regular
+                size: 14
+            row_format:
+              text_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_6
+                    - theme_id: light
+                      color_id: white
+                  margins:
+                    top: 1
+                  padding:
+                    left: 8
+                    right: 8
+                    top: 8
+                    bottom: 8
+          columns:
+          - type: table_widget_text_column
+            table_widget_text_column:
+              name: Name
+              variable_prefix: simple_melee_weapon_name
+              defines_namespace: true
+              default_value:
+                type: text_literal
+                text_literal: 'Weapon Name'
+              format:
+                column_format:
+                  text_format:
+                    element_format:
+                      horizontal_alignment: left
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_5
+                      - theme_id: light
+                        color_id: dark_grey_12
+                    font_style: regular
+                    size: 16
+                  width: 4
+          - type: table_widget_text_column
+            table_widget_text_column:
+              name: Quantity
+              variable_prefix: simple_melee_weapon_damage
+              default_value:
+                type: text_literal
+                text_literal: 'Weapon Damage'
+              format:
+                column_format:
+                  text_format:
+                    element_format:
+                      horizontal_alignment: left
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_7
+                      - theme_id: light
+                        color_id: dark_grey_12
+                    font_style: regular
+                    size: 16
+                  width: 4
+          - type: table_widget_image_column
+            table_widget_image_column:
+              name: ''
+              default_icon_type: ellipsis_filled
+              format:
+                column_format:
+                  text_format:
+                    icon_format:
+                      size:
+                        width: 17
+                        height: 17
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: dark_grey_14
+                  width: 1
+          rows:
+          - cells:
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: 'Club'
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: '1d4 bludgeoning'
+            - type: table_widget_image_cell
+              table_widget_image_cell:
+                book_reference:
+                  type: book_reference_content
+                  book_reference_content:
+                    book_id: core_rules
+                    content_id: armor_leather
+          - cells:
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: 'Dagger'
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: '1d4 piercing'
+            - type: table_widget_image_cell
+              table_widget_image_cell:
+                book_reference:
+                  type: book_reference_content
+                  book_reference_content:
+                    book_id: core_rules
+                    content_id: armor_leather
+          - cells:
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: 'Greatclub'
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: '1d8 bludgeoning'
+            - type: table_widget_image_cell
+              table_widget_image_cell:
+                book_reference:
+                  type: book_reference_content
+                  book_reference_content:
+                    book_id: core_rules
+                    content_id: armor_leather
+          - cells:
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: 'Handaxe'
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: '1d6 slashing'
+            - type: table_widget_image_cell
+              table_widget_image_cell:
+                book_reference:
+                  type: book_reference_content
+                  book_reference_content:
+                    book_id: core_rules
+                    content_id: armor_leather
+          - cells:
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: 'Javelin'
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: '1d6 piercing'
+            - type: table_widget_image_cell
+              table_widget_image_cell:
+                book_reference:
+                  type: book_reference_content
+                  book_reference_content:
+                    book_id: core_rules
+                    content_id: armor_leather
+          - cells:
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: 'Light Hammer'
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: '1d4 bludgeoning'
+            - type: table_widget_image_cell
+              table_widget_image_cell:
+                book_reference:
+                  type: book_reference_content
+                  book_reference_content:
+                    book_id: core_rules
+                    content_id: armor_leather
+          - cells:
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: 'Mace'
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: '1d6 bludgeoning'
+            - type: table_widget_image_cell
+              table_widget_image_cell:
+                book_reference:
+                  type: book_reference_content
+                  book_reference_content:
+                    book_id: core_rules
+                    content_id: armor_leather
+          - cells:
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: 'Quarterstaff'
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: '1d6 bludgeoning'
+            - type: table_widget_image_cell
+              table_widget_image_cell:
+                book_reference:
+                  type: book_reference_content
+                  book_reference_content:
+                    book_id: core_rules
+                    content_id: armor_leather
+          - cells:
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: 'Sickle'
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: '1d4 slashing'
+            - type: table_widget_image_cell
+              table_widget_image_cell:
+                book_reference:
+                  type: book_reference_content
+                  book_reference_content:
+                    book_id: core_rules
+                    content_id: armor_leather
+          - cells:
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: 'Spear'
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: '1d6 piercing'
+            - type: table_widget_image_cell
+              table_widget_image_cell:
+                book_reference:
+                  type: book_reference_content
+                  book_reference_content:
+                    book_id: core_rules
+                    content_id: armor_leather
+  - format:
+      element_format:
+        margins:
+          left: 6
+          right: 6
+          top: 8
+    rows:
+    - widgets:
+      - type: widget_table
+        widget_table:
+          title_variable_id: subsection_weapon_list_simple_ranged_weapons_table_header
+          format:
+            title_bar_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_left_radius: 2
+                top_right_radius: 2
+              padding:
+                left: 8
+                right: 12
+                top: 16
+                bottom: 4
+            title_format:
+              size: 18
+              font_style: semi_bold
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_12
+            edit_button_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_22
+              size: 16
+              font_style: medium
+            header_format:
+              text_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_6
+                    - theme_id: light
+                      color_id: white
+                  padding:
+                    left: 8
+                    right: 8
+                    top: 10
+                    bottom: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_24
+                font_style: regular
+                size: 14
+            row_format:
+              text_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: dark_grey_6
+                    - theme_id: light
+                      color_id: white
+                  margins:
+                    top: 1
+                  padding:
+                    left: 8
+                    right: 8
+                    top: 8
+                    bottom: 8
+          columns:
+          - type: table_widget_text_column
+            table_widget_text_column:
+              name: Name
+              variable_prefix: simple_ranged_weapon_name
+              defines_namespace: true
+              default_value:
+                type: text_literal
+                text_literal: 'Weapon Name'
+              format:
+                column_format:
+                  text_format:
+                    element_format:
+                      horizontal_alignment: left
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_5
+                      - theme_id: light
+                        color_id: dark_grey_12
+                    font_style: regular
+                    size: 16
+                  width: 4
+          - type: table_widget_text_column
+            table_widget_text_column:
+              name: Quantity
+              variable_prefix: simple_melee_weapon_damage
+              default_value:
+                type: text_literal
+                text_literal: 'Weapon Damage'
+              format:
+                column_format:
+                  text_format:
+                    element_format:
+                      horizontal_alignment: left
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: dark
+                        color_id: light_grey_7
+                      - theme_id: light
+                        color_id: dark_grey_12
+                    font_style: regular
+                    size: 16
+                  width: 4
+          - type: table_widget_image_column
+            table_widget_image_column:
+              name: ''
+              default_icon_type: ellipsis_filled
+              format:
+                column_format:
+                  text_format:
+                    icon_format:
+                      size:
+                        width: 17
+                        height: 17
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: dark_grey_14
+                  width: 1
+          rows:
+          - cells:
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: 'Crossbow, light'
+            - type: table_widget_text_cell
+              table_widget_text_cell:
+                variable_value:
+                  type: text_literal
+                  text_literal: '1d8 piercing'
+            - type: table_widget_image_cell
+              table_widget_image_cell:
+                book_reference:
+                  type: book_reference_content
+                  book_reference_content:
+                    book_id: core_rules
+                    content_id: armor_leather
+- id: introduction
+  title: 'Introduction'
+  groups:
+  - rows:
+    - widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+          value_variable_id: introduction_summary
+- id: gear_bedroll
+  title: 'Bedroll'
+  groups:
+  - format:
+      border:
+        bottom:
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_grey_5
+          thickness: 1
+    rows:
+    - format:
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: white
+          margins:
+            top: 8
+            left: 6
+            right: 6
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+            widget_format:
+              element_format:
+                padding:
+                  top: 10
+                  bottom: 10
+                  left: 8
+                  right: 8
+          value_variable_id: gear_bedroll_description
+    - format:
+        border:
+          top:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: white
+          margins:
+            left: 6
+            right: 6
+          padding:
+            top: 6
+            left: 8
+            right: 8
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_18
+              size: 15
+              font_style: medium
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: gear_cost_label
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_18
+              size: 15
+              font_style: medium
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: gear_weight_label
+    - format:
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: white
+          margins:
+            left: 6
+            right: 6
+          padding:
+            top: 4
+            bottom: 8
+            left: 8
+            right: 8
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_14
+              size: 19
+              font_style: medium
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: gear_bedroll_cost
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_14
+              size: 19
+              font_style: medium
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: gear_bedroll_weight
+- id: armor_leather
+  title: 'Leather Armor'
+  groups:
+  - format:
+      border:
+        bottom:
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_grey_5
+          thickness: 1
+    rows:
+    - format:
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: white
+          margins:
+            top: 8
+            left: 6
+            right: 6
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+            widget_format:
+              element_format:
+                padding:
+                  top: 10
+                  bottom: 10
+                  left: 6
+                  right: 6
+          value_variable_id: armor_leather_description
+    - format:
+        border:
+          top:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: white
+          margins:
+            left: 6
+            right: 6
+          padding:
+            top: 6
+            left: 6
+            right: 6
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_18
+              size: 15
+              font_style: medium
+            widget_format:
+              width: 2
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: armor_ac_label
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_18
+              size: 15
+              font_style: medium
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: armor_cost_label
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_18
+              size: 15
+              font_style: medium
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: armor_weight_label
+    - format:
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: white
+          margins:
+            left: 6
+            right: 6
+          padding:
+            top: 4
+            bottom: 8
+            left: 6
+            right: 6
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_14
+              size: 19
+              font_style: medium
+            widget_format:
+              width: 2
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: armor_leather_ac
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_14
+              size: 19
+              font_style: medium
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: armor_leather_cost
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_14
+              size: 19
+              font_style: medium
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: armor_leather_weight
+- id: weapon_rapier
+  title: 'Rapier'
+  groups:
+  - format:
+      border:
+        bottom:
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_grey_5
+          thickness: 1
+    rows:
+    - format:
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: white
+          margins:
+            top: 8
+            left: 6
+            right: 6
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+            widget_format:
+              element_format:
+                padding:
+                  top: 10
+                  bottom: 10
+                  left: 6
+                  right: 6
+          value_variable_id: weapon_rapier_description
+    - format:
+        border:
+          top:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: white
+          margins:
+            left: 6
+            right: 6
+          padding:
+            top: 6
+            left: 6
+            right: 6
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_18
+              size: 15
+              font_style: medium
+            widget_format:
+              width: 2
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: weapon_damage_label
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_18
+              size: 15
+              font_style: medium
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: weapon_cost_label
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_18
+              size: 15
+              font_style: medium
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: weapon_weight_label
+    - format:
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: white
+          margins:
+            left: 6
+            right: 6
+          padding:
+            top: 4
+            bottom: 8
+            left: 6
+            right: 6
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_14
+              size: 18
+              font_style: medium
+            widget_format:
+              width: 2
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: weapon_rapier_damage
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_14
+              size: 18
+              font_style: medium
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: weapon_rapier_cost
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_14
+              size: 18
+              font_style: medium
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          value_variable_id: weapon_rapier_weight
+    - format:
+        border:
+          top:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_5
+            thickness: 1
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: white
+          margins:
+            left: 6
+            right: 6
+          padding:
+            top: 6
+            bottom: 10
+            left: 6
+            right: 6
+      widgets:
+      - type: widget_story
+        widget_story:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+          story:
+          - type: story_part_span
+            story_part_span:
+              text: 'Finesse.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 17
+          - type: story_part_span
+            story_part_span:
+              text: 'You may use your Strength or Dexterity modifier as a bonus to attack and damage rolls.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_12
+                size: 16
+- id: race_humans
+  title: 'Humans'
+  groups:
+  - format:
+      border:
+        bottom:
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_grey_5
+          thickness: 1
+    rows:
+    - format:
+        element_format:
+          background_color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: white
+#          corners:
+#            top_left_radius: 1
+#            top_right_radius: 1
+#            bottom_right_radius: 1
+#            bottom_left_radius: 1
+          margins:
+            top: 8
+#            bottom: 8
+            left: 6
+            right: 6
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+            widget_format:
+              element_format:
+                padding:
+                  top: 10
+                  bottom: 10
+                  left: 6
+                  right: 6
+          value_variable_id: humans_introduction
+  - format:
+      border:
+        bottom:
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_grey_5
+          thickness: 1
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: white
+#        corners:
+#          top_left_radius: 1
+#          top_right_radius: 1
+#          bottom_right_radius: 1
+#          bottom_left_radius: 1
+        margins:
+#          bottom: 8
+          left: 6
+          right: 6
+        padding:
+          left: 6
+          right: 6
+          top: 10
+          bottom: 10
+    rows:
+    - format:
+        element_format:
+          horizontal_alignment: left
+#          margins:
+#            bottom: 4
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 17
+              font_style: semi_bold
+          value_variable_id: humans_ability_score_increase_header
+    - format:
+        element_format:
+          horizontal_alignment: left
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+          value_variable_id: humans_ability_score_increase_content
+  - format:
+      border:
+        bottom:
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_grey_5
+          thickness: 1
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: white
+#        corners:
+#          top_left_radius: 1
+#          top_right_radius: 1
+#          bottom_right_radius: 1
+#          bottom_left_radius: 1
+        margins:
+#          bottom: 8
+          left: 6
+          right: 6
+        padding:
+          left: 6
+          right: 6
+          top: 10
+          bottom: 10
+    rows:
+    - format:
+        element_format:
+          horizontal_alignment: left
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 17
+              font_style: semi_bold
+          value_variable_id: humans_age_header
+    - format:
+        element_format:
+          horizontal_alignment: left
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+          value_variable_id: humans_age_content
+  - format:
+      border:
+        bottom:
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_grey_5
+          thickness: 1
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: white
+#        corners:
+#          top_left_radius: 1
+#          top_right_radius: 1
+#          bottom_right_radius: 1
+#          bottom_left_radius: 1
+        margins:
+#          bottom: 8
+          left: 6
+          right: 6
+        padding:
+          left: 6
+          right: 6
+          top: 10
+          bottom: 10
+    rows:
+    - format:
+        element_format:
+          horizontal_alignment: left
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 17
+              font_style: medium
+          value_variable_id: humans_alignment_header
+    - format:
+        element_format:
+          horizontal_alignment: left
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+          value_variable_id: humans_alignment_content
+  - format:
+      border:
+        bottom:
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_grey_5
+          thickness: 1
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: white
+#        corners:
+#          top_left_radius: 1
+#          top_right_radius: 1
+#          bottom_right_radius: 1
+#          bottom_left_radius: 1
+        margins:
+#          bottom: 8
+          left: 6
+          right: 6
+        padding:
+          left: 6
+          right: 6
+          top: 10
+          bottom: 10
+    rows:
+    - format:
+        element_format:
+          horizontal_alignment: left
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 17
+              font_style: medium
+          value_variable_id: humans_size_header
+    - format:
+        element_format:
+          horizontal_alignment: left
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+          value_variable_id: humans_size_content
+  - format:
+      border:
+        bottom:
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_grey_5
+          thickness: 1
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: white
+#        corners:
+#          top_left_radius: 1
+#          top_right_radius: 1
+#          bottom_right_radius: 1
+#          bottom_left_radius: 1
+        margins:
+#          bottom: 8
+          left: 6
+          right: 6
+        padding:
+          left: 6
+          right: 6
+          top: 10
+          bottom: 10
+    rows:
+    - format:
+        element_format:
+          horizontal_alignment: left
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 17
+              font_style: medium
+          value_variable_id: humans_speed_header
+    - format:
+        element_format:
+          horizontal_alignment: left
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+          value_variable_id: humans_speed_content
+  - format:
+      border:
+        bottom:
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_grey_5
+          thickness: 1
+      element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: white
+#        corners:
+#          top_left_radius: 1
+#          top_right_radius: 1
+#          bottom_right_radius: 1
+#          bottom_left_radius: 1
+        margins:
+#          bottom: 8
+          left: 6
+          right: 6
+        padding:
+          left: 6
+          right: 6
+          top: 10
+          bottom: 10
+    rows:
+    - format:
+        element_format:
+          horizontal_alignment: left
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 17
+              font_style: medium
+          value_variable_id: humans_languages_header
+    - format:
+        element_format:
+          horizontal_alignment: left
+      widgets:
+      - type: widget_text
+        widget_text:
+          format:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 17
+              font_style: regular
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+          value_variable_id: humans_languages_content
+chapters:
+- id: creating_characters
+  title: 'Creating Characters'
+  sections:
+  - id: races
+    title: 'Races'
+    body:
+      id: aslka
+      title: Title
+      groups:
+  - id: classes
+    title: 'Classes'
+    body:
+      id: aslka
+      title: Title
+      groups:
+  - id: alignment
+    title: 'Alignment'
+    body:
+      id: aslka
+      title: Title
+      groups:
+  - id: languages
+    title: 'Languages'
+    body:
+      id: aslka
+      title: Title
+      groups:
+  - id: backgrounds
+    title: 'Backgrounds'
+    body:
+      id: aslka
+      title: Title
+      groups:
+- id: equipment
+  title: 'Equipment'
+  sections:
+  - id: weapons
+    title: 'Weapons'
+    introduction:
+    - section_weapons_introduction
+    subsections:
+    - id: weapon_proficiency
+      title: 'Weapon Proficiency'
+      body:
+      - subsection_weapon_proficiency
+    - id: weapon_properties
+      title: 'Weapon Properties'
+      subtitle: 'Special features of weapons.'
+      body:
+      - subsection_weapon_properties
+    - id: weapon_list
+      title: 'Weapon List'
+      subtitle: 'The weapons in the game.'
+      body:
+      - subsection_weapon_list
+- id: gameplay
+  title: 'Gameplay'
+  sections:
+- id: spells
+  title: 'Spells'
+  sections:
+  - id: wizard_spells
+    title: 'Wizard Spells'
+    body:
+      id: aslka
+      title: Title
+      groups:
+- id: monsters
+  title: 'Monsters'
+  sections:
+- id: running_a_game
+  title: 'Running a Game'
+  sections:
+#    subsections:
+#    - id: challenge
+#      title: Challenge
+#      body: |+
+#        A monster’s **challenge rating** tells you how great a threat the monster is. An appropriately equipped and well-rested party of four adventurers should be able to defeat a monster that has a challenge rating equal to its level without suffering any deaths. For example, a party of four 3rd-level characters should find a monster with a challenge rating of 3 to be a worthy challenge, but not a deadly one.
+#
+#        Monsters that are significantly weaker than 1st-level characters have a challenge rating lower than 1. Monsters with a challenge rating of 0 are insignificant except in large numbers; those with no effective attacks are worth no experience points, while those that have attacks are worth 10 XP each.
+#
+#        Some monsters present a greater challenge than even a typical 20th-level party can handle. These monsters have a challenge rating of 21 or higher and are specifically designed to test player skill.
+#
+#        ### Experience Points
+#
+#        The number of experience points (XP) a monster is worth is based on its challenge rating. Typically, XP is awarded for defeating the monster, although the GM may also award XP for neutralizing the threat posed by the monster in some other manner.
+#
+#        Unless something tells you otherwise, a monster summoned by a spell or other magical ability is worth the XP noted in its stat block.
+
+
+
+

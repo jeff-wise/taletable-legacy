@@ -1,33 +1,76 @@
 persisted_entities:
+## ---------------------------------------------------------------------------------------------
+## | 5th Edition
+## ---------------------------------------------------------------------------------------------
 - entity_id: 'ff30a874-976b-4fce-b1c9-618c0d839330'
   entity_type: sheet
   name: 'Casmey Dalseya'
   category: 'PC'
-  path: 'magic_of_heroes/sheets/pc_casmey_level_1.yaml'
+  path: 'fifth_edition/sheets/pc_casmey_level_1.yaml'
 - entity_id: '41aaaa67-8277-462c-8e33-a06da8ad930f'
   entity_type: sheet
   name: 'Sanson'
   category: 'PC'
-  path: 'magic_of_heroes/sheets/pc_sanson_level_1.yaml'
+  path: 'fifth_edition/sheets/pc_sanson_level_1.yaml'
 - entity_id: 'cccb2da0-f6e5-4ea1-acee-6469942cfb3b'
   entity_type: campaign
   name: 'Isara'
   category: 'Campaign'
-  path: 'magic_of_heroes/campaigns/isara.yaml'
+  path: 'fifth_edition/campaigns/isara.yaml'
 - entity_id: '85f6da8e-e497-4aa2-a3c3-c2eab32d2839'
   entity_type: game
-  name: 'The Magic of Heroes'
+  name: '5th Edition'
   category: 'Game'
-  path: 'magic_of_heroes/magic_of_heroes.yaml'
+  path: 'fifth_edition/magic_of_heroes.yaml'
   indexes:
   - entity_id: '48175796-51a8-4ed4-a446-3cf5eeccee12'
     index_type: group
-    path: 'magic_of_heroes/indexes/weapon_groups.yaml'
+    path: 'fifth_edition/indexes/weapon_groups.yaml'
   - entity_id: 'dc8367de-1e5c-45ed-9002-96612b034e2c'
     index_type: variable
-    path: 'magic_of_heroes/indexes/weapon_variables.yaml'
+    path: 'fifth_edition/indexes/weapon_variables.yaml'
 - entity_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
   entity_type: book
   name: 'Core Rules'
   category: 'Book'
-  path: 'magic_of_heroes/books/core_rules.yaml'
+  path: 'fifth_edition/books/core_rules.yaml'
+## ---------------------------------------------------------------------------------------------
+## | Pathfinder 2 Playtest
+## ---------------------------------------------------------------------------------------------
+- entity_id: '7259bcfa-76f9-42bb-b9d3-50a698850e8d'
+  entity_type: sheet
+  name: 'Casmey Dalseya'
+  category: 'PC'
+  path: 'pathfinder2_playtest/sheets/pc_casmey_level_1.yaml'
+- entity_id: 'e983de7a-a729-45c7-b6fc-87c44a0fada5'
+  entity_type: sheet
+  name: 'Sanson'
+  category: 'PC'
+  path: 'pathfinder2_playtest/sheets/pc_sanson_level_1.yaml'
+- entity_id: '425e1222-1744-41b0-9ae0-9452d1078b4a'
+  entity_type: campaign
+  name: 'Isara'
+  category: 'Campaign'
+  path: 'pathfinder2_playtest/campaigns/isara.yaml'
+- entity_id: 'ffae52cd-6684-42d0-b733-80e006e1c4be'
+  entity_type: game
+  name: 'Pathfinder 2 Playtest'
+  category: 'Game'
+  path: 'pathfinder2_playtest/pathfinder2_playtest.yaml'
+  indexes:
+  - entity_id: '52358ebf-f2fb-4baa-aee9-b3780a84d0d6'
+    index_type: group
+    path: 'pathfinder2_playtest/indexes/weapon_groups.yaml'
+  - entity_id: '03787082-e9d9-4ea4-a0b4-6d36e6a99642'
+    index_type: variable
+    path: 'pathfinder2_playtest/indexes/weapon_variables.yaml'
+- entity_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+  entity_type: book
+  name: 'Core Rules'
+  category: 'Book'
+  path: 'pathfinder2_playtest/books/core_rules.yaml'
+- entity_id: '829bce54-aba6-4611-b73b-9f9b1a8fac6f'
+  entity_type: book
+  name: 'Using Tale Table'
+  category: 'Book'
+  path: 'pathfinder2_playtest/books/tutorial_using_tale_table.yaml'

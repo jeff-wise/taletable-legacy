@@ -76,7 +76,7 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/light_theme_light_grey_7">
+                    android:background="@color/light_theme_light_blue_grey_7">
                 </LinearLayout>
 
                 <android.support.design.widget.FloatingActionButton
@@ -88,7 +88,7 @@
                     android:src="@drawable/ic_fab_toc"
                     app:layout_anchor="@id/book_content"
                     app:layout_anchorGravity="bottom|right"
-                    app:backgroundTint="@color/light_theme_light_blue_tint_3"
+                    app:backgroundTint="@color/light_theme_dark_grey_10"
                     app:rippleColor="#FFF" />
 
             </android.support.design.widget.CoordinatorLayout>

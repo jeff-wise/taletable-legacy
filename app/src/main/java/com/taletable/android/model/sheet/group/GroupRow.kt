@@ -149,7 +149,9 @@ data class GroupRow(override val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(entityId : EntityId, context : Context) : View
+    fun view(groupContext : Maybe<GroupContext>,
+             entityId : EntityId,
+             context : Context) : View
     {
         val layout = this.viewLayout(entityId, context)
 
@@ -160,7 +162,7 @@ data class GroupRow(override val id : UUID,
         }
 
         // > Widgets
-        layout.addView(widgetsView(entityId, context))
+        layout.addView(widgetsView(groupContext, entityId, context))
 
         val bottomBorder = this.format().border().apply { it.bottom() }
         when (bottomBorder) {
@@ -215,7 +217,9 @@ data class GroupRow(override val id : UUID,
     }
 
 
-    private fun widgetsView(entityId : EntityId, context : Context) : LinearLayout
+    private fun widgetsView(groupContext : Maybe<GroupContext>,
+                            entityId : EntityId,
+                            context : Context) : LinearLayout
     {
         val layout = this.widgetsViewLayout(context)
 
@@ -225,7 +229,7 @@ data class GroupRow(override val id : UUID,
             val largestColIndex = colIndiceSet.max()
 
             if (largestColIndex == 1) {
-                this.widgets().forEach { layout.addView(it.view(entityId, context)) }
+                this.widgets().forEach { layout.addView(it.view(groupContext, entityId, context)) }
             }
             else {
                 val colToLayout : MutableMap<Int,LinearLayout> = mutableMapOf()
@@ -235,7 +239,7 @@ data class GroupRow(override val id : UUID,
 
                 this.widgets().forEach {
                     val layout = colToLayout[it.widgetFormat().column()]
-                    layout?.addView(it.view(entityId, context))
+                    layout?.addView(it.view(groupContext, entityId, context))
                 }
 
                 colToLayout.keys.sorted().forEach {
@@ -245,7 +249,9 @@ data class GroupRow(override val id : UUID,
         }
         else
         {
-            this.widgets().forEach { layout.addView(it.view(entityId, context)) }
+            this.widgets().forEach {
+                layout.addView(it.view(groupContext, entityId, context))
+            }
         }
 
         return layout

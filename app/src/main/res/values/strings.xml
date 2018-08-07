@@ -8,6 +8,8 @@
     <string name="back_to_games">Back to Games</string>
     <string name="back_to_game_items">Back to Game Items</string>
 
+    <string name="switch_session">Switch Session</string>
+
     <string name="sheets">Sheets</string>
     <string name="campaigns">Campaigns</string>
     <string name="games">Games</string>
@@ -31,6 +33,8 @@
     <string name="tasks">Tasks</string>
     <string name="messages">Messages</string>
     <string name="pages">Pages</string>
+
+    <string name="tools">Tools</string>
 
     <string name="dialog_cancel">CANCEL</string>
     <string name="cancel">Cancel</string>
@@ -102,7 +106,7 @@
     <string name="share">Share</string>
 
     <string name="no_sessions_message">
-        You do not have any saved sessions.
+        No saved sessions found.
     </string>
     <string name="featured_sessions_header">Featured Sessions</string>
 
@@ -506,32 +510,6 @@
     <string name="sheet_from_blank_description">
         Start creating a new sheet from scratch.
     </string>
-
-
-    <!-- NAVIGATION VIEW -->
-    <!-- ==================================================================================== -->
-
-    <string name="nav_view_header_sheet">SHEET</string>
-
-    <string name="nav_view_button_feedback">FEEDBACK</string>
-    <string name="nav_view_button_help">HELP</string>
-    <string name="nav_view_button_settings">SETTINGS</string>
-
-    <string name="nav_view_button_about_us">ABOUT US</string>
-    <string name="nav_view_button_upgrades">UPGRADES</string>
-    <string name="nav_view_button_news">NEWS</string>
-
-    <string name="nav_view_button_layout_label">LAYOUT</string>
-    <string name="nav_view_button_layout_description">
-        Customize the structure of the sheet &#8212; add widgets, groups and pages.
-    </string>
-
-    <string name="button_manage_sheets">MANAGE SHEETS</string>
-
-    <string name="nav_view_header_tools">TOOLS</string>
-
-    <string name="nav_view_tools_button_calculator">CALCULATOR</string>
-    <string name="nav_view_tools_button_name_generator">NAME GENERATOR</string>
 
 
     <!-- ACTIVITY: VALUE SET -->

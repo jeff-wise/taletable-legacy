@@ -73,14 +73,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
                 <ScrollView
                     android:id="@+id/content_scroll_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingBottom="60dp"
                     android:orientation="vertical"
-                    android:background="@color/light_theme_light_grey_7">
+                    android:background="@color/light_theme_light_blue_grey_8">
 
                     <LinearLayout
                         android:id="@+id/content"

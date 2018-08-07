@@ -3,7 +3,6 @@ package com.taletable.android.activity.sheet.task
 
 
 import android.graphics.Color
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -12,8 +11,6 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.activity.sheet.SheetActivity
-import com.taletable.android.activity.sheet.dialog.AddAmountDialog
-import com.taletable.android.activity.sheet.dialog.AddOperation
 import com.taletable.android.activity.sheet.dialog.VariableToggleEditorDialog
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.engine.task.Task
@@ -145,6 +142,7 @@ class TaskUI(val entityId : EntityId,
                 is TaskActionToggleVariables ->
                 {
                     val dialog = VariableToggleEditorDialog.newInstance(taskAction.variableIds(),
+                                                                        task,
                                                                         task.actionDescription().value,
                                                                         null,
                                                                         entityId)

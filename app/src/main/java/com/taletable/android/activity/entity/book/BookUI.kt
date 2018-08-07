@@ -21,7 +21,7 @@ import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
-
+import com.taletable.android.rts.entity.groups
 
 
 class BookUI(val book : Book,
@@ -46,16 +46,15 @@ class BookUI(val book : Book,
         val layout = this.viewLayout()
         scrollView.addView(layout)
 
-        layout.addView(this.titleView())
+        //layout.addView(this.titleView())
 
-        layout.addView(this.abstractView())
+        //layout.addView(this.abstractView())
 
-        layout.addView(this.authorsView())
+        //layout.addView(this.authorsView())
 
-        layout.addView(this.headerView(R.string.introduction))
+        //layout.addView(this.headerView(R.string.introduction))
 
         book.introductionContent().firstOrNull()?.let {
-            Log.d("***BOOK UI", "adding content view")
             layout.addView(this.contentView(it))
         }
 
@@ -87,9 +86,6 @@ class BookUI(val book : Book,
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation          = LinearLayout.VERTICAL
-
-        layout.margin.leftDp        = 6f
-        layout.margin.rightDp       = 6f
 
         layout.padding.bottomDp     = 70f
 
@@ -294,8 +290,7 @@ class BookUI(val book : Book,
     {
         val layout = this.contentViewLayout()
 
-        content.groups().forEach {
-            Log.d("***BOOK UI", "adding group view")
+        groups(content.groupReferences(), book.entityId()).forEach {
             layout.addView(it.view(book.entityId(), context))
         }
 

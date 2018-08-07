@@ -13,12 +13,12 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.widget.*
 import com.taletable.android.R
-import com.taletable.android.R.string.name
 import com.taletable.android.activity.entity.book.BookActivity
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.book.Book
@@ -178,16 +178,17 @@ class ActiveSessionUI(val session : Session,
         recyclerView.width              = LinearLayout.LayoutParams.MATCH_PARENT
         recyclerView.height             = LinearLayout.LayoutParams.MATCH_PARENT
 
-        recyclerView.layoutManager      = GridLayoutManager(context, 2)
+//        recyclerView.layoutManager      = GridLayoutManager(context, 2)
+        recyclerView.layoutManager      = LinearLayoutManager(context)
 
         recyclerView.adapter            = ActiveSessionRecyclerViewAdapter(session.entities(),
                                                                            theme,
                                                                            context)
 
-        recyclerView.padding.leftDp     = 2f
-        recyclerView.padding.rightDp    = 2f
+        recyclerView.padding.leftDp     = 4f
+        recyclerView.padding.rightDp    = 4f
 
-        recyclerView.padding.topDp      = 4f
+        recyclerView.padding.topDp      = 6f
 
         recyclerView.padding.bottomDp   = 60f
         recyclerView.clipToPadding      = false
@@ -208,9 +209,17 @@ fun entityCardView(theme : Theme, sessionActivity : SessionActivity) : LinearLay
 {
     val layout = entityCardViewLayout(sessionActivity)
 
+    val headerLayout = entityCardHeaderViewLayout(sessionActivity)
+
+    headerLayout.addView(entityCardDefaultImageView(theme, sessionActivity))
+
+    headerLayout.addView(entityCardTypeView(theme, sessionActivity))
+
+    layout.addView(headerLayout)
+
     layout.addView(entityCardNameView(theme, sessionActivity))
 
-    layout.addView(entityCardDefaultImageView(theme, sessionActivity))
+    layout.addView(entityCardSummaryView(theme, sessionActivity))
 
     return layout
 }
@@ -231,9 +240,9 @@ private fun entityCardViewLayout(context : Context) : LinearLayout
 
     layout.elevation            = 3f
 
-    layout.gravity              = Gravity.CENTER
+    layout.gravity              = Gravity.CENTER_VERTICAL
 
-    layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
+    layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
 
     layout.padding.topDp        = 10f
     layout.padding.bottomDp     = 10f
@@ -244,9 +253,54 @@ private fun entityCardViewLayout(context : Context) : LinearLayout
     layout.margin.rightDp       = 1f
     layout.margin.leftDp        = 1f
 
-    layout.margin.bottomDp      = 2f
+    layout.margin.bottomDp      = 4f
 
     return layout.linearLayout(context)
+}
+
+
+
+private fun entityCardHeaderViewLayout(context : Context) : LinearLayout
+{
+    val layout              = LinearLayoutBuilder()
+
+    layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+    layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layout.orientation      = LinearLayout.HORIZONTAL
+
+    layout.gravity          = Gravity.CENTER_VERTICAL
+
+    layout.margin.bottomDp  = 2f
+
+    return layout.linearLayout(context)
+}
+
+
+private fun entityCardTypeView(theme : Theme,
+                               context : Context) : TextView
+{
+    val name                = TextViewBuilder()
+
+    name.id                 = R.id.entity_card_type
+
+    name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+    name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    name.font               = Font.typeface(TextFont.RobotoCondensed,
+                                            TextFontStyle.Bold,
+                                            context)
+
+    val colorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
+    name.color              = theme.colorOrBlack(colorTheme)
+
+    name.sizeSp             = 15f
+
+    name.margin.leftDp      = 4f
+
+    return name.textView(context)
 }
 
 
@@ -269,7 +323,9 @@ private fun entityCardNameView(theme : Theme,
             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
     name.color              = theme.colorOrBlack(colorTheme)
 
-    name.sizeSp             = 18f
+    name.sizeSp             = 19f
+
+    name.margin.bottomDp    = 2f
 
     return name.textView(context)
 }
@@ -294,8 +350,6 @@ private fun entityCardDefaultImageView(theme : Theme, context : Context) : Linea
 //            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_3"))))
 //    layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
 
-    layout.margin.topDp     = 8f
-    layout.margin.bottomDp     = 8f
 
     layout.child(imageView)
 
@@ -304,20 +358,19 @@ private fun entityCardDefaultImageView(theme : Theme, context : Context) : Linea
 
     imageView.id            = R.id.image_view
 
-    imageView.widthDp       = 30
-    imageView.heightDp      = 30
+    imageView.widthDp       = 16
+    imageView.heightDp      = 16
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
     imageView.color         = theme.colorOrBlack(colorTheme)
 
     return layout.linearLayout(context)
 }
 
 
-private fun entityCardSummaryView(summaryString : String,
-                                  theme : Theme,
+private fun entityCardSummaryView(theme : Theme,
                                   context : Context) : TextView
 {
     val summary             = TextViewBuilder()
@@ -327,18 +380,16 @@ private fun entityCardSummaryView(summaryString : String,
     summary.width            = LinearLayout.LayoutParams.WRAP_CONTENT
     summary.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    summary.text             = summaryString
-
-    summary.font             = Font.typeface(TextFont.default(),
+    summary.font             = Font.typeface(TextFont.RobotoCondensed,
                                              TextFontStyle.Regular,
                                              context)
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
     summary.color            = theme.colorOrBlack(colorTheme)
 
-    summary.sizeSp           = 16f
+    summary.sizeSp           = 17f
 
     return summary.textView(context)
 }
@@ -402,6 +453,7 @@ class EntityCardViewHolder(itemView : View,
     // -----------------------------------------------------------------------------------------
 
     var layout                  : LinearLayout? = null
+    var typeView                : TextView? = null
     var nameView                : TextView? = null
     var summaryView             : TextView? = null
     var imageView               : ImageView? = null
@@ -416,6 +468,7 @@ class EntityCardViewHolder(itemView : View,
     init
     {
         this.layout             = itemView.findViewById(R.id.entity_card_layout)
+        this.typeView           = itemView.findViewById(R.id.entity_card_type)
         this.nameView           = itemView.findViewById(R.id.entity_card_name)
         this.summaryView        = itemView.findViewById(R.id.entity_card_summary)
         this.imageView          = itemView.findViewById(R.id.image_view)
@@ -442,13 +495,29 @@ class EntityCardViewHolder(itemView : View,
         var defaultDrawable : Drawable? = null
         when (entity)
         {
-            is Sheet    -> defaultDrawable = ContextCompat.getDrawable(context, R.drawable.icon_document)
-            is Campaign -> defaultDrawable = ContextCompat.getDrawable(context, R.drawable.icon_adventure)
-            is Game     -> defaultDrawable = ContextCompat.getDrawable(context, R.drawable.icon_dice_roll)
-            is Book     -> defaultDrawable = ContextCompat.getDrawable(context, R.drawable.icon_open_book)
+            is Sheet    -> {
+                defaultDrawable = ContextCompat.getDrawable(context, R.drawable.icon_document)
+                this.typeView?.text = "Sheet"
+            }
+            is Campaign -> {
+                defaultDrawable = ContextCompat.getDrawable(context, R.drawable.icon_adventure)
+                this.typeView?.text = "Campaign"
+            }
+            is Game     -> {
+                defaultDrawable = ContextCompat.getDrawable(context, R.drawable.icon_die)
+                this.typeView?.text = "Game"
+            }
+            is Book     -> {
+                defaultDrawable = ContextCompat.getDrawable(context, R.drawable.icon_book)
+                this.typeView?.text = "Book"
+            }
         }
 
         this.imageView?.setImageDrawable(defaultDrawable)
+
+
+        this.summaryView?.text = entity.summary()
+
     }
 
 

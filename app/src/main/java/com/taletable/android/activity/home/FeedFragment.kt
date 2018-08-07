@@ -33,6 +33,7 @@ import com.taletable.android.rts.session.SessionId
 import effect.Err
 import effect.Val
 import maybe.Just
+import maybe.Nothing
 import java.io.IOException
 import java.util.*
 
@@ -162,9 +163,9 @@ class FeedFragment : Fragment()
                 TextFormat.default()
                    .withColorTheme(ColorTheme(setOf(
                        ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8")))))
-                   .withSize(TextSize(19f))
+                   .withSize(TextSize(22f))
                    .withFont(TextFont.RobotoCondensed)
-                   .withFontStyle(TextFontStyle.Bold)
+                   .withFontStyle(TextFontStyle.Regular)
                    .withElementFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left))
         val titleTextWidgetFormat =
                 TextWidgetFormat(
@@ -189,13 +190,13 @@ class FeedFragment : Fragment()
 
         val row1Format = GroupRowFormat(ElementFormat.default()
                                           .withHorizontalAlignment(Alignment.Left)
-                                          .withLeftMargin(8.0)
-                                          .withRightMargin(8.0))
+                                          .withLeftMargin(12.0)
+                                          .withRightMargin(12.0))
 
         val row2Format = GroupRowFormat(ElementFormat.default()
                                           .withHorizontalAlignment(Alignment.Left)
-                                          .withLeftMargin(8.0)
-                                          .withRightMargin(8.0))
+                                          .withLeftMargin(12.0)
+                                          .withRightMargin(12.0))
 
         val groupRows = listOf(
                 GroupRow(row1Format,
@@ -206,15 +207,9 @@ class FeedFragment : Fragment()
                          listOf(descriptionTextWidget))
         )
         val groupElementFormat = ElementFormat.default()
-                                              .withTopMargin(6.0)
-                                              .withTopPadding(6.0)
-                                              .withBottomPadding(8.0)
-        val groupTopBorder = Border.top(BorderEdge(
-                                ColorTheme(setOf(
-                                        ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4")))),
-                                BorderThickness(1)
-                             ))
-        val groupFormat = GroupFormat(groupElementFormat, Just(groupTopBorder))
+                                              .withTopPadding(10.0)
+                                              .withBottomPadding(12.0)
+        val groupFormat = GroupFormat(groupElementFormat, Nothing())
         val groups = listOf(Group(groupFormat, groupRows))
 
         val card = Card(CardTitle("Featured Session"),
@@ -245,9 +240,9 @@ class FeedFragment : Fragment()
                 TextFormat.default()
                    .withColorTheme(ColorTheme(setOf(
                        ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8")))))
-                   .withSize(TextSize(19f))
+                   .withSize(TextSize(22f))
                    .withFont(TextFont.RobotoCondensed)
-                   .withFontStyle(TextFontStyle.Bold)
+                   .withFontStyle(TextFontStyle.Regular)
                    .withElementFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left))
         val titleTextWidgetFormat =
                 TextWidgetFormat(
@@ -272,13 +267,13 @@ class FeedFragment : Fragment()
 
         val row1Format = GroupRowFormat(ElementFormat.default()
                                           .withHorizontalAlignment(Alignment.Left)
-                                          .withLeftMargin(8.0)
-                                          .withRightMargin(8.0))
+                                          .withLeftMargin(12.0)
+                                          .withRightMargin(12.0))
 
         val row2Format = GroupRowFormat(ElementFormat.default()
                                           .withHorizontalAlignment(Alignment.Left)
-                                          .withLeftMargin(8.0)
-                                          .withRightMargin(8.0))
+                                          .withLeftMargin(12.0)
+                                          .withRightMargin(12.0))
 
         val groupRows = listOf(
                 GroupRow(row1Format,
@@ -289,15 +284,9 @@ class FeedFragment : Fragment()
                          listOf(descriptionTextWidget))
         )
         val groupElementFormat = ElementFormat.default()
-                                              .withTopMargin(6.0)
-                                              .withTopPadding(6.0)
-                                              .withBottomPadding(8.0)
-        val groupTopBorder = Border.top(BorderEdge(
-                                ColorTheme(setOf(
-                                        ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4")))),
-                                BorderThickness(1)
-                             ))
-        val groupFormat = GroupFormat(groupElementFormat, Just(groupTopBorder))
+                                              .withTopPadding(10.0)
+                                              .withBottomPadding(12.0)
+        val groupFormat = GroupFormat(groupElementFormat, Nothing())
         val groups = listOf(Group(groupFormat, groupRows))
 
         val card = Card(CardTitle("Featured Session"),

@@ -4,7 +4,6 @@ package com.taletable.android.model.sheet.widget
 
 import android.content.Context
 import android.support.design.widget.TabLayout
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -479,7 +478,7 @@ class TabWidgetUI(val tabWidget : WidgetTab,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var contentViewLayout: LinearLayout? = null
+    private var contentViewLayout : LinearLayout? = null
 
     private var currentTabIndex : Int = 0
 
@@ -492,29 +491,24 @@ class TabWidgetUI(val tabWidget : WidgetTab,
 
     fun showTab(index : Int)
     {
-        Log.d("***TAB WIDGET", "show tab index: $index")
-
         if (index >= 0 && index < tabWidget.tabs().size)
         {
 
             this.tabViewMap[currentTabIndex]?.let { views ->
-                Log.d("***TAB WIDGET", "removing views: ${views.size}")
                 views.forEach { it.visibility = View.GONE }
             }
 
             if (this.tabViewMap.containsKey(index))
             {
-                Log.d("***TAB WIDGET", "view map contains index: $index")
                 this.tabViewMap[index]!!.forEach { it.visibility = View.VISIBLE }
             }
             else
             {
-                Log.d("***TAB WIDGET", "view map DOES NOT contain index: $index")
                 val views : MutableList<View> = mutableListOf()
 
                 val groups = tabWidget.tabs()[index].groups(entityId)
                 groups.forEach {
-                    val view = it.view(entityId, context)
+                    val view = it.view(entityId, context, tabWidget.groupContext)
                     views.add(view)
                 }
 
@@ -583,6 +577,8 @@ class TabWidgetUI(val tabWidget : WidgetTab,
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
 
         layout.marginSpacing    = format.margins()
         layout.paddingSpacing   = format.padding()

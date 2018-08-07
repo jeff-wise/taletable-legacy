@@ -41,6 +41,7 @@ import com.taletable.android.model.engine.value.ValueSetId
 import com.taletable.android.model.engine.variable.*
 import com.taletable.android.model.entity.*
 import com.taletable.android.model.sheet.group.Group
+import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.group.GroupReference
 import com.taletable.android.model.sheet.style.BorderEdge
 import com.taletable.android.model.sheet.style.Height
@@ -131,7 +132,9 @@ sealed class Widget : ToDocument, SheetComponent, Serializable
     abstract fun widgetFormat() : WidgetFormat
 
 
-    abstract fun view(entityId : EntityId, context : Context) : View
+    abstract fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View
 
 
     abstract fun widgetId() : WidgetId
@@ -500,7 +503,9 @@ data class ActionWidget(val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View {
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View {
         val viewBuilder = ActionWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
@@ -545,7 +550,6 @@ data class ActionWidget(val widgetId : WidgetId,
                 when (variable) {
                     is Val -> {
                        val listener = VariableChangeListener({
-                           Log.d("****WIDGET", "action widget update")
                             rootView?.let {
                                 this.updateView(it, entityId, context)
                             }
@@ -655,7 +659,7 @@ data class ActionWidget(val widgetId : WidgetId,
  */
 data class BooleanWidget(private val widgetId : WidgetId,
                          private val format : BooleanWidgetFormat,
-                         private val valueVariablesReference : VariableReference) : Widget()
+                         private var valueVariablesReference : VariableReference) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -730,9 +734,27 @@ data class BooleanWidget(private val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View
     {
         val viewBuilder = BooleanWidgetViewBuilder(this, entityId, context)
+
+        groupContext.doMaybe { groupContext ->
+            Log.d("***WIDGET", "found group context")
+            val variableRef = this.valueVariablesReference()
+            when (variableRef) {
+                is VariableReferenceContextual -> {
+                    entityEngineState(entityId).apDo {
+                        Log.d("***WIDGET", "setting contextual variable")
+                        val context = VariableContext(groupContext.value)
+                        setContextualVariable(variableRef.id(), context, entityId)
+                        this.valueVariablesReference = VariableReferenceContextual(variableRef.id(), Just(context))
+                    }
+                }
+            }
+        }
+
         return viewBuilder.view()
     }
 
@@ -830,6 +852,7 @@ data class BooleanWidget(private val widgetId : WidgetId,
         {
             is BooleanWidgetUpdateToggle ->
             {
+                Log.d("***WIDGET", "boolean widget update toggle")
                 this.toggleValues(entityId)
                 rootView?.let { this.updateView(it, entityId, context) }
 
@@ -849,8 +872,9 @@ data class BooleanWidget(private val widgetId : WidgetId,
         val viewId = this.layoutId
         if (viewId != null) {
             val layout = rootView.findViewById<LinearLayout>(viewId)
-            if (layout != null)
+            if (layout != null) {
                 BooleanWidgetViewBuilder(this, entityId, context).updateView(layout)
+            }
         }
     }
 
@@ -859,6 +883,7 @@ data class BooleanWidget(private val widgetId : WidgetId,
     {
         val booleanVariables = this.variables(entityId)
         booleanVariables.forEach {
+            Log.d("***WIDGET", "boolean toggling variable: ${it.variableId()}")
             it.toggleValue(entityId)
         }
     }
@@ -886,21 +911,16 @@ data class ExpanderWidget(val widgetId : WidgetId,
                           val bookReference : Maybe<BookReference>) : Widget()
 {
 
+    // -----------------------------------------------------------------------------------------
+    // | Properties
+    // -----------------------------------------------------------------------------------------
+
+    var groupContext : Maybe<GroupContext> = Nothing()
+
 
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
+    // | Constructors
     // -----------------------------------------------------------------------------------------
-//
-//    constructor(widgetId : WidgetId,
-//                format : ExpanderWidgetFormat,
-//                header : ExpanderWidgetLabel,
-//                groups : MutableList<Group>)
-//        : this(UUID.randomUUID(),
-//               widgetId,
-//               format,
-//               header,
-//               groups)
-
 
     companion object : Factory<Widget>
     {
@@ -969,8 +989,13 @@ data class ExpanderWidget(val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View {
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View {
         val viewBuilder = ExpanderWidgetUI(this, entityId, context)
+
+        this.groupContext = groupContext
+
         return viewBuilder.view()
     }
 
@@ -1026,6 +1051,9 @@ data class WidgetGroup(val widgetId : WidgetId,
     private var groupsCache : Maybe<List<Group>> = Nothing()
 
     var contentLayoutId : Int? = null
+
+    var groupContext : Maybe<GroupContext> = Nothing()
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -1135,8 +1163,13 @@ data class WidgetGroup(val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View {
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View {
         val widgetUI = GroupWidgetUI(this, entityId, context)
+
+        this.groupContext = groupContext
+
         return widgetUI.view()
     }
 
@@ -1264,7 +1297,9 @@ data class ImageWidget(val widgetId : WidgetId,
     override fun widgetId() : WidgetId = this.widgetId
 
 
-    override fun view(entityId : EntityId, context : Context) : View
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View
     {
         val viewBuilder = ImageWidgetUI(this, entityId, context)
         return viewBuilder.view()
@@ -1393,7 +1428,9 @@ data class ListWidget(val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View
     {
         val listWidgetUI = ListWidgetUI(this, entityId, context)
         return listWidgetUI.view()
@@ -1601,7 +1638,9 @@ data class LogWidget(private val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View {
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View {
         val viewBuilder = LogViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
@@ -1717,7 +1756,9 @@ data class MechanicWidget(private val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View
     {
         val viewBuilder = MechanicWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
@@ -1896,7 +1937,9 @@ data class NumberWidget(val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId: EntityId, context : Context): View =
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context): View =
             NumberWidgetView.view(this, entityId, context)
 
 
@@ -2318,7 +2361,9 @@ data class PointsWidget(val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View
     {
         val viewBuilder = PointsWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
@@ -2589,7 +2634,9 @@ data class QuoteWidget(val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View
     {
         val viewBuilder = QuoteWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
@@ -2758,7 +2805,9 @@ data class RollWidget(val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View {
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View {
         val viewBuilder = RollWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
     }
@@ -2901,7 +2950,9 @@ data class WidgetSlider(val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View {
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View {
         val widgetUI = SliderWidgetUI(this, entityId, context)
         return widgetUI.view()
     }
@@ -3005,7 +3056,9 @@ data class StoryWidget(val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View
     {
         val viewBuilder = StoryWidgetViewBuilder(this, entityId, context)
         return viewBuilder.view()
@@ -3203,7 +3256,14 @@ data class WidgetTab(val widgetId : WidgetId,
 {
 
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
+    // | Properties
+    // -----------------------------------------------------------------------------------------
+
+    var groupContext : Maybe<GroupContext> = Nothing()
+
+
+    // -----------------------------------------------------------------------------------------
+    // | Constructors
     // -----------------------------------------------------------------------------------------
 
     companion object : Factory<Widget>
@@ -3270,8 +3330,13 @@ data class WidgetTab(val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View {
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View {
         val widgetUI = TabWidgetUI(this, entityId, context)
+
+        this.groupContext = groupContext
+
         return widgetUI.view()
     }
 
@@ -3741,7 +3806,9 @@ data class TableWidget(private val widgetId : WidgetId,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    override fun view(entityId : EntityId, context : Context) : View
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View
     {
         val tableWidgetUI = TableWidgetUI(this, entityId, context)
         return tableWidgetUI.view()
@@ -3765,7 +3832,8 @@ data class TableWidget(private val widgetId : WidgetId,
                                        VariableDescription(column.nameString()),
                                        listOf(),
                                        column.variableRelation(),
-                                       booleanCell.variableValue())
+                                       booleanCell.variableValue(),
+                                       VariableIsContextual(false))
 
         val listener = VariableChangeListener({
             booleanCell.updateView(entityId, context)
@@ -4124,7 +4192,9 @@ data class TextWidget(val widgetId : WidgetId,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(entityId : EntityId, context : Context) : View =
+    override fun view(groupContext : Maybe<GroupContext>,
+                      entityId : EntityId,
+                      context : Context) : View =
         TextWidgetView.view(this, this.format(), entityId, context)
 
 
@@ -4137,7 +4207,6 @@ data class TextWidget(val widgetId : WidgetId,
         when (valueVar) {
             is effect.Val ->
             {
-                Log.d("***WIDGET", "open text widget editor")
                 openTextVariableEditorDialog(valueVar.value,
                                              UpdateTargetTextWidget(this.widgetId),
                                              entityId,

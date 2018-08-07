@@ -226,7 +226,7 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
 
         tabLayout?.setupWithViewPager(viewPager)
 
-        tabLayout.getTabAt(0)?.customView = tabView(R.drawable.icon_house, 19, R.string.home, officialAppThemeLight)
+        tabLayout.getTabAt(0)?.customView = tabView(R.drawable.icon_activity_feed, 19, R.string.feed, officialAppThemeLight)
         tabLayout.getTabAt(1)?.customView = tabView(R.drawable.icon_die, 19, R.string.play, officialAppThemeLight)
         tabLayout.getTabAt(2)?.customView = tabView(R.drawable.icon_group, 22, R.string.share, officialAppThemeLight)
 

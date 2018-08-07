@@ -253,8 +253,8 @@ class EntityKindListUI(val entityKinds : List<EntityKind>,
 
         layout.padding.topDp    = 12f
         layout.padding.bottomDp = 12f
-        layout.padding.leftDp   = 10f
-        layout.padding.rightDp  = 10f
+        layout.padding.leftDp   = 12f
+        layout.padding.rightDp  = 14f
 
         layout.onClick          = View.OnClickListener {
             val activity = context as AppCompatActivity
@@ -292,7 +292,7 @@ class EntityKindListUI(val entityKinds : List<EntityKind>,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.margin.rightDp   = 30f
+        layout.margin.rightDp   = 35f
 
         layout.addRule(RelativeLayout.ALIGN_PARENT_START)
         layout.addRule(RelativeLayout.CENTER_VERTICAL)
@@ -322,6 +322,8 @@ class EntityKindListUI(val entityKinds : List<EntityKind>,
 
         header.sizeSp       = 18f
 
+        header.margin.bottomDp  = 2f
+
         return header.textView(context)
     }
 
@@ -337,7 +339,7 @@ class EntityKindListUI(val entityKinds : List<EntityKind>,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_18")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         description.color        = theme.colorOrBlack(colorTheme)
 
         description.font         = Font.typeface(TextFont.RobotoCondensed,

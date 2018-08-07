@@ -24,4 +24,10 @@ types:
         custom_coll_type: group
       presence: required
       description: The groups.
+    - name: group_sets
+      type:
+        type: custom_coll_type
+        custom_coll_type: group_set
+      presence: optional
+      description: The group ids.
 constraints:

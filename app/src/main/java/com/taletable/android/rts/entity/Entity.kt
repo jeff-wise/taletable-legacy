@@ -105,6 +105,26 @@ fun sheet(entityId : EntityId) : Maybe<Sheet>
 }
 
 
+fun sheetCampaign(sheetId : EntityId) : Maybe<Campaign> =
+    sheet(sheetId).ap { campaign(it.campaignId()) }
+
+
+fun sheetGame(sheetId : EntityId) : Maybe<Game> =
+    sheet(sheetId)            ap {
+    campaign(it.campaignId()) ap {
+        game(it.gameId())
+    } }
+
+
+//sheet(record.sheet.entityId()) ap {
+//                    campaign(it.campaignId()) ap {
+//                        game(it.gameId()) ap {
+//                            it.groupIndex().groupSetWithId(groupSetId)
+//                        }
+//                    }
+//                }
+
+
 fun sheetOrError(entityId : EntityId) : AppEff<Sheet>
 {
     val record = entityRecordById[entityId]
@@ -302,9 +322,15 @@ fun initializeSheet(sheet : Sheet)
 
 fun initializeGame(game : Game)
 {
-    game.variables().forEach {
-        Log.d("***ENTITY", "adding game variable to state")
-        addVariable(it, game.entityId())
+    game.variables().forEach { variable ->
+        if (variable.isContextual()) {
+            entityEngineState(game.entityId()).apDo {
+                it.addContextualVariable(variable)
+            }
+        }
+        else {
+            addVariable(variable, game.entityId())
+        }
     }
 }
 
@@ -349,6 +375,7 @@ fun entityStates(entityId : EntityId) : List<EntityState>
 {
     val states : MutableList<EntityState> = mutableListOf()
 
+    // if SHEET
     sheet(entityId).doMaybe { sheet ->
         entityEngineState(entityId) apDo { states.add(it) }
 
@@ -366,6 +393,16 @@ fun entityStates(entityId : EntityId) : List<EntityState>
                 }
             }
         }
+    }
+
+    // if FEED
+    feed(entityId).doMaybe {
+        entityEngineState(entityId) apDo { states.add(it) }
+    }
+
+    // if BOOK
+    book(entityId).doMaybe {
+        entityEngineState(entityId) apDo { states.add(it) }
     }
 
     return states
@@ -390,7 +427,7 @@ fun groupWithId(groupId : GroupId, entityId : EntityId) : Maybe<Group>
                     sheet(record.sheet.entityId()) ap {
                         campaign(it.campaignId()) ap {
                             game(it.gameId()) ap {
-                                it.groupWithId(groupId)
+                                it.groupIndex().groupWithId(groupId)
                             }
                         }
                     }
@@ -406,6 +443,39 @@ fun groupWithId(groupId : GroupId, entityId : EntityId) : Maybe<Group>
         is Err -> Nothing()
     }
 
+}
+
+/**
+ * Group Set With Id
+ */
+fun groupSetWithId(groupSetId : GroupSetId, entityId : EntityId) : List<Group>
+{
+    val recordEff = entityRecord(entityId)
+
+    var setGroups : List<Group> = listOf()
+
+    recordEff apDo { record ->
+        when (record)
+        {
+            is EntitySheetRecord -> {
+                val sheetId = record.sheet.entityId()
+//                val maybeSheet = sheet(sheetId)
+//                val maybeCampaign = sheetCampaign(sheetId)
+
+                // TODO search heirarchy
+
+                sheetGame(sheetId).doMaybe {
+                    it.groupIndex().groupSetWithId(groupSetId).doMaybe {
+                        setGroups = it.groups(sheetId)
+                    }
+                }
+
+
+            }
+        }
+    }
+
+    return setGroups
 }
 
 
@@ -429,7 +499,7 @@ fun groups(tagQuery : TagQuery, entityId : EntityId) : List<Group>
                                  .apply { campaign(it.campaignId()) }
                                  .apply { game(it.gameId()) }
                     when (game) {
-                        is Just    -> game.value.groups(tagQuery)
+                        is Just    -> game.value.groupIndex().groups(tagQuery)
                         is Nothing -> listOf()
                     }
                 }
@@ -453,6 +523,11 @@ fun groups(groupReferences : List<GroupReference>, entityId : EntityId) : List<G
                 groupWithId(it.groupId, entityId).doMaybe {
                     groups.add(it)
                 }
+            }
+            is GroupReferenceSetId -> {
+                val setGroups = groupSetWithId(it.groupSetId, entityId)
+                Log.d("***ENTITY", "set group count: ${setGroups.size}")
+                groups.addAll(setGroups)
             }
         }
     }
@@ -811,6 +886,19 @@ fun onVariableUpdate(variable : Variable, entityId : EntityId) {
 fun addVariable(variable : Variable, entityId : EntityId) {
     entityEngineState(entityId) apDo { it.addVariable(variable) }
 }
+
+
+
+fun setContextualVariable(variableId : VariableId,
+                          context : VariableContext,
+                          entityId: EntityId)
+{
+    entityStates(entityId).forEach {
+        it.setContextualVariable(variableId, context)
+    }
+}
+
+
 
 
 fun updateVariableId(currentVariableId : VariableId,

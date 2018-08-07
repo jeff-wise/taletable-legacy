@@ -15,6 +15,7 @@ import com.taletable.android.model.game.Author
 import com.taletable.android.model.engine.Engine
 import com.taletable.android.model.engine.variable.Variable
 import com.taletable.android.model.sheet.group.Group
+import com.taletable.android.model.sheet.group.GroupReference
 import com.taletable.android.model.sheet.style.ElementFormat
 import com.taletable.android.model.sheet.style.TextFormat
 import com.taletable.android.model.theme.ThemeId
@@ -41,10 +42,11 @@ data class Book(val bookId : EntityId,
                 val settings : BookSettings,
                 val engine : Engine,
                 val variables : List<Variable>,
+                val groups : MutableList<Group>,
+                val content : List<BookContent>,
                 val introduction : List<BookContentId>,
                 val conclusion : List<BookContentId>,
-                val chapters : MutableList<BookChapter>,
-                val content : List<BookContent>)
+                val chapters : MutableList<BookChapter>)
                  : ToDocument, Entity, Serializable
 {
 
@@ -84,7 +86,17 @@ data class Book(val bookId : EntityId,
                       // Engine
                       doc.at("engine") apply { Engine.fromDocument(it) },
                       // Variables
-                      doc.list("variables") apply { it.map { Variable.fromDocument(it) } },
+                      split(doc.maybeList("variables"),
+                            effValue(mutableListOf()),
+                            { it.mapMut { Variable.fromDocument(it) } }),
+                      // Groups
+                      split(doc.maybeList("groups"),
+                            effValue(mutableListOf()),
+                            { it.mapIndexed { g, i -> Group.fromDocument(g, i) } }),
+                      // Content
+                      split(doc.maybeList("content"),
+                            effValue(listOf()),
+                            { it.map { BookContent.fromDocument(it) } }),
                       // Introduction
                       split(doc.maybeList("introduction"),
                             effValue(listOf()),
@@ -96,12 +108,7 @@ data class Book(val bookId : EntityId,
                       // Chapters
                       doc.list("chapters") apply {
                           it.mapMut { BookChapter.fromDocument(it) }
-                      },
-                      // Content
-                      split(doc.maybeList("content"),
-                            effValue(listOf()),
-                            { it.map { BookContent.fromDocument(it) } })
-                      )
+                      })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -596,7 +603,7 @@ data class BookSettings(override val id : UUID,
  */
 data class BookContent(private val id : BookContentId,
                        private val title : BookContentTitle,
-                       private val groups : List<Group>)
+                       private val groupReferences : List<GroupReference>)
                         : ToDocument, Serializable
 {
 
@@ -615,9 +622,9 @@ data class BookContent(private val id : BookContentId,
                       doc.at("id") apply { BookContentId.fromDocument(it) },
                       // Title
                       doc.at("title") apply { BookContentTitle.fromDocument(it) },
-                      // Groups
-                      doc.list("groups") apply {
-                          it.mapIndexed { doc, index -> Group.fromDocument(doc, index) } }
+                      // Group References
+                      doc.list("group_references") apply {
+                          it.map { doc -> GroupReference.fromDocument(doc) } }
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -630,7 +637,7 @@ data class BookContent(private val id : BookContentId,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "groups" to DocList(this.groups.map { it.toDocument() })
+        "group_references" to DocList(this.groupReferences.map { it.toDocument() })
     ))
 
 
@@ -644,7 +651,7 @@ data class BookContent(private val id : BookContentId,
     fun title() : BookContentTitle = this.title
 
 
-    fun groups() : List<Group> = this.groups
+    fun groupReferences() : List<GroupReference> = this.groupReferences
 
 }
 
@@ -673,7 +680,7 @@ data class BookContentId(val value : String) : ToDocument, Serializable
     // TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun toDocument() = DocText(this.value)
+    override fun toDocument() = DocText(this.value.toString())
 
 }
 

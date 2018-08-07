@@ -22,6 +22,7 @@ import com.taletable.android.lib.ui.Font
 import com.taletable.android.lib.ui.ImageViewBuilder
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.lib.ui.TextViewBuilder
+import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.style.ElementFormat
 import com.taletable.android.model.sheet.style.TextFormat
 import com.taletable.android.rts.entity.EntityId
@@ -36,6 +37,7 @@ import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Maybe
 import java.io.Serializable
 
 
@@ -255,7 +257,7 @@ class GroupWidgetUI(val groupWidget : WidgetGroup,
         val layout = this.groupsViewLayout()
 
         groupWidget.groups(entityId).forEach {
-            layout.addView(it.view(entityId, context))
+            layout.addView(it.view(entityId, context, groupWidget.groupContext))
         }
 
         return layout

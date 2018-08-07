@@ -283,6 +283,27 @@ data class ElementFormat(override val id : UUID,
     }
 
 
+    fun withBottomMargin(bottomMargin : Double) : ElementFormat
+    {
+        val newMargins = Spacing(this.margins.top,
+                                 this.margins.right,
+                                 bottomMargin,
+                                 this.margins.left)
+
+        return ElementFormat(this.position,
+                             this.height,
+                             this.width,
+                             this.padding,
+                             newMargins,
+                             this.backgroundColorTheme,
+                             this.corners,
+                             this.border,
+                             this.alignment,
+                             this.verticalAlignment)
+    }
+
+
+
     // UPDATE > Padding
     // -----------------------------------------------------------------------------------------
 

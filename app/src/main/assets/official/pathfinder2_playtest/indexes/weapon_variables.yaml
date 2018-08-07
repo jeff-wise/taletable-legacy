@@ -1,0 +1,42 @@
+variables:
+- type: variable_text
+  variable_text:
+    id: description_attack_roll
+    label: Attack Roll Description
+    description: Attack Roll Description
+    value:
+      type: text_literal
+      text_literal: 'Roll equal to or higher than your opponent''s armor class to hit.'
+- type: variable_text
+  variable_text:
+    id: description_damage_roll
+    label: Damage Roll Description
+    description: Damage Roll Description
+    value:
+      type: text_literal
+      text_literal: 'Roll for rapier damage to your opponent.'
+- type: variable_text
+  variable_text:
+    id: field_label_is_critical_hit
+    label: 'Field Label: Is Critical Hit?'
+    description: 'Field Label: Is Critical Hit?'
+    value:
+      type: text_literal
+      text_literal: 'Critical hit?'
+- type: variable_text
+  variable_text:
+    id: field_label_is_sneak_attack
+    label: 'Field Label: Is Sneak Attack?'
+    description: 'Field Label: Is Sneak Attack?'
+    value:
+      type: text_literal
+      text_literal: 'Sneak attack?'
+- type: variable_boolean
+  variable_boolean:
+    id: is_sneak_attack
+    label: 'Is Sneak Attack?'
+    description: 'Is Sneak Attack?'
+    is_contextual: true
+    value:
+      type: boolean_literal
+      boolean_literal: false

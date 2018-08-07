@@ -18,7 +18,6 @@ import com.taletable.android.R
 import com.taletable.android.activity.sheet.group.SwipeAndDragHelper
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.feed.Feed
-import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
@@ -86,7 +85,11 @@ class FeedUI(val feed : Feed,
 
         layout.addView(this.cardTitleView())
 
+        layout.addView(this.dividerView())
+
         layout.addView(this.cardGroupsLayout())
+
+        layout.addView(this.dividerView())
 
         layout.addView(this.cardFooterView())
 
@@ -105,14 +108,13 @@ class FeedUI(val feed : Feed,
 
         layout.backgroundColor  = Color.WHITE
 
-        layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
+//        layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
 
-        layout.margin.leftDp    = 6f
-        layout.margin.rightDp   = 6f
-        layout.margin.topDp     = 4f
+//        layout.margin.leftDp    = 6f
+//        layout.margin.rightDp   = 6f
+        layout.margin.topDp     = 8f
 
-        layout.padding.topDp    = 6f
-        layout.padding.bottomDp = 8f
+        layout.padding.topDp    = 10f
 
         return layout.linearLayout(context)
     }
@@ -141,8 +143,8 @@ class FeedUI(val feed : Feed,
 
         layout.visibility           = View.GONE
 
-        layout.margin.leftDp        = 6f
-        layout.margin.rightDp       = 8f
+        layout.margin.leftDp        = 10f
+        layout.margin.rightDp       = 12f
 
         layout.child(iconView)
               .child(labelView)
@@ -197,8 +199,9 @@ class FeedUI(val feed : Feed,
         titleView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         titleView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        titleView.margin.leftDp     = 8f
-        titleView.margin.rightDp    = 8f
+        titleView.margin.leftDp     = 12f
+        titleView.margin.rightDp    = 12f
+        titleView.margin.bottomDp   = 10f
 
         titleView.font              = Font.typeface(TextFont.RobotoCondensed,
                                                     TextFontStyle.Medium,
@@ -256,6 +259,22 @@ class FeedUI(val feed : Feed,
     }
 
 
+    private fun dividerView() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.heightDp         = 1
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
+        layout.backgroundColor      = theme.colorOrBlack(bgColorTheme)
+
+        return layout.linearLayout(context)
+    }
+
+
     private fun cardReadMoreButtonView() : LinearLayout
     {
         // (1) Declarations
@@ -275,26 +294,17 @@ class FeedUI(val feed : Feed,
 
         layout.gravity              = Gravity.CENTER_VERTICAL
 
-        layout.margin.topDp         = 10f
-        layout.margin.bottomDp      = 4f
-        layout.margin.rightDp       = 2f
 
-        layout.padding.topDp        = 4f
-        layout.padding.bottomDp     = 4f
-        layout.padding.leftDp       = 8f
-        layout.padding.rightDp      = 8f
+        layout.padding.topDp        = 10f
+        layout.padding.bottomDp     = 10f
 
-        layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
+        layout.margin.rightDp       = 8f
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_85"))))
-        layout.backgroundColor      = theme.colorOrBlack(bgColorTheme)
+        layout.backgroundColor      = Color.WHITE
 
         layout.addRule(RelativeLayout.ALIGN_PARENT_END)
 
         layout.child(labelView)
-        //        .child(iconView)
 
         // (3 A) Label
         // -------------------------------------------------------------------------------------
@@ -305,14 +315,15 @@ class FeedUI(val feed : Feed,
         labelView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
         labelView.font              = Font.typeface(TextFont.RobotoCondensed,
-                                                    TextFontStyle.SemiBold,
+                                                    TextFontStyle.Bold,
                                                     context)
 
-        labelView.color             = Color.WHITE
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_tint_3"))))
+        labelView.color             = theme.colorOrBlack(labelColorTheme)
 
-        labelView.sizeSp            = 14f
-
-        labelView.margin.rightDp    = 3f
+        labelView.sizeSp            = 15f
 
         // (3 B) Icon
         // -------------------------------------------------------------------------------------

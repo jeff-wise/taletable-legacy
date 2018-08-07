@@ -22,20 +22,21 @@ variables:
     description: 'Field Label: Is Critical Hit?'
     value:
       type: text_literal
-      text_literal: 'Is critical hit?'
-- type: variable_boolean
-  variable_boolean:
-    id: rapier_use_finesse
-    label: 'Rapier: Use Finesse'
-    description: 'Rapier: Use Finesse'
+      text_literal: 'Critical hit?'
+- type: variable_text
+  variable_text:
+    id: field_label_is_sneak_attack
+    label: 'Field Label: Is Sneak Attack?'
+    description: 'Field Label: Is Sneak Attack?'
     value:
-      type: boolean_literal
-      boolean_literal: false
+      type: text_literal
+      text_literal: 'Sneak attack?'
 - type: variable_boolean
   variable_boolean:
-    id: rapier_is_critical_hit
-    label: 'Rapier: Is Critical Hit?'
-    description: 'Is critical hit with the rapier.'
+    id: is_sneak_attack
+    label: 'Is Sneak Attack?'
+    description: 'Is Sneak Attack?'
+    is_contextual: true
     value:
       type: boolean_literal
       boolean_literal: false

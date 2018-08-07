@@ -379,6 +379,15 @@ types:
         The element format.
 - type: primitive_type
   primitive_type:
+    name: group_set_id
+    label: Group Set Id
+    description: A group set identifier.
+    group: Group
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: primitive_type
+  primitive_type:
     name: group_id
     label: Group Id
     description: A group identifier.
@@ -429,6 +438,12 @@ types:
         prim_type: string
       presence: optional
       description: The summary.
+    - name: context
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The summary.
     - name: format
       type: 
         type: custom_type
@@ -443,6 +458,12 @@ types:
         custom_coll_type: tag
       presence: optional
       description: Tags
+    - name: trigger
+      type: 
+        type: custom_type
+        custom_type: trigger
+      presence: optional
+      description: An optional trigger.
     - name: rows
       type: 
         type: custom_coll_type
@@ -502,10 +523,32 @@ types:
     description: A group reference.
     group: Group
     cases:
+    - type: group_set_id
+      description: Group Set Id
     - type: group_id
       description: Group Id
     - type: group
       description: Group
+- type: product_type
+  product_type:
+    name: group_set
+    label: Group Set
+    description: |+
+      Group set.
+    group: Group
+    fields:
+    - name: id
+      type:
+        type: custom_type
+        custom_type: group_set_id
+      presence: required
+      description: Id.
+    - name: group_ids
+      type:
+        type: custom_coll_type
+        custom_coll_type: group_id
+      presence: required
+      description: Group ids.
 - type: product_type
   product_type:
     name: group_row

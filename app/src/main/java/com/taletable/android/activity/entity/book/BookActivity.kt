@@ -150,8 +150,6 @@ class BookActivity : AppCompatActivity()
     {
         val contentView = this.findViewById<LinearLayout>(R.id.book_content)
 
-        Log.d("***BOOK ACTIVITY", "setting ref: $bookReference")
-
         this.currentBook?.let { book ->
             when (bookReference)
             {

@@ -16,6 +16,7 @@ import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
 import com.taletable.android.rts.entity.colorOrBlack
+import com.taletable.android.rts.entity.groups
 
 
 /**
@@ -270,10 +271,13 @@ class SubsectionUI(val subsection : BookSubsection,
         val layout = this.bodyViewLayout()
 
         subsection.bodyContent(book).forEach { content ->
-            content.groups().forEach {
+
+            // TODO is this right??
+            groups(content.groupReferences(), book.entityId()).forEach {
                 it.onSheetComponentActive(book.entityId(), context)
             }
-            content.groups().forEach {
+
+            groups(content.groupReferences(), book.entityId()).forEach {
                 layout.addView(it.view(book.entityId(), context))
             }
         }

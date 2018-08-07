@@ -5,12 +5,9 @@ package com.taletable.android.activity.sheet.dialog
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v4.app.DialogFragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
@@ -20,6 +17,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.lib.ui.*
+import com.taletable.android.model.engine.task.Task
 import com.taletable.android.model.engine.variable.Variable
 import com.taletable.android.model.engine.variable.VariableId
 import com.taletable.android.model.sheet.style.Corners
@@ -31,6 +29,7 @@ import com.taletable.android.model.theme.ThemeColorId
 import com.taletable.android.model.theme.ThemeId
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
+import com.taletable.android.rts.entity.entityEngineState
 import com.taletable.android.rts.entity.variable
 import java.io.Serializable
 
@@ -47,6 +46,7 @@ class VariableToggleEditorDialog : BottomSheetDialogFragment()
     // -----------------------------------------------------------------------------------------
 
     private var variableIds   : List<VariableId>  = listOf()
+    private var task          : Task?             = null
     private var title         : String?           = null
     private var maxSize       : Int?              = null
     private var entityId      : EntityId?         = null
@@ -59,6 +59,7 @@ class VariableToggleEditorDialog : BottomSheetDialogFragment()
     companion object
     {
         fun newInstance(variableIds : List<VariableId>,
+                        task : Task,
                         title : String,
                         maxSize : Int?,
                         entityId : EntityId) : VariableToggleEditorDialog
@@ -67,6 +68,7 @@ class VariableToggleEditorDialog : BottomSheetDialogFragment()
 
             val args = Bundle()
             args.putSerializable("variable_ids", variableIds as Serializable)
+            args.putSerializable("task", task)
             args.putString("title", title)
             args.putSerializable("max_size", maxSize)
             args.putSerializable("entity_id", entityId)
@@ -87,6 +89,7 @@ class VariableToggleEditorDialog : BottomSheetDialogFragment()
         // -------------------------------------------------------------------------------------
 
         this.variableIds = arguments?.getSerializable("variable_ids") as List<VariableId>
+        this.task        = arguments?.getSerializable("task") as Task?
         this.title       = arguments?.getString("title")
         this.maxSize     = arguments?.getSerializable("max_size") as Int?
         this.entityId    = arguments?.getSerializable("entity_id") as EntityId
@@ -126,15 +129,18 @@ class VariableToggleEditorDialog : BottomSheetDialogFragment()
                               savedInstanceState : Bundle?) : View?
     {
         val entityId = this.entityId
+        val task = this.task
         val context = this.context
 
-        return if (entityId != null && context != null)
+        return if (entityId != null && context != null && task != null)
         {
             val viewBuilder = VariableToggleEditorUI(this.variableIds,
+                                                     task,
                                                      this.title,
                                                      this.maxSize,
                                                      entityId,
-                                                     context)
+                                                     context,
+                                                     this)
             viewBuilder.view()
         }
         else
@@ -164,10 +170,12 @@ class VariableToggleEditorDialog : BottomSheetDialogFragment()
 
 
 class VariableToggleEditorUI(val variableIds : List<VariableId>,
+                             val task : Task,
                              val title : String?,
                              val maxSize : Int?,
                              val entityId : EntityId,
-                             val context : Context)
+                             val context : Context,
+                             val dialog : BottomSheetDialogFragment)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -235,7 +243,7 @@ class VariableToggleEditorUI(val variableIds : List<VariableId>,
         mainLayout.addView(iconView)
 
         layout.addView(mainLayout)
-        layout.addView(this.dividerView())
+        layout.addView(this.headerBottomBorderView())
 
         return layout
     }
@@ -303,8 +311,7 @@ class VariableToggleEditorUI(val variableIds : List<VariableId>,
 
         title.sizeSp            = 17f
 
-        title.margin.leftDp     = 0.5f
-
+        title.margin.leftDp     = 6f
 
         return title.textView(context)
     }
@@ -327,20 +334,27 @@ class VariableToggleEditorUI(val variableIds : List<VariableId>,
 
         layout.corners      = Corners(3.0, 3.0, 3.0, 3.0)
 
-        layout.padding.topDp    = 10f
-        layout.padding.bottomDp = 10f
-        layout.padding.leftDp   = 20f
-        layout.padding.rightDp  = 20f
+        layout.padding.topDp    = 6f
+        layout.padding.bottomDp = 6f
+        layout.padding.leftDp   = 10f
+        layout.padding.rightDp  = 10f
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
-        layout.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("green_tint_1"))))
+//        layout.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
+
+        layout.backgroundColor  = Color.WHITE
 
         layout.addRule(RelativeLayout.ALIGN_PARENT_END)
         layout.addRule(RelativeLayout.CENTER_VERTICAL)
 
         layout.onClick = View.OnClickListener {
+            entityEngineState(entityId).apDo {
+                it.completeTask(task)
+            }
+
+            dialog.dismiss()
         }
 
         layout.child(labelView)
@@ -351,7 +365,10 @@ class VariableToggleEditorUI(val variableIds : List<VariableId>,
         labelView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         labelView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        labelView.color             = Color.WHITE
+        val textColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
+        labelView.color             = colorOrBlack(textColorTheme, entityId)
 
         labelView.text              = context.getString(R.string.done).toUpperCase()
 
@@ -392,7 +409,7 @@ class VariableToggleEditorUI(val variableIds : List<VariableId>,
 
 
 
-    private fun dividerView() : LinearLayout
+    private fun headerBottomBorderView() : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
@@ -401,7 +418,7 @@ class VariableToggleEditorUI(val variableIds : List<VariableId>,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_4"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_9"))))
         layout.backgroundColor  = colorOrBlack(colorTheme, entityId)
 
 //        layout.margin.topDp     = 5f
@@ -469,10 +486,10 @@ private fun variableOptionViewLayout(entityId : EntityId, context : Context) : L
     layout.padding.topDp        = 10f
     layout.padding.bottomDp     = 10f
 
-    layout.margin.leftDp        = 2f
-    layout.margin.rightDp       = 2f
+//    layout.margin.leftDp        = 2f
+//    layout.margin.rightDp       = 2f
 
-    layout.margin.topDp         = 1f
+    layout.margin.bottomDp      = 1f
 
 //        val colorTheme = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
@@ -504,7 +521,6 @@ private fun variableOptionCheckboxView(entityId : EntityId, context : Context) :
     layout.backgroundResource   = R.drawable.bg_checkbox_unselected
 
     layout.margin.leftDp        = 5f
-    layout.margin.rightDp       = 15f
 
     layout.child(icon)
 
@@ -520,10 +536,10 @@ private fun variableOptionCheckboxView(entityId : EntityId, context : Context) :
 
     val iconColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
     icon.color                  = colorOrBlack(iconColorTheme, entityId)
 
-    //icon.visibility             = View.GONE
+    icon.visibility             = View.GONE
 
     return layout.linearLayout(context)
 }
@@ -537,6 +553,8 @@ private fun variableOptionMainViewLayout(entityId : EntityId, context : Context)
     layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
     layout.orientation          = LinearLayout.VERTICAL
+
+    layout.margin.leftDp        = 22f
 
     //layout.id                   = R.id.dialog_list_editor_item_layout
 
@@ -592,7 +610,7 @@ private fun variableOptionNameView(entityId : EntityId, context : Context) : Lin
 
     val iconColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
     icon.color                  = colorOrBlack(iconColorTheme, entityId)
 
     icon.margin.rightDp         = 4f
@@ -611,7 +629,7 @@ private fun variableOptionNameView(entityId : EntityId, context : Context) : Lin
                                                 TextFontStyle.Medium,
                                                 context)
 
-    name.sizeSp                 = 17f
+    name.sizeSp                 = 17.5f
 
     return layout.linearLayout(context)
 }
@@ -676,12 +694,26 @@ class VariableToggleRecyclerViewAdapter(
 
     override fun onBindViewHolder(viewHolder : VariableEditorOptionViewHolder, position : Int)
     {
-        this.variables.getOrNull(position)?.let {
+        this.variables.getOrNull(position)?.let { variable ->
 
-            val isSelected = variableToggleUI.selectedVariableIds.contains(it.variableId())
+            val isSelected = variableToggleUI.selectedVariableIds.contains(variable.variableId())
 
-            viewHolder.setOnClick(View.OnClickListener {  })
-            viewHolder.setName(it.label().value, isSelected)
+            viewHolder.setOnClick(View.OnClickListener {
+
+                if (variableToggleUI.selectedVariableIds.contains(variable.variableId()))
+                {
+                    variableToggleUI.selectedVariableIds.remove(variable.variableId())
+                    viewHolder.setUnselected()
+                }
+                else
+                {
+                    variableToggleUI.selectedVariableIds.add(variable.variableId())
+                    viewHolder.setSelected()
+                }
+            })
+
+            viewHolder.setName(variable.label().value, isSelected)
+            viewHolder.setIcon(isSelected)
         }
 
     }
@@ -772,10 +804,12 @@ class VariableEditorOptionViewHolder(itemView : View,
     fun setIcon(isSelected : Boolean)
     {
         if (isSelected) {
-            this.checkIconView?.colorFilter = PorterDuffColorFilter(checkSelectedColor, PorterDuff.Mode.SRC_IN)
+            this.checkIconView?.visibility = View.VISIBLE
+//            this.checkIconView?.colorFilter = PorterDuffColorFilter(checkSelectedColor, PorterDuff.Mode.SRC_IN)
         }
         else {
-            this.checkIconView?.colorFilter = PorterDuffColorFilter(checkUnselectedColor, PorterDuff.Mode.SRC_IN)
+            this.checkIconView?.visibility = View.GONE
+//            this.checkIconView?.colorFilter = PorterDuffColorFilter(checkUnselectedColor, PorterDuff.Mode.SRC_IN)
         }
 
     }
@@ -788,12 +822,14 @@ class VariableEditorOptionViewHolder(itemView : View,
 
     fun setSelected() {
         this.nameView?.setTextColor(selectedNameColor)
-        this.checkIconView?.colorFilter = PorterDuffColorFilter(checkSelectedColor, PorterDuff.Mode.SRC_IN)
+        this.checkIconView?.visibility  = View.VISIBLE
+//        this.checkIconView?.colorFilter = PorterDuffColorFilter(checkSelectedColor, PorterDuff.Mode.SRC_IN)
     }
 
     fun setUnselected() {
         this.nameView?.setTextColor(unselectedNameColor)
-        this.checkIconView?.colorFilter = PorterDuffColorFilter(checkUnselectedColor, PorterDuff.Mode.SRC_IN)
+        this.checkIconView?.visibility  = View.GONE
+//        this.checkIconView?.colorFilter = PorterDuffColorFilter(checkUnselectedColor, PorterDuff.Mode.SRC_IN)
     }
 
 }

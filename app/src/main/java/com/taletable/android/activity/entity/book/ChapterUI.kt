@@ -16,6 +16,7 @@ import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
+import com.taletable.android.rts.entity.groups
 
 
 class ChapterUI(val chapter : BookChapter,
@@ -132,7 +133,7 @@ class ChapterUI(val chapter : BookChapter,
         val layout = this.contentViewLayout()
 
         contentList.forEach { content ->
-            content.groups().forEach {
+            groups(content.groupReferences(), book.entityId()).forEach {
                 layout.addView(it.view(book.entityId(), context))
             }
         }

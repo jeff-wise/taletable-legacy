@@ -17,10 +17,14 @@ import com.taletable.android.lib.orm.RowValue2
 import com.taletable.android.lib.orm.schema.MaybeProdValue
 import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.ui.LinearLayoutBuilder
+import com.taletable.android.model.engine.constraint.Trigger
 import com.taletable.android.model.engine.tag.Tag
+import com.taletable.android.model.engine.tag.TagQuery
+import com.taletable.android.model.engine.tag.TagQueryTag
 import com.taletable.android.model.sheet.style.*
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
+import com.taletable.android.rts.entity.groupWithId
 import com.taletable.android.rts.entity.sheet.SheetComponent
 import com.taletable.android.util.Util
 import effect.*
@@ -30,6 +34,7 @@ import lulo.value.UnexpectedType
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
+import maybe.filterJust
 import java.io.Serializable
 import java.util.*
 
@@ -44,7 +49,9 @@ data class Group(val id : GroupId,
                  private val format : GroupFormat,
                  private var index : Int,
                  private val rows : MutableList<GroupRow>,
-                 private val tags : List<Tag>)
+                 private val tags : List<Tag>,
+                 private var context : Maybe<GroupContext>,
+                 private val trigger : Maybe<Trigger>)
                   : ToDocument, SheetComponent, Comparable<Group>, Serializable
 {
 
@@ -57,14 +64,18 @@ data class Group(val id : GroupId,
                 format : GroupFormat,
                 index : Int,
                 rows : List<GroupRow>,
-                tags : List<Tag>)
+                tags : List<Tag>,
+                context : Maybe<GroupContext>,
+                trigger : Maybe<Trigger>)
         : this(GroupId(UUID.randomUUID()),
                name,
                summary,
                format,
                index,
                rows.toMutableList(),
-               tags)
+               tags,
+               context,
+               trigger)
 
 
     constructor(format : GroupFormat,
@@ -75,7 +86,9 @@ data class Group(val id : GroupId,
                format,
                0,
                rows.toMutableList(),
-               listOf())
+               listOf(),
+               Nothing(),
+               Nothing())
 
 
 
@@ -111,7 +124,15 @@ data class Group(val id : GroupId,
                       // Tags
                       split(doc.maybeList("tags"),
                             effValue(listOf()),
-                             { it.map { Tag.fromDocument(it) } })
+                             { it.map { Tag.fromDocument(it) } }),
+                      // Context
+                      split(doc.maybeAt("context"),
+                            effValue<ValueError,Maybe<GroupContext>>(Nothing()),
+                            { apply(::Just, GroupContext.fromDocument(it)) }),
+                      // Trigger
+                      split(doc.maybeList("trigger"),
+                            effValue<ValueError,Maybe<Trigger>>(Nothing()),
+                            { apply(::Just, Trigger.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -151,6 +172,12 @@ data class Group(val id : GroupId,
     fun tags() : List<Tag> = this.tags
 
 
+    fun context() : Maybe<GroupContext> = this.context
+
+
+    fun trigger() : Maybe<Trigger> = this.trigger
+
+
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
@@ -171,7 +198,20 @@ data class Group(val id : GroupId,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(entityId : EntityId, context : Context) = groupView(this, entityId, context)
+    fun view(entityId : EntityId,
+             context : Context,
+             groupContext : Maybe<GroupContext> = Nothing()) : View
+    {
+        when (groupContext) {
+            is Just -> {
+                when (this.context) {
+                    is Nothing -> this.context = groupContext
+                }
+            }
+        }
+
+        return groupView(this, entityId, context)
+    }
 
 }
 
@@ -235,6 +275,35 @@ data class GroupSummary(val value : String) : ToDocument, Serializable
 
 
 /**
+ * Group Context
+ */
+data class GroupContext(val value : String) : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<GroupContext>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupContext> = when (doc)
+        {
+            is DocText -> effValue(GroupContext(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+}
+
+
+/**
  * Group Id
  */
 data class GroupId(val value : UUID) : Serializable
@@ -272,9 +341,10 @@ sealed class GroupReference : ToDocument, Serializable
         override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupReference> =
             when (doc.case())
             {
-                "group_id" -> GroupReferenceId.fromDocument(doc) as ValueParser<GroupReference>
-                "group"    -> GroupReferenceLiteral.fromDocument(doc) as ValueParser<GroupReference>
-                else       -> effError(UnknownCase(doc.case(), doc.path))
+                "group_id"     -> GroupReferenceId.fromDocument(doc) as ValueParser<GroupReference>
+                "group_set_id" -> GroupReferenceSetId.fromDocument(doc) as ValueParser<GroupReference>
+                "group"        -> GroupReferenceLiteral.fromDocument(doc) as ValueParser<GroupReference>
+                else           -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 
@@ -283,7 +353,7 @@ sealed class GroupReference : ToDocument, Serializable
     // GROUP ID
     // -----------------------------------------------------------------------------------------
 
-    abstract fun groupId() : GroupId
+    abstract fun groupId() : GroupId?
 }
 
 
@@ -315,6 +385,23 @@ data class GroupReferenceId(val groupId : GroupId) : GroupReference()
 }
 
 
+data class GroupReferenceSetId(val groupSetId : GroupSetId) : GroupReference()
+{
+    companion object : Factory<GroupReferenceSetId>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupReferenceSetId> =
+                apply(::GroupReferenceSetId, GroupSetId.fromDocument(doc))
+
+    }
+
+
+    override fun toDocument() = DocText(this.groupSetId.value.toString()).withCase("group_set_id")
+
+
+    override fun groupId() = null
+
+}
+
 
 data class GroupReferenceLiteral(val group : Group) : GroupReference()
 {
@@ -337,8 +424,37 @@ data class GroupReferenceLiteral(val group : Group) : GroupReference()
 /**
  * Group Index
  */
-data class GroupIndex(val groups : List<Group>)
+data class GroupIndex(val groups : MutableList<Group>,
+                      val groupSets : MutableList<GroupSet>)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // | Properties
+    // -----------------------------------------------------------------------------------------
+
+    // | Properties > Indexes
+    // -----------------------------------------------------------------------------------------
+
+    private val groupById : MutableMap<GroupId,Group> =
+                               groups.associateBy { it.id }
+                                    as MutableMap<GroupId,Group>
+
+    private val groupsWithTag : MutableMap<Tag,MutableList<Group>> = mutableMapOf()
+
+
+    private val groupSetById : MutableMap<GroupSetId,GroupSet> =
+                                   groupSets.associateBy { it.id }
+                                        as MutableMap<GroupSetId,GroupSet>
+
+
+    // -----------------------------------------------------------------------------------------
+    // | Constructors
+    // -----------------------------------------------------------------------------------------
+
+    init {
+        indexGroups(groups)
+    }
+
 
     companion object
     {
@@ -349,14 +465,189 @@ data class GroupIndex(val groups : List<Group>)
                 apply(::GroupIndex,
                       // Groups
                       doc.list("groups") ap { docList ->
-                          docList.map { Group.fromDocument(it, 0) } }
+                          docList.mapMut { Group.fromDocument(it, 0) } },
+                      // Group Sets
+                      split(doc.maybeList("group_sets"),
+                            effValue(mutableListOf()),
+                            { it.mapMut { GroupSet.fromDocument(it) } }))
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+
+        fun empty() : GroupIndex = GroupIndex(mutableListOf(), mutableListOf())
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // | Methods
+    // -----------------------------------------------------------------------------------------
+
+    // | Methods > Public
+    // -----------------------------------------------------------------------------------------
+
+    fun groups() : List<Group> = this.groups
+
+
+    fun groupSets() : List<GroupSet> = this.groupSets
+
+
+    fun merge(groupIndex : GroupIndex)
+    {
+        this.addGroups(groupIndex.groups())
+        this.addGroupSets(groupIndex.groupSets())
+    }
+
+
+    fun groupWithId(groupId : GroupId) : Maybe<Group>
+    {
+        val _group = this.groupById[groupId]
+        return if (_group != null)
+            Just(_group)
+        else
+            Nothing()
+    }
+
+
+    fun groupSetWithId(groupSetId : GroupSetId) : Maybe<GroupSet>
+    {
+        val groupSet = this.groupSetById[groupSetId]
+        return if (groupSet != null)
+            Just(groupSet)
+        else
+            Nothing()
+    }
+
+
+    fun groups(tagQuery : TagQuery) : List<Group> = when (tagQuery)
+    {
+        is TagQueryTag ->
+        {
+            groupsWithTag[tagQuery.tag] ?: listOf()
+        }
+        else -> listOf()
+    }
+
+
+    private fun addGroups(groups : List<Group>)
+    {
+        this.groups.addAll(groups)
+
+        groups.forEach {
+            this.groupById[it.id] = it
+        }
+
+        this.indexGroups(groups)
+    }
+
+
+    private fun addGroupSets(groupSets : List<GroupSet>)
+    {
+        this.groupSets.addAll(groupSets)
+
+        groupSets.forEach {
+            this.groupSetById[it.id] = it
+        }
+    }
+
+
+    // | Methods > Private
+    // -----------------------------------------------------------------------------------------
+
+    private fun indexGroups(groups : List<Group>)
+    {
+        groups.forEach { group ->
+            group.tags().forEach { tag ->
+                if (!groupsWithTag.containsKey(tag))
+                    groupsWithTag[tag] = mutableListOf()
+                groupsWithTag[tag]!!.add(group)
+            }
+        }
+    }
+
+
+}
+
+
+
+data class GroupSet(val id : GroupSetId,
+                    val groupIds : List<GroupId>) : GroupReference()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // | Constructors
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<GroupSet>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupSet> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::GroupSet,
+                      // Id
+                      doc.at("id").apply { GroupSetId.fromDocument(it) },
+                      // Group IDs
+                      doc.list("group_ids") ap { docList ->
+                          docList.map { GroupId.fromDocument(it) } }
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // | To Document
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocList(groupIds.map { DocText(it.value.toString()) })
+
+
+    // -----------------------------------------------------------------------------------------
+    // | Group Reference
+    // -----------------------------------------------------------------------------------------
+
+    override fun groupId() = this.groupIds.firstOrNull() ?: GroupId(UUID.randomUUID())
+
+
+    // -----------------------------------------------------------------------------------------
+    // | Groups
+    // -----------------------------------------------------------------------------------------
+
+    fun groups(entityId : EntityId) : List<Group> =
+        this.groupIds.map { groupWithId(it, entityId) }.filterJust()
+
+
 }
+
+
+/**
+ * Group Set Id
+ */
+data class GroupSetId(val value : UUID) : Serializable
+{
+
+    companion object : Factory<GroupSetId>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupSetId> = when (doc)
+        {
+            is DocText -> {
+                try {
+                    effValue<ValueError,GroupSetId>(GroupSetId(UUID.fromString(doc.text)))
+                }
+                catch (e : IllegalArgumentException) {
+                    effError<ValueError,GroupSetId>(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+                }
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+
+    }
+
+}
+
 
 
 /**
@@ -585,7 +876,9 @@ private fun rowsView(group : Group, entityId : EntityId, context : Context) : Vi
 {
     val layout = rowsViewLayout(group.format(), context)
 
-    group.rows().forEach { layout.addView(it.view(entityId, context)) }
+    group.rows().forEach {
+        layout.addView(it.view(group.context(), entityId, context))
+    }
 
     return layout
 }

@@ -1,7 +1,6 @@
 id: 'cccb2da0-f6e5-4ea1-acee-6469942cfb3b'
 campaign_name: 'Isara'
-campaign_summary: 'Isara is a world governed by the laws of magic. Mythical beasts and world-shattering
-                   magical power are not lost in dusty tomes, but part of everyday life.'
+campaign_summary: 'Isara is a world governed by the laws of magic.'
 game_id: '85f6da8e-e497-4aa2-a3c3-c2eab32d2839'
 engine:
   tasks:

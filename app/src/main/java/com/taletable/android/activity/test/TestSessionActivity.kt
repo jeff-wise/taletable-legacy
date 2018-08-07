@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import com.taletable.android.R
 import com.taletable.android.activity.sheet.SheetActivity
 import com.taletable.android.app.AppSettings
+import com.taletable.android.model.session.sessionManifest
 import com.taletable.android.model.theme.ThemeId
 import com.taletable.android.router.Router
 import com.taletable.android.rts.entity.*
@@ -37,7 +38,10 @@ class TestSessionActivity : AppCompatActivity()
 
 
 //    private val sheetId = SheetId("creature_brown_bear")
-    private val sheetId = EntityId(UUID.fromString("ff30a874-976b-4fce-b1c9-618c0d839330"))
+    private val sheetId = EntityId(UUID.fromString("7259bcfa-76f9-42bb-b9d3-50a698850e8d"))
+
+
+    private val testSessionId = SessionId(UUID.fromString("56897634-288a-478e-bb59-eedf09d8aab6"))
 
 
     // -----------------------------------------------------------------------------------------
@@ -66,28 +70,38 @@ class TestSessionActivity : AppCompatActivity()
         val context = this
         launch(UI) {
 
-            val entityIds = listOf(
-                    EntityId(UUID.fromString("ff30a874-976b-4fce-b1c9-618c0d839330")),
-                    EntityId(UUID.fromString("cccb2da0-f6e5-4ea1-acee-6469942cfb3b")),
-                    EntityId(UUID.fromString("85f6da8e-e497-4aa2-a3c3-c2eab32d2839")),
-                    EntityId(UUID.fromString("7140ca5a-a5ce-4a37-95c8-519c7de3c040"))
-                    )
+//
+//
+//            val entityIds = listOf(
+//                    EntityId(UUID.fromString("ff30a874-976b-4fce-b1c9-618c0d839330")),
+//                    EntityId(UUID.fromString("cccb2da0-f6e5-4ea1-acee-6469942cfb3b")),
+//                    EntityId(UUID.fromString("85f6da8e-e497-4aa2-a3c3-c2eab32d2839")),
+//                    EntityId(UUID.fromString("7140ca5a-a5ce-4a37-95c8-519c7de3c040"))
+//                    )
+//
+//            val sessionInfo = SessionInfo(SessionSummary(""),
+//                                          SessionDescription(""),
+//                                          "1st Level Human Fighter",
+//                                          SessionTag("Level 1"),
+//                                          listOf(SessionTag("Human"), SessionTag("Fighter")))
+//            val sessionLoader = Session(SessionId(UUID.randomUUID()),
+//                                              SessionName("Casmey Dalseya"),
+//                                              sessionInfo,
+//                                              EntityId(UUID.fromString("85f6da8e-e497-4aa2-a3c3-c2eab32d2839")),
+//                                              //EntityKindId("player_character"),
+//                                              Nothing(),
+//                                              entityIds,
+//                                              EntityId(UUID.fromString("ff30a874-976b-4fce-b1c9-618c0d839330")))
+//
+//            openSession(sessionLoader, context)
 
-            val sessionInfo = SessionInfo(SessionSummary(""),
-                                          SessionDescription(""),
-                                          "1st Level Human Fighter",
-                                          SessionTag("Level 1"),
-                                          listOf(SessionTag("Human"), SessionTag("Fighter")))
-            val sessionLoader = Session(SessionId(UUID.randomUUID()),
-                                              SessionName("Casmey Dalseya"),
-                                              sessionInfo,
-                                              EntityId(UUID.fromString("85f6da8e-e497-4aa2-a3c3-c2eab32d2839")),
-                                              //EntityKindId("player_character"),
-                                              Nothing(),
-                                              entityIds,
-                                              EntityId(UUID.fromString("ff30a874-976b-4fce-b1c9-618c0d839330")))
 
-            openSession(sessionLoader, context)
+            sessionManifest(context).doMaybe {
+                it.session(testSessionId).doMaybe {
+                    openSession(it, context)
+                }
+            }
+
         }
 
     }
@@ -103,7 +117,7 @@ class TestSessionActivity : AppCompatActivity()
     private fun onSheetLoad(message : MessageSessionLoaded)
     {
         val intent = Intent(this, SheetActivity::class.java)
-        intent.putExtra("sheet_id", sheetId)
+        intent.putExtra("sheet_id", EntityId(UUID.fromString("7259bcfa-76f9-42bb-b9d3-50a698850e8d")))
         finish()
         startActivity(intent)
     }

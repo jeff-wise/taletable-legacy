@@ -5,10 +5,12 @@ package com.taletable.android.activity.sheet.history
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import com.taletable.android.rts.entity.EntityId
 
 
 
-data class HistoryPagerAdapter(val fragmentManager : FragmentManager)
+data class HistoryPagerAdapter(val fragmentManager : FragmentManager,
+                               val sheetId : EntityId)
                                 : FragmentStatePagerAdapter(fragmentManager)
 {
 
@@ -16,8 +18,12 @@ data class HistoryPagerAdapter(val fragmentManager : FragmentManager)
     // PAGER ADAPTER
     // -----------------------------------------------------------------------------------------
 
-    override fun getItem(position: Int) : Fragment =
-            HistoryFragment.newInstance()
+    override fun getItem(position: Int) : Fragment = when (position)
+    {
+        0    -> DecisionsFragment.newInstance(sheetId)
+        else -> HistoryFragment.newInstance()
+
+    }
 
 
     override fun getCount() : Int = 3
@@ -25,10 +31,10 @@ data class HistoryPagerAdapter(val fragmentManager : FragmentManager)
 
     override fun getPageTitle(position : Int) : CharSequence = when (position)
     {
-        0    -> "EVENTS"
-        1    -> "CHOICES"
-        2    -> "STATS"
-        else -> "STATS"
+        0    -> "Decisions"
+        1    -> "Events"
+        2    -> "Stats"
+        else -> "Stats"
     }
 
 //

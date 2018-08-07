@@ -1,9 +1,203 @@
 groups:
+- id: '920e6a83-f7b9-47fa-b502-f7567a4a2c4b'
+  name: 'Field: Is Critical Hit'
+  summary: 'Is critical hit field'
+  rows:
+  - format:
+      element_format:
+        padding:
+          left: 8
+          right: 8
+          top: 12
+          bottom: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_16
+            font_style: medium
+            size: 18
+            element_format:
+              horizontal_alignment: left
+        value_variable_id: field_label_is_critical_hit
+    - type: widget_boolean
+      widget_boolean:
+        value_variables_reference:
+          type: variable_id
+          variable_id: rapier_is_critical_hit
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: right
+              padding:
+                left: 8
+                right: 8
+              width:
+                type: width_justify
+                width_justify: justify
+          true_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_4
+              corners:
+                top_left_radius: 2
+                top_right_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              padding:
+                top: 2
+                bottom: 2
+                left: 8
+                right: 8
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_21
+              - theme_id: light
+                color_id: green
+            font_style: semi_bold
+            size: 16
+          false_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_4
+              corners:
+                top_left_radius: 2
+                top_right_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              padding:
+                top: 2
+                bottom: 2
+                left: 8
+                right: 8
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_21
+              - theme_id: light
+                color_id: dark_grey_22
+            font_style: semi_bold
+            size: 16
+          true_text: 'YES'
+          false_text: 'NO'
+- id: '6126d564-c3d7-496a-a6ff-dc4660af8746'
+  name: 'Field: Is Sneak Attack'
+  summary: 'Is sneak attack field'
+  rows:
+  - format:
+      element_format:
+        padding:
+          left: 8
+          right: 8
+          top: 12
+          bottom: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_16
+            font_style: medium
+            size: 18
+            element_format:
+              horizontal_alignment: left
+        value_variable_id: field_label_is_sneak_attack
+    - type: widget_boolean
+      widget_boolean:
+        value_variables_reference:
+          type: variable_reference_contextual
+          variable_reference_contextual:
+            id: is_sneak_attack
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: right
+              padding:
+                left: 8
+                right: 8
+              width:
+                type: width_justify
+                width_justify: justify
+          true_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_4
+              corners:
+                top_left_radius: 2
+                top_right_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              padding:
+                top: 2
+                bottom: 2
+                left: 8
+                right: 8
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_21
+              - theme_id: light
+                color_id: green
+            font_style: semi_bold
+            size: 16
+          false_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_4
+              corners:
+                top_left_radius: 2
+                top_right_radius: 2
+                bottom_right_radius: 2
+                bottom_left_radius: 2
+              padding:
+                top: 2
+                bottom: 2
+                left: 8
+                right: 8
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_21
+              - theme_id: light
+                color_id: dark_grey_22
+            font_style: semi_bold
+            size: 16
+          true_text: 'YES'
+          false_text: 'NO'
 - id: '8fad7940-97d7-4c0b-b87a-6312cb319b0d'
   name: 'Rapier'
   summary: 'A rapier'
   tags:
   - weapon
+  context: rapier
   rows:
   - format:
       element_format:
@@ -137,9 +331,8 @@ groups:
                         element_format:
                           padding:
                             top: 10
-                            bottom: 12
                             left: 8
-                            right: 10
+                            right: 8
                       rows:
                       - widgets:
                         - type: widget_text
@@ -158,6 +351,16 @@ groups:
                                 element_format:
                                   horizontal_alignment: left
                             value_variable_id: description_attack_roll
+                  - type: group
+                    group:
+                      format:
+                        element_format:
+                          padding:
+                            top: 10
+                            bottom: 12
+                            left: 8
+                            right: 8
+                      rows:
                       - format:
                           element_format:
                             horizontal_alignment: right
@@ -169,7 +372,7 @@ groups:
                             format:
                               widget_format:
                                 element_format:
-                                  height: 40
+                                  height: 38
                                   width:
                                     type: width_wrap
                                     width_wrap: wrap
@@ -180,7 +383,7 @@ groups:
                                   background_color_theme:
                                     theme_color_ids:
                                     - theme_id: light
-                                      color_id: light_grey_6
+                                      color_id: light_blue
                                   corners:
                                     top_right_radius: 4
                                     bottom_right_radius: 4
@@ -190,12 +393,12 @@ groups:
                                 color_theme:
                                   theme_color_ids:
                                   - theme_id: light
-                                    color_id: dark_grey_12
+                                    color_id: white
                                 icon_format:
                                   color_theme:
                                     theme_color_ids:
                                     - theme_id: light
-                                      color_id: dark_grey_12
+                                      color_id: white
                                   size:
                                     width: 22
                                     height: 22
@@ -232,7 +435,7 @@ groups:
                                   background_color_theme:
                                     theme_color_ids:
                                     - theme_id: light
-                                      color_id: light_grey_4
+                                      color_id: light_blue_tint_2
                                   corners:
                                     top_left_radius: 4
                                     bottom_left_radius: 4
@@ -242,7 +445,7 @@ groups:
                                 color_theme:
                                   theme_color_ids:
                                   - theme_id: light
-                                    color_id: dark_grey_12
+                                    color_id: white
                                 font_style: semi_bold
                                 size: 18
                               description_roll_format:
@@ -270,113 +473,28 @@ groups:
                                 color_theme:
                                   theme_color_ids:
                                   - theme_id: light
-                                    color_id: dark_grey_12
+                                    color_id: white
                                 font_style: semi_bold
                                 size: 21
-                                roll_format: modifier_only
                             roll_group:
                               roll_references:
                               - type: summation_id
                                 summation_id: weapon_rapier_attack_roll
-                            description: 'Roll Attack'
+                            description: 'Attack'
                             result_description: 'Attack Roll'
                 - name: Damage
                   group_references:
                   - type: group
                     group:
+                      format:
+                        element_format:
+                          horizontal_alignment: right
+                          padding:
+                            top: 12
+                            bottom: 12
+                            left: 8
+                            right: 8
                       rows:
-                      - format:
-                          element_format:
-                            padding:
-                              left: 10
-                              right: 10
-                              top: 14
-                              bottom: 14
-                        widgets:
-                        - type: widget_text
-                          widget_text:
-                            format:
-                              widget_format:
-                                element_format:
-                                  horizontal_alignment: left
-                                  width:
-                                    type: width_justify
-                                    width_justify: justify
-                              value_format:
-                                color_theme:
-                                  theme_color_ids:
-                                  - theme_id: light
-                                    color_id: dark_grey_16
-                                font_style: medium
-                                size: 18
-                                element_format:
-                                  horizontal_alignment: left
-                            value_variable_id: field_label_is_critical_hit
-                        - type: widget_boolean
-                          widget_boolean:
-                            value_variables_reference:
-                              type: variable_id
-                              variable_id: rapier_is_critical_hit
-                            format:
-                              widget_format:
-                                element_format:
-                                  horizontal_alignment: right
-                                  padding:
-                                    left: 8
-                                    right: 8
-                                  width:
-                                    type: width_justify
-                                    width_justify: justify
-                              true_format:
-                                element_format:
-                                  background_color_theme:
-                                    theme_color_ids:
-                                    - theme_id: light
-                                      color_id: light_grey_4
-                                  corners:
-                                    top_left_radius: 2
-                                    top_right_radius: 2
-                                    bottom_right_radius: 2
-                                    bottom_left_radius: 2
-                                  padding:
-                                    top: 2
-                                    bottom: 2
-                                    left: 8
-                                    right: 8
-                                color_theme:
-                                  theme_color_ids:
-                                  - theme_id: dark
-                                    color_id: light_grey_21
-                                  - theme_id: light
-                                    color_id: green
-                                font_style: semi_bold
-                                size: 16
-                              false_format:
-                                element_format:
-                                  background_color_theme:
-                                    theme_color_ids:
-                                    - theme_id: light
-                                      color_id: light_grey_4
-                                  corners:
-                                    top_left_radius: 2
-                                    top_right_radius: 2
-                                    bottom_right_radius: 2
-                                    bottom_left_radius: 2
-                                  padding:
-                                    top: 2
-                                    bottom: 2
-                                    left: 8
-                                    right: 8
-                                color_theme:
-                                  theme_color_ids:
-                                  - theme_id: dark
-                                    color_id: light_grey_21
-                                  - theme_id: light
-                                    color_id: dark_grey_22
-                                font_style: semi_bold
-                                size: 16
-                              true_text: 'YES'
-                              false_text: 'NO'
                       - format:
                           border:
                             top:
@@ -408,21 +526,29 @@ groups:
                                 element_format:
                                   horizontal_alignment: left
                             value_variable_id: description_damage_roll
+                  - type: group_set_id
+                    group_set_id: '23ecfb58-5c89-4299-85c6-3d03cee6f859'
+                  - type: group
+                    group:
+                      format:
+                        element_format:
+                          horizontal_alignment: right
+                          padding:
+                            top: 12
+                            bottom: 12
+                            left: 8
+                            right: 8
+                      rows:
                       - format:
                           element_format:
                             horizontal_alignment: right
-                            padding:
-                              top: 14
-                              bottom: 14
-                              left: 10
-                              right: 10
                         widgets:
                         - type: widget_roll
                           widget_roll:
                             format:
                               widget_format:
                                 element_format:
-                                  height: 40
+                                  height: 38
                                   width:
                                     type: width_wrap
                                     width_wrap: wrap
@@ -433,7 +559,7 @@ groups:
                                   background_color_theme:
                                     theme_color_ids:
                                     - theme_id: light
-                                      color_id: light_grey_6
+                                      color_id: light_blue
                                   corners:
                                     top_right_radius: 4
                                     bottom_right_radius: 4
@@ -443,12 +569,12 @@ groups:
                                 color_theme:
                                   theme_color_ids:
                                   - theme_id: light
-                                    color_id: dark_grey_12
+                                    color_id: white
                                 icon_format:
                                   color_theme:
                                     theme_color_ids:
                                     - theme_id: light
-                                      color_id: dark_grey_12
+                                      color_id: white
                                   size:
                                     width: 22
                                     height: 22
@@ -485,7 +611,7 @@ groups:
                                   background_color_theme:
                                     theme_color_ids:
                                     - theme_id: light
-                                      color_id: light_grey_4
+                                      color_id: light_blue_tint_2
                                   corners:
                                     top_left_radius: 4
                                     bottom_left_radius: 4
@@ -495,7 +621,7 @@ groups:
                                 color_theme:
                                   theme_color_ids:
                                   - theme_id: light
-                                    color_id: dark_grey_14
+                                    color_id: white
                                 font_style: semi_bold
                                 size: 18
                               description_roll_format:
@@ -523,7 +649,7 @@ groups:
                                 color_theme:
                                   theme_color_ids:
                                   - theme_id: light
-                                    color_id: dark_grey_12
+                                    color_id: white
                                 font_style: bold
                                 size: 18
                                 roll_format: normal
@@ -4494,3 +4620,8 @@ groups:
                 width: 28
                 height: 28
         groups:
+group_sets:
+- id: '23ecfb58-5c89-4299-85c6-3d03cee6f859'
+  group_ids:
+  - '6126d564-c3d7-496a-a6ff-dc4660af8746'
+  - '920e6a83-f7b9-47fa-b502-f7567a4a2c4b'

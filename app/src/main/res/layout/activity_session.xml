@@ -41,15 +41,19 @@
                         android:src="@drawable/ic_toolbar_back"
                         android:tint="@color/dark_theme_primary_15" />
 
+
                     <TextView
                         android:id="@+id/toolbar_title"
-                        android:layout_gravity="center"
+                        android:layout_gravity="start"
                         android:textSize="18sp"
-                        android:textColor="@color/light_theme_dark_grey_14"
-                        android:layout_centerHorizontal="true"
+                        android:textColor="@color/light_theme_dark_grey_10"
+                        android:text="@string/new_session"
                         android:layout_centerVertical="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_toEndOf="@id/toolbar_back_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
+
 
                     <ImageButton
                         android:id="@+id/toolbar_options_button"

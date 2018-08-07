@@ -1,0 +1,166 @@
+book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+book_info:
+  title: 'Rulebook'
+  summary: 'The core rules for being a player and running a game with the Pathfinder 2 Playtest.'
+  authors:
+  - name: 'Paizo Publishing'
+  abstract: >-
+    The core rules for being a player and running a game with the Pathfinder 2 Playtest.
+introduction:
+- introduction
+settings:
+  theme_id: light
+engine:
+  value_sets:
+  tasks:
+  mechanics:
+  mechanic_categories:
+  functions:
+  programs:
+  summations:
+  procedures:
+content:
+- id: section_weapons_introduction
+  title: 'Weapons'
+  group_references:
+  - type: group_id
+    group_id: '877b053e-e461-48de-9778-5cff30aff242'
+- id: subsection_weapon_properties
+  title: 'Weapon Properties'
+  group_references:
+  - type: group_id
+    group_id: '54607d6f-c55b-41a2-b332-d3bdc3284013'
+  - type: group_id
+    group_id: 'e9fe87a4-9ee4-4587-9549-23593b98ef11'
+  - type: group_id
+    group_id: 'e41a3aed-28d6-4b6f-a669-3bb6425ab560'
+- id: subsection_weapon_proficiency
+  title: 'Weapon Proficiency'
+  group_references:
+  - type: group_id
+    group_id: '28c46a98-a1d8-4cb4-a8c2-6a5319c98a5e'
+- id: subsection_weapon_list
+  title: 'Weapon List'
+  group_references:
+  - type: group_id
+    group_id: 'c86aca23-4391-4d83-b021-b728ffcb743b'
+  - type: group_id
+    group_id: '2de9f95a-60b7-43ea-8703-1c297bde0ae0'
+- id: introduction
+  title: 'Introduction'
+  group_references:
+  - type: group_id
+    group_id: '8138f056-193d-4780-92ed-18905be898f3'
+- id: card_gear_bedroll
+  title: 'Bedroll'
+  group_references:
+  - type: group_id
+    group_id: '625f8b74-24ff-4d36-81db-f3b089b23351'
+- id: armor_leather
+  title: 'Leather Armor'
+  group_references:
+  - type: group_id
+    group_id: '21266571-0914-48ff-9c34-557062798c12'
+- id: weapon_rapier
+  title: 'Rapier'
+  group_references:
+  - type: group_id
+    group_id: '43655b03-69e9-4565-bddc-b8e39eb82518'
+- id: race_humans
+  title: 'Humans'
+  group_references:
+  - type: group_id
+    group_id: '6d2e2936-04f8-4ac5-8591-39aebfbcd93f'
+chapters:
+- id: creating_characters
+  title: 'Creating Characters'
+  sections:
+  - id: races
+    title: 'Races'
+    body:
+      id: aslka
+      title: Title
+      groups:
+  - id: classes
+    title: 'Classes'
+    body:
+      id: aslka
+      title: Title
+      groups:
+  - id: alignment
+    title: 'Alignment'
+    body:
+      id: aslka
+      title: Title
+      groups:
+  - id: languages
+    title: 'Languages'
+    body:
+      id: aslka
+      title: Title
+      groups:
+  - id: backgrounds
+    title: 'Backgrounds'
+    body:
+      id: aslka
+      title: Title
+      groups:
+- id: equipment
+  title: 'Equipment'
+  sections:
+  - id: weapons
+    title: 'Weapons'
+    introduction:
+    - section_weapons_introduction
+    subsections:
+    - id: weapon_proficiency
+      title: 'Weapon Proficiency'
+      body:
+      - subsection_weapon_proficiency
+    - id: weapon_properties
+      title: 'Weapon Properties'
+      subtitle: 'Special features of weapons.'
+      body:
+      - subsection_weapon_properties
+    - id: weapon_list
+      title: 'Weapon List'
+      subtitle: 'The weapons in the game.'
+      body:
+      - subsection_weapon_list
+- id: gameplay
+  title: 'Gameplay'
+  sections:
+- id: spells
+  title: 'Spells'
+  sections:
+  - id: wizard_spells
+    title: 'Wizard Spells'
+    body:
+      id: aslka
+      title: Title
+      groups:
+- id: monsters
+  title: 'Monsters'
+  sections:
+- id: running_a_game
+  title: 'Running a Game'
+  sections:
+#    subsections:
+#    - id: challenge
+#      title: Challenge
+#      body: |+
+#        A monster’s **challenge rating** tells you how great a threat the monster is. An appropriately equipped and well-rested party of four adventurers should be able to defeat a monster that has a challenge rating equal to its level without suffering any deaths. For example, a party of four 3rd-level characters should find a monster with a challenge rating of 3 to be a worthy challenge, but not a deadly one.
+#
+#        Monsters that are significantly weaker than 1st-level characters have a challenge rating lower than 1. Monsters with a challenge rating of 0 are insignificant except in large numbers; those with no effective attacks are worth no experience points, while those that have attacks are worth 10 XP each.
+#
+#        Some monsters present a greater challenge than even a typical 20th-level party can handle. These monsters have a challenge rating of 21 or higher and are specifically designed to test player skill.
+#
+#        ### Experience Points
+#
+#        The number of experience points (XP) a monster is worth is based on its challenge rating. Typically, XP is awarded for defeating the monster, although the GM may also award XP for neutralizing the threat posed by the monster in some other manner.
+#
+#        Unless something tells you otherwise, a monster summoned by a spell or other magical ability is worth the XP noted in its stat block.
+
+
+
+

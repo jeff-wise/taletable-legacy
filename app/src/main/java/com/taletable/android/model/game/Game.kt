@@ -7,20 +7,14 @@ import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
 import com.taletable.android.model.engine.Engine
-import com.taletable.android.model.engine.tag.Tag
-import com.taletable.android.model.engine.tag.TagQuery
-import com.taletable.android.model.engine.tag.TagQueryTag
 import com.taletable.android.model.engine.variable.Variable
 import com.taletable.android.model.sheet.group.Group
-import com.taletable.android.model.sheet.group.GroupId
+import com.taletable.android.model.sheet.group.GroupIndex
 import com.taletable.android.rts.entity.*
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import maybe.Just
-import maybe.Maybe
-import maybe.Nothing
 import java.io.Serializable
 
 
@@ -32,24 +26,13 @@ data class Game(val gameId : EntityId,
                 val gameInfo : GameInfo,
                 val engine : Engine,
                 val variables : MutableList<Variable>,
-                val groups : MutableList<Group>)
+                val groupIndex : GroupIndex)
                  : ToDocument, Entity, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // INDEXES
     // -----------------------------------------------------------------------------------------
-
-    private val groupById : MutableMap<GroupId,Group> =
-                               groups.associateBy { it.id }
-                                    as MutableMap<GroupId,Group>
-
-    private val groupsWithTag : MutableMap<Tag,MutableList<Group>> = mutableMapOf()
-
-
-    init {
-        indexGroups(groups)
-    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -73,10 +56,10 @@ data class Game(val gameId : EntityId,
                       split(doc.maybeList("variables"),
                             effValue(mutableListOf()),
                             { it.mapMut { Variable.fromDocument(it) } }),
-                      // Groups
-                      split(doc.maybeList("groups"),
-                            effValue(mutableListOf()),
-                            { it.mapIndexed { d, i -> Group.fromDocument(d,i) }} )
+                      // Group Index
+                      split(doc.maybeAt("group_index"),
+                            effValue(GroupIndex(mutableListOf(), mutableListOf())),
+                            { GroupIndex.fromDocument(it) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -105,60 +88,13 @@ data class Game(val gameId : EntityId,
     fun gameInfo() : GameInfo = this.gameInfo
 
 
-    fun groups() : List<Group> = this.groups
+    fun groups() : List<Group> = this.groupIndex.groups()
+
+
+    fun groupIndex() : GroupIndex = this.groupIndex
 
 
     fun engine() : Engine = this.engine
-
-
-
-    // -----------------------------------------------------------------------------------------
-    // GROUPS
-    // -----------------------------------------------------------------------------------------
-
-    fun groupWithId(groupId : GroupId) : Maybe<Group>
-    {
-        val _group = this.groupById[groupId]
-        return if (_group != null)
-            Just(_group)
-        else
-            Nothing()
-    }
-
-
-    fun groups(tagQuery : TagQuery) : List<Group> = when (tagQuery)
-    {
-        is TagQueryTag ->
-        {
-            groupsWithTag[tagQuery.tag] ?: listOf()
-        }
-        else -> listOf()
-    }
-
-
-    fun addGroups(groups : List<Group>)
-    {
-        this.groups.addAll(groups)
-
-        groups.forEach {
-            this.groupById[it.id] = it
-        }
-
-        this.indexGroups(groups)
-    }
-
-
-    private fun indexGroups(groups : List<Group>)
-    {
-        groups.forEach { group ->
-            group.tags().forEach { tag ->
-                if (!groupsWithTag.containsKey(tag))
-                    groupsWithTag[tag] = mutableListOf()
-                groupsWithTag[tag]!!.add(group)
-            }
-        }
-    }
-
 
     // -----------------------------------------------------------------------------------------
     // | Variables

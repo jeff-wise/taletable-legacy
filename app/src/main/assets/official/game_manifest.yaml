@@ -1,10 +1,10 @@
 summaries:
 - game_id: '85f6da8e-e497-4aa2-a3c3-c2eab32d2839'
-  path: magic_of_heroes
-  name: The Magic of Heroes
-  description: 'A traditional fantasy RPG based on the 5th Edition Open Game License ruleset.'
+  path: fifth_edition
+  name: '5th Edition'
+  description: 'The world''s most popular role-playing game (open game content).'
   genre: 'Fantasy'
-  players: 570
+  players: 1870
   likes: 392
   default_session_id: "b3b4894d-7f2a-4f11-9b27-6e8133f7000f"
   entity_kinds:
@@ -40,38 +40,129 @@ summaries:
     short_name: 'Named NPC'
     short_name_plural: 'Named NPCs'
     description: "Named or famous non-player characters with distinctive personalities, roles, and abilities."
-- game_id: '4c203db5-925b-43b5-9274-416ba58d7967'
-  name: '5e SRD'
-  description: 'The rules for the 5th edition Open Game License of the world''s most popular role-playing game.'
-  genre: 'Fantasy'
-  players: 12371
-  default_session_id: "b3b4894d-7f2a-4f11-9b27-6e8133f7000f"
-  likes: 4338
-  path: 5e_srd
 - game_id: 'ae94f23c-1ff5-48cc-a977-4dd2f7e81341'
-  name: Pathfinder SRD
+  path: pathfinder_2_playtest
+  name: 'Pathfinder 2 Playtest'
   description:
     'A traditional fantasy RPG based on the 3rd Edition Open Game License ruleset.'
   genre: 'Fantasy'
   players: 1970
-  default_session_id: "b3b4894d-7f2a-4f11-9b27-6e8133f7000f"
   likes: 1087
-  path: pathfinder
+  default_session_id: "56897634-288a-478e-bb59-eedf09d8aab6"
+  entity_kinds:
+  - id: player_character
+    name: "Player Character"
+    name_plural: 'Player Characters'
+    short_name: 'PC'
+    short_name_plural: 'PCs'
+    description: "Ready-to-play character sheets for all classes and levels, ranging from simple, concise
+                  templates for new players to complex designs for player verterans. "
+  - id: campaign
+    name: "Campaign"
+    name_plural: 'Campaigns'
+    short_name: 'Campaign'
+    short_name_plural: 'Campaigns'
+    description: "A series of adventures and/or a world, possibly with a set of setting specific rules and data."
+  - id: book
+    name: "Book"
+    name_plural: 'Books'
+    short_name: 'Book'
+    short_name_plural: 'Books'
+    description: "Rulebooks, campaign setting guides, creature compendiums, short stories, etc\u2026"
+  - id: generic_npc
+    name: "Generic Non-player Character"
+    name_plural: "Generic Non-player Characters"
+    short_name: 'Generic NPC'
+    short_name_plural: 'Generic NPCs'
+    description: "Character templates controlled by the GM that can be reused for random
+                   encounters or large groups of enemies."
+  - id: named_npc
+    name: "Named Non-player Character"
+    name_plural: "Named Non-player Characters"
+    short_name: 'Named NPC'
+    short_name_plural: 'Named NPCs'
+    description: "Named or famous non-player characters with distinctive personalities, roles, and abilities."
 - game_id: 'aee23cd2-50f7-4360-acc9-3b90aaa9d313'
+  path: starfinder
   name: Starfinder SRD
   description:
     'Explore the magic and mysteries of the universe as part of a starship crew.'
   genre: 'Sci-Fi'
   players: 1104
-  default_session_id: "b3b4894d-7f2a-4f11-9b27-6e8133f7000f"
   likes: 959
-  path: starfinder
-- game_id: 'b6b03414-7442-4f29-900e-5efcf3a5628d'
-  name: "Prismatic Palace"
-  description:
-    'An off-balance, profoundly weird role-playing game based on the 5th edition Open Game License ruleset.'
-  genre: 'Mixed-Bag'
   default_session_id: "b3b4894d-7f2a-4f11-9b27-6e8133f7000f"
-  players: 308
-  likes: 777
-  path: prismatic_palace
+  entity_kinds:
+  - id: player_character
+    name: "Player Character"
+    name_plural: 'Player Characters'
+    short_name: 'PC'
+    short_name_plural: 'PCs'
+    description: "Ready-to-play character sheets for all classes and levels, ranging from simple, concise
+                  templates for new players to complex designs for player verterans. "
+  - id: campaign
+    name: "Campaign"
+    name_plural: 'Campaigns'
+    short_name: 'Campaign'
+    short_name_plural: 'Campaigns'
+    description: "A series of adventures and/or a world, possibly with a set of setting specific rules and data."
+  - id: book
+    name: "Book"
+    name_plural: 'Books'
+    short_name: 'Book'
+    short_name_plural: 'Books'
+    description: "Rulebooks, campaign setting guides, creature compendiums, short stories, etc\u2026"
+  - id: generic_npc
+    name: "Generic Non-player Character"
+    name_plural: "Generic Non-player Characters"
+    short_name: 'Generic NPC'
+    short_name_plural: 'Generic NPCs'
+    description: "Character templates controlled by the GM that can be reused for random
+                   encounters or large groups of enemies."
+  - id: named_npc
+    name: "Named Non-player Character"
+    name_plural: "Named Non-player Characters"
+    short_name: 'Named NPC'
+    short_name_plural: 'Named NPCs'
+    description: "Named or famous non-player characters with distinctive personalities, roles, and abilities."
+- game_id: '4beee782-1d37-4a87-b293-24c00d2ab5ae'
+  path: pathfinder
+  name: Pathfinder 1
+  description:
+    'A traditional fantasy RPG based on the 3rd Edition Open Game License ruleset.'
+  genre: 'Fantasy'
+  players: 1970
+  likes: 1087
+  default_session_id: "b3b4894d-7f2a-4f11-9b27-6e8133f7000f"
+  entity_kinds:
+  - id: player_character
+    name: "Player Character"
+    name_plural: 'Player Characters'
+    short_name: 'PC'
+    short_name_plural: 'PCs'
+    description: "Ready-to-play character sheets for all classes and levels, ranging from simple, concise
+                  templates for new players to complex designs for player verterans. "
+  - id: campaign
+    name: "Campaign"
+    name_plural: 'Campaigns'
+    short_name: 'Campaign'
+    short_name_plural: 'Campaigns'
+    description: "A series of adventures and/or a world, possibly with a set of setting specific rules and data."
+  - id: book
+    name: "Book"
+    name_plural: 'Books'
+    short_name: 'Book'
+    short_name_plural: 'Books'
+    description: "Rulebooks, campaign setting guides, creature compendiums, short stories, etc\u2026"
+  - id: generic_npc
+    name: "Generic Non-player Character"
+    name_plural: "Generic Non-player Characters"
+    short_name: 'Generic NPC'
+    short_name_plural: 'Generic NPCs'
+    description: "Character templates controlled by the GM that can be reused for random
+                   encounters or large groups of enemies."
+  - id: named_npc
+    name: "Named Non-player Character"
+    name_plural: "Named Non-player Characters"
+    short_name: 'Named NPC'
+    short_name_plural: 'Named NPCs'
+    description: "Named or famous non-player characters with distinctive personalities, roles, and abilities."

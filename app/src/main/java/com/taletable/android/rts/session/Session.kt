@@ -3,7 +3,6 @@ package com.taletable.android.rts.session
 
 
 import android.content.Context
-import android.util.Log
 import com.kispoko.culebra.*
 import com.taletable.android.db.writeSession
 import com.taletable.android.lib.Factory

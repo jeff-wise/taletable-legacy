@@ -11,7 +11,7 @@ import com.taletable.android.load.*
 import com.taletable.android.model.engine.variable.Variable
 import com.taletable.android.model.entity.PersistedEntity
 import com.taletable.android.model.entity.entityManifest
-import com.taletable.android.model.sheet.group.Group
+import com.taletable.android.model.sheet.group.GroupIndex
 import effect.Err
 import effect.Val
 import effect.apply
@@ -195,8 +195,8 @@ fun loadPersistedGame(persistedEntity : PersistedEntity, context : Context)
                 when (it.indexType) {
                     is EntityIndexTypeGroup -> {
                         Log.d("***ENTITY LOADER", "loading group index")
-                        val groups = loadGroupIndex(it.path, context)
-                        game.addGroups(groups)
+                        val groupIndex = loadGroupIndex(it.path, context)
+                        game.groupIndex.merge(groupIndex)
                     }
                     is EntityIndexTypeVariable -> {
                         Log.d("***ENTITY LOADER", "loading variable index")
@@ -221,14 +221,14 @@ fun loadPersistedGame(persistedEntity : PersistedEntity, context : Context)
 }
 
 
-private fun loadGroupIndex(filepath : String, context : Context) : List<Group>
+private fun loadGroupIndex(filepath : String, context : Context) : GroupIndex
 {
     val groupIndexLoader = TomeDoc.loadGroupIndex(filepath, context)
     return when (groupIndexLoader) {
-        is Val -> groupIndexLoader.value.groups
+        is Val -> groupIndexLoader.value
         is Err -> {
             ApplicationLog.error(groupIndexLoader.error)
-            listOf()
+            GroupIndex.empty()
         }
     }
 }

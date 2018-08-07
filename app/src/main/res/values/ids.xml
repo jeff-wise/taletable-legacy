@@ -335,6 +335,7 @@
     <item name="entity_card_layout" type="id"/>
     <item name="entity_card_name" type="id"/>
     <item name="entity_card_summary" type="id"/>
+    <item name="entity_card_type" type="id"/>
     <item name="entity_card_image" type="id"/>
 
     <item name="layout" type="id"/>

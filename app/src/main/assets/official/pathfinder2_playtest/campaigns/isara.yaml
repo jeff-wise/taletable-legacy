@@ -1,0 +1,13 @@
+id: '425e1222-1744-41b0-9ae0-9452d1078b4a'
+campaign_name: 'Isara'
+campaign_summary: 'Isara is a world governed by the laws of magic.'
+game_id: 'ffae52cd-6684-42d0-b733-80e006e1c4be'
+engine:
+  tasks:
+  value_sets:
+  mechanics:
+  mechanic_categories:
+  functions:
+  programs:
+  summations:
+  procedures:
