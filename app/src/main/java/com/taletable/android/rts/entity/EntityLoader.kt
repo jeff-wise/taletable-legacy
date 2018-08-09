@@ -56,7 +56,7 @@ fun loadEntityFromOfficial(entityId : EntityId, context : Context) : Maybe<Entit
                 is EntityTypeSheet    -> loadPersistedSheet(entityId, it.path, context)
                 is EntityTypeCampaign -> loadPersistedCampaign(entityId, it.path, context)
                 is EntityTypeGame     -> loadPersistedGame(it, context)
-                is EntityTypeBook     -> loadPersistedBook(entityId, it.path, context)
+                is EntityTypeBook     -> loadPersistedBook(it, context)
                 else                  -> Nothing()
             }
         }
@@ -249,9 +249,13 @@ private fun loadVariableIndex(filepath : String, context : Context) : List<Varia
 // LOAD > Official > Book
 // --------------------------------------------------------------------------------------------
 
-fun loadPersistedBook(bookId : EntityId, filepath : String, context : Context)
+
+fun loadPersistedBook(persistedEntity : PersistedEntity, context : Context)
                       : Maybe<EntityLoadResult>
 {
+    val bookId = persistedEntity.entityId
+    val filepath = persistedEntity.path
+
     when (book(bookId)) {
         is Just -> return Just(EntityLoadResult(bookId, true))
     }
@@ -263,10 +267,21 @@ fun loadPersistedBook(bookId : EntityId, filepath : String, context : Context)
         {
             val book = bookLoader.value
 
-            addBook(book)
+            persistedEntity.indexes.forEach {
+                when (it.indexType) {
+                    is EntityIndexTypeGroup -> {
+                        val groupIndex = loadGroupIndex(it.path, context)
+                        Log.d("***ENTITY LOADER", "adding group index to book")
+                        book.groupIndex.merge(groupIndex)
+                    }
+                    is EntityIndexTypeVariable -> {
+                        val variables = loadVariableIndex(it.path, context)
+                        book.addVariables(variables)
+                    }
+                }
+            }
 
-            // Log event
-//            ApplicationLog.event(OfficialBookLoaded(book.bookId().value))
+            addBook(book)
 
             Just(EntityLoadResult(book.entityId(), false))
         }
@@ -276,6 +291,36 @@ fun loadPersistedBook(bookId : EntityId, filepath : String, context : Context)
         }
     }
 }
+
+
+//
+//fun loadPersistedBook(bookId : EntityId, filepath : String, context : Context)
+//                      : Maybe<EntityLoadResult>
+//{
+//    when (book(bookId)) {
+//        is Just -> return Just(EntityLoadResult(bookId, true))
+//    }
+//
+//    val bookLoader = TomeDoc.loadBook(filepath, context)
+//    return when (bookLoader)
+//    {
+//        is Val ->
+//        {
+//            val book = bookLoader.value
+//
+//            addBook(book)
+//
+//            // Log event
+////            ApplicationLog.event(OfficialBookLoaded(book.bookId().value))
+//
+//            Just(EntityLoadResult(book.entityId(), false))
+//        }
+//        is Err -> {
+//            ApplicationLog.error(bookLoader.error)
+//            Nothing()
+//        }
+//    }
+//}
 
 
 // ---------------------------------------------------------------------------------------------

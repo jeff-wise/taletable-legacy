@@ -23,7 +23,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/dark_theme_primary_88"
                 app:contentInsetStart="0dp"
-                android:elevation="6dp"
+                android:elevation="3dp"
                 android:theme="@style/AppTheme.NoActionBar" >
 
                 <RelativeLayout
@@ -38,18 +38,21 @@
                         android:layout_marginStart="15dp"
                         android:layout_centerVertical="true"
                         android:background="#00000000"
-                        android:src="@drawable/ic_toolbar_book"
+                        android:src="@drawable/ic_toolbar_sheet_app_menu"
                         android:tint="@color/dark_theme_primary_15" />
 
                     <TextView
                         android:id="@+id/toolbar_title"
-                        android:layout_gravity="center"
+                        android:layout_gravity="start"
                         android:textSize="18sp"
-                        android:textColor="@color/dark_theme_primary_15"
-                        android:layout_centerHorizontal="true"
+                        android:textColor="@color/light_theme_dark_grey_10"
+                        android:text="@string/new_session"
                         android:layout_centerVertical="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_toEndOf="@id/toolbar_main_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
+
 
                     <ImageButton
                         android:id="@+id/toolbar_options_button"

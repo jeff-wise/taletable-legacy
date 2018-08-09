@@ -437,6 +437,11 @@ fun groupWithId(groupId : GroupId, entityId : EntityId) : Maybe<Group>
                         it.groupWithId(groupId)
                     }
                 }
+                is EntityBookRecord -> {
+                    book(record.book.entityId()) ap {
+                        it.groupIndex().groupWithId(groupId)
+                    }
+                }
                 else -> Nothing()
             }
         }

@@ -14,7 +14,7 @@ import com.taletable.android.lib.orm.sql.SQLValue
 import com.taletable.android.model.game.Author
 import com.taletable.android.model.engine.Engine
 import com.taletable.android.model.engine.variable.Variable
-import com.taletable.android.model.sheet.group.Group
+import com.taletable.android.model.sheet.group.GroupIndex
 import com.taletable.android.model.sheet.group.GroupReference
 import com.taletable.android.model.sheet.style.ElementFormat
 import com.taletable.android.model.sheet.style.TextFormat
@@ -41,8 +41,8 @@ data class Book(val bookId : EntityId,
                 val bookInfo : BookInfo,
                 val settings : BookSettings,
                 val engine : Engine,
-                val variables : List<Variable>,
-                val groups : MutableList<Group>,
+                val variables : MutableList<Variable>,
+                val groupIndex : GroupIndex,
                 val content : List<BookContent>,
                 val introduction : List<BookContentId>,
                 val conclusion : List<BookContentId>,
@@ -89,10 +89,10 @@ data class Book(val bookId : EntityId,
                       split(doc.maybeList("variables"),
                             effValue(mutableListOf()),
                             { it.mapMut { Variable.fromDocument(it) } }),
-                      // Groups
-                      split(doc.maybeList("groups"),
-                            effValue(mutableListOf()),
-                            { it.mapIndexed { g, i -> Group.fromDocument(g, i) } }),
+                      // Group Index
+                      split(doc.maybeAt("group_index"),
+                            effValue(GroupIndex(mutableListOf(), mutableListOf())),
+                            { GroupIndex.fromDocument(it) }),
                       // Content
                       split(doc.maybeList("content"),
                             effValue(listOf()),
@@ -139,9 +139,6 @@ data class Book(val bookId : EntityId,
 
 
     fun engine() : Engine = this.engine
-
-
-    fun variables() : List<Variable> = this.variables
 
 
     fun introduction() : List<BookContentId> = this.introduction
@@ -235,6 +232,25 @@ data class Book(val bookId : EntityId,
 
     fun conclusionContent() : List<BookContent> =
             this.conclusion.map { this.content(it) }.filterJust()
+
+    // -----------------------------------------------------------------------------------------
+    // | Group Index
+    // -----------------------------------------------------------------------------------------
+
+    fun groupIndex() : GroupIndex = this.groupIndex
+
+
+    // -----------------------------------------------------------------------------------------
+    // | Variables
+    // -----------------------------------------------------------------------------------------
+
+    fun variables() : List<Variable> = this.variables
+
+
+    fun addVariables(variables : List<Variable>)
+    {
+        this.variables.addAll(variables)
+    }
 
 }
 

@@ -16,6 +16,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.model.book.*
+import com.taletable.android.model.sheet.style.TextFont
+import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
 import com.taletable.android.model.theme.official.officialAppThemeLight
 import com.taletable.android.rts.entity.book
@@ -73,7 +75,10 @@ class BookActivity : AppCompatActivity()
         // -------------------------------------------------------------------------------------
 
         this.currentBook?.let {
-            this.configureToolbar(it.bookInfo.title().value)
+            this.configureToolbar(it.bookInfo.title().value,
+                    TextFont.RobotoCondensed,
+                    TextFontStyle.Bold,
+                    19f)
 
 //            ThemeManager.theme(it.settings().themeId()) apDo {
 //                this.applyTheme(it)

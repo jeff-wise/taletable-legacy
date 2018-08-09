@@ -61,10 +61,10 @@ types:
         custom_coll_type: book_content_id 
       presence: optional
       description: A brief description of the game rules.
-    - name: groups
+    - name: group_index
       type: 
-        type: custom_coll_type
-        custom_coll_type: group
+        type: custom_type
+        custom_type: group_index
       presence: optional
       description: The groups.
     - name: chapters

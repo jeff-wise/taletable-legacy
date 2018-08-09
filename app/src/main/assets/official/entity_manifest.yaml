@@ -58,10 +58,10 @@ persisted_entities:
   category: 'Game'
   path: 'pathfinder2_playtest/pathfinder2_playtest.yaml'
   indexes:
-  - entity_id: '52358ebf-f2fb-4baa-aee9-b3780a84d0d6'
+  - entity_id: '9bf840aa-917e-4d1d-9133-62908bf5d241'
     index_type: group
     path: 'pathfinder2_playtest/indexes/weapon_groups.yaml'
-  - entity_id: '03787082-e9d9-4ea4-a0b4-6d36e6a99642'
+  - entity_id: '13445fda-8a44-46ce-8f74-6a424fbf771f'
     index_type: variable
     path: 'pathfinder2_playtest/indexes/weapon_variables.yaml'
 - entity_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
@@ -69,6 +69,13 @@ persisted_entities:
   name: 'Core Rules'
   category: 'Book'
   path: 'pathfinder2_playtest/books/core_rules.yaml'
+  indexes:
+  - entity_id: '20418398-a725-4d2c-aff9-4974a1e6330e'
+    index_type: group
+    path: 'pathfinder2_playtest/books/indexes/core_rules_groups.yaml'
+  - entity_id: 'be859356-2405-47b4-bc9e-3c56c4dc2e74'
+    index_type: variable
+    path: 'pathfinder2_playtest/books/indexes/core_rules_variables.yaml'
 - entity_id: '829bce54-aba6-4611-b73b-9f9b1a8fac6f'
   entity_type: book
   name: 'Using Tale Table'

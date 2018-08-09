@@ -5,30 +5,11 @@ groups:
 - id: '8138f056-193d-4780-92ed-18905be898f3'
   name: 'Introduction'
   summary: 'Introduction'
-  format:
-    element_format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: light
-          color_id: white
-      padding:
-        left: 12
-        right: 12
-        top: 10
-        bottom: 10
-      margins:
-        bottom: 8
   rows:
-  - format:
-      element_format:
-        horizontal_alignment: left
-    widgets:
+  - widgets:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
           value_format:
             element_format:
               horizontal_alignment: left
@@ -38,22 +19,14 @@ groups:
                 color_id: light_grey_20
               - theme_id: light
                 color_id: dark_grey_12
-            size: 40
+            size: 27
             font_style: regular
-            font: merriweather
+            font: roboto_condensed
         value_variable_id: introduction_title
-  - format:
-      element_format:
-        horizontal_alignment: left
-        margins:
-          top: 8
-    widgets:
+  - widgets:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
           value_format:
             element_format:
               horizontal_alignment: left

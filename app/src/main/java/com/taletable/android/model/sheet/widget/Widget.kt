@@ -741,12 +741,10 @@ data class BooleanWidget(private val widgetId : WidgetId,
         val viewBuilder = BooleanWidgetViewBuilder(this, entityId, context)
 
         groupContext.doMaybe { groupContext ->
-            Log.d("***WIDGET", "found group context")
             val variableRef = this.valueVariablesReference()
             when (variableRef) {
                 is VariableReferenceContextual -> {
                     entityEngineState(entityId).apDo {
-                        Log.d("***WIDGET", "setting contextual variable")
                         val context = VariableContext(groupContext.value)
                         setContextualVariable(variableRef.id(), context, entityId)
                         this.valueVariablesReference = VariableReferenceContextual(variableRef.id(), Just(context))
@@ -852,7 +850,6 @@ data class BooleanWidget(private val widgetId : WidgetId,
         {
             is BooleanWidgetUpdateToggle ->
             {
-                Log.d("***WIDGET", "boolean widget update toggle")
                 this.toggleValues(entityId)
                 rootView?.let { this.updateView(it, entityId, context) }
 
@@ -883,7 +880,6 @@ data class BooleanWidget(private val widgetId : WidgetId,
     {
         val booleanVariables = this.variables(entityId)
         booleanVariables.forEach {
-            Log.d("***WIDGET", "boolean toggling variable: ${it.variableId()}")
             it.toggleValue(entityId)
         }
     }
