@@ -192,6 +192,54 @@ data class Session(val sessionId : SessionId,
         return recordByType
     }
 
+
+    fun entityAndHeaders() : List<Any>
+    {
+        val items : MutableList<Any> = mutableListOf()
+
+        val entityByCategory : MutableMap<String,MutableList<Entity>> = mutableMapOf()
+
+        this.entityIds.forEach { entityId ->
+            entityRecord(entityId) apDo { record ->
+                val category = record.entity().category()
+                if (!entityByCategory.containsKey(category))
+                    entityByCategory.put(category, mutableListOf())
+
+                entityByCategory[category]!!.add(record.entity())
+            }
+        }
+
+        if (entityByCategory.containsKey("Player Character")) {
+            items.add("Player Characters")
+            entityByCategory["Player Character"]!!.forEach {
+                items.add(it)
+            }
+        }
+
+        if (entityByCategory.containsKey("Book")) {
+            items.add("Books")
+            entityByCategory["Book"]!!.forEach {
+                items.add(it)
+            }
+        }
+
+        if (entityByCategory.containsKey("Campaign")) {
+            items.add("Campaigns")
+            entityByCategory["Campaign"]!!.forEach {
+                items.add(it)
+            }
+        }
+
+        if (entityByCategory.containsKey("Game")) {
+            items.add("Games")
+            entityByCategory["Game"]!!.forEach {
+                items.add(it)
+            }
+        }
+
+        return items
+    }
+
 }
 
 

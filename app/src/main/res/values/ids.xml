@@ -341,8 +341,12 @@
     <item name="layout" type="id"/>
     <item name="name_view" type="id"/>
     <item name="icon_view" type="id"/>
+    <item name="label_view" type="id"/>
 
     <item name="image_view" type="id"/>
+    <item name="title_view" type="id"/>
+    <item name="reason_view" type="id"/>
+    <item name="icon_view_layout" type="id"/>
 
     <item name="drag_icon_view" type="id"/>
 

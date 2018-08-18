@@ -10,11 +10,15 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
+import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.taletable.android.R
+import com.taletable.android.activity.entity.book.fragment.BookFragment
+import com.taletable.android.activity.entity.book.fragment.ChapterFragment
+import com.taletable.android.activity.entity.book.fragment.ChapterUI
 import com.taletable.android.model.book.*
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
@@ -86,12 +90,25 @@ class BookActivity : AppCompatActivity()
             this.applyTheme(com.taletable.android.model.theme.official.officialAppThemeLight)
         }
 
-        val currentBookReference = this.currentBookReference
         val currentBook = this.currentBook
 
-        if (currentBookReference != null && currentBook != null)
-            this.setCurrentBookReference(currentBookReference)
+        if (currentBook != null)
+        {
+            if (findViewById<View>(R.id.fragment_container) != null) {
 
+                if (savedInstanceState != null) {
+                    return
+                }
+
+                // Create a new Fragment to be placed in the activity layout
+                val bookFragment = BookFragment.newInstance(currentBook.bookId)
+
+                // Add the fragment to the 'fragment_container' FrameLayout
+                supportFragmentManager.beginTransaction()
+                                      .add(R.id.fragment_container, bookFragment)
+                                      .commit()
+            }
+        }
     }
 
 
@@ -153,59 +170,49 @@ class BookActivity : AppCompatActivity()
 
     fun setCurrentBookReference(bookReference : BookReference)
     {
-        val contentView = this.findViewById<LinearLayout>(R.id.book_content)
-
         this.currentBook?.let { book ->
             when (bookReference)
             {
                 is BookReferenceBook ->
                 {
-                    val bookUI = BookUI(book, this, officialAppThemeLight)
-                    contentView.removeAllViews()
-                    contentView.addView(bookUI.view())
+                    val newFragment = BookFragment.newInstance(bookReference.bookId())
 
-                    this.referenceHistory.add(bookReference)
-
+                    val transaction = supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.fragment_container, newFragment)
+                    transaction.addToBackStack(null)
+                    transaction.commit()
                 }
                 is BookReferenceChapter ->
                 {
-                    book.chapter(bookReference.chapterId).doMaybe { chapter ->
-                        val chapterUI = ChapterUI(chapter, book, this, officialAppThemeLight)
-                        contentView.removeAllViews()
-                        contentView.addView(chapterUI.view())
+                    val newFragment = ChapterFragment.newInstance(bookReference.chapterId(), bookReference.bookId())
 
-                        this.referenceHistory.add(bookReference)
-                    }
+                    val transaction = supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.fragment_container, newFragment)
+                    transaction.addToBackStack(null)
+                    transaction.commit()
                 }
                 is BookReferenceSection ->
                 {
-                    book.section(bookReference.chapterId(), bookReference.sectionId()).doMaybe { section ->
-                        val sectionUI = SectionUI(section, book, bookReference.chapterId(), this, officialAppThemeLight)
-                        contentView.removeAllViews()
-                        contentView.addView(sectionUI.view())
-
-                        this.referenceHistory.add(bookReference)
-                    }
+//                    book.section(bookReference.chapterId(), bookReference.sectionId()).doMaybe { section ->
+//                        val sectionUI = SectionUI(section, book, bookReference.chapterId(), this, officialAppThemeLight)
+//                        contentView.removeAllViews()
+//                        contentView.addView(sectionUI.view())
+//
+//                        this.referenceHistory.add(bookReference)
+//                    }
                 }
                 is BookReferenceSubsection ->
                 {
-                    book.subsection(bookReference.chapterId(), bookReference.sectionId(), bookReference.subsectionId()).doMaybe { subsection ->
-                        val subsectionUI = SubsectionUI(subsection, book, this, officialAppThemeLight)
-                        contentView.removeAllViews()
-                        contentView.addView(subsectionUI.view())
-
-                        this.referenceHistory.add(bookReference)
-                    }
                 }
                 is BookReferenceContent ->
                 {
-                    book.content(bookReference.contentId).doMaybe {
-                        val cardUI = CardUI(book, it, this)
-                        contentView.removeAllViews()
-                        contentView.addView(cardUI.view())
-
-                        this.referenceHistory.add(bookReference)
-                    }
+//                    book.content(bookReference.contentId).doMaybe {
+//                        val cardUI = CardUI(book, it, this)
+//                        contentView.removeAllViews()
+//                        contentView.addView(cardUI.view())
+//
+//                        this.referenceHistory.add(bookReference)
+//                    }
                 }
 
             }

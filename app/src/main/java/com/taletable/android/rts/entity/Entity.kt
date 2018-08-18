@@ -1411,6 +1411,7 @@ interface Entity : Serializable
 //    val id : UUID
     fun entityId() : EntityId
     fun name() : String
+    fun category() : String
     fun summary() : String
 }
 

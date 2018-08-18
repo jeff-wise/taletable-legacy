@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -23,10 +22,6 @@ import com.taletable.android.activity.entity.book.BookActivity
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.book.Book
 import com.taletable.android.model.book.BookReferenceBook
-import com.taletable.android.model.campaign.Campaign
-import com.taletable.android.model.game.Game
-import com.taletable.android.model.sheet.Sheet
-import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
@@ -181,12 +176,9 @@ class ActiveSessionUI(val session : Session,
 //        recyclerView.layoutManager      = GridLayoutManager(context, 2)
         recyclerView.layoutManager      = LinearLayoutManager(context)
 
-        recyclerView.adapter            = ActiveSessionRecyclerViewAdapter(session.entities(),
+        recyclerView.adapter            = ActiveSessionRecyclerViewAdapter(session.entityAndHeaders(),
                                                                            theme,
                                                                            context)
-
-        recyclerView.padding.leftDp     = 4f
-        recyclerView.padding.rightDp    = 4f
 
         recyclerView.padding.topDp      = 6f
 
@@ -200,22 +192,104 @@ class ActiveSessionUI(val session : Session,
 }
 
 
-
+// | VIEW > Header
 // -----------------------------------------------------------------------------------------
-// ENTITY CARD VIEW
+
+fun headerView(theme : Theme, sessionActivity : SessionActivity) : LinearLayout
+{
+    val layout = headerViewLayout(sessionActivity)
+
+    // layout.addView(headerIconView(theme, sessionActivity))
+
+    layout.addView(headerLabelView(theme, sessionActivity))
+
+    return layout
+}
+
+
+private fun headerViewLayout(context : Context) : LinearLayout
+{
+    val layout              = LinearLayoutBuilder()
+
+    layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+    layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layout.orientation      = LinearLayout.HORIZONTAL
+
+    layout.gravity          = Gravity.CENTER_VERTICAL
+
+    layout.margin.bottomDp  = 4f
+    layout.margin.leftDp    = 12f
+    layout.margin.rightDp   = 12f
+
+    return layout.linearLayout(context)
+}
+
+
+private fun headerLabelView(theme : Theme,
+                            context : Context) : TextView
+{
+    val name                = TextViewBuilder()
+
+    name.id                 = R.id.label_view
+
+    name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+    name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    name.font               = Font.typeface(TextFont.RobotoCondensed,
+                                            TextFontStyle.Regular,
+                                            context)
+
+    val colorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+    name.color              = theme.colorOrBlack(colorTheme)
+
+    name.sizeSp             = 16f
+
+    return name.textView(context)
+}
+
+
+private fun headerIconView(theme : Theme, context : Context) : LinearLayout
+{
+    // (1) Declarations
+    // -----------------------------------------------------------------------------------------
+
+    val layout              = LinearLayoutBuilder()
+    val imageView           = ImageViewBuilder()
+
+    // (2) Layout
+    // -----------------------------------------------------------------------------------------
+
+    layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+    layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layout.child(imageView)
+
+    // (3) Image
+    // -----------------------------------------------------------------------------------------
+
+    imageView.id            = R.id.icon_view
+
+    imageView.widthDp       = 16
+    imageView.heightDp      = 16
+
+    val colorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+    imageView.color         = theme.colorOrBlack(colorTheme)
+
+    return layout.linearLayout(context)
+}
+
+
+// | VIEW > Entiy Card
 // -----------------------------------------------------------------------------------------
 
 fun entityCardView(theme : Theme, sessionActivity : SessionActivity) : LinearLayout
 {
     val layout = entityCardViewLayout(sessionActivity)
-
-    val headerLayout = entityCardHeaderViewLayout(sessionActivity)
-
-    headerLayout.addView(entityCardDefaultImageView(theme, sessionActivity))
-
-    headerLayout.addView(entityCardTypeView(theme, sessionActivity))
-
-    layout.addView(headerLayout)
 
     layout.addView(entityCardNameView(theme, sessionActivity))
 
@@ -238,69 +312,19 @@ private fun entityCardViewLayout(context : Context) : LinearLayout
 
     layout.backgroundColor      = Color.WHITE
 
-    layout.elevation            = 3f
+    layout.elevation            = 2f
 
     layout.gravity              = Gravity.CENTER_VERTICAL
 
-    layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
+    layout.padding.topDp        = 8f
+    layout.padding.bottomDp     = 8f
 
-    layout.padding.topDp        = 10f
-    layout.padding.bottomDp     = 10f
-
-    layout.padding.leftDp       = 8f
-    layout.padding.rightDp      = 8f
-
-    layout.margin.rightDp       = 1f
-    layout.margin.leftDp        = 1f
+    layout.padding.leftDp       = 12f
+    layout.padding.rightDp      = 12f
 
     layout.margin.bottomDp      = 4f
 
     return layout.linearLayout(context)
-}
-
-
-
-private fun entityCardHeaderViewLayout(context : Context) : LinearLayout
-{
-    val layout              = LinearLayoutBuilder()
-
-    layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-    layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-    layout.orientation      = LinearLayout.HORIZONTAL
-
-    layout.gravity          = Gravity.CENTER_VERTICAL
-
-    layout.margin.bottomDp  = 2f
-
-    return layout.linearLayout(context)
-}
-
-
-private fun entityCardTypeView(theme : Theme,
-                               context : Context) : TextView
-{
-    val name                = TextViewBuilder()
-
-    name.id                 = R.id.entity_card_type
-
-    name.width              = LinearLayout.LayoutParams.WRAP_CONTENT
-    name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
-
-    name.font               = Font.typeface(TextFont.RobotoCondensed,
-                                            TextFontStyle.Bold,
-                                            context)
-
-    val colorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
-    name.color              = theme.colorOrBlack(colorTheme)
-
-    name.sizeSp             = 15f
-
-    name.margin.leftDp      = 4f
-
-    return name.textView(context)
 }
 
 
@@ -331,44 +355,6 @@ private fun entityCardNameView(theme : Theme,
 }
 
 
-private fun entityCardDefaultImageView(theme : Theme, context : Context) : LinearLayout
-{
-    // (1) Declarations
-    // -----------------------------------------------------------------------------------------
-
-    val layout              = LinearLayoutBuilder()
-    val imageView           = ImageViewBuilder()
-
-    // (2) Layout
-    // -----------------------------------------------------------------------------------------
-
-    layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-    layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-//    val bgColorTheme = ColorTheme(setOf(
-//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-//            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_3"))))
-//    layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
-
-
-    layout.child(imageView)
-
-    // (3) Image
-    // -----------------------------------------------------------------------------------------
-
-    imageView.id            = R.id.image_view
-
-    imageView.widthDp       = 16
-    imageView.heightDp      = 16
-
-    val colorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
-    imageView.color         = theme.colorOrBlack(colorTheme)
-
-    return layout.linearLayout(context)
-}
-
 
 private fun entityCardSummaryView(theme : Theme,
                                   context : Context) : TextView
@@ -395,39 +381,72 @@ private fun entityCardSummaryView(theme : Theme,
 }
 
 
-
-
 // -----------------------------------------------------------------------------------------
 // RECYCLER VIEW ADPATER
 // -----------------------------------------------------------------------------------------
 
-class ActiveSessionRecyclerViewAdapter(val entityList : List<Entity>,
+class ActiveSessionRecyclerViewAdapter(val items : List<Any>,
                                        val theme : Theme,
                                        val sessionActivity : SessionActivity)
-        : RecyclerView.Adapter<EntityCardViewHolder>()
+        : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
+
+    // | Properties
+    // -------------------------------------------------------------------------------------
+
+    private val HEADER = 0
+    private val ENTITY  = 1
+
 
     // -------------------------------------------------------------------------------------
     // RECYCLER VIEW ADAPTER API
     // -------------------------------------------------------------------------------------
 
-    override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : EntityCardViewHolder
+    override fun getItemViewType(position : Int) : Int
     {
-        return EntityCardViewHolder(entityCardView(theme, sessionActivity),
-                                    theme,
-                                    sessionActivity)
-    }
+        val itemAtPosition = this.items[position]
 
-
-    override fun onBindViewHolder(viewHolder : EntityCardViewHolder, position : Int)
-    {
-        this.entityList[position]?.let {
-            viewHolder.setEntity(it)
+        return when (itemAtPosition) {
+            is String   -> HEADER
+            is Entity   -> ENTITY
+            else        -> ENTITY
         }
     }
 
 
-    override fun getItemCount() = this.entityList.size
+    override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : RecyclerView.ViewHolder = when (viewType)
+    {
+        HEADER ->
+        {
+            val headerView = headerView(theme, sessionActivity)
+            HeaderViewHolder(headerView, theme, sessionActivity)
+        }
+        else ->
+        {
+            val cardView = entityCardView(theme, sessionActivity)
+            EntityCardViewHolder(cardView, theme, sessionActivity)
+        }
+    }
+
+
+    override fun onBindViewHolder(viewHolder : RecyclerView.ViewHolder, position : Int)
+    {
+        val item = this.items[position]
+
+        when (item) {
+            is String -> {
+                val headerViewHolder = viewHolder as HeaderViewHolder
+                headerViewHolder.setHeader(item)
+            }
+            is Entity -> {
+                val entityViewHolder = viewHolder as EntityCardViewHolder
+                entityViewHolder.setEntity(item)
+            }
+        }
+    }
+
+
+    override fun getItemCount() = this.items.size
 
 }
 
@@ -436,7 +455,7 @@ class ActiveSessionRecyclerViewAdapter(val entityList : List<Entity>,
 
 
 // ---------------------------------------------------------------------------------------------
-// VIEW HOLDER
+// | View Holder: Entity Card
 // ---------------------------------------------------------------------------------------------
 
 /**
@@ -453,13 +472,11 @@ class EntityCardViewHolder(itemView : View,
     // -----------------------------------------------------------------------------------------
 
     var layout                  : LinearLayout? = null
-    var typeView                : TextView? = null
     var nameView                : TextView? = null
     var summaryView             : TextView? = null
-    var imageView               : ImageView? = null
-
 
     val context = sessionActivity
+
 
     // -----------------------------------------------------------------------------------------
     // INIT
@@ -468,10 +485,8 @@ class EntityCardViewHolder(itemView : View,
     init
     {
         this.layout             = itemView.findViewById(R.id.entity_card_layout)
-        this.typeView           = itemView.findViewById(R.id.entity_card_type)
         this.nameView           = itemView.findViewById(R.id.entity_card_name)
         this.summaryView        = itemView.findViewById(R.id.entity_card_summary)
-        this.imageView          = itemView.findViewById(R.id.image_view)
     }
 
 
@@ -491,33 +506,70 @@ class EntityCardViewHolder(itemView : View,
 
         this.nameView?.text = entity.name()
 
+        this.summaryView?.text = entity.summary()
+    }
 
+
+
+}
+
+
+// ---------------------------------------------------------------------------------------------
+// | View Holder: Header
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * The View Holder caches a view for each item.
+ */
+class HeaderViewHolder(itemView : View,
+                       val theme : Theme,
+                       val sessionActivity : SessionActivity)
+                       : RecyclerView.ViewHolder(itemView)
+{
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var textView : TextView? = null
+    var iconView : ImageView? = null
+
+    val context = sessionActivity
+
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.textView = itemView.findViewById(R.id.label_view)
+        this.iconView = itemView.findViewById(R.id.icon_view)
+    }
+
+
+
+    fun setHeader(header : String)
+    {
         var defaultDrawable : Drawable? = null
-        when (entity)
+        when (header)
         {
-            is Sheet    -> {
+            "Sheet"    -> {
                 defaultDrawable = ContextCompat.getDrawable(context, R.drawable.icon_document)
-                this.typeView?.text = "Sheet"
             }
-            is Campaign -> {
+            "Campaign" -> {
                 defaultDrawable = ContextCompat.getDrawable(context, R.drawable.icon_adventure)
-                this.typeView?.text = "Campaign"
             }
-            is Game     -> {
+            "Game"     -> {
                 defaultDrawable = ContextCompat.getDrawable(context, R.drawable.icon_die)
-                this.typeView?.text = "Game"
             }
-            is Book     -> {
+            "Book"     -> {
                 defaultDrawable = ContextCompat.getDrawable(context, R.drawable.icon_book)
-                this.typeView?.text = "Book"
             }
         }
 
-        this.imageView?.setImageDrawable(defaultDrawable)
-
-
-        this.summaryView?.text = entity.summary()
-
+        this.textView?.text = header
+        // this.iconView?.setImageDrawable(defaultDrawable)
     }
 
 

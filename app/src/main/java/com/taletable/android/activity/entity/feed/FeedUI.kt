@@ -4,19 +4,25 @@ package com.taletable.android.activity.entity.feed
 
 import android.content.Context
 import android.graphics.Color
+import android.sax.RootElement
 import android.support.v4.app.FragmentActivity
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.activity.sheet.group.SwipeAndDragHelper
 import com.taletable.android.lib.ui.*
+import com.taletable.android.model.AppAction
+import com.taletable.android.model.AppActionOpenNewsArticle
+import com.taletable.android.model.AppActionOpenSession
 import com.taletable.android.model.feed.Feed
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
@@ -81,17 +87,9 @@ class FeedUI(val feed : Feed,
     {
         val layout = this.cardViewLayout()
 
-        layout.addView(this.cardPinnedView())
-
-        layout.addView(this.cardTitleView())
-
-        layout.addView(this.dividerView())
+        layout.addView(this.cardHeaderView())
 
         layout.addView(this.cardGroupsLayout())
-
-        layout.addView(this.dividerView())
-
-        layout.addView(this.cardFooterView())
 
         return layout
     }
@@ -106,12 +104,10 @@ class FeedUI(val feed : Feed,
 
         layout.orientation      = LinearLayout.VERTICAL
 
+        layout.elevation        = 2f
+
         layout.backgroundColor  = Color.WHITE
 
-//        layout.corners          = Corners(3.0, 3.0, 3.0, 3.0)
-
-//        layout.margin.leftDp    = 6f
-//        layout.margin.rightDp   = 6f
         layout.margin.topDp     = 8f
 
         layout.padding.topDp    = 10f
@@ -120,88 +116,123 @@ class FeedUI(val feed : Feed,
     }
 
 
-    private fun cardPinnedView() : LinearLayout
+    private fun cardHeaderView() : RelativeLayout
+    {
+        val layout = this.cardHeaderViewLayout()
+
+        layout.addView(this.cardIconView())
+
+        val infoView = this.cardInfoView()
+        layout.addView(infoView)
+
+        val infoViewLP = infoView.layoutParams as RelativeLayout.LayoutParams
+        infoViewLP.addRule(RelativeLayout.END_OF, R.id.icon_view_layout)
+        infoView.layoutParams = infoViewLP
+
+        layout.addView(this.cardOptionsButtonView())
+
+        return layout
+    }
+
+
+    private fun cardHeaderViewLayout() : RelativeLayout
+    {
+        val layout                  = RelativeLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.margin.bottomDp     = 10f
+
+        return layout.relativeLayout(context)
+    }
+
+
+    private fun cardIconView() : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
 
         val layout                  = LinearLayoutBuilder()
         val iconView                = ImageViewBuilder()
-        val labelView               = TextViewBuilder()
 
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.id                   = R.id.card_pinned_layout
+        layout.layoutType           = LayoutType.RELATIVE
+        layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
 
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.id                   = R.id.icon_view_layout
 
-        layout.orientation          = LinearLayout.HORIZONTAL
+        layout.addRule(RelativeLayout.ALIGN_PARENT_START)
+        layout.addRule(RelativeLayout.CENTER_VERTICAL)
 
-        layout.gravity              = Gravity.CENTER_VERTICAL
+        layout.margin.leftDp        = 12f
 
-        layout.visibility           = View.GONE
+        layout.backgroundResource   = R.drawable.bg_card_icon
 
-        layout.margin.leftDp        = 10f
-        layout.margin.rightDp       = 12f
+        layout.gravity              = Gravity.CENTER
 
         layout.child(iconView)
-              .child(labelView)
 
         // (3 A) Icon
         // -------------------------------------------------------------------------------------
 
-        iconView.widthDp            = 15
-        iconView.heightDp           = 15
+        iconView.widthDp            = 19
+        iconView.heightDp           = 19
 
-        iconView.image              = R.drawable.icon_pin_filled
+        iconView.id                 = R.id.icon_view
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
-        iconView.color              = theme.colorOrBlack(colorTheme)
+        iconView.image              = R.drawable.icon_open_in_window
 
-        iconView.margin.rightDp     = 4f
-        iconView.padding.topDp      = 1f
-
-        // (3 B) Label
-        // -------------------------------------------------------------------------------------
-
-        labelView.width              = LinearLayout.LayoutParams.WRAP_CONTENT
-        labelView.height             = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        labelView.textId             = R.string.pinned
-
-        labelView.font               = Font.typeface(TextFont.RobotoCondensed,
-                                                     TextFontStyle.Regular,
-                                                     context)
-
-        val nameColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
-        labelView.color              = theme.colorOrBlack(nameColorTheme)
-
-        labelView.sizeSp             = 14f
-
-        labelView.padding.bottomDp   = 2f
+        iconView.color              = Color.WHITE
 
         return layout.linearLayout(context)
     }
+
+
+    private fun cardInfoView() : LinearLayout
+    {
+        val layout = this.cardInfoViewLayout()
+
+        layout.addView(this.cardTitleView())
+
+        layout.addView(this.cardReasonView())
+
+        return layout
+    }
+
+
+
+    private fun cardInfoViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.layoutType           = LayoutType.RELATIVE
+        layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.VERTICAL
+
+        layout.margin.leftDp        = 12f
+
+        layout.addRule(RelativeLayout.CENTER_VERTICAL)
+
+        return layout.linearLayout(context)
+    }
+
+
 
 
     private fun cardTitleView() : TextView
     {
         val titleView               = TextViewBuilder()
 
-        titleView.id                = R.id.card_title
+        titleView.id                = R.id.title_view
 
         titleView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         titleView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        titleView.margin.leftDp     = 12f
-        titleView.margin.rightDp    = 12f
-        titleView.margin.bottomDp   = 10f
 
         titleView.font              = Font.typeface(TextFont.RobotoCondensed,
                                                     TextFontStyle.Medium,
@@ -212,9 +243,79 @@ class FeedUI(val feed : Feed,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
         titleView.color              = theme.colorOrBlack(nameColorTheme)
 
-        titleView.sizeSp             = 16f
+        titleView.sizeSp             = 15f
+
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_2"))))
+//        titleView.backgroundColor    = theme.colorOrBlack(bgColorTheme)
+        //layout.backgroundColor  = Color.WHITE
 
         return titleView.textView(context)
+    }
+
+
+    private fun cardReasonView() : TextView
+    {
+        val titleView               = TextViewBuilder()
+
+        titleView.id                = R.id.reason_view
+
+        titleView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        titleView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        titleView.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                    TextFontStyle.Medium,
+                                                    context)
+
+        val nameColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
+        titleView.color              = theme.colorOrBlack(nameColorTheme)
+
+        titleView.sizeSp             = 15f
+
+        return titleView.textView(context)
+    }
+
+
+
+    private fun cardOptionsButtonView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout                  = LinearLayoutBuilder()
+        val iconView                = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.layoutType           = LayoutType.RELATIVE
+        layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+        layout.addRule(RelativeLayout.ALIGN_PARENT_END)
+        layout.addRule(RelativeLayout.CENTER_VERTICAL)
+
+        layout.margin.rightDp       = 12f
+
+        layout.child(iconView)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        iconView.widthDp            = 24
+        iconView.heightDp           = 24
+
+        iconView.image              = R.drawable.icon_vertical_ellipsis
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+        iconView.color              = theme.colorOrBlack(colorTheme)
+
+        return layout.linearLayout(context)
     }
 
 
@@ -228,6 +329,8 @@ class FeedUI(val feed : Feed,
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation      = LinearLayout.VERTICAL
+
+        layout.backgroundColor  = Color.WHITE
 
         return layout.linearLayout(context)
     }
@@ -255,6 +358,11 @@ class FeedUI(val feed : Feed,
         layout.margin.rightDp   = 8f
         layout.margin.leftDp    = 8f
 
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_2"))))
+//        layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
+
         return layout.relativeLayout(context)
     }
 
@@ -268,8 +376,11 @@ class FeedUI(val feed : Feed,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_4"))))
         layout.backgroundColor      = theme.colorOrBlack(bgColorTheme)
+
+        layout.margin.leftDp    = 12f
+        layout.margin.rightDp   = 12f
 
         return layout.linearLayout(context)
     }
@@ -373,23 +484,15 @@ class FeedRecyclerViewAdapater(private val feed : Feed,
         val card = this.feed.cards()[position]
 
         viewHolder.setTitleText(card.title().value)
+        viewHolder.setReasonText(card.reason().value)
 
-        if (card.isPinned().value)
-            viewHolder.showPinnedLayout()
+        card.appAction().doMaybe {
+            viewHolder.setAction(it)
+        }
 
         val groupViews = card.groups(feed.entityId())
                              .map { it.view(feed.entityId(), context) }
         viewHolder.addGroupViews(groupViews)
-
-        when (card.appAction()) {
-            is Just -> {
-                val actionLabel = card.actionLabel()
-                when (actionLabel) {
-                    is Just    -> viewHolder.showReadMoreButton(actionLabel.value.value.toUpperCase())
-                    is Nothing -> viewHolder.showReadMoreButton("READ MORE")
-                }
-            }
-        }
     }
 
 
@@ -430,10 +533,10 @@ class CardViewHolder(itemView : View,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var isPinnedLayout     : LinearLayout?  = null
     var titleView          : TextView?  = null
+    var reasonView         : TextView?  = null
+    var iconView           : ImageView?  = null
     var groupsLayout       : LinearLayout?  = null
-    var readMoreButtonView : TextView?  = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -442,10 +545,10 @@ class CardViewHolder(itemView : View,
 
     init
     {
-        this.isPinnedLayout     = itemView.findViewById(R.id.card_pinned_layout)
-        this.titleView          = itemView.findViewById(R.id.card_title)
+        this.titleView          = itemView.findViewById(R.id.title_view)
+        this.reasonView         = itemView.findViewById(R.id.reason_view)
+        this.iconView           = itemView.findViewById(R.id.icon_view)
         this.groupsLayout       = itemView.findViewById(R.id.card_groups_layout)
-        this.readMoreButtonView = itemView.findViewById(R.id.card_read_more_button)
     }
 
 
@@ -453,15 +556,29 @@ class CardViewHolder(itemView : View,
     // METHODS
     // -----------------------------------------------------------------------------------------
 
-    fun showPinnedLayout()
-    {
-        this.isPinnedLayout?.visibility = View.VISIBLE
-    }
-
 
     fun setTitleText(titleString : String)
     {
         this.titleView?.text = titleString
+    }
+
+
+    fun setReasonText(reason : String)
+    {
+        this.reasonView?.text = reason
+    }
+
+
+    fun setAction(action : AppAction)
+    {
+        when (action) {
+            is AppActionOpenNewsArticle -> {
+                this.iconView?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.icon_news))
+            }
+            is AppActionOpenSession -> {
+                this.iconView?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.icon_open_in_window))
+            }
+        }
     }
 
 
@@ -476,10 +593,81 @@ class CardViewHolder(itemView : View,
     }
 
 
-    fun showReadMoreButton(label : String)
-    {
-        this.readMoreButtonView?.visibility = View.VISIBLE
-        this.readMoreButtonView?.text = label
-    }
-
 }
+
+//
+//    private fun cardPinnedView() : LinearLayout
+//    {
+//        // (1) Declarations
+//        // -------------------------------------------------------------------------------------
+//
+//        val layout                  = LinearLayoutBuilder()
+//        val iconView                = ImageViewBuilder()
+//        val labelView               = TextViewBuilder()
+//
+//        // (2) Layout
+//        // -------------------------------------------------------------------------------------
+//
+//        layout.id                   = R.id.card_pinned_layout
+//
+//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        layout.orientation          = LinearLayout.HORIZONTAL
+//
+//        layout.gravity              = Gravity.CENTER_VERTICAL
+//
+////        val bgColorTheme = ColorTheme(setOf(
+////                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+////                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_3"))))
+////        layout.backgroundColor              = theme.colorOrBlack(bgColorTheme)
+//        layout.backgroundColor  = Color.WHITE
+//
+//        layout.visibility           = View.GONE
+//
+//        layout.padding.leftDp        = 10f
+//        layout.padding.rightDp       = 12f
+//
+//        layout.child(iconView)
+//              .child(labelView)
+//
+//        // (3 A) Icon
+//        // -------------------------------------------------------------------------------------
+//
+//        iconView.widthDp            = 15
+//        iconView.heightDp           = 15
+//
+//        iconView.image              = R.drawable.icon_pin_filled
+//
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
+//        iconView.color              = theme.colorOrBlack(colorTheme)
+//
+//        iconView.margin.rightDp     = 4f
+//        iconView.padding.topDp      = 1f
+//
+//        // (3 B) Label
+//        // -------------------------------------------------------------------------------------
+//
+//        labelView.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+//        labelView.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        labelView.textId             = R.string.pinned
+//
+//        labelView.font               = Font.typeface(TextFont.RobotoCondensed,
+//                                                     TextFontStyle.Regular,
+//                                                     context)
+//
+//        val nameColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_22"))))
+//        labelView.color              = theme.colorOrBlack(nameColorTheme)
+//
+//        labelView.sizeSp             = 14f
+//
+//        labelView.padding.bottomDp   = 2f
+//
+//        return layout.linearLayout(context)
+//    }
+

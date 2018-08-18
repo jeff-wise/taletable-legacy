@@ -72,39 +72,18 @@ content:
   - type: group_id
     group_id: '6d2e2936-04f8-4ac5-8591-39aebfbcd93f'
 chapters:
-- id: creating_characters
-  title: 'Creating Characters'
+- id: ancestries_and_backgrounds
+  title: 'Ancestries and Backgrounds'
   sections:
-  - id: races
-    title: 'Races'
-    body:
-      id: aslka
-      title: Title
-      groups:
-  - id: classes
-    title: 'Classes'
-    body:
-      id: aslka
-      title: Title
-      groups:
-  - id: alignment
-    title: 'Alignment'
-    body:
-      id: aslka
-      title: Title
-      groups:
-  - id: languages
-    title: 'Languages'
-    body:
-      id: aslka
-      title: Title
-      groups:
-  - id: backgrounds
-    title: 'Backgrounds'
-    body:
-      id: aslka
-      title: Title
-      groups:
+- id: classes
+  title: 'Classes'
+  sections:
+- id: skills
+  title: 'Skills'
+  sections:
+- id: feats
+  title: 'Feats'
+  sections:
 - id: equipment
   title: 'Equipment'
   sections:
@@ -127,9 +106,6 @@ chapters:
       subtitle: 'The weapons in the game.'
       body:
       - subsection_weapon_list
-- id: gameplay
-  title: 'Gameplay'
-  sections:
 - id: spells
   title: 'Spells'
   sections:
@@ -139,28 +115,16 @@ chapters:
       id: aslka
       title: Title
       groups:
-- id: monsters
-  title: 'Monsters'
+- id: advancement_and_options
+  title: 'Advancement and Options'
   sections:
-- id: running_a_game
-  title: 'Running a Game'
+- id: playing_the_game
+  title: 'Playing the Game'
   sections:
-#    subsections:
-#    - id: challenge
-#      title: Challenge
-#      body: |+
-#        A monster’s **challenge rating** tells you how great a threat the monster is. An appropriately equipped and well-rested party of four adventurers should be able to defeat a monster that has a challenge rating equal to its level without suffering any deaths. For example, a party of four 3rd-level characters should find a monster with a challenge rating of 3 to be a worthy challenge, but not a deadly one.
-#
-#        Monsters that are significantly weaker than 1st-level characters have a challenge rating lower than 1. Monsters with a challenge rating of 0 are insignificant except in large numbers; those with no effective attacks are worth no experience points, while those that have attacks are worth 10 XP each.
-#
-#        Some monsters present a greater challenge than even a typical 20th-level party can handle. These monsters have a challenge rating of 21 or higher and are specifically designed to test player skill.
-#
-#        ### Experience Points
-#
-#        The number of experience points (XP) a monster is worth is based on its challenge rating. Typically, XP is awarded for defeating the monster, although the GM may also award XP for neutralizing the threat posed by the monster in some other manner.
-#
-#        Unless something tells you otherwise, a monster summoned by a spell or other magical ability is worth the XP noted in its stat block.
-
-
-
+- id: game_mastering
+  title: 'Game Mastering'
+  sections:
+- id: treasure
+  title: 'Treasure'
+  sections:
 

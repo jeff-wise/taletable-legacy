@@ -244,7 +244,7 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
         val tabDivider = findViewById<LinearLayout>(R.id.tab_divider)
 
         val playUI = PlayUI(officialAppThemeLight, context)
-        subToolbar?.addView(playUI.savedSessionListHeaderView())
+//        subToolbar?.addView(playUI.savedSessionListHeaderView())
 
         fab.setOnClickListener {
             val intent = Intent(this, NewSessionActivity::class.java)

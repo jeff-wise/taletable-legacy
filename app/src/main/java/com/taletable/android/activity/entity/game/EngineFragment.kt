@@ -1,5 +1,5 @@
 
-package com.taletable.android.activity.game
+package com.taletable.android.activity.entity.game
 
 
 import android.content.Context

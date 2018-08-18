@@ -851,18 +851,18 @@ class CompoundValueSetRecyclerViewAdapter(val items : List<Any>,
                 {
                     valueViewHolder.setValueText(item.value().toString())
                 }
-            }
-        }
-        else if (item is ValueSetLabel)
-        {
-            val headerViewHolder = viewHolder as HeaderViewHolder
+}
+}
+else if (item is ValueSetLabel)
+{
+    val headerViewHolder = viewHolder as HeaderViewHolder
 //            headerViewHolder.setHeaderText(item.value.toUpperCase())
-            headerViewHolder.setHeaderText(item.value)
-        }
-    }
+    headerViewHolder.setHeaderText(item.value)
+}
+}
 
 
-    override fun getItemCount() = this.items.size
+override fun getItemCount() = this.items.size
 
 }
 

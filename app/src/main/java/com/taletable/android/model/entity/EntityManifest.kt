@@ -8,7 +8,6 @@ import com.taletable.android.app.AppEff
 import com.taletable.android.app.AppOfficialError
 import com.taletable.android.app.ApplicationLog
 import com.taletable.android.model.engine.variable.Variable
-import com.taletable.android.model.sheet.group.GroupIndex
 import com.taletable.android.official.GameManifestParseError
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.EntityIndexType

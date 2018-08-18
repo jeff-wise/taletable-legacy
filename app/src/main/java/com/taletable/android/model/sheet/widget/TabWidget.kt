@@ -784,6 +784,8 @@ class TabWidgetUI(val tabWidget : WidgetTab,
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
+        label.layoutGravity     = format.elementFormat().alignment().gravityConstant()
+
         label.text              = labelString
 
         label.color             = colorOrBlack(format.colorTheme(), entityId)

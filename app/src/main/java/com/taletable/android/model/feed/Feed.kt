@@ -125,6 +125,9 @@ data class Feed(private val feedId : EntityId,
     override fun entityId() = this.feedId
 
 
+    override fun category() = "Feed"
+
+
     // -----------------------------------------------------------------------------------------
     // GROUPS
     // -----------------------------------------------------------------------------------------

@@ -22,7 +22,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.taletable.android.R
-import com.taletable.android.activity.game.GameActivity
+import com.taletable.android.activity.entity.game.GameActivity
 import com.taletable.android.activity.session.GamesListActivity
 import com.taletable.android.app.AppSettings
 import com.taletable.android.app.ApplicationLog

@@ -26,7 +26,7 @@ import java.io.Serializable
  * Card
  */
 data class Card(private val title : CardTitle,
-                private val isPinned : CardIsPinned,
+                private val reason : CardReason,
                 private val appAction : Maybe<AppAction>,
                 private val actionLabel : Maybe<CardActionLabel>,
                 private val groupReferences : List<GroupReference>)
@@ -46,8 +46,8 @@ data class Card(private val title : CardTitle,
                 effect.apply(::Card,
                       // Title
                       doc.at("title").apply { CardTitle.fromDocument(it) },
-                      // Is Pinned?
-                      doc.at("is_pinned").apply { CardIsPinned.fromDocument(it) },
+                      // Reason
+                      doc.at("reason").apply { CardReason.fromDocument(it) },
                       // App Action
                       split(doc.maybeAt("app_action"),
                             effValue<ValueError,Maybe<AppAction>>(Nothing()),
@@ -83,7 +83,7 @@ data class Card(private val title : CardTitle,
     fun title() : CardTitle = this.title
 
 
-    fun isPinned() : CardIsPinned = this.isPinned
+    fun reason() : CardReason = this.reason
 
 
     fun groupReferences() : List<GroupReference> = this.groupReferences
@@ -136,21 +136,21 @@ data class CardTitle(val value : String) : ToDocument, Serializable
 
 
 /**
- * Card Is Pinned
+ * Card Reason
  */
-data class CardIsPinned(val value : Boolean) : ToDocument, java.io.Serializable
+data class CardReason(val value : String) : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<CardIsPinned>
+    companion object : Factory<CardReason>
     {
-        override fun fromDocument(doc : SchemaDoc) : ValueParser<CardIsPinned> = when (doc)
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<CardReason> = when (doc)
         {
-            is DocBoolean -> effValue(CardIsPinned(doc.boolean))
-            else          -> effError(lulo.value.UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
+            is DocText -> effValue(CardReason(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 
@@ -159,7 +159,7 @@ data class CardIsPinned(val value : Boolean) : ToDocument, java.io.Serializable
     // TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun toDocument() = DocBoolean(this.value)
+    override fun toDocument() = DocText(this.value)
 
 }
 

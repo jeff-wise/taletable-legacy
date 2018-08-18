@@ -123,6 +123,9 @@ data class Game(val gameId : EntityId,
     override fun entityId() = this.gameId
 
 
+    override fun category() = "Game"
+
+
 }
 
 

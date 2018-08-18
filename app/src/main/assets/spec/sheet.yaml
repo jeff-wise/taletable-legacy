@@ -109,6 +109,12 @@ types:
       presence: optional
       description: >
         The collection of variables that represent the sheet's unique data.
+    - name: category
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The sheet category.
     - name: settings
       type: 
         type: custom_type

@@ -4,6 +4,7 @@ package com.taletable.android.activity.sheet
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -48,71 +49,75 @@ class SheetOptionsUI(val sheetActivity : SheetActivity)
     {
         val layout = this.viewLayout()
 
+        // Tutorial
+        layout.addView(this.buttonView(R.drawable.icon_bookmark_filled,
+                                           R.string.tutorial))
+
         // Edit
-        val editLayout = buttonGroupLayout()
-        layout.addView(editLayout)
-
-        editLayout.addView(this.headerView(R.string.edit, null))
-
-        // ------------------------
-        layout.addView(this.dividerView())
-
-        // Layout Editor
-        editLayout.addView(this.editModeView())
-
-        // Edit State
-        editLayout.addView(this.buttonView(R.drawable.icon_apps,
-                                           R.string.edit_state))
-
-        // Edit Rules
-        editLayout.addView(this.buttonView(R.drawable.icon_bulleted_list,
-                                           R.string.edit_rules))
-
-        // Settings
-        val settingsLayout = buttonGroupLayout()
-        layout.addView(settingsLayout)
-
-        settingsLayout.addView(this.headerView(R.string.settings, null))
-
-        // Theme Button
-        settingsLayout.addView(this.buttonView(R.drawable.icon_change_theme,
-                                               R.string.manage_themes))
-
-        // ------------------------
-        layout.addView(this.dividerView())
-
-
-        // Save
-        val saveLayout = buttonGroupLayout()
-        layout.addView(saveLayout)
-
-        saveLayout.addView(this.headerView(R.string.save, null))
-
-        // Save Copy
-        val onSave = View.OnClickListener {
-            val intent = Intent(sheetActivity, SaveSheetActivity::class.java)
-
-            val sheetId = sheetActivity.sheetId
-            if (sheetId != null)
-                intent.putExtra("sheet_id", sheetId)
-            sheetActivity.startActivity(intent)
-        }
-        saveLayout.addView(this.buttonView(R.drawable.icon_save,
-                                           R.string.save_sheet_copy,
-                                           onSave))
-
-        // ------------------------
-        layout.addView(this.dividerView())
-
-        // Share
-        val shareLayout = buttonGroupLayout()
-        layout.addView(shareLayout)
-
-        shareLayout.addView(this.headerView(R.string.share, null))
-
-        // Export to File
-        shareLayout.addView(this.buttonView(R.drawable.icon_download,
-                                           R.string.export_to_file))
+//        val editLayout = buttonGroupLayout()
+//        layout.addView(editLayout)
+//
+//        editLayout.addView(this.headerView(R.string.edit, null))
+//
+//        // ------------------------
+//        layout.addView(this.dividerView())
+//
+//        // Layout Editor
+//        editLayout.addView(this.editModeView())
+//
+//        // Edit State
+//        editLayout.addView(this.buttonView(R.drawable.icon_apps,
+//                                           R.string.edit_state))
+//
+//        // Edit Rules
+//        editLayout.addView(this.buttonView(R.drawable.icon_bulleted_list,
+//                                           R.string.edit_rules))
+//
+//        // Settings
+//        val settingsLayout = buttonGroupLayout()
+//        layout.addView(settingsLayout)
+//
+//        settingsLayout.addView(this.headerView(R.string.settings, null))
+//
+//        // Theme Button
+//        settingsLayout.addView(this.buttonView(R.drawable.icon_change_theme,
+//                                               R.string.manage_themes))
+//
+//        // ------------------------
+//        layout.addView(this.dividerView())
+//
+//
+//        // Save
+//        val saveLayout = buttonGroupLayout()
+//        layout.addView(saveLayout)
+//
+//        saveLayout.addView(this.headerView(R.string.save, null))
+//
+//        // Save Copy
+//        val onSave = View.OnClickListener {
+//            val intent = Intent(sheetActivity, SaveSheetActivity::class.java)
+//
+//            val sheetId = sheetActivity.sheetId
+//            if (sheetId != null)
+//                intent.putExtra("sheet_id", sheetId)
+//            sheetActivity.startActivity(intent)
+//        }
+//        saveLayout.addView(this.buttonView(R.drawable.icon_save,
+//                                           R.string.save_sheet_copy,
+//                                           onSave))
+//
+//        // ------------------------
+//        layout.addView(this.dividerView())
+//
+//        // Share
+//        val shareLayout = buttonGroupLayout()
+//        layout.addView(shareLayout)
+//
+//        shareLayout.addView(this.headerView(R.string.share, null))
+//
+//        // Export to File
+//        shareLayout.addView(this.buttonView(R.drawable.icon_download,
+//                                           R.string.export_to_file))
 
 
         return layout
@@ -257,6 +262,8 @@ class SheetOptionsUI(val sheetActivity : SheetActivity)
         layout.margin.rightDp   = 10f
 
         layout.onClick          = onClick
+
+        layout.backgroundColor  = Color.WHITE
 
         layout.child(icon)
               .child(label)

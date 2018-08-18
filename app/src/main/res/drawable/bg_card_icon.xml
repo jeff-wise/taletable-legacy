@@ -5,11 +5,11 @@
     android:shape="oval">
 
     <solid
-        android:color="@color/light_theme_dark_grey_22">
+        android:color="@color/light_theme_dark_grey_16">
     </solid>
 
     <size
-        android:width="20dp"
-        android:height="19dp"/>
+        android:width="38dp"
+        android:height="38dp"/>
 
 </shape>

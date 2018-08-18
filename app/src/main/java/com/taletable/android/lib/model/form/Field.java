@@ -515,7 +515,7 @@ public class Field implements Serializable
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        layout.backgroundResource   = R.drawable.bg_form_case_field;
+//        layout.backgroundResource   = R.drawable.bg_form_case_field;
         layout.backgroundColor      = R.color.dark_theme_primary_86;
 
         return layout.linearLayout(context);

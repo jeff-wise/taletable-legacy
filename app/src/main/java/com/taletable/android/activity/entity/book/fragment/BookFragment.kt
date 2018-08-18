@@ -1,8 +1,11 @@
 
-package com.taletable.android.activity.entity.book
+package com.taletable.android.activity.entity.book.fragment
 
 
 import android.graphics.Color
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -10,19 +13,93 @@ import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.taletable.android.R
+import com.taletable.android.activity.entity.book.BookActivity
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.book.*
 import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
+import com.taletable.android.model.theme.official.officialThemeLight
+import com.taletable.android.rts.entity.EntityId
+import com.taletable.android.rts.entity.book
 import com.taletable.android.rts.entity.groups
+import maybe.Just
 
 
-class ChapterUI(val chapter : BookChapter,
-                val book : Book,
-                val bookActivity : BookActivity,
-                val theme : Theme)
+
+/**
+ * Book Fragment
+ */
+class BookFragment : Fragment()
+{
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    private var bookId : EntityId? = null
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun newInstance(bookId : EntityId) : BookFragment
+        {
+            val fragment = BookFragment()
+
+            val args = Bundle()
+            args.putSerializable("book_id", bookId)
+            fragment.arguments = args
+
+            return fragment
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // FRAGMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun onCreate(savedInstanceState : Bundle?)
+    {
+        super.onCreate(savedInstanceState)
+
+        this.bookId = arguments?.getSerializable("book_id") as EntityId
+    }
+
+
+    override fun onCreateView(inflater : LayoutInflater,
+                              container : ViewGroup?,
+                              savedInstanceState : Bundle?) : View?
+    {
+        val bookId  = this.bookId
+        val context = getContext()
+
+        var view : View? =null
+
+        if (bookId != null && context != null)
+        {
+            val bookActivity = context as BookActivity
+            book(bookId).doMaybe {
+                view = BookUI(it, bookActivity, officialThemeLight).view()
+            }
+        }
+
+        return view
+    }
+
+
+}
+
+
+
+class BookUI(val book : Book,
+             private val bookActivity : BookActivity,
+             val theme : Theme)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -42,16 +119,15 @@ class ChapterUI(val chapter : BookChapter,
         val layout = this.viewLayout()
         scrollView.addView(layout)
 
-        // Title
-        layout.addView(this.titleView())
+        book.introductionContent().forEach { content ->
+            groups(content.groupReferences(), book.entityId()).forEach {
+                layout.addView(it.view(book.entityId(), context))
+            }
+        }
 
-        // Introduction
-        layout.addView(this.contentView(chapter.introductionContent(book)))
+        layout.addView(this.headerView(R.string.chapters))
 
-        // Section List
-        layout.addView(this.sectionListView())
-
-        // Conclusion
+        layout.addView(this.chapterListView())
 
         return scrollView
     }
@@ -78,65 +154,58 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.orientation          = LinearLayout.VERTICAL
 
-        layout.margin.leftDp        = 6f
-        layout.margin.rightDp       = 6f
-
         layout.padding.bottomDp     = 70f
 
         return layout.linearLayout(context)
     }
 
 
-    // VIEWS > Title
-    // --------------------------------------------------------------------------------------------
+    // VIEWS > Header
+    // -----------------------------------------------------------------------------------------
 
-    private fun titleView() : TextView
+    private fun headerView(headerStringId : Int) : TextView
     {
-        val title                = TextViewBuilder()
+        val header              = TextViewBuilder()
 
-        title.width              = LinearLayout.LayoutParams.WRAP_CONTENT
-        title.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+        header.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        title.text               = chapter.title().value
+        header.backgroundColor  = Color.WHITE
 
-        title.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+        header.textId           = headerStringId
+
+        header.font             = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Regular,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        title.color              = theme.colorOrBlack(colorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+        header.color            = theme.colorOrBlack(colorTheme)
 
-        title.sizeSp             = 28f
+        header.sizeSp           = 16f
 
-        title.corners            = Corners(2.0, 2.0, 2.0, 2.0)
+        header.padding.topDp     = 8f
+        header.padding.bottomDp  = 8f
 
-        title.backgroundColor    = Color.WHITE
+        header.padding.leftDp    = 12f
+        header.padding.rightDp   = 12f
 
-        title.padding.topDp      = 8f
-        title.padding.bottomDp   = 8f
-        title.padding.leftDp     = 10f
-        title.padding.rightDp    = 10f
-
-        title.margin.topDp       = 10f
-
-        return title.textView(context)
+        return header.textView(context)
     }
 
-
     // VIEWS > Content
-    // --------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
-    private fun contentView(contentList : List<BookContent>) : LinearLayout
+    private fun contentView(content : BookContent) : LinearLayout
     {
         val layout = this.contentViewLayout()
 
-        contentList.forEach { content ->
-            groups(content.groupReferences(), book.entityId()).forEach {
-                layout.addView(it.view(book.entityId(), context))
-            }
+        groups(content.groupReferences(), book.entityId()).forEach {
+            layout.addView(it.view(book.entityId(), context))
         }
+
+        //layout.addView(this.contentReadMoreView())
 
         return layout
     }
@@ -164,22 +233,22 @@ class ChapterUI(val chapter : BookChapter,
     }
 
 
-    // VIEWS > Section List
+    // VIEWS > Chapter List
     // -----------------------------------------------------------------------------------------
 
-    private fun sectionListView() : LinearLayout
+    private fun chapterListView() : LinearLayout
     {
-        val layout = this.sectionListViewLayout()
+        val layout = this.chapterListViewLayout()
 
-        chapter.sections().forEach {
-            layout.addView(this.sectionSummaryView(it))
+        book.chapters().forEach {
+            layout.addView(this.chapterSummaryView(it))
         }
 
         return layout
     }
 
 
-    private fun sectionListViewLayout() : LinearLayout
+    private fun chapterListViewLayout() : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 
@@ -192,19 +261,24 @@ class ChapterUI(val chapter : BookChapter,
     }
 
 
-    private fun sectionSummaryView(section : BookSection) : ViewGroup
+    private fun chapterSummaryView(chapter : BookChapter) : ViewGroup
     {
-        val layout = this.sectionSummaryViewLayout(section.sectionId)
+        val layout = this.chapterSummaryViewLayout()
 
-        layout.addView(this.sectionSummaryTextView(section.title().value))
+        layout.addView(this.chapterSummaryTextView(chapter.title().value))
 
-        layout.addView(this.sectionSummaryIconView())
+        layout.addView(this.chapterSummaryIconView())
+
+        layout.setOnClickListener {
+            val chapterReference = BookReferenceChapter(book.entityId(), chapter.chapterId())
+            bookActivity.setCurrentBookReference(chapterReference)
+        }
 
         return layout
     }
 
 
-    private fun sectionSummaryViewLayout(sectionId : BookSectionId) : RelativeLayout
+    private fun chapterSummaryViewLayout() : RelativeLayout
     {
         val layout                  = RelativeLayoutBuilder()
 
@@ -215,29 +289,19 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.backgroundColor      = Color.WHITE
 
-        layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
-
         layout.padding.topDp        = 10f
         layout.padding.bottomDp     = 10f
-        layout.padding.leftDp       = 8f
-        layout.padding.rightDp      = 8f
+        layout.padding.leftDp       = 12f
+        layout.padding.rightDp      = 14f
 
         layout.margin.topDp         = 1f
-
-        layout.onClick              = View.OnClickListener {
-            val sectionReference = BookReferenceSection(book.entityId(),
-                                                        this.chapter.chapterId,
-                                                        sectionId)
-            bookActivity.setCurrentBookReference(sectionReference)
-        }
-
 
         return layout.relativeLayout(context)
 
     }
 
 
-    private fun sectionSummaryTextView(summaryString : String) : TextView
+    private fun chapterSummaryTextView(summaryString : String) : TextView
     {
         val summary                 = TextViewBuilder()
 
@@ -250,8 +314,8 @@ class ChapterUI(val chapter : BookChapter,
 
         summary.text                = summaryString
 
-        summary.font                = Font.typeface(TextFont.default(),
-                                                    TextFontStyle.Regular,
+        summary.font                = Font.typeface(TextFont.RobotoCondensed,
+                                                    TextFontStyle.Bold,
                                                     context)
 
         val colorTheme = ColorTheme(setOf(
@@ -259,9 +323,7 @@ class ChapterUI(val chapter : BookChapter,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
-        summary.sizeSp              = 19f
-
-        summary.corners             = Corners(2.0, 2.0, 2.0, 2.0)
+        summary.sizeSp              = 18f
 
         summary.backgroundColor     = Color.WHITE
 
@@ -270,7 +332,7 @@ class ChapterUI(val chapter : BookChapter,
     }
 
 
-    private fun sectionSummaryIconView() : LinearLayout
+    private fun chapterSummaryIconView() : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------

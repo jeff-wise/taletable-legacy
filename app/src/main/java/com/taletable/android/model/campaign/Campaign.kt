@@ -86,6 +86,9 @@ data class Campaign(val campaignId : EntityId,
 
     override fun entityId() = this.campaignId
 
+
+    override fun category() = "Campaign"
+
 }
 
 

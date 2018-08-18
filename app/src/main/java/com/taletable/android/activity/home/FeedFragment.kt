@@ -163,9 +163,9 @@ class FeedFragment : Fragment()
                 TextFormat.default()
                    .withColorTheme(ColorTheme(setOf(
                        ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8")))))
-                   .withSize(TextSize(22f))
+                   .withSize(TextSize(19f))
                    .withFont(TextFont.RobotoCondensed)
-                   .withFontStyle(TextFontStyle.Regular)
+                   .withFontStyle(TextFontStyle.Bold)
                    .withElementFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left))
         val titleTextWidgetFormat =
                 TextWidgetFormat(
@@ -207,13 +207,13 @@ class FeedFragment : Fragment()
                          listOf(descriptionTextWidget))
         )
         val groupElementFormat = ElementFormat.default()
-                                              .withTopPadding(10.0)
+                                              .withTopPadding(0.0)
                                               .withBottomPadding(12.0)
         val groupFormat = GroupFormat(groupElementFormat, Nothing())
         val groups = listOf(Group(groupFormat, groupRows))
 
         val card = Card(CardTitle("Featured Session"),
-                        CardIsPinned(false),
+                        CardReason("Recommended"),
                         Just(AppActionOpenSession(SessionId(UUID.randomUUID()))),
                         Just(CardActionLabel("Open Session")),
                         groups.map { GroupReferenceLiteral(it) })
@@ -240,9 +240,9 @@ class FeedFragment : Fragment()
                 TextFormat.default()
                    .withColorTheme(ColorTheme(setOf(
                        ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8")))))
-                   .withSize(TextSize(22f))
+                   .withSize(TextSize(19f))
                    .withFont(TextFont.RobotoCondensed)
-                   .withFontStyle(TextFontStyle.Regular)
+                   .withFontStyle(TextFontStyle.Bold)
                    .withElementFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left))
         val titleTextWidgetFormat =
                 TextWidgetFormat(
@@ -284,13 +284,13 @@ class FeedFragment : Fragment()
                          listOf(descriptionTextWidget))
         )
         val groupElementFormat = ElementFormat.default()
-                                              .withTopPadding(10.0)
+                                              .withTopPadding(0.0)
                                               .withBottomPadding(12.0)
         val groupFormat = GroupFormat(groupElementFormat, Nothing())
         val groups = listOf(Group(groupFormat, groupRows))
 
         val card = Card(CardTitle("Featured Session"),
-                        CardIsPinned(false),
+                        CardReason("Recommended"),
                         Just(AppActionOpenSession(SessionId(UUID.randomUUID()))),
                         Just(CardActionLabel("Open Session")),
                         groups.map { GroupReferenceLiteral(it) })

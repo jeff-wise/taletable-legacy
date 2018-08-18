@@ -297,6 +297,7 @@
     <color name="light_theme_dark_grey_16">#6A6A6A</color>
     <color name="light_theme_dark_grey_18">#757575</color>
     <color name="light_theme_dark_grey_20">#7F7F7F</color>
+    <color name="light_theme_dark_grey_22">#8A8A8A</color>
     <color name="light_theme_orange_80">#C4C07618</color>
 
     <color name="light_theme_red">#C32C39</color>

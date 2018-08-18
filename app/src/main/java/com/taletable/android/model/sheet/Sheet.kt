@@ -37,6 +37,7 @@ data class Sheet(private var sheetId : EntityId,
                  private var sections : MutableList<Section>,
                  private var engine : Engine,
                  private var variables : MutableList<Variable>,
+                 private var category : SheetCategory,
                  private var settings : Settings)
                   : Entity, ToDocument, Serializable
 {
@@ -127,6 +128,8 @@ data class Sheet(private var sheetId : EntityId,
                       split(doc.maybeList("variables"),
                             effValue(mutableListOf()),
                             { it.mapMut { Variable.fromDocument(it) } }),
+                      // Category
+                      doc.at("category") ap { SheetCategory.fromDocument(it) },
                       // Sheet Settings
                       split(doc.maybeAt("settings"),
                             effValue(Settings.default()),
@@ -176,6 +179,9 @@ data class Sheet(private var sheetId : EntityId,
 
 
     override fun entityId() = this.sheetId
+
+
+    override fun category() = this.category.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -473,4 +479,33 @@ data class Sheet(private var sheetId : EntityId,
 //}
 //
 //
+
+
+/**
+ * Sheet Category
+ */
+data class SheetCategory(val value : String) : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<SheetCategory>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<SheetCategory> = when (doc)
+        {
+            is DocText -> effValue(SheetCategory(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+}
 

@@ -99,7 +99,7 @@
             android:label="Value"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".activity.game.GameActivity"
+            android:name="com.taletable.android.activity.entity.game.GameActivity"
             android:label="Game"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
@@ -119,6 +119,10 @@
         <activity
             android:name=".activity.session.NewSessionActivity"
             android:label="Open Session"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.session.SavedSessionListActivity"
+            android:label="Saved Sessions"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.session.SessionActivity"

@@ -82,11 +82,11 @@ types:
         prim_type: string
       presence: required
       description: The card title.
-    - name: is_pinned
+    - name: reason
       type:
         type: prim_type
-        prim_type: boolean
-      presence: optional
+        prim_type: string
+      presence: required
       description: True if the card is pinned.
     - name: action_label
       type:

@@ -372,15 +372,15 @@ class NewSessionUI(private var step : Int,
 
         layout.addView(this.stepView(1, R.string.what_game_do_you_play))
 
-        layout.addView(this.stepViewBottomBorderView())
+        //layout.addView(this.stepViewBottomBorderView())
 
         layout.addView(this.stepView(2, R.string.what_are_you_looking_for))
 
-        layout.addView(this.stepViewBottomBorderView())
+        //layout.addView(this.stepViewBottomBorderView())
 
         layout.addView(this.stepView(3, R.string.this_session_contains))
 
-        layout.addView(this.stepViewBottomBorderView())
+        //layout.addView(this.stepViewBottomBorderView())
 
 
         val loadLayout = newSessionActivity.findViewById<LinearLayout>(R.id.footer)
@@ -414,11 +414,11 @@ class NewSessionUI(private var step : Int,
     {
         val layout = this.stepViewLayout()
 
-        layout.addView(this.titleView(step, context.getString(labelId)))
 
         when (step)
         {
             1 -> {
+                layout.addView(this.titleView(step, context.getString(labelId)))
                 val gameName = this.gameSummary().toNullable()?.name ?: ""
 //                layout.addView(this.descriptionView(R.string.choose_game_description))
 
@@ -430,6 +430,7 @@ class NewSessionUI(private var step : Int,
                 layout.addView(this.selectionView(gameName, "5th SRD fantasy RPG", R.drawable.icon_die, onGameClick))
             }
             2 -> {
+                layout.addView(this.titleView(step, context.getString(labelId)))
                 val sessionName = this.sessionLoader().toNullable()?.sessionName?.value ?: ""
                 val sessionLoader = this.sessionLoader()
                 when (sessionLoader) {
@@ -475,6 +476,7 @@ class NewSessionUI(private var step : Int,
         layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
 
         layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
+
 
         return layout.linearLayout(context)
     }
@@ -546,8 +548,8 @@ class NewSessionUI(private var step : Int,
         layout.orientation      = LinearLayout.HORIZONTAL
 
         layout.margin.leftDp    = 16f
-        layout.padding.topDp    = 10f
-        layout.padding.bottomDp = 10f
+        layout.padding.topDp    = 14f
+        layout.padding.bottomDp = 6f
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
@@ -575,7 +577,7 @@ class NewSessionUI(private var step : Int,
 
         stepView.gravity               = Gravity.CENTER
 
-        stepView.sizeSp                = 15f
+        stepView.sizeSp                = 14f
 
         stepView.margin.rightDp        = 20f
 
@@ -590,7 +592,7 @@ class NewSessionUI(private var step : Int,
         labelView.text              = titleString
 
         labelView.font              = Font.typeface(TextFont.RobotoCondensed,
-                                                    TextFontStyle.Bold,
+                                                    TextFontStyle.Regular,
                                                     context)
 
         val labelColorTheme = ColorTheme(setOf(
@@ -599,7 +601,7 @@ class NewSessionUI(private var step : Int,
 
         labelView.color             = theme.colorOrBlack(labelColorTheme)
 
-        labelView.sizeSp            = 18f
+        labelView.sizeSp            = 17f
 
         labelView.padding.bottomDp  = 2f
 
@@ -641,6 +643,8 @@ class NewSessionUI(private var step : Int,
         layout.padding.bottomDp = 12f
 
         layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
+
+        layout.elevation        = 2f
 
         return layout.linearLayout(context)
     }
@@ -760,7 +764,7 @@ class NewSessionUI(private var step : Int,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         view.color              = theme.colorOrBlack(colorTheme)
 
         view.sizeSp             = 18f
@@ -1039,17 +1043,15 @@ class NewSessionUI(private var step : Int,
         view.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         view.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_4"))))
-        view.backgroundColor    = theme.colorOrBlack(bgColorTheme)
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_4"))))
+//        view.backgroundColor    = theme.colorOrBlack(bgColorTheme)
 
         view.padding.leftDp     = 8f
         view.padding.rightDp    = 8f
         view.padding.topDp      = 4f
         view.padding.bottomDp   = 4f
-
-        view.margin.leftDp      = 4f
 
         view.corners            = Corners(2.0, 2.0, 2.0, 2.0)
 
@@ -1061,11 +1063,11 @@ class NewSessionUI(private var step : Int,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
         view.color                = Color.WHITE
         view.color                  = theme.colorOrBlack(colorTheme)
 
-        view.sizeSp               = 16f
+        view.sizeSp               = 17f
 
         return view.textView(context)
     }
@@ -1078,10 +1080,10 @@ class NewSessionUI(private var step : Int,
         view.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         view.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
-        view.backgroundColor    = theme.colorOrBlack(bgColorTheme)
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
+//        view.backgroundColor    = theme.colorOrBlack(bgColorTheme)
         view.backgroundColor    = Color.WHITE
 
         view.corners            = Corners(3.0, 0.0, 0.0, 3.0)
@@ -1094,12 +1096,12 @@ class NewSessionUI(private var step : Int,
         view.text               = label
 
         view.font               = Font.typeface(TextFont.RobotoCondensed,
-                                                TextFontStyle.Regular,
+                                                TextFontStyle.Bold,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_7"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
         view.color                = theme.colorOrBlack(colorTheme)
 
         view.sizeSp               = 18f
