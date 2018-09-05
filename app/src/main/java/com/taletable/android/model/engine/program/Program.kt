@@ -6,12 +6,8 @@ import android.content.Context
 import android.text.SpannableStringBuilder
 import com.taletable.android.app.AppEff
 import com.taletable.android.app.AppEvalError
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue2
-import com.taletable.android.lib.orm.RowValue5
-import com.taletable.android.lib.orm.schema.*
 import com.taletable.android.lib.orm.sql.*
 import com.taletable.android.model.engine.EngineValue
 import com.taletable.android.model.engine.EngineValueType
@@ -37,36 +33,19 @@ import java.util.*
 /**
  * Program
  */
-data class Program(override val id : UUID,
-                   val programId : ProgramId,
+data class Program(val programId : ProgramId,
                    val label : ProgramLabel,
                    val description : ProgramDescription,
                    val typeSignature : ProgramTypeSignature,
                    val statements : MutableList<Statement>,
                    val resultBindingName : StatementBindingName,
                    val resultMessage : Maybe<Message>)
-                    : ToDocument, ProdType, Serializable
+                    : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(programId : ProgramId,
-                label : ProgramLabel,
-                description : ProgramDescription,
-                typeSignature : ProgramTypeSignature,
-                statements : List<Statement>,
-                resultBindingName : StatementBindingName,
-                resultMessage : Maybe<Message>)
-        : this(UUID.randomUUID(),
-               programId,
-               label,
-               description,
-               typeSignature,
-               statements.toMutableList(),
-               resultBindingName,
-               resultMessage)
 
 
     companion object : Factory<Program>
@@ -86,8 +65,8 @@ data class Program(override val id : UUID,
                       doc.at("type_signature") ap { ProgramTypeSignature.fromDocument(it) },
                       // Statements
                       split(doc.maybeList("statements"),
-                            effValue(listOf()),
-                            { it.map { Statement.fromDocument(it) } }),
+                            effValue(mutableListOf()),
+                            { it.mapMut { Statement.fromDocument(it) } }),
                       // Result Binding Name
                       doc.at("result_binding_name") ap { StatementBindingName.fromDocument(it) },
                       // Result Message
@@ -146,26 +125,6 @@ data class Program(override val id : UUID,
 
 
     fun resultMessage() : Maybe<Message> = this.resultMessage
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_ProgramValue =
-        RowValue5(programTable, PrimValue(this.programId),
-                                PrimValue(this.label),
-                                PrimValue(this.description),
-                                ProdValue(this.typeSignature),
-//                                CollValue(this.statements),
-                                PrimValue(this.resultBindingName))
-
 
     // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
@@ -412,22 +371,14 @@ data class ProgramParameters(val parameters : List<DataReference>)
 /**
  * Program Parameters
  */
-data class ProgramTypeSignature(override val id : UUID,
-                                val parameters : List<ProgramParameter>,
+data class ProgramTypeSignature(val parameters : List<ProgramParameter>,
                                 val result : EngineValueType)
-                                 : ProdType, ToDocument, Serializable
+                                 : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(parameters : List<ProgramParameter>,
-                resultType : EngineValueType)
-        : this(UUID.randomUUID(),
-               parameters,
-               resultType)
-
 
     companion object : Factory<ProgramTypeSignature>
     {
@@ -467,22 +418,6 @@ data class ProgramTypeSignature(override val id : UUID,
 
 
     fun result() : EngineValueType = this.result
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_ProgramTypeSignatureValue =
-        RowValue2(programTypeSignatureTable,
-                  CollValue(this.parameters),
-                  PrimValue(this.result))
 
 }
 

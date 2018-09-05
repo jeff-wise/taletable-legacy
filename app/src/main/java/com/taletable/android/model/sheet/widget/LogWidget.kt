@@ -40,30 +40,17 @@ import java.util.*
 /**
  * Log Entry
  */
-data class LogEntry(override val id : UUID,
-                    private val title : EntryTitle,
+data class LogEntry(private val title : EntryTitle,
                     private val date : EntryDate,
                     private val author : EntryAuthor,
                     private val summary : Maybe<EntrySummary>,
-                    private val text : EntryText) : ToDocument, ProdType, Serializable
+                    private val text : EntryText)
+                     : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(title : EntryTitle,
-                date : EntryDate,
-                author : EntryAuthor,
-                summary : Maybe<EntrySummary>,
-                text : EntryText)
-        : this(UUID.randomUUID(),
-               title,
-               date,
-               author,
-               summary,
-               text)
-
 
     companion object : Factory<LogEntry>
     {
@@ -118,24 +105,6 @@ data class LogEntry(override val id : UUID,
     fun summary() : Maybe<EntrySummary> = this.summary
 
     fun text() : EntryText = this.text
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetLogEntryValue =
-        RowValue5(widgetLogEntryTable, PrimValue(this.title),
-                                       PrimValue(this.date),
-                                       PrimValue(this.author),
-                                       MaybePrimValue(this.summary),
-                                       PrimValue(this.text))
 
 }
 
@@ -365,25 +334,15 @@ sealed class EntryViewType : ToDocument, SQLSerializable, Serializable
 /**
  * Log Widget Format
  */
-data class LogWidgetFormat(override val id : UUID,
-                           val widgetFormat : WidgetFormat,
+data class LogWidgetFormat(val widgetFormat : WidgetFormat,
                            val entryFormat : LogEntryFormat,
                            val entryViewType : EntryViewType)
-                            : ToDocument, ProdType, Serializable
+                            : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat,
-                entryFormat : LogEntryFormat,
-                entryViewType : EntryViewType)
-        : this(UUID.randomUUID(),
-               widgetFormat,
-               entryFormat,
-               entryViewType)
-
 
     companion object : Factory<LogWidgetFormat>
     {
@@ -443,22 +402,6 @@ data class LogWidgetFormat(override val id : UUID,
 
     fun entryViewType() : EntryViewType = this.entryViewType
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetLogFormatValue =
-        RowValue3(widgetLogFormatTable, ProdValue(this.widgetFormat),
-                                        ProdValue(this.entryFormat),
-                                        PrimValue(this.entryViewType))
-
 }
 
 
@@ -466,32 +409,18 @@ data class LogWidgetFormat(override val id : UUID,
 /**
  * Log Entry Format
  */
-data class LogEntryFormat(override val id : UUID,
-                          private val titleFormat : TextFormat,
+data class LogEntryFormat(private val titleFormat : TextFormat,
                           private val authorFormat : TextFormat,
                           private val summaryFormat : TextFormat,
                           private val bodyFormat : TextFormat,
                           private val entryFormat : TextFormat)
-                           : ToDocument, ProdType, Serializable
+                           : ToDocument, Serializable
 {
 
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(titleFormat : TextFormat,
-                authorFormat : TextFormat,
-                summaryFormat : TextFormat,
-                bodyFormat : TextFormat,
-                entryFormat : TextFormat)
-        : this(UUID.randomUUID(),
-               titleFormat,
-               authorFormat,
-               summaryFormat,
-               bodyFormat,
-               entryFormat)
-
 
     companion object : Factory<LogEntryFormat>
     {
@@ -572,25 +501,6 @@ data class LogEntryFormat(override val id : UUID,
 
 
     fun entryFormat() : TextFormat = this.entryFormat
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetLogEntryFormatValue =
-        RowValue5(widgetLogEntryFormatTable,
-                  ProdValue(this.titleFormat),
-                  ProdValue(this.authorFormat),
-                  ProdValue(this.summaryFormat),
-                  ProdValue(this.bodyFormat),
-                  ProdValue(this.entryFormat))
 
 }
 

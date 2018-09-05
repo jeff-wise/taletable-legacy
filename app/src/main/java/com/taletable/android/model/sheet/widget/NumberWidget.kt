@@ -8,12 +8,8 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.taletable.android.R
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue5
-import com.taletable.android.lib.orm.schema.PrimValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
@@ -37,31 +33,17 @@ import java.util.*
 /**
  * Number Widget Format
  */
-data class NumberWidgetFormat(override val id : UUID,
-                              val widgetFormat : WidgetFormat,
+data class NumberWidgetFormat(val widgetFormat : WidgetFormat,
                               val insideLabelFormat : TextFormat,
                               val outsideLabelFormat : TextFormat,
                               val valueFormat : TextFormat,
                               val numberFormat : NumberFormat)
-                               : ToDocument, ProdType, Serializable
+                               : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat,
-                insideLabelFormat : TextFormat,
-                outsideLabelFormat : TextFormat,
-                valueFormat : TextFormat,
-                numberFormat : NumberFormat)
-        : this(UUID.randomUUID(),
-               widgetFormat,
-               insideLabelFormat,
-               outsideLabelFormat,
-               valueFormat,
-               numberFormat)
-
 
     companion object : Factory<NumberWidgetFormat>
     {
@@ -143,24 +125,6 @@ data class NumberWidgetFormat(override val id : UUID,
 
     fun numberFormat() : NumberFormat = this.numberFormat
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetNumberFormatValue =
-        RowValue5(widgetNumberFormatTable,
-                  ProdValue(this.widgetFormat),
-                  ProdValue(this.insideLabelFormat),
-                  ProdValue(this.outsideLabelFormat),
-                  ProdValue(this.valueFormat),
-                  PrimValue(this.numberFormat))
 
 }
 

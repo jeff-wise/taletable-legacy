@@ -5,6 +5,14 @@ game_info:
   authors:
 groups:
 variables:
+- type: variable_number
+  variable_number:
+    id: max_skill_proficiency
+    label: Max Skill Proficiency
+    description: Max Skill Proficiency
+    value:
+      type: number_literal
+      number_literal: 4
 engine:
   tasks:
   value_sets:
@@ -636,6 +644,52 @@ engine:
                 boolean_literal: true
   - type: value_set_base
     value_set_base:
+      value_set_id: feats_class_rogue
+      label: 'Rogue Feats'
+      label_singular: 'Rogue Feat'
+      description: The rogue feats.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_bludgeoner
+          description: Bludgeoner feat.
+          value: 'Bludgeoner'
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_nimble_dodge
+          description: Nimble dodge feat.
+          value: 'Nimble Dodge'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_nimble_dodge_type
+              label: 'Feat: Class: Rogue: Nimble Dodge: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'class'
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_trap_finder
+          description: Trap Finder feat.
+          value: 'Trap Finder'
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_youre_next
+          description: You're Next feat.
+          value: 'You''re Next'
+  - type: value_set_compound
+    value_set_compound:
+      value_set_id: feats
+      label: Feats
+      label_singular: Feat
+      description: 'All feats.'
+      value_set_ids:
+      - feats_class_rogue
+  - type: value_set_base
+    value_set_base:
       value_set_id: conditions
       label: Conditions
       label_singular: Condition
@@ -644,44 +698,144 @@ engine:
       values:
       - type: value_text
         value_text:
+          value_id: accelerated
+          description: accelerated
+          value: Accelerated
+      - type: value_text
+        value_text:
+          value_id: asleep
+          description: asleep
+          value: Asleep
+      - type: value_text
+        value_text:
           value_id: blinded
           description: blinded
           value: Blinded
       - type: value_text
         value_text:
-          value_id: charmed
-          description: Charmed
-          value: Charmed
+          value_id: broken
+          description: Broken
+          value: Broken
       - type: value_text
         value_text:
-          value_id: defeaned
-          description: Defeaned
-          value: Defeaned
+          value_id: broken
+          description: Broken
+          value: Broken
       - type: value_text
         value_text:
-          value_id: exhausted
-          description: Exhausted
-          value: Exhausted
+          value_id: concealed
+          description: Concealed
+          value: Concealed
+      - type: value_text
+        value_text:
+          value_id: confused
+          description: Confused
+          value: Confused
+      - type: value_text
+        value_text:
+          value_id: dazzled
+          description: Dazzled
+          value: Dazzled
+      - type: value_text
+        value_text:
+          value_id: dead
+          description: Dead
+          value: Dead
+      - type: value_text
+        value_text:
+          value_id: deafened
+          description: Deafened
+          value: Deafened
+      - type: value_text
+        value_text:
+          value_id: drained
+          description: Drained
+          value: Drained
+      - type: value_text
+        value_text:
+          value_id: dying
+          description: Dying
+          value: Dying
+      - type: value_text
+        value_text:
+          value_id: encumbered
+          description: Encumbered
+          value: Encumbered
+      - type: value_text
+        value_text:
+          value_id: enervated
+          description: Enervated
+          value: Enervated
+      - type: value_text
+        value_text:
+          value_id: enfeebled
+          description: Enfeebled
+          value: Enfeebled
+      - type: value_text
+        value_text:
+          value_id: entangled
+          description: Entangled
+          value: Entangled
+      - type: value_text
+        value_text:
+          value_id: fascinated
+          description: Fanscinated
+          value: Fascinated
+      - type: value_text
+        value_text:
+          value_id: fatigued
+          description: Fatigued
+          value: Fatigued
+      - type: value_text
+        value_text:
+          value_id: flat_footed
+          description: Flat-footed
+          value: Flat-Footed
+      - type: value_text
+        value_text:
+          value_id: fleeing
+          description: Fleeing
+          value: Fleeing
+      - type: value_text
+        value_text:
+          value_id: friendly
+          description: Friendly
+          value: Friendly
       - type: value_text
         value_text:
           value_id: frightened
-          description: Frightened
+          description: Fightened
           value: Frightened
       - type: value_text
         value_text:
-          value_id: grappled
-          description: Grappled
-          value: Grappled
+          value_id: grabbed
+          description: Grabbed
+          value: Grabbed
       - type: value_text
         value_text:
-          value_id: incapacitated
-          description: Incapacitated
-          value: Incapacitated
+          value_id: hampered
+          description: Hampered
+          value: Hampered
       - type: value_text
         value_text:
-          value_id: invisible
-          description: Invisible
-          value: Invisible
+          value_id: helpful
+          description: Helpful
+          value: Helpful
+      - type: value_text
+        value_text:
+          value_id: hostile
+          description: Hostile
+          value: Hostile
+      - type: value_text
+        value_text:
+          value_id: immobile
+          description: Immobile
+          value: Immobile
+      - type: value_text
+        value_text:
+          value_id: indifferent
+          description: Indifferent
+          value: Indifferent
       - type: value_text
         value_text:
           value_id: paralyzed
@@ -689,14 +843,14 @@ engine:
           value: Paralyzed
       - type: value_text
         value_text:
+          value_id: persistent_damage
+          description: Persistent Damage
+          value: Persistent Damage
+      - type: value_text
+        value_text:
           value_id: petrified
           description: Petrified
           value: Petrified
-      - type: value_text
-        value_text:
-          value_id: poisoned
-          description: Poisoned
-          value: Poisoned
       - type: value_text
         value_text:
           value_id: prone
@@ -704,9 +858,34 @@ engine:
           value: Prone
       - type: value_text
         value_text:
+          value_id: quick
+          description: Quick
+          value: Quick
+      - type: value_text
+        value_text:
           value_id: restrained
           description: Restrained
           value: Restrained
+      - type: value_text
+        value_text:
+          value_id: sensed
+          description: Sensed
+          value: Sensed
+      - type: value_text
+        value_text:
+          value_id: sick
+          description: Sick
+          value: Sick
+      - type: value_text
+        value_text:
+          value_id: slowed
+          description: Slowed
+          value: Slowed
+      - type: value_text
+        value_text:
+          value_id: sluggish
+          description: Sluggish
+          value: Sluggish
       - type: value_text
         value_text:
           value_id: stunned
@@ -714,14 +893,24 @@ engine:
           value: Stunned
       - type: value_text
         value_text:
+          value_id: stupefied
+          description: Stupefied
+          value: Stupefied
+      - type: value_text
+        value_text:
           value_id: unconscious
           description: Unconscious
           value: Unconscious
       - type: value_text
         value_text:
-          value_id: normal
-          description: Normal
-          value: Normal
+          value_id: unfriendly
+          description: Unfriendly
+          value: Unfriendly
+      - type: value_text
+        value_text:
+          value_id: unseen
+          description: Unseen
+          value: Unseen
   - type: value_set_base
     value_set_base:
       value_set_id: damage_types
@@ -4847,70 +5036,6 @@ engine:
         value:
           type: number_literal
           number_literal: 2
-  - id: fighter_saving_throws
-    label: Saving Throws
-    description: 'Fighter class saving throw proficiencies.'
-    summary: 'Proficient with strength and constitution saving throws.'
-    category_id: class_fighter
-    requirements:
-    - name: 'is_class_fighter'
-    variables:
-    - type: variable_boolean
-      variable_boolean:
-        id: strength_saving_throw_is_proficient
-        label: Strength Saving Throw Proficiency
-        description: Is proficient with strenth saving throws?
-        value:
-          type: boolean_literal
-          boolean_literal: true
-    - type: variable_boolean
-      variable_boolean:
-        id: dexterity_saving_throw_is_proficient
-        label: Dexterity Saving Throw Proficiency
-        description: Is proficient with dexterity saving throws?
-        value:
-          type: boolean_literal
-          boolean_literal: false
-    - type: variable_boolean
-      variable_boolean:
-        id: constitution_saving_throw_is_proficient
-        label: Constitution Saving Throw Proficiency
-        description: Is proficient with constitution saving throws?
-        value:
-          type: boolean_literal
-          boolean_literal: true
-    - type: variable_boolean
-      variable_boolean:
-        id: intelligence_saving_throw_is_proficient
-        label: Intelligence Saving Throw Proficiency
-        description: Is proficient with intelligence saving throws?
-        value:
-          type: boolean_literal
-          boolean_literal: false
-    - type: variable_boolean
-      variable_boolean:
-        id: wisdom_saving_throw_is_proficient
-        label: Wisdom Saving Throw Proficiency
-        description: Is proficient with wisdom saving throws?
-        value:
-          type: boolean_literal
-          boolean_literal: false
-    - type: variable_boolean
-      variable_boolean:
-        id: charisma_saving_throw_is_proficient
-        label: Charisma Saving Throw Proficiency
-        description: Is proficient with charisma saving throws?
-        value:
-          type: boolean_literal
-          boolean_literal: false
-    - type: variable_boolean
-      variable_boolean:
-        id: can_use_second_wind
-        label: Can Use Second Wind?
-        description: Can Use Second Wind?
-        value:
-          type: boolean_literal
-          boolean_literal: true
   - id: fighter_armor
     label: Armor
     description: 'Fighter armor proficiencies.'
@@ -5123,26 +5248,33 @@ engine:
     label: Armor
     description: Armor mechanics.
   functions:
-  - function_id: proficiency_bonus
-    label: Proficiency Bonus
-    description:
-      The proficiency bonus by level.
+  - function_id: proficiency_modifier_from_rank
+    label: Proficiency Modifier from Proficiency Rank
+    description: |-
+      The proficiency modifier from the proficiency rank where 0 = Untrained 1 = T, 2 = E, 3 = M,
+      and 4 = L
     type_signature:
       parameter1_type: number
       result_type: number
     tuples:
     - parameter1:
         type: engine_value_number
+        engine_value_number: 0
+      result:
+        type: engine_value_number
+        engine_value_number: -2
+    - parameter1:
+        type: engine_value_number
         engine_value_number: 1
       result:
         type: engine_value_number
-        engine_value_number: 2
+        engine_value_number: 0
     - parameter1:
         type: engine_value_number
         engine_value_number: 2
       result:
         type: engine_value_number
-        engine_value_number: 2
+        engine_value_number: 1
     - parameter1:
         type: engine_value_number
         engine_value_number: 3
@@ -5154,103 +5286,7 @@ engine:
         engine_value_number: 4
       result:
         type: engine_value_number
-        engine_value_number: 2
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 5
-      result:
-        type: engine_value_number
         engine_value_number: 3
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 6
-      result:
-        type: engine_value_number
-        engine_value_number: 3
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 7
-      result:
-        type: engine_value_number
-        engine_value_number: 3
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 8
-      result:
-        type: engine_value_number
-        engine_value_number: 3
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 9
-      result:
-        type: engine_value_number
-        engine_value_number: 4
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 10
-      result:
-        type: engine_value_number
-        engine_value_number: 4
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 11
-      result:
-        type: engine_value_number
-        engine_value_number: 4
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 12
-      result:
-        type: engine_value_number
-        engine_value_number: 4
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 13
-      result:
-        type: engine_value_number
-        engine_value_number: 5
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 14
-      result:
-        type: engine_value_number
-        engine_value_number: 5
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 15
-      result:
-        type: engine_value_number
-        engine_value_number: 5
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 16
-      result:
-        type: engine_value_number
-        engine_value_number: 5
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 17
-      result:
-        type: engine_value_number
-        engine_value_number: 6
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 18
-      result:
-        type: engine_value_number
-        engine_value_number: 6
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 19
-      result:
-        type: engine_value_number
-        engine_value_number: 6
-    - parameter1:
-        type: engine_value_number
-        engine_value_number: 20
-      result:
-        type: engine_value_number
-        engine_value_number: 6
   - function_id: background_personality_trait_value_set_id
     label: Background Personality Trait Value Set Id
     description: Swashbuckler background personality trait value set ids.
@@ -5819,6 +5855,25 @@ engine:
           - sides: 6
             quantity: 10
   programs:
+  - program_id: proficiency_modifier_from_rank
+    label: Proficiency Modifier From Rank
+    description: Calcuates the ability modifier of an ability score.
+    type_signature:
+      parameters:
+      - type: program_parameter_number
+        program_parameter_number:
+          name: proficiency_rank
+          label: Proficiency Rank
+          input_message:
+            template: Proficiency Rank
+      result: number
+    statements:
+    - binding_name: result
+      function_id: proficiency_modifier_from_rank
+      parameter1:
+        type: program_parameter_name
+        program_parameter_name: proficiency_rank
+    result_binding_name: result
   - program_id: ability_modifier
     label: Ability Modifier
     description: Calcuates the ability modifier of an ability score.
@@ -6098,6 +6153,23 @@ engine:
       - key: 'level'
     action_label: 'Use Second Wind'
   summations:
+  - summation_id: skill_acrobatics_proficiency_modifier
+    summation_name: 'Skill: Acrobatics: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_acrobatics_proficiency_rank_modifier
   - summation_id: weapon_rapier_damage_roll
     summation_name: Rapier Damage Roll
     terms:
@@ -6294,41 +6366,8 @@ engine:
             quantities:
             - sides: 20
               quantity: 1
-  - summation_id: strength_saving_throw_roll
-    summation_name: Strength Saving Throw Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: strength_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: strength_saving_throw_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: dexterity_saving_throw_roll
-    summation_name: Dexterity Saving Throw Roll
+  - summation_id: saving_throw_reflex_roll
+    summation_name: 'Saving Throw: Reflex: Roll'
     terms:
     - type: summation_term_dice_roll
       summation_term_dice_roll:
@@ -6345,23 +6384,15 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: dexterity_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
+    - type: summation_term_number
+      summation_term_number:
+        value:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: dexterity_saving_throw_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: constitution_saving_throw_roll
-    summation_name: Constitution Saving Throw Roll
+            variable_id: saving_throw_reflex_proficiency_rank_modifier
+  - summation_id: saving_throw_fortitude_roll
+    summation_name: 'Saving Throw: Fortitude: Roll'
     terms:
     - type: summation_term_dice_roll
       summation_term_dice_roll:
@@ -6378,56 +6409,15 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: constitution_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: constitution_saving_throw_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: intelligence_saving_throw_roll
-    summation_name: Intelligence Saving Throw Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: intelligence_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: intelligence_saving_throw_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: wisdom_saving_throw_roll
-    summation_name: Wisdom Saving Throw Roll
+            variable_id: saving_throw_fortitude_proficiency_rank_modifier
+  - summation_id: saving_throw_will_roll
+    summation_name: 'Saving Throw: Will: Roll'
     terms:
     - type: summation_term_dice_roll
       summation_term_dice_roll:
@@ -6444,54 +6434,13 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: wisdom_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: wisdom_saving_throw_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: charisma_saving_throw_roll
-    summation_name: Charisma Saving Throw Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
     - type: summation_term_number
       summation_term_number:
         value:
           type: variable_reference
           variable_reference:
             type: variable_id
-            variable_id: charisma_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: charisma_saving_throw_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
+            variable_id: saving_throw_will_proficiency_rank_modifier
   - summation_id: strength_check_roll
     summation_name: Strength Check Roll
     terms:
@@ -6600,39 +6549,7 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: charisma_modifier
-  - summation_id: skill_acrobatics_roll
-    summation_name: Skill (Acrobatics) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: dexterity_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_acrobatics_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
+
   - summation_id: skill_animal_handling_roll
     summation_name: Skill (Animal Handling) Roll
     terms:
@@ -7357,6 +7274,27 @@ engine:
             variable_id: strength_modifier
   - summation_id: armor_class
     summation_name: Armor Class
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+    - type: summation_term_linear_combination
+      summation_term_linear_combination:
+        term_name: Armor
+        variable_tag: armor
+        value_relation: armor_bonus
+        filter_relation: is_equipped
+        default_value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: base_armor_class
+  - summation_id: touch_armor_class
+    summation_name: Touch Armor Class
     terms:
     - type: summation_term_number
       summation_term_number:

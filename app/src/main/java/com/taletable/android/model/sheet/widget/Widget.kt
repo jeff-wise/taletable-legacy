@@ -4,14 +4,12 @@ package com.taletable.android.model.sheet.widget
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.PaintDrawable
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TableLayout
 import android.widget.TextView
 import com.taletable.android.R
@@ -25,6 +23,7 @@ import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
+import com.taletable.android.lib.ui.LayoutType
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.model.book.BookReference
 import com.taletable.android.model.engine.EngineValueNumber
@@ -40,14 +39,11 @@ import com.taletable.android.model.engine.value.ValueReference
 import com.taletable.android.model.engine.value.ValueSetId
 import com.taletable.android.model.engine.variable.*
 import com.taletable.android.model.entity.*
-import com.taletable.android.model.sheet.group.Group
-import com.taletable.android.model.sheet.group.GroupContext
-import com.taletable.android.model.sheet.group.GroupReference
-import com.taletable.android.model.sheet.style.BorderEdge
-import com.taletable.android.model.sheet.style.Height
-import com.taletable.android.model.sheet.style.Icon
-import com.taletable.android.model.sheet.style.Width
+import com.taletable.android.model.sheet.group.*
+import com.taletable.android.model.sheet.style.*
 import com.taletable.android.model.sheet.widget.table.*
+import com.taletable.android.model.sheet.widget.table.cell.TextCellValueRelation
+import com.taletable.android.model.sheet.widget.table.cell.TextCellValueValue
 import com.taletable.android.rts.entity.*
 import com.taletable.android.rts.entity.sheet.*
 import com.taletable.android.util.Util
@@ -133,6 +129,7 @@ sealed class Widget : ToDocument, SheetComponent, Serializable
 
 
     abstract fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View
 
@@ -153,9 +150,13 @@ object WidgetView
 
     fun layout(widgetFormat : WidgetFormat,
                entityId : EntityId,
-               context : Context) : LinearLayout
+               context : Context,
+               rowLayoutType : RowLayoutType = RowLayoutTypeLinear) : LinearLayout
     {
-        val layout = this.widgetLayout(widgetFormat, entityId, context)
+        val layout = when (rowLayoutType) {
+            is RowLayoutTypeLinear -> this.widgetLayout(widgetFormat, entityId, context)
+            is RowLayoutTypeRelative -> this.widgetLayoutRelative(widgetFormat, entityId, context)
+        }
 
         val contentLayout = this.contentLayout(widgetFormat, context)
 
@@ -248,53 +249,73 @@ object WidgetView
     }
 
 
-    fun widgetTouchLayout(widgetFormat : WidgetFormat,
-                          entityId : EntityId,
-                          context : Context) : LinearLayout
+    private fun widgetLayoutRelative(widgetFormat : WidgetFormat,
+                                     entityId : EntityId,
+                                     context : Context) : LinearLayout
     {
-        val layout = WidgetTouchView(context)
+        val layout              = LinearLayoutBuilder()
 
-        layout.orientation = LinearLayout.VERTICAL
+        layout.layoutType       = LayoutType.RELATIVE
 
-        val layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT)
-        layoutParams.weight = widgetFormat.width().toFloat()
+        layout.orientation      = LinearLayout.VERTICAL
 
-        val margins = widgetFormat.elementFormat().margins()
-        layoutParams.leftMargin = margins.leftPx()
-        layoutParams.rightMargin = margins.rightPx()
-        layoutParams.topMargin = margins.topPx()
-        layoutParams.bottomMargin = margins.bottomPx()
+        widgetFormat.elementFormat().border().right().doMaybe {
+            layout.orientation = LinearLayout.HORIZONTAL
+        }
 
-        layout.layoutParams = layoutParams
-
-        val padding = widgetFormat.elementFormat().padding()
-        layout.setPadding(padding.leftPx(),
-                          padding.topPx(),
-                          padding.rightPx(),
-                          padding.bottomPx())
+        widgetFormat.elementFormat().border().left().doMaybe {
+            layout.orientation = LinearLayout.HORIZONTAL
+        }
 
 
-        // Background
-        val bgDrawable = PaintDrawable()
+        val width = widgetFormat.elementFormat().width()
+        when (width) {
+            is Width.Fill -> {
+                layout.width        = RelativeLayout.LayoutParams.MATCH_PARENT
+            }
+            is Width.Justify -> {
+                layout.width        = 0
+                layout.weight       = widgetFormat.width().toFloat()
+            }
+            is Width.Wrap -> {
+                layout.width        = RelativeLayout.LayoutParams.WRAP_CONTENT
+            }
+            is Width.Fixed -> {
+                layout.widthDp      = width.value.toInt()
+            }
+        }
 
-        val corners = widgetFormat.elementFormat().corners()
-        val topLeft  = Util.dpToPixel(corners.topLeftCornerRadiusDp()).toFloat()
-        val topRight : Float   = Util.dpToPixel(corners.topRightCornerRadiusDp()).toFloat()
-        val bottomRight : Float = Util.dpToPixel(corners.bottomRightCornerRadiusDp()).toFloat()
-        val bottomLeft :Float = Util.dpToPixel(corners.bottomLeftCornerRadiusDp()).toFloat()
+        val height = widgetFormat.elementFormat().height()
+        when (height)
+        {
+            is Height.Wrap  -> {
+                layout.height   = LinearLayout.LayoutParams.WRAP_CONTENT
+                layout.layoutGravity      = widgetFormat.elementFormat().verticalAlignment().gravityConstant()
+            }
+            is Height.Fixed -> layout.heightDp = height.value.toInt()
+        }
 
-        val radii = floatArrayOf(topLeft, topLeft, topRight, topRight,
-                         bottomRight, bottomRight, bottomLeft, bottomLeft)
 
-        bgDrawable.setCornerRadii(radii)
+        layout.marginSpacing    = widgetFormat.elementFormat().margins()
 
-        val bgColor = colorOrBlack(widgetFormat.elementFormat().backgroundColorTheme(), entityId)
+        layout.backgroundColor  = colorOrBlack(widgetFormat.elementFormat().backgroundColorTheme(),
+                                               entityId)
 
-        bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
+        layout.corners          = widgetFormat.elementFormat().corners()
 
-        layout.background = bgDrawable
+        when (widgetFormat.elementFormat().alignment()) {
+            is Alignment.Left   -> {
+                layout.addRule(RelativeLayout.ALIGN_PARENT_START)
+            }
+            is Alignment.Right  -> {
+                layout.addRule(RelativeLayout.ALIGN_PARENT_END)
+            }
+        }
 
-        return layout
+        layout.addRule(RelativeLayout.CENTER_VERTICAL)
+
+
+        return layout.linearLayout(context)
     }
 
 
@@ -504,6 +525,7 @@ data class ActionWidget(val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View {
         val viewBuilder = ActionWidgetViewBuilder(this, entityId, context)
@@ -735,6 +757,7 @@ data class BooleanWidget(private val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View
     {
@@ -903,18 +926,26 @@ data class BooleanWidget(private val widgetId : WidgetId,
 data class ExpanderWidget(val widgetId : WidgetId,
                           val format : ExpanderWidgetFormat,
                           val header : ExpanderWidgetLabel,
-                          val groups : List<Group>,
-                          val bookReference : Maybe<BookReference>) : Widget()
+                          val headerGroupReferences : List<GroupReference>,
+                          val groupReferences : List<GroupReference>,
+                          val bookReference : Maybe<BookReference>,
+                          val checkboxVariableReference : Maybe<VariableReference>)
+                           : Widget()
 {
 
-    // -----------------------------------------------------------------------------------------
     // | Properties
     // -----------------------------------------------------------------------------------------
 
     var groupContext : Maybe<GroupContext> = Nothing()
 
+    var layoutId : Int? = null
+    var checkboxLayoutId : Int? = null
 
-    // -----------------------------------------------------------------------------------------
+    private var headerGroupsCache : Maybe<List<Group>> = Nothing()
+
+    private var contentGroupsCache : Maybe<List<Group>> = Nothing()
+
+
     // | Constructors
     // -----------------------------------------------------------------------------------------
 
@@ -935,14 +966,22 @@ data class ExpanderWidget(val widgetId : WidgetId,
                            { ExpanderWidgetFormat.fromDocument(it) }),
                       // Label
                       doc.at("label") ap { ExpanderWidgetLabel.fromDocument(it) },
-                      // Groups
-                      doc.list("groups") ap { docList ->
-                          docList.mapIndexed { d,index -> Group.fromDocument(d,index) }
-                      },
+                      // Header Groups
+                      split(doc.maybeList("header_group_references"),
+                            effValue(listOf()),
+                            { it.map { GroupReference.fromDocument(it) } }),
+                      // Group References
+                      split(doc.maybeList("group_references"),
+                            effValue(listOf()),
+                            { it.map { GroupReference.fromDocument(it) } }),
                       // Book Reference
                       split(doc.maybeAt("book_reference"),
                             effValue<ValueError,Maybe<BookReference>>(Nothing()),
-                            { apply(::Just, BookReference.fromDocument(it)) })
+                            { apply(::Just, BookReference.fromDocument(it)) }),
+                      // Checkbox Variable Reference
+                      split(doc.maybeAt("checkbox_variable_reference"),
+                            effValue<ValueError,Maybe<VariableReference>>(Nothing()),
+                            { apply(::Just, VariableReference.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -957,8 +996,7 @@ data class ExpanderWidget(val widgetId : WidgetId,
     override fun toDocument() = DocDict(mapOf(
         "id" to this.widgetId().toDocument(),
         "format" to this.format().toDocument(),
-        "label" to this.label().toDocument(),
-        "groups" to DocList(this.groups.map { it.toDocument() })
+        "label" to this.label().toDocument()
     ))
 
 
@@ -972,20 +1010,26 @@ data class ExpanderWidget(val widgetId : WidgetId,
     fun label() : ExpanderWidgetLabel = this.header
 
 
-    fun groups() : List<Group> = this.groups
+    fun headerGroupReferences() : List<GroupReference> = this.headerGroupReferences
+
+
+    fun groupReferences() : List<GroupReference> = this.groupReferences
 
 
     fun bookReference() : Maybe<BookReference> = this.bookReference
 
 
-    // -----------------------------------------------------------------------------------------
-    // WIDGET
+    fun checkboxVariableReference() : Maybe<VariableReference> = this.checkboxVariableReference
+
+
+    // | Widget
     // -----------------------------------------------------------------------------------------
 
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View {
         val viewBuilder = ExpanderWidgetUI(this, entityId, context)
@@ -999,31 +1043,121 @@ data class ExpanderWidget(val widgetId : WidgetId,
     override fun widgetId() = this.widgetId
 
 
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//
-//    override val prodTypeObject = this
-//
-//
-//    override fun rowValue() : DB_WidgetExpanderValue =
-//        RowValue3(widgetExpanderTable,
-//                  PrimValue(this.widgetId),
-//                  PrimValue(this.header),
-//                  CollValue(this.groups))
-
-
-    // -----------------------------------------------------------------------------------------
-    // SHEET COMPONENT
+    // | Sheet Component
     // -----------------------------------------------------------------------------------------
 
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        this.groups().forEach {
+        this.contentGroups(entityId).forEach {
             it.onSheetComponentActive(entityId, context)
+        }
+
+        sheet(entityId).doMaybe {
+            it.indexWidget(this)
+        }
+    }
+
+
+    // | Groups
+    // -----------------------------------------------------------------------------------------
+
+    fun headerGroups(entityId : EntityId) : List<Group>
+    {
+        val headerGroupsCache = this.headerGroupsCache
+        return when (headerGroupsCache) {
+            is Just    -> headerGroupsCache.value
+            is Nothing -> {
+                val _groups = groups(this.headerGroupReferences, entityId)
+                _groups.forEach {
+                    it.rows().forEach {
+                        it.widgets().forEach { widget ->
+                            sheetOrError(entityId) apDo { it.indexWidget(widget)  }
+                        }
+                    }
+                }
+                _groups
+            }
+        }
+    }
+
+
+    fun contentGroups(entityId : EntityId) : List<Group>
+    {
+        val contentGroupsCache = this.contentGroupsCache
+        return when (contentGroupsCache) {
+            is Just    -> contentGroupsCache.value
+            is Nothing -> {
+                val _groups = groups(this.groupReferences, entityId)
+                _groups.forEach {
+                    it.rows().forEach {
+                        it.widgets().forEach { widget ->
+                            sheetOrError(entityId) apDo { it.indexWidget(widget)  }
+                        }
+                    }
+                }
+                _groups
+            }
+        }
+    }
+
+
+    // | Checkbox Variable
+    // -----------------------------------------------------------------------------------------
+
+    fun checkboxVariable(entityId : EntityId) : AppEff<BooleanVariable>
+    {
+        val variableReference = this.checkboxVariableReference
+
+        return when (variableReference) {
+            is Just -> {
+                booleanVariable(variableReference.value, entityId)
+            }
+            is Nothing -> effError(AppSheetError(ExpanderWidgetDoesNotHaveCheckboxVariable(this.widgetId)))
+        }
+
+    }
+
+
+    fun isSelected(entityId : EntityId) : Boolean
+    {
+        val checkboxValue = this.checkboxVariable(entityId).apply { it.value() }
+        return when (checkboxValue) {
+            is Val -> checkboxValue.value
+            is Err -> false
+        }
+    }
+
+
+    // | Update
+    // -----------------------------------------------------------------------------------------
+
+    fun update(expanderWidgetUpdate : WidgetUpdateExpanderWidget,
+               entityId : EntityId,
+               rootView : View?,
+               context : Context)
+    {
+        when (expanderWidgetUpdate)
+        {
+            is ExpanderWidgetUpdateToggle ->
+            {
+                this.checkboxVariable(entityId).apDo {
+                    it.toggleValue(entityId)
+                }
+
+                rootView?.let { this.updateCheckboxView(it, entityId, context) }
+            }
+        }
+    }
+
+
+    private fun updateCheckboxView(rootView : View, entityId : EntityId, context : Context)
+    {
+        val viewId = this.checkboxLayoutId
+        if (viewId != null) {
+            val layout = rootView.findViewById<LinearLayout>(viewId)
+            if (layout != null) {
+                ExpanderWidgetUI(this, entityId, context).updateCheckboxView(layout)
+            }
         }
     }
 
@@ -1160,6 +1294,7 @@ data class WidgetGroup(val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View {
         val widgetUI = GroupWidgetUI(this, entityId, context)
@@ -1294,6 +1429,7 @@ data class ImageWidget(val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View
     {
@@ -1425,6 +1561,7 @@ data class ListWidget(val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View
     {
@@ -1635,6 +1772,7 @@ data class LogWidget(private val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View {
         val viewBuilder = LogViewBuilder(this, entityId, context)
@@ -1753,6 +1891,7 @@ data class MechanicWidget(private val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View
     {
@@ -1934,6 +2073,7 @@ data class NumberWidget(val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context): View =
             NumberWidgetView.view(this, entityId, context)
@@ -2272,23 +2412,8 @@ data class PointsWidget(val widgetId : WidgetId,
 
     var layoutViewId : Int? = null
 
-
+    // | Constructors
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-//
-//    constructor(widgetId : WidgetId,
-//                format : PointsWidgetFormat,
-//                limitValueVariableId : VariableId,
-//                currentValueVariableId : VariableId,
-//                label : Maybe<PointsWidgetLabel>)
-//        : this(UUID.randomUUID(),
-//               widgetId,
-//               format,
-//               limitValueVariableId,
-//               currentValueVariableId,
-//               label)
-
 
     companion object : Factory<PointsWidget>
     {
@@ -2358,6 +2483,7 @@ data class PointsWidget(val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View
     {
@@ -2631,6 +2757,7 @@ data class QuoteWidget(val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View
     {
@@ -2802,6 +2929,7 @@ data class RollWidget(val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View {
         val viewBuilder = RollWidgetViewBuilder(this, entityId, context)
@@ -2947,6 +3075,7 @@ data class WidgetSlider(val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View {
         val widgetUI = SliderWidgetUI(this, entityId, context)
@@ -3053,6 +3182,7 @@ data class StoryWidget(val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View
     {
@@ -3327,6 +3457,7 @@ data class WidgetTab(val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View {
         val widgetUI = TabWidgetUI(this, entityId, context)
@@ -3537,6 +3668,9 @@ data class TableWidget(private val widgetId : WidgetId,
 
     fun rowsInSet(values : List<Value>, valueSetId : Maybe<ValueSetId>) : List<TableWidgetRow>
     {
+
+        Log.d("***WIDGET", "rows in set: ${valueSetId}")
+
         val rows : MutableList<TableWidgetRow> = mutableListOf()
 
         val rowByValueId : MutableMap<String,TableWidgetRow> = mutableMapOf()
@@ -3544,6 +3678,7 @@ data class TableWidget(private val widgetId : WidgetId,
         // Index rows
         for (row in this.cachedRows())
         {
+            Log.d("***WIDGET", "${valueSetId} CACHED row")
             val maybePrimaryCell = this.primaryColumnIndex()
                                        .apply { maybe(row.cells().getOrNull(it.value)) }
             maybePrimaryCell.doMaybe { cell ->
@@ -3556,10 +3691,15 @@ data class TableWidget(private val widgetId : WidgetId,
                         }
                         else
                         {
-                            val cellVariableValue = cell.variableValue()
+                            val cellVariableValue = cell.value()
                             when (cellVariableValue) {
-                                is TextVariableLiteralValue -> {
-                                    rowByValueId[cellVariableValue.value] = row
+                                is TextCellValueValue -> {
+                                    val variableValue = cellVariableValue.value
+                                    when (variableValue) {
+                                        is TextVariableLiteralValue -> {
+                                            rowByValueId[variableValue.value] = row
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -3584,11 +3724,12 @@ data class TableWidget(private val widgetId : WidgetId,
 
                                 when (valueSetId) {
                                     is Just -> {
+                                        Log.d("***WIDGET", "creating dynamic cell with value reference for value set: ${valueSetId}")
                                         val valueReference = ValueReference(valueSetId.value, value.valueId())
-                                        cell.variableValue = TextVariableValueValue(valueReference)
+                                        cell.value = TextCellValueValue(TextVariableValueValue(valueReference))
                                     }
                                     is Nothing -> {
-                                        cell.variableValue = TextVariableLiteralValue(value.valueString())
+                                        cell.value = TextCellValueValue(TextVariableLiteralValue(value.valueString()))
                                     }
                                 }
                             }
@@ -3599,7 +3740,16 @@ data class TableWidget(private val widgetId : WidgetId,
             }
             else
             {
-                val defaultRow = this.defaultTableRow(value.valueString())
+                val defaultRow = when (valueSetId) {
+                    is Just -> {
+                        val valueReference = ValueReference(valueSetId.value, value.valueId())
+                        this.defaultTableRow(value.valueString(), valueReference)
+                    }
+                    else -> {
+                        this.defaultTableRow(value.valueString())
+                    }
+                }
+
                 rows.add(defaultRow)
             }
         }
@@ -3743,7 +3893,7 @@ data class TableWidget(private val widgetId : WidgetId,
             val tableLayout = rootView.findViewById<TableLayout>(tableLayoutId)
             if (tableLayout != null)
             {
-                val newTableRow = this.defaultTableRow()
+                val newTableRow = this.defaultTableRow(null)
                 this.rows.add(rowIndex, newTableRow)
 
                 this.updateTableVariables(rowIndex + 1 , entityId)
@@ -3803,6 +3953,7 @@ data class TableWidget(private val widgetId : WidgetId,
     // -----------------------------------------------------------------------------------------
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View
     {
@@ -3878,17 +4029,57 @@ data class TableWidget(private val widgetId : WidgetId,
     private fun addTextCellVariable(textCell : TableWidgetTextCell,
                                     rowIndex : Int,
                                     cellIndex : Int,
+                                    primaryVariable : Variable?,
                                     entityId : EntityId,
                                     context : Context) : Variable
     {
         val column = this.columns()[cellIndex] as TableWidgetTextColumn
         val variableId = this.cellVariableId(column.variablePrefixString(), rowIndex) //, namespace)
-        val variable = TextVariable(variableId,
-                                    VariableLabel(column.nameString()),
-                                    VariableDescription(column.nameString()),
-                                    listOf(),
-                                    column.variableRelation(),
-                                    textCell.variableValue())
+
+        val textCellValue = textCell.value()
+        val variable = when (textCellValue) {
+            is TextCellValueValue -> {
+                TextVariable(variableId,
+                             VariableLabel(column.nameString()),
+                             VariableDescription(column.nameString()),
+                             listOf(),
+                             column.variableRelation(),
+                             textCellValue.value)
+            }
+            is TextCellValueRelation -> {
+
+                if (primaryVariable != null)
+                {
+                    Log.d("***WIDGET", "primary variable: ${primaryVariable}")
+                    val value = primaryVariable.relatedVariableIdOrError(textCellValue.relation) apply { relVarId ->
+                        Log.d("***WIDGET", "found related var id")
+                    variable(relVarId, entityId)                        apply { variable ->
+                        variable.valueString(entityId)
+                    } }
+
+                    when (value) {
+                        is Val -> {
+                            Log.d("***WIDGET", "found related value")
+                            TextVariable(variableId,
+                                 VariableLabel(column.nameString()),
+                                 VariableDescription(column.nameString()),
+                                 listOf(),
+                                 column.variableRelation(),
+                                 TextVariableLiteralValue(value.value))
+                        }
+                        is Err -> {
+                            Log.d("***WIDGET", "could not find related value")
+                            TextVariable(variableId)
+                        }
+                    }
+                }
+                else {
+                    Log.d("***WIDGET", "could not find primary variable")
+                    TextVariable(variableId)
+                }
+            }
+        }
+
 
         variable.addTags(column.tags().toSet())
 
@@ -3933,7 +4124,7 @@ data class TableWidget(private val widgetId : WidgetId,
     }
 
 
-    private fun defaultTableRow(primaryValue : String? = null) : TableWidgetRow
+    private fun defaultTableRow(primaryValue : String?, valueReference : ValueReference? = null) : TableWidgetRow
     {
         val cells : MutableList<TableWidgetCell> = mutableListOf()
 
@@ -3946,9 +4137,15 @@ data class TableWidget(private val widgetId : WidgetId,
 
                     if (index == primaryColumnIndex.value.value)
                     {
-                        primaryValue?.let {
+                        if (valueReference != null)
+                        {
+                            val variableValue = TextVariableValueValue(valueReference)
+                            cells.add(TableWidgetTextCell(TextCellValueValue(variableValue)))
+                        }
+                        else if (primaryValue != null)
+                        {
                             val variableValue = TextVariableLiteralValue(primaryValue)
-                            cells.add(TableWidgetTextCell(variableValue))
+                            cells.add(TableWidgetTextCell(TextCellValueValue(variableValue)))
                         }
                     }
                     else
@@ -3986,32 +4183,69 @@ data class TableWidget(private val widgetId : WidgetId,
 
 
     private fun addRowToState(row : TableWidgetRow,
-                              index : Int,
+                              rowIndex : Int,
                               entityId : EntityId,
                               context : Context)
     {
         val rowVariables : MutableList<Variable> = mutableListOf()
 
-        row.cells().forEachIndexed { cellIndex, cell ->
-            when (cell) {
-                is TableWidgetBooleanCell ->
-                {
-                    val booleanVar = addBooleanCellVariable(cell, index, cellIndex, entityId, context)
-                    rowVariables.add(booleanVar)
-                }
-                is TableWidgetNumberCell ->
-                {
-                    this.numberCellById.put(cell.id, cell)
-                    val numberVar = addNumberCellVariable(cell, index, cellIndex, entityId, context)
-                    rowVariables.add(numberVar)
-                }
-                is TableWidgetTextCell ->
-                {
-                    this.textCellById[cell.id] = cell
-                    val textVar = addTextCellVariable(cell, index, cellIndex, entityId, context)
-                    rowVariables.add(textVar)
+        if (row.cells().size != this.columns().size) return
+
+        var primaryVariable : Variable? = null
+
+        val primaryColumnIndex : Int? = primaryColumnIndex().toNullable()?.value
+
+        primaryColumnIndex?.let { index ->
+            row.cells().getOrNull(index)?.let { cell ->
+                when (cell) {
+                    is TableWidgetBooleanCell ->
+                    {
+                        val booleanVar = addBooleanCellVariable(cell, rowIndex, index, entityId, context)
+                        rowVariables.add(booleanVar)
+                        primaryVariable = booleanVar
+                    }
+                    is TableWidgetNumberCell ->
+                    {
+                        this.numberCellById[cell.id] = cell
+                        val numberVar = addNumberCellVariable(cell, rowIndex, index, entityId, context)
+                        rowVariables.add(numberVar)
+                        primaryVariable = numberVar
+                    }
+                    is TableWidgetTextCell ->
+                    {
+                        this.textCellById[cell.id] = cell
+                        val textVar = addTextCellVariable(cell, rowIndex, index, null, entityId, context)
+                        rowVariables.add(textVar)
+                        primaryVariable = textVar
+                    }
+                    else -> { }
                 }
             }
+        }
+
+        row.cells().forEachIndexed { cellIndex, cell ->
+            if (!(primaryColumnIndex != null && primaryColumnIndex == cellIndex)) {
+                when (cell) {
+                    is TableWidgetBooleanCell ->
+                    {
+                        val booleanVar = addBooleanCellVariable(cell, rowIndex, cellIndex, entityId, context)
+                        rowVariables.add(booleanVar)
+                    }
+                    is TableWidgetNumberCell ->
+                    {
+                        this.numberCellById[cell.id] = cell
+                        val numberVar = addNumberCellVariable(cell, rowIndex, cellIndex, entityId, context)
+                        rowVariables.add(numberVar)
+                    }
+                    is TableWidgetTextCell ->
+                    {
+                        this.textCellById[cell.id] = cell
+                        val textVar = addTextCellVariable(cell, rowIndex, cellIndex, primaryVariable, entityId, context)
+                        rowVariables.add(textVar)
+                    }
+                }
+            }
+
         }
 
         rowVariables.forEachIndexed { i, iVar ->
@@ -4189,9 +4423,10 @@ data class TextWidget(val widgetId : WidgetId,
 
 
     override fun view(groupContext : Maybe<GroupContext>,
+                      rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View =
-        TextWidgetView.view(this, this.format(), entityId, context)
+        TextWidgetView.view(this, this.format(), rowLayoutType, entityId, context)
 
 
     override fun widgetId() : WidgetId = this.widgetId

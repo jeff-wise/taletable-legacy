@@ -93,3 +93,18 @@ class SheetDoesNotHaveWidget(val widgetId : WidgetId) : SheetError()
 
     override fun logMessage(): String = userMessage()
 }
+
+
+/**
+ * The expander widget doesn't have a checkbox variable
+ */
+class ExpanderWidgetDoesNotHaveCheckboxVariable(val widgetId : WidgetId) : SheetError()
+{
+    override fun debugMessage(): String =
+            """
+            Sheet Error: Expander Widget Does Not Have Checkbox Variable
+                Widget Id: $widgetId
+            """
+
+    override fun logMessage(): String = userMessage()
+}

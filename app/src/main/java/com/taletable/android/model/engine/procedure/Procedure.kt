@@ -4,8 +4,6 @@ package com.taletable.android.model.engine.procedure
 
 import android.content.Context
 import com.taletable.android.app.AppEff
-import com.taletable.android.db.DB_ProcedureValue
-import com.taletable.android.db.procedureTable
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
 import com.taletable.android.lib.orm.RowValue5
@@ -37,47 +35,18 @@ import java.util.*
 /**
  * Procedure
  */
-data class Procedure(override val id : UUID,
-                     val procedureId : ProcedureId,
+data class Procedure(val procedureId : ProcedureId,
                      val procedureName : ProcedureName,
                      val procedureUpdates : List<ProcedureUpdate>,
                      val description : Maybe<Message>,
                      val actionLabel : ProcedureActionLabel,
                      val statistics : ProcedureStatistics)
-                      : ProdType, ToDocument, Serializable
+                      : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(procedureId : ProcedureId,
-                procedureName : ProcedureName,
-                procedureUpdates : List<ProcedureUpdate>,
-                description : Maybe<Message>,
-                actionLabel : ProcedureActionLabel)
-        : this(UUID.randomUUID(),
-               procedureId,
-               procedureName,
-               procedureUpdates,
-               description,
-               actionLabel,
-               ProcedureStatistics.default())
-
-    constructor(procedureId : ProcedureId,
-                procedureName : ProcedureName,
-                procedureUpdates : List<ProcedureUpdate>,
-                description : Maybe<Message>,
-                actionLabel : ProcedureActionLabel,
-                statistics : ProcedureStatistics)
-        : this(UUID.randomUUID(),
-               procedureId,
-               procedureName,
-               procedureUpdates,
-               description,
-               actionLabel,
-               statistics)
-
 
     companion object : Factory<Procedure>
     {
@@ -140,25 +109,6 @@ data class Procedure(override val id : UUID,
         "procedure_name" to this.procedureName().toDocument(),
         "action_label" to this.actionLabel().toDocument()
     ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // PROD MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_ProcedureValue =
-        RowValue5(procedureTable,
-                  PrimValue(this.procedureId),
-                  PrimValue(this.procedureName),
-                  PrimValue(ProcedureUpdates(this.procedureUpdates)),
-                  MaybeProdValue(this.description),
-                  PrimValue(this.actionLabel))
 
 
     // -----------------------------------------------------------------------------------------

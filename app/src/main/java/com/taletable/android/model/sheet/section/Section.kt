@@ -3,8 +3,6 @@ package com.taletable.android.model.sheet.section
 
 
 import android.content.Context
-import com.taletable.android.db.DB_SectionValue
-import com.taletable.android.db.sectionTable
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
 import com.taletable.android.lib.orm.RowValue3
@@ -30,25 +28,15 @@ import java.util.*
 /**
  * Section
  */
-data class Section(override val id : UUID,
-                   private var sectionName : SectionName,
+data class Section(private var sectionName : SectionName,
                    private var pages : List<Page>,
                    private var icon : IconType)
-                    : ProdType, ToDocument, Serializable
+                    : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(name : SectionName,
-                pages : List<Page>,
-                icon : IconType)
-        : this(UUID.randomUUID(),
-               name,
-               pages,
-               icon)
-
 
     companion object : Factory<Section>
     {
@@ -95,23 +83,6 @@ data class Section(override val id : UUID,
         "pages" to DocList(this.pages().map { it.toDocument() }),
         "icon" to this.icon().toDocument()
     ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_SectionValue =
-        RowValue3(sectionTable,
-                  PrimValue(this.sectionName),
-                  CollValue(this.pages),
-                  PrimValue(this.icon))
 
 
     // -----------------------------------------------------------------------------------------

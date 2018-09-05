@@ -57,6 +57,13 @@ data class GroupWidgetUpdateSetReferences(
         val newReferenceList : List<GroupReference>) : WidgetUpdateGroupWidget(widgetId)
 
 
+// | Sheet Update > Widget Update > Expander Widget
+// ---------------------------------------------------------------------------------------------
+
+sealed class WidgetUpdateExpanderWidget(override val widgetId : WidgetId) : SheetUpdateWidget(widgetId)
+
+data class ExpanderWidgetUpdateToggle(override val widgetId : WidgetId) : WidgetUpdateExpanderWidget(widgetId)
+
 
 // | Sheet Update > Widget Update > List Widget
 // ---------------------------------------------------------------------------------------------

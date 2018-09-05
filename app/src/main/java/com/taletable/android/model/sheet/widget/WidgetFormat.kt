@@ -2,8 +2,6 @@
 package com.taletable.android.model.sheet.widget
 
 
-import com.taletable.android.db.DB_WidgetFormatValue
-import com.taletable.android.db.widgetFormatTable
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
 import com.taletable.android.lib.orm.RowValue3
@@ -26,32 +24,18 @@ import java.util.*
 /**
  * Widget Format
  */
-data class WidgetFormat(override val id : UUID,
-                        val width : WidgetWidth,
+data class WidgetFormat(val width : WidgetWidth,
                         val column : RowColumn,
                         val elementFormat : ElementFormat)
-                         : ToDocument, ProdType, Serializable
+                         : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(width : WidgetWidth,
-                column : RowColumn,
-                elmentFormat : ElementFormat)
-        : this(UUID.randomUUID(),
-               width,
-               column,
-               elmentFormat)
-
-
     constructor(elementFormat : ElementFormat)
-        : this(UUID.randomUUID(),
-               WidgetWidth.default(),
-               RowColumn.default(),
-               elementFormat)
-
+            : this(WidgetWidth.default(), RowColumn.default(), elementFormat)
 
     companion object : Factory<WidgetFormat>
     {
@@ -66,6 +50,7 @@ data class WidgetFormat(override val id : UUID,
                                                            ColorTheme.transparent,
                                                            Corners.default(),
                                                            Border.default(),
+                                                           Elevation.default(),
                                                            Alignment.Center,
                                                            VerticalAlignment.Middle)
 
@@ -119,23 +104,6 @@ data class WidgetFormat(override val id : UUID,
 
 
     fun elementFormat() : ElementFormat = this.elementFormat
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetFormatValue =
-        RowValue3(widgetFormatTable,
-                  PrimValue(this.width),
-                  PrimValue(this.column),
-                  ProdValue(this.elementFormat))
 
 }
 

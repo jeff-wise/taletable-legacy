@@ -2,11 +2,7 @@
 package com.taletable.android.model.sheet.style
 
 
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue9
-import com.taletable.android.lib.orm.schema.PrimValue
 import com.taletable.android.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
@@ -14,15 +10,13 @@ import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
-import java.util.*
 
 
 
 /**
  * Element Format
  */
-data class ElementFormat(override val id : UUID,
-                         private val position : Position,
+data class ElementFormat(private val position : Position,
                          private val height : Height,
                          private val width : Width,
                          private val padding : Spacing,
@@ -30,37 +24,14 @@ data class ElementFormat(override val id : UUID,
                          private val backgroundColorTheme : ColorTheme,
                          private val corners : Corners,
                          private val border : Border,
+                         private val elevation : Elevation,
                          private val alignment : Alignment,
                          private val verticalAlignment : VerticalAlignment)
-                           : ToDocument, ProdType, Serializable
+                           : ToDocument, Serializable
 {
 
+    // | Constructors
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    constructor(position : Position,
-                height : Height,
-                width : Width,
-                padding : Spacing,
-                margins : Spacing,
-                backgroundColorTheme : ColorTheme,
-                corners : Corners,
-                border : Border,
-                alignment : Alignment,
-                verticalAlignment : VerticalAlignment)
-        : this(UUID.randomUUID(),
-               position,
-               height,
-               width,
-               padding,
-               margins,
-               backgroundColorTheme,
-               corners,
-               border,
-               alignment,
-               verticalAlignment)
-
 
     companion object : Factory<ElementFormat>
     {
@@ -73,6 +44,7 @@ data class ElementFormat(override val id : UUID,
         private fun defaultBackgroundColorTheme() = ColorTheme.transparent
         private fun defaultCorners()              = Corners.default()
         private fun defaultBorder()               = Border.default()
+        private fun defaultElevation()            = Elevation(0.0)
         private fun defaultAlignment()            = Alignment.Center
         private fun defaultVerticalAlignment()    = VerticalAlignment.Middle
 
@@ -113,6 +85,10 @@ data class ElementFormat(override val id : UUID,
                       split(doc.maybeAt("border"),
                             effValue(defaultBorder()),
                             { Border.fromDocument(it) }),
+                      // Elevation
+                      split(doc.maybeAt("elevation"),
+                            effValue(defaultElevation()),
+                            { Elevation.fromDocument(it) }),
                       // Alignment
                       split(doc.maybeAt("horizontal_alignment"),
                             effValue<ValueError,Alignment>(defaultAlignment()),
@@ -135,6 +111,7 @@ data class ElementFormat(override val id : UUID,
                                       defaultBackgroundColorTheme(),
                                       defaultCorners(),
                                       defaultBorder(),
+                                      defaultElevation(),
                                       defaultAlignment(),
                                       defaultVerticalAlignment())
 
@@ -154,6 +131,7 @@ data class ElementFormat(override val id : UUID,
         "background_color_theme" to this.backgroundColorTheme().toDocument(),
         "corners" to this.corners().toDocument(),
         "border" to this.border().toDocument(),
+        "elevation" to this.elevation().toDocument(),
         "alignment" to this.alignment().toDocument(),
         "vertical_alignment" to this.verticalAlignment().toDocument()
     ))
@@ -187,33 +165,13 @@ data class ElementFormat(override val id : UUID,
     fun border() : Border = this.border
 
 
+    fun elevation() : Elevation = this.elevation
+
+
     fun alignment() : Alignment = this.alignment
 
 
     fun verticalAlignment() : VerticalAlignment = this.verticalAlignment
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_ElementFormatValue =
-        RowValue9(elementFormatTable,
-                  PrimValue(this.position),
-                  PrimValue(this.height),
-                  PrimValue(this.width),
-                  PrimValue(this.padding),
-                  PrimValue(this.margins),
-                  PrimValue(this.backgroundColorTheme),
-                  PrimValue(this.corners),
-                  PrimValue(this.alignment),
-                  PrimValue(this.verticalAlignment))
 
 
     // -----------------------------------------------------------------------------------------
@@ -238,6 +196,7 @@ data class ElementFormat(override val id : UUID,
                              this.backgroundColorTheme,
                              this.corners,
                              this.border,
+                             this.elevation,
                              this.alignment,
                              this.verticalAlignment)
     }
@@ -258,6 +217,7 @@ data class ElementFormat(override val id : UUID,
                              this.backgroundColorTheme,
                              this.corners,
                              this.border,
+                             this.elevation,
                              this.alignment,
                              this.verticalAlignment)
     }
@@ -278,6 +238,7 @@ data class ElementFormat(override val id : UUID,
                              this.backgroundColorTheme,
                              this.corners,
                              this.border,
+                             this.elevation,
                              this.alignment,
                              this.verticalAlignment)
     }
@@ -298,6 +259,7 @@ data class ElementFormat(override val id : UUID,
                              this.backgroundColorTheme,
                              this.corners,
                              this.border,
+                             this.elevation,
                              this.alignment,
                              this.verticalAlignment)
     }
@@ -322,6 +284,7 @@ data class ElementFormat(override val id : UUID,
                              this.backgroundColorTheme,
                              this.corners,
                              this.border,
+                             this.elevation,
                              this.alignment,
                              this.verticalAlignment)
     }
@@ -342,6 +305,7 @@ data class ElementFormat(override val id : UUID,
                              this.backgroundColorTheme,
                              this.corners,
                              this.border,
+                             this.elevation,
                              this.alignment,
                              this.verticalAlignment)
     }
@@ -360,6 +324,7 @@ data class ElementFormat(override val id : UUID,
                              this.backgroundColorTheme,
                              this.corners,
                              this.border,
+                             this.elevation,
                              alignment,
                              this.verticalAlignment)
     }

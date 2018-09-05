@@ -1,0 +1,116 @@
+variables:
+- type: variable_text
+  variable_text:
+    id: one_action
+    label: 'One Action'
+    description: 'One Action'
+    value:
+      type: text_literal
+      text_literal: '1 ACTION'
+- type: variable_text
+  variable_text:
+    id: two_actions
+    label: 'Two Actions'
+    description: 'Two Actions'
+    value:
+      type: text_literal
+      text_literal: '2 ACTIONS'
+- type: variable_text
+  variable_text:
+    id: action_header_trigger
+    label: 'Action: Header: Trigger'
+    description: 'Action: Header: Trigger'
+    value:
+      type: text_literal
+      text_literal: 'TRIGGER'
+- type: variable_text
+  variable_text:
+    id: action_header_requirements
+    label: 'Action: Header: Requirements'
+    description: 'Action: Header: Requirements'
+    value:
+      type: text_literal
+      text_literal: 'REQUIREMENTS'
+- type: variable_text
+  variable_text:
+    id: action_aid_label
+    label: 'Action: Aid: Label'
+    description: 'Action: Aid: Label'
+    value:
+      type: text_literal
+      text_literal: 'Aid'
+- type: variable_text
+  variable_text:
+    id: action_aid_trigger_description
+    label: 'Action: Aid: Trigger Description'
+    description: 'Action: Aid: Trigger Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        An ally is about to use an action, activity, free action, or reaction that requires a skill check.
+- type: variable_text
+  variable_text:
+    id: action_aid_requirements_description
+    label: 'Action: Aid: Requirements Description'
+    description: 'Action: Aid: Requirements Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The ally is willing to accept your aid, and you have prepared to help (see below).
+- type: variable_text
+  variable_text:
+    id: action_assist_requirements_description
+    label: 'Action: Assist: Requirements Description'
+    description: 'Action: Assist: Requirements Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        An enemy is within your melee reach, and is within the reach of one or more of your allies.
+- type: variable_text
+  variable_text:
+    id: action_assist_label
+    label: 'Action: Assist: Label'
+    description: 'Action: Assist: Label'
+    value:
+      type: text_literal
+      text_literal: 'Assist'
+- type: variable_text
+  variable_text:
+    id: action_crawl_label
+    label: 'Action: Crawl: Label'
+    description: 'Action: Crawl: Label'
+    value:
+      type: text_literal
+      text_literal: 'Crawl'
+- type: variable_text
+  variable_text:
+    id: action_ready_label
+    label: 'Action: Ready: Label'
+    description: 'Action: Ready: Label'
+    value:
+      type: text_literal
+      text_literal: 'Ready'
+- type: variable_boolean
+  variable_boolean:
+    id: using_action_aid
+    label: 'Using Action: Aid'
+    description: 'Using Action: Aid'
+    value:
+      type: boolean_literal
+      boolean_literal: false
+- type: variable_boolean
+  variable_boolean:
+    id: using_action_assist
+    label: 'Using Action: Assist'
+    description: 'Using Action: Assist'
+    value:
+      type: boolean_literal
+      boolean_literal: false
+- type: variable_boolean
+  variable_boolean:
+    id: using_action_crawl
+    label: 'Using Action: Crawl'
+    description: 'Using Action: Crawl'
+    value:
+      type: boolean_literal
+      boolean_literal: false

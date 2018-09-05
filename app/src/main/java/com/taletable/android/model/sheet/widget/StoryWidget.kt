@@ -62,31 +62,20 @@ import maybe.Maybe
 import maybe.Nothing
 
 
+
 /**
  * Story Widget Format
  */
-data class StoryWidgetFormat(override val id : UUID,
-                             val widgetFormat : WidgetFormat,
+data class StoryWidgetFormat(val widgetFormat : WidgetFormat,
                              val lineHeight : Maybe<LineHeight>,
                              val lineSpacing : Maybe<LineSpacing>,
                              val textFormat : TextFormat)
-                              : ToDocument, ProdType, Serializable
+                              : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat,
-                lineHeight : Maybe<LineHeight>,
-                lineSpacing : Maybe<LineSpacing>,
-                textFormat : TextFormat)
-        : this(UUID.randomUUID(),
-               widgetFormat,
-               lineHeight,
-               lineSpacing,
-               textFormat)
-
 
     companion object : Factory<StoryWidgetFormat>
     {
@@ -156,29 +145,11 @@ data class StoryWidgetFormat(override val id : UUID,
 
     fun textFormat() : TextFormat = this.textFormat
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetStoryFormatValue =
-        RowValue4(widgetStoryFormatTable,
-                  ProdValue(this.widgetFormat),
-                  MaybePrimValue(this.lineHeight),
-                  MaybePrimValue(this.lineSpacing),
-                  ProdValue(this.textFormat))
-
 }
 
 
 @Suppress("UNCHECKED_CAST")
-sealed class StoryPart(open val format : StoryPartFormat) : ToDocument, ProdType, Serializable
+sealed class StoryPart(open val format : StoryPartFormat) : ToDocument, Serializable
 {
 
     companion object : Factory<StoryPart>
@@ -224,22 +195,14 @@ sealed class StoryPart(open val format : StoryPartFormat) : ToDocument, ProdType
 /**
  * Story Part Format
  */
-data class StoryPartFormat(override val id : UUID,
-                           val highlightSkew : HighlightSkew,
+data class StoryPartFormat(val highlightSkew : HighlightSkew,
                            val highlightCornerRadius : HighlightCornerRadius)
-                            : ProdType, ToDocument, Serializable
+                            : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(highlightSkew : HighlightSkew,
-                highlightCornerRadius : HighlightCornerRadius)
-        : this(UUID.randomUUID(),
-               highlightSkew,
-               highlightCornerRadius)
-
 
     companion object : Factory<StoryPartFormat>
     {
@@ -286,46 +249,21 @@ data class StoryPartFormat(override val id : UUID,
 
     fun highlightCornerRadius() : HighlightCornerRadius = this.highlightCornerRadius
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject : ProdType = this
-
-
-    override fun rowValue() : DB_WidgetStoryPartFormatValue =
-        RowValue2(widgetStoryPartFormatTable,
-                  PrimValue(this.highlightSkew),
-                  PrimValue(this.highlightCornerRadius))
-
 }
 
 
 /**
  * Story Part Span
  */
-data class StoryPartSpan(override val id : UUID,
-                         override val format : StoryPartFormat,
+data class StoryPartSpan(override val format : StoryPartFormat,
                          val textFormat : TextFormat,
-                         val text : StoryPartText) : StoryPart(format), Serializable
+                         val text : StoryPartText)
+                           : StoryPart(format), Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(format : StoryPartFormat,
-                textFormat : TextFormat,
-                text : StoryPartText)
-        : this(UUID.randomUUID(),
-               format,
-               textFormat,
-               text)
-
 
     companion object : Factory<StoryPartSpan>
     {
@@ -384,31 +322,13 @@ data class StoryPartSpan(override val id : UUID,
 
     override fun wordCount() = this.textString().split(' ').size
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject : ProdType = this
-
-
-    override fun rowValue() : DB_WidgetStoryPartSpanValue =
-        RowValue3(widgetStoryPartSpanTable,
-                  ProdValue(this.format),
-                  ProdValue(this.textFormat),
-                  PrimValue(this.text))
-
 }
 
 
 /**
  * Story Part Variable
  */
-data class StoryPartVariable(override val id : UUID,
-                             override val format : StoryPartFormat,
+data class StoryPartVariable(override val format : StoryPartFormat,
                              val textFormat : TextFormat,
                              val variableId : VariableId,
                              val numericEditorType : NumericEditorType)
@@ -425,17 +345,6 @@ data class StoryPartVariable(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(format : StoryPartFormat,
-                textFormat : TextFormat,
-                variableId : VariableId,
-                numericEditorType : NumericEditorType)
-        : this(UUID.randomUUID(),
-               format,
-               textFormat,
-               variableId,
-               numericEditorType)
-
 
     companion object : Factory<StoryPartVariable>
     {
@@ -518,32 +427,13 @@ data class StoryPartVariable(override val id : UUID,
 
     override fun wordCount() = 0
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetStoryPartVariableValue =
-        RowValue4(widgetStoryPartVariableTable,
-                  ProdValue(this.format),
-                  ProdValue(this.textFormat),
-                  PrimValue(this.variableId),
-                  PrimValue(this.numericEditorType))
-
 }
 
 
 /**
  * Story Part Icon
  */
-data class StoryPartIcon(override val id : UUID,
-                         override val format : StoryPartFormat,
+data class StoryPartIcon(override val format : StoryPartFormat,
                          val icon : Icon)
                           : StoryPart(format), Serializable
 {
@@ -551,11 +441,6 @@ data class StoryPartIcon(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(format : StoryPartFormat,
-                icon : Icon)
-                 : this(UUID.randomUUID(), format, icon)
-
 
     companion object : Factory<StoryPartIcon>
     {
@@ -600,30 +485,13 @@ data class StoryPartIcon(override val id : UUID,
 
     override fun wordCount() = 0
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetStoryPartIconValue =
-        RowValue2(widgetStoryPartIconTable,
-                  ProdValue(this.format),
-                  ProdValue(this.icon))
-
 }
 
 
 /**
  * Story Part Roll
  */
-data class StoryPartAction(override val id : UUID,
-                           override val format : StoryPartFormat,
+data class StoryPartAction(override val format : StoryPartFormat,
                            val text : StoryPartText,
                            val action : Action,
                            val textFormat : TextFormat,
@@ -635,21 +503,6 @@ data class StoryPartAction(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(format : StoryPartFormat,
-                text : StoryPartText,
-                action : Action,
-                textFormat : TextFormat,
-                iconFormat : IconFormat,
-                showProcedureDialog : ShowProcedureDialog)
-        : this(UUID.randomUUID(),
-               format,
-               text,
-               action,
-               textFormat,
-               iconFormat,
-               showProcedureDialog)
-
 
     companion object : Factory<StoryPartAction>
     {
@@ -730,26 +583,6 @@ data class StoryPartAction(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun wordCount() = this.textString().split(' ').size
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetStoryPartActionValue =
-        RowValue6(widgetStoryPartActionTable,
-                  ProdValue(this.format),
-                  PrimValue(this.text),
-                  ProdValue(this.action),
-                  ProdValue(this.textFormat),
-                  ProdValue(this.iconFormat),
-                  PrimValue(this.showProcedureDialog))
 
 }
 

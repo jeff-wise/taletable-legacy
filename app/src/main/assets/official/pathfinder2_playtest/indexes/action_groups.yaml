@@ -1,0 +1,820 @@
+groups:
+- id: '608ad80e-f526-42d5-b9d4-8ff87d9b9723'
+  name: 'Action: Content: Top'
+  summary: 'Action: Content: Top'
+  format:
+    border:
+      top:
+        color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: light_blue_grey_5
+        thickness: 1
+    element_format:
+      padding:
+        bottom: 4
+  rows:
+- id: '685fa023-d7ea-47a8-abcb-5536d8c15c86'
+  name: 'Action: Content: Bottom'
+  summary: 'Action: Content: Bottom'
+  format:
+    element_format:
+      padding:
+        bottom: 8
+  rows:
+- id: '20283297-2ebb-46ea-b66d-dc7c84b28223'
+  name: 'Action: Header: Trigger'
+  summary: 'Action: Header: Trigger'
+  rows:
+  - format:
+      element_format:
+        padding:
+          top: 4
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: bold
+            size: 13
+            element_format:
+              horizontal_alignment: left
+        value_variable_id: action_header_trigger
+- id: 'c3b245ca-6879-4f50-9aee-85f230a11909'
+  name: 'Action: Header: Requirements'
+  summary: 'Action: Header: Requirements'
+  rows:
+  - format:
+      element_format:
+        padding:
+          top: 4
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font_style: bold
+            size: 13
+            element_format:
+              horizontal_alignment: left
+        value_variable_id: action_header_requirements
+- id: '652e23d9-3ea1-47ac-905b-bd796aebfbfe'
+  name: 'Action: Aid'
+  summary: 'Action: Aid'
+  tags:
+  - action
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 2
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Aid"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_rapier
+        checkbox_variable_reference:
+          type: variable_id
+          variable_id: using_action_aid
+        header_group_references:
+        - type: group
+          group:
+            rows:
+            - format:
+                space_apart: true
+                element_format:
+                  horizontal_alignment: left
+                  padding:
+                    left: 10
+              widgets:
+              - type: widget_text
+                widget_text:
+                  format:
+                    value_format:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: dark_grey_18
+                      font_style: semi_bold
+                      size: 21
+                      element_format:
+                        horizontal_alignment: left
+                    widget_format:
+                      element_format:
+                        horizontal_alignment: left
+                        width:
+                          type: width_wrap
+                          width_wrap: wrap
+                  value_variable_id: action_aid_label
+              - type: widget_text
+                widget_text:
+                  format:
+                    value_format:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: white
+                      font_style: semi_bold
+                      size: 13
+                      element_format:
+                        horizontal_alignment: right
+                    widget_format:
+                      element_format:
+                        background_color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: light_blue_grey_18
+                        corners:
+                          top_right_radius: 2
+                          top_left_radius: 2
+                          bottom_right_radius: 2
+                          bottom_left_radius: 2
+                        horizontal_alignment: right
+                        padding:
+                          top: 4
+                          bottom: 4
+                          left: 10
+                          right: 10
+                        width:
+                          type: width_wrap
+                          width_wrap: wrap
+                  value_variable_id: one_action
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 1
+                top_left_radius: 1
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: checkbox_left
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 1
+                top_left_radius: 1
+              padding:
+                right: 12
+                left: 12
+                top: 12
+                bottom: 12
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 1
+                top_left_radius: 1
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              padding:
+                right: 12
+                left: 12
+                top: 12
+                bottom: 12
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        group_references:
+        - type: group_id
+          group_id: '608ad80e-f526-42d5-b9d4-8ff87d9b9723'
+        - type: group_id
+          group_id: '20283297-2ebb-46ea-b66d-dc7c84b28223'
+        - type: group
+          group:
+            format:
+              element_format:
+                padding:
+                  left: 12
+                  right: 12
+            rows:
+            - widgets:
+              - type: widget_text
+                widget_text:
+                  format:
+                    widget_format:
+                      element_format:
+                        horizontal_alignment: left
+                        width:
+                          type: width_justify
+                          width_justify: justify
+                    value_format:
+                      element_format:
+                        horizontal_alignment: left
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: dark_grey_16
+                      font_style: regular
+                      size: 17
+                  value_variable_id: action_aid_trigger_description
+        - type: group_id
+          group_id: 'c3b245ca-6879-4f50-9aee-85f230a11909'
+        - type: group
+          group:
+            format:
+              element_format:
+                padding:
+                  left: 12
+                  right: 12
+            rows:
+            - widgets:
+              - type: widget_text
+                widget_text:
+                  format:
+                    widget_format:
+                      element_format:
+                        horizontal_alignment: left
+                        width:
+                          type: width_justify
+                          width_justify: justify
+                    value_format:
+                      element_format:
+                        horizontal_alignment: left
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: dark_grey_16
+                      font_style: regular
+                      size: 17
+                  value_variable_id: action_aid_requirements_description
+        - type: group_id
+          group_id: '685fa023-d7ea-47a8-abcb-5536d8c15c86'
+- id: 'd7a3d6cb-ecb0-4605-888b-fcabcd82a223'
+  name: 'Action: Assist'
+  summary: 'Action: Assist'
+  tags:
+  - action
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 2
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Assist"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_rapier
+        checkbox_variable_reference:
+          type: variable_id
+          variable_id: using_action_assist
+        header_group_references:
+        - type: group
+          group:
+            rows:
+            - format:
+                space_apart: true
+                element_format:
+                  horizontal_alignment: left
+                  padding:
+                    left: 10
+              widgets:
+              - type: widget_text
+                widget_text:
+                  format:
+                    value_format:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: dark_grey_18
+                      font_style: semi_bold
+                      size: 21
+                      element_format:
+                        horizontal_alignment: left
+                    widget_format:
+                      element_format:
+                        horizontal_alignment: left
+                        width:
+                          type: width_wrap
+                          width_wrap: wrap
+                  value_variable_id: action_assist_label
+              - type: widget_text
+                widget_text:
+                  format:
+                    value_format:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: white
+                      font_style: semi_bold
+                      size: 13
+                      element_format:
+                        horizontal_alignment: right
+                    widget_format:
+                      element_format:
+                        background_color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: light_blue_grey_18
+                        corners:
+                          top_right_radius: 2
+                          top_left_radius: 2
+                          bottom_right_radius: 2
+                          bottom_left_radius: 2
+                        horizontal_alignment: right
+                        padding:
+                          top: 4
+                          bottom: 4
+                          left: 10
+                          right: 10
+                        width:
+                          type: width_wrap
+                          width_wrap: wrap
+                  value_variable_id: one_action
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 1
+                top_left_radius: 1
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: checkbox_left
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 1
+                top_left_radius: 1
+              padding:
+                right: 12
+                left: 12
+                top: 12
+                bottom: 12
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 1
+                top_left_radius: 1
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              padding:
+                right: 12
+                left: 12
+                top: 12
+                bottom: 12
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        group_references:
+        - type: group_id
+          group_id: '608ad80e-f526-42d5-b9d4-8ff87d9b9723'
+        - type: group_id
+          group_id: 'c3b245ca-6879-4f50-9aee-85f230a11909'
+        - type: group
+          group:
+            format:
+              element_format:
+                padding:
+                  left: 12
+                  right: 12
+            rows:
+            - widgets:
+              - type: widget_text
+                widget_text:
+                  format:
+                    widget_format:
+                      element_format:
+                        horizontal_alignment: left
+                        width:
+                          type: width_justify
+                          width_justify: justify
+                    value_format:
+                      element_format:
+                        horizontal_alignment: left
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: dark_grey_16
+                      font_style: regular
+                      size: 17
+                  value_variable_id: action_aid_requirements_description
+        - type: group_id
+          group_id: '685fa023-d7ea-47a8-abcb-5536d8c15c86'
+- id: '5ca8ecf8-51c4-4195-997c-351a760b1865'
+  name: 'Action: Crawl'
+  summary: 'Action: Crawl'
+  tags:
+  - action
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 2
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Crawl"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_rapier
+        checkbox_variable_reference:
+          type: variable_id
+          variable_id: using_action_crawl
+        header_group_references:
+        - type: group
+          group:
+            rows:
+            - format:
+                space_apart: true
+                element_format:
+                  horizontal_alignment: left
+                  padding:
+                    left: 10
+              widgets:
+              - type: widget_text
+                widget_text:
+                  format:
+                    value_format:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: dark_grey_18
+                      font_style: semi_bold
+                      size: 21
+                      element_format:
+                        horizontal_alignment: left
+                    widget_format:
+                      element_format:
+                        horizontal_alignment: left
+                        width:
+                          type: width_wrap
+                          width_wrap: wrap
+                  value_variable_id: action_crawl_label
+              - type: widget_text
+                widget_text:
+                  format:
+                    value_format:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: white
+                      font_style: semi_bold
+                      size: 13
+                      element_format:
+                        horizontal_alignment: right
+                    widget_format:
+                      element_format:
+                        background_color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: light_blue_grey_18
+                        corners:
+                          top_right_radius: 2
+                          top_left_radius: 2
+                          bottom_right_radius: 2
+                          bottom_left_radius: 2
+                        horizontal_alignment: right
+                        padding:
+                          top: 4
+                          bottom: 4
+                          left: 10
+                          right: 10
+                        width:
+                          type: width_wrap
+                          width_wrap: wrap
+                  value_variable_id: one_action
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 1
+                top_left_radius: 1
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: checkbox_left
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 1
+                top_left_radius: 1
+              padding:
+                right: 12
+                left: 12
+                top: 12
+                bottom: 12
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 1
+                top_left_radius: 1
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              padding:
+                right: 12
+                left: 12
+                top: 12
+                bottom: 12
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        group_references:
+        - type: group_id
+          group_id: '608ad80e-f526-42d5-b9d4-8ff87d9b9723'
+        - type: group_id
+          group_id: 'c3b245ca-6879-4f50-9aee-85f230a11909'
+        - type: group
+          group:
+            format:
+              element_format:
+                padding:
+                  left: 12
+                  right: 12
+            rows:
+            - widgets:
+              - type: widget_text
+                widget_text:
+                  format:
+                    widget_format:
+                      element_format:
+                        horizontal_alignment: left
+                        width:
+                          type: width_justify
+                          width_justify: justify
+                    value_format:
+                      element_format:
+                        horizontal_alignment: left
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: dark_grey_16
+                      font_style: regular
+                      size: 17
+                  value_variable_id: action_aid_requirements_description
+        - type: group_id
+          group_id: '685fa023-d7ea-47a8-abcb-5536d8c15c86'
+- id: '918d3a65-0ca8-402c-b922-0692be1a84cc'
+  name: 'Action: Ready'
+  summary: 'Action: Ready'
+  tags:
+  - action
+  rows:
+  - format:
+      element_format:
+        margins:
+          top: 2
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: "Ready"
+        book_reference:
+          type: book_reference_content
+          book_reference_content:
+            book_id: '7140ca5a-a5ce-4a37-95c8-519c7de3c040'
+            content_id: weapon_rapier
+        checkbox_variable_reference:
+          type: variable_id
+          variable_id: using_action_crawl
+        header_group_references:
+        - type: group
+          group:
+            rows:
+            - format:
+                space_apart: true
+                element_format:
+                  horizontal_alignment: left
+                  padding:
+                    left: 10
+              widgets:
+              - type: widget_text
+                widget_text:
+                  format:
+                    value_format:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: dark_grey_18
+                      font_style: semi_bold
+                      size: 21
+                      element_format:
+                        horizontal_alignment: left
+                    widget_format:
+                      element_format:
+                        horizontal_alignment: left
+                        width:
+                          type: width_wrap
+                          width_wrap: wrap
+                  value_variable_id: action_ready_label
+              - type: widget_text
+                widget_text:
+                  format:
+                    value_format:
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: white
+                      font_style: semi_bold
+                      size: 13
+                      element_format:
+                        horizontal_alignment: right
+                    widget_format:
+                      element_format:
+                        background_color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: dark_blue_grey_20
+                        corners:
+                          top_right_radius: 2
+                          top_left_radius: 2
+                          bottom_right_radius: 2
+                          bottom_left_radius: 2
+                        horizontal_alignment: right
+                        padding:
+                          top: 4
+                          bottom: 4
+                          left: 10
+                          right: 10
+                        width:
+                          type: width_wrap
+                          width_wrap: wrap
+                  value_variable_id: two_actions
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 1
+                top_left_radius: 1
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: checkbox_left
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 1
+                top_left_radius: 1
+              padding:
+                right: 12
+                left: 12
+                top: 12
+                bottom: 12
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_right_radius: 1
+                top_left_radius: 1
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              padding:
+                right: 12
+                left: 12
+                top: 12
+                bottom: 12
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_16
+              size:
+                width: 28
+                height: 28
+        group_references:
+        - type: group_id
+          group_id: '608ad80e-f526-42d5-b9d4-8ff87d9b9723'
+        - type: group_id
+          group_id: 'c3b245ca-6879-4f50-9aee-85f230a11909'
+        - type: group
+          group:
+            format:
+              element_format:
+                padding:
+                  left: 12
+                  right: 12
+            rows:
+            - widgets:
+              - type: widget_text
+                widget_text:
+                  format:
+                    widget_format:
+                      element_format:
+                        horizontal_alignment: left
+                        width:
+                          type: width_justify
+                          width_justify: justify
+                    value_format:
+                      element_format:
+                        horizontal_alignment: left
+                      color_theme:
+                        theme_color_ids:
+                        - theme_id: light
+                          color_id: dark_grey_16
+                      font_style: regular
+                      size: 17
+                  value_variable_id: action_aid_requirements_description
+        - type: group_id
+          group_id: '685fa023-d7ea-47a8-abcb-5536d8c15c86'
+
+

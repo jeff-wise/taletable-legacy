@@ -201,10 +201,10 @@ class FeedFragment : Fragment()
         val groupRows = listOf(
                 GroupRow(row1Format,
                          GroupRowIndex(0),
-                         listOf(titleTextWidget)),
+                         mutableListOf(titleTextWidget)),
                 GroupRow(row2Format,
                          GroupRowIndex(0),
-                         listOf(descriptionTextWidget))
+                         mutableListOf(descriptionTextWidget))
         )
         val groupElementFormat = ElementFormat.default()
                                               .withTopPadding(0.0)
@@ -278,10 +278,10 @@ class FeedFragment : Fragment()
         val groupRows = listOf(
                 GroupRow(row1Format,
                          GroupRowIndex(0),
-                         listOf(titleTextWidget)),
+                         mutableListOf(titleTextWidget)),
                 GroupRow(row2Format,
                          GroupRowIndex(0),
-                         listOf(descriptionTextWidget))
+                         mutableListOf(descriptionTextWidget))
         )
         val groupElementFormat = ElementFormat.default()
                                               .withTopPadding(0.0)

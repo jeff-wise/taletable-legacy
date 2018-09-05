@@ -10,8 +10,6 @@ import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import com.taletable.android.app.ApplicationLog
-import com.taletable.android.db.DB_MessageValue
-import com.taletable.android.db.messageTable
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
 import com.taletable.android.lib.orm.RowValue3
@@ -42,25 +40,15 @@ import java.util.*
 /**
  * Message
  */
-data class Message(override val id : UUID,
-                   val template : MessageTemplate,
+data class Message(val template : MessageTemplate,
                    val parts : List<MessagePart>,
                    val textFormat : TextFormat)
-                    : ProdType, ToDocument, Serializable
+                    : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(template: MessageTemplate,
-                parts: List<MessagePart>,
-                textFormat: TextFormat)
-        : this(UUID.randomUUID(),
-               template,
-               parts,
-               textFormat)
-
 
     companion object : Factory<Message>
     {
@@ -107,24 +95,6 @@ data class Message(override val id : UUID,
         "template" to DocText(this.template.value),
         "text_format" to this.textFormat.toDocument()
     ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // PRODUCT TYPE
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_MessageValue =
-        RowValue3(messageTable,
-                  PrimValue(this.template),
-                  PrimValue(MessageParts(this.parts)),
-                  ProdValue(this.textFormat))
-
 
     // -----------------------------------------------------------------------------------------
     // TO STRING

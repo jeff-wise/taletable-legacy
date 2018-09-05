@@ -305,4 +305,7 @@
 
     <color name="light_theme_green_80">#CD1BC058</color>
 
+    <color name="light_theme_green_tint_1">#2FC671</color>
+    <color name="light_theme_green_tint_2">#46CD81</color>
+
 </resources>

@@ -4,10 +4,12 @@ package com.taletable.android.model.sheet.widget
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.*
 import com.taletable.android.R
@@ -19,6 +21,7 @@ import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.engine.variable.TextListVariable
+import com.taletable.android.model.sheet.style.BorderEdge
 import com.taletable.android.model.sheet.style.ElementFormat
 import com.taletable.android.model.sheet.style.TextFormat
 import com.taletable.android.model.sheet.widget.table.*
@@ -33,6 +36,8 @@ import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 
 
@@ -46,7 +51,8 @@ data class TableWidgetFormat(val widgetFormat : WidgetFormat,
                              val rowFormat : TableWidgetRowFormat,
                              val titleBarFormat : ElementFormat,
                              val titleFormat : TextFormat,
-                             val editButtonFormat : TextFormat)
+                             val editButtonFormat : TextFormat,
+                             val divider : Maybe<BorderEdge>)
                               : ToDocument, Serializable
 {
 
@@ -94,7 +100,11 @@ data class TableWidgetFormat(val widgetFormat : WidgetFormat,
                       // Edit Button Format
                       split(doc.maybeAt("edit_button_format"),
                             effValue(defaultEditButtonFormat()),
-                            { TextFormat.fromDocument(it) })
+                            { TextFormat.fromDocument(it) }),
+                      // Divider
+                      split(doc.maybeAt("divider"),
+                            effValue<ValueError,Maybe<BorderEdge>>(Nothing()),
+                            { apply(::Just, BorderEdge.fromDocument(it)) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -107,7 +117,8 @@ data class TableWidgetFormat(val widgetFormat : WidgetFormat,
                                           defaultRowFormat(),
                                           defaultTitleBarFormat(),
                                           defaultTitleFormat(),
-                                          defaultEditButtonFormat())
+                                          defaultEditButtonFormat(),
+                                          Nothing())
 
     }
 
@@ -146,6 +157,9 @@ data class TableWidgetFormat(val widgetFormat : WidgetFormat,
 
 
     fun editButtonFormat() : TextFormat = this.editButtonFormat
+
+
+    fun divider() : Maybe<BorderEdge> = this.divider
 
 }
 
@@ -418,12 +432,19 @@ class TableWidgetUI(val tableWidget : TableWidget,
     {
         val layout = this.tableLayout()
 
-        val headerRowView = this.headerRowView(tableWidget.columns(),
+        if (tableWidget.cachedRows().isNotEmpty())
+        {
+            val headerRowView = this.headerRowView(tableWidget.columns(),
                                                tableWidget.format(),
                                                entityId,
                                                context)
-        layout.addView(headerRowView)
-        this.headerRowView = headerRowView
+            layout.addView(headerRowView)
+            this.headerRowView = headerRowView
+        }
+        else
+        {
+            layout.addView(this.dummyRowView())
+        }
 
         tableWidget.cachedRows().forEach { tableWidgetRow ->
             val tableRowView = tableWidgetRow.view(tableWidget,
@@ -474,8 +495,21 @@ class TableWidgetUI(val tableWidget : TableWidget,
             }
         }
 
+        format.divider().doMaybe { divider ->
+            val dividerDrawable = ContextCompat.getDrawable(context,
+                                                            R.drawable.table_row_divider)
+
+            val dividerColor = colorOrBlack(divider.colorTheme(), entityId)
+
+            dividerDrawable?.colorFilter =
+                    PorterDuffColorFilter(dividerColor, PorterDuff.Mode.SRC_IN)
+            layout.divider = dividerDrawable
+        }
+
         return layout.tableLayout(context)
     }
+
+
 
 
     private fun headerRowView(columns : List<TableWidgetColumn>,
@@ -539,6 +573,74 @@ class TableWidgetUI(val tableWidget : TableWidget,
         textView.text           = column.nameString()
 
         rowFormat.textFormat().styleTextViewBuilder(textView, entityId, context)
+
+        layout.addView(textView.textView(context))
+
+        return layout
+    }
+
+
+    private fun dummyRowView() : TableRow
+    {
+        val tableRow = TableRowBuilder()
+
+        val rowFormat = tableWidget.format().rowFormat()
+
+        tableRow.layoutType     = LayoutType.TABLE
+        tableRow.width          = TableLayout.LayoutParams.MATCH_PARENT
+        tableRow.height         = TableLayout.LayoutParams.WRAP_CONTENT
+
+        tableRow.paddingSpacing = rowFormat.textFormat().elementFormat().padding()
+        tableRow.marginSpacing  = rowFormat.textFormat().elementFormat().margins()
+
+        tableRow.backgroundColor    = colorOrBlack(
+                                        rowFormat.textFormat().elementFormat().backgroundColorTheme(),
+                                        entityId)
+
+
+        tableWidget.columns().firstOrNull()?.let { firstColumn ->
+
+            val cellView = this.dummyCellView(rowFormat,
+                                              firstColumn.columnFormat(),
+                                              "None",
+                                              entityId,
+                                              context)
+            tableRow.rows.add(cellView)
+        }
+
+        tableRow.onLongClick        = View.OnLongClickListener {
+            tableWidget.bookReference().doMaybe {
+                val intent = Intent(activity, BookActivity::class.java)
+                intent.putExtra("book_reference", it)
+                activity.startActivity(intent)
+            }
+
+            true
+        }
+
+        return tableRow.tableRow(context)
+    }
+
+
+    private fun dummyCellView(rowFormat : TableWidgetRowFormat,
+                              columnFormat : ColumnFormat,
+                              text : String,
+                              entityId : EntityId,
+                              context : Context) : LinearLayout
+    {
+        val layout = TableWidgetCellView.layout(columnFormat,
+                                                entityId,
+                                                context)
+
+        val textView = TextViewBuilder()
+
+        textView.layoutType     = LayoutType.TABLE_ROW
+        textView.width          = TableRow.LayoutParams.WRAP_CONTENT
+        textView.height         = TableRow.LayoutParams.WRAP_CONTENT
+
+        textView.text           = text
+
+        columnFormat.textFormat().styleTextViewBuilder(textView, entityId, context)
 
         layout.addView(textView.textView(context))
 
@@ -645,8 +747,8 @@ class TableWidgetUI(val tableWidget : TableWidget,
         layout.width            = RelativeLayout.LayoutParams.WRAP_CONTENT
         layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
 
-        layout.padding.leftDp   = 10f
-        layout.padding.rightDp  = 5f
+//        layout.padding.leftDp   = 10f
+//        layout.padding.rightDp  = 5f
 
         layout.addRule(RelativeLayout.CENTER_VERTICAL)
         layout.addRule(RelativeLayout.ALIGN_PARENT_END)
@@ -674,7 +776,13 @@ class TableWidgetUI(val tableWidget : TableWidget,
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.textId            = R.string.edit
+        label.backgroundColor   = colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId)
+
+        label.corners           = format.elementFormat().corners()
+
+        label.paddingSpacing    = format.elementFormat().padding()
+
+        label.textId            = R.string.edit_table
 
         format.styleTextViewBuilder(label, entityId, context)
 

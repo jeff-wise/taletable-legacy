@@ -5,6 +5,7 @@ package com.taletable.android.model.sheet.widget
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -17,61 +18,52 @@ import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
 import com.taletable.android.lib.ui.*
+import com.taletable.android.model.entity.ExpanderWidgetUpdateToggle
 import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.Icon
 import com.taletable.android.model.sheet.style.IconType
 import com.taletable.android.model.sheet.style.TextFormat
+import com.taletable.android.model.theme.ColorId
+import com.taletable.android.model.theme.ColorTheme
+import com.taletable.android.model.theme.ThemeColorId
+import com.taletable.android.model.theme.ThemeId
+import com.taletable.android.router.Router
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
+import com.taletable.android.rts.entity.sheet.MessageSheetUpdate
+import com.taletable.android.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
-import java.util.*
 
 
 
 /**
  * Expander Widget Format
  */
-data class ExpanderWidgetFormat(val id : UUID,
-                                val widgetFormat : WidgetFormat,
+data class ExpanderWidgetFormat(val widgetFormat : WidgetFormat,
                                 val viewType : ExpanderWidgetViewType,
                                 val headerOpenFormat : TextFormat,
                                 val headerClosedFormat : TextFormat,
                                 val headerLabelOpenFormat : TextFormat,
                                 val headerLabelClosedFormat : TextFormat,
                                 val headerOpenIcon : Icon,
-                                val headerClosedIcon : Icon)
+                                val headerClosedIcon : Icon,
+                                val avatarFormat : Maybe<TextFormat>,
+                                val avatarText : Maybe<String>)
                                  : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-
-    constructor(widgetFormat: WidgetFormat,
-                viewType : ExpanderWidgetViewType,
-                headerOpenFormat: TextFormat,
-                headerClosedFormat: TextFormat,
-                headerLabelOpenFormat: TextFormat,
-                headerLabelClosedFormat: TextFormat,
-                headerOpenIcon : Icon,
-                headerClosedIcon : Icon)
-        : this(UUID.randomUUID(),
-               widgetFormat,
-               viewType,
-               headerOpenFormat,
-               headerClosedFormat,
-               headerLabelOpenFormat,
-               headerLabelClosedFormat,
-               headerOpenIcon,
-               headerClosedIcon)
-
 
     companion object : Factory<ExpanderWidgetFormat>
     {
@@ -122,7 +114,16 @@ data class ExpanderWidgetFormat(val id : UUID,
                       // Header Closed Icon
                       split(doc.maybeAt("header_closed_icon"),
                             effValue(defaultHeaderClosedIcon()),
-                            { Icon.fromDocument(it) }))
+                            { Icon.fromDocument(it) }),
+                      // Avatar Format
+                      split(doc.maybeAt("avatar_format"),
+                            effValue<ValueError,Maybe<TextFormat>>(Nothing()),
+                            { apply(::Just, TextFormat.fromDocument(it)) }),
+                      // Avatar Text
+                      split(doc.maybeText("avatar_text"),
+                            effValue(Nothing()),
+                            { effValue<ValueError,Maybe<String>>(Just(it)) })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -135,7 +136,9 @@ data class ExpanderWidgetFormat(val id : UUID,
                                              defaultHeaderLabelOpenFormat(),
                                              defaultHeaderLabelClosedFormat(),
                                              defaultHeaderOpenIcon(),
-                                             defaultHeaderClosedIcon())
+                                             defaultHeaderClosedIcon(),
+                                             Nothing(),
+                                             Nothing())
     }
 
 
@@ -182,18 +185,6 @@ data class ExpanderWidgetFormat(val id : UUID,
 
     fun headerClosedIcon() : Icon = this.headerClosedIcon
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//
-//    override val prodTypeObject = this
-//
-//
-//    override fun rowValue() = RowValue0()
 
 }
 
@@ -264,6 +255,36 @@ sealed class ExpanderWidgetViewType : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object CircleAvatarLeft : ExpanderWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "circle_avatar_left" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("circle_avatar_left")
+
+    }
+
+
+    object CheckboxLeft : ExpanderWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "checkbox_left" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText( "checkbox_left" )
+
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
@@ -274,14 +295,18 @@ sealed class ExpanderWidgetViewType : ToDocument, SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
-                "icon_left"     -> effValue<ValueError,ExpanderWidgetViewType>(
+                "icon_left"          -> effValue<ValueError,ExpanderWidgetViewType>(
                                             ExpanderWidgetViewType.IconLeft)
-                "icon_right"    -> effValue<ValueError,ExpanderWidgetViewType>(
+                "icon_right"         -> effValue<ValueError,ExpanderWidgetViewType>(
                                             ExpanderWidgetViewType.IconRight)
-                "plain"         -> effValue<ValueError,ExpanderWidgetViewType>(
+                "plain"              -> effValue<ValueError,ExpanderWidgetViewType>(
                                             ExpanderWidgetViewType.Plain)
-                "button_bottom" -> effValue<ValueError,ExpanderWidgetViewType>(
+                "button_bottom"      -> effValue<ValueError,ExpanderWidgetViewType>(
                                                        ExpanderWidgetViewType.ButtonBottom)
+                "circle_avatar_left" -> effValue<ValueError,ExpanderWidgetViewType>(
+                                            ExpanderWidgetViewType.CircleAvatarLeft)
+                "checkbox_left"      -> effValue<ValueError,ExpanderWidgetViewType>(
+                                                ExpanderWidgetViewType.CheckboxLeft)
                 else            -> effError<ValueError,ExpanderWidgetViewType>(
                                             UnexpectedValue("ExpanderWidgetViewType", doc.text, doc.path))
             }
@@ -346,6 +371,28 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
     var iconView : ImageView? = null
     var showMoreView : TextView? = null
 
+    var checkboxLayout : LinearLayout? = null
+
+
+    // | Checkbox
+    // -----------------------------------------------------------------------------------------
+
+
+    fun select(entityId : EntityId)
+    {
+    }
+
+
+    // | Update
+    // -----------------------------------------------------------------------------------------
+
+    fun updateCheckboxView(layout : LinearLayout)
+    {
+        Log.d("***EXPaNDER WIDGET", "update checkbox view")
+        layout.removeAllViews()
+        layout.addView(this.checkboxView())
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // VIEWS
@@ -354,6 +401,10 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
     fun view() : View
     {
         val layout = WidgetView.layout(expanderWidget.widgetFormat(), entityId, context)
+
+        val layoutId = Util.generateViewId()
+        layout.id = layoutId
+        expanderWidget.layoutId = layoutId
 
         val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
         contentLayout.orientation       = LinearLayout.VERTICAL
@@ -388,7 +439,7 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
             val headerView = this.headerView()
             headerView.setOnClickListener { onClick(contentLayout) }
             contentLayout.addView(headerView)
-            expanderWidget.groups().forEach {
+            expanderWidget.contentGroups(entityId).forEach {
                 contentLayout.addView(it.view(entityId, context, expanderWidget.groupContext))
             }
         }
@@ -401,10 +452,12 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
 
     private fun headerView() : View = when (expanderWidget.format().viewType())
     {
-        is ExpanderWidgetViewType.Plain -> plainHeaderView()
-        is ExpanderWidgetViewType.IconLeft -> iconLeftHeaderView()
-        is ExpanderWidgetViewType.IconRight -> iconRightHeaderView()
-        is ExpanderWidgetViewType.ButtonBottom -> this.buttonBottomHeaderView()
+        is ExpanderWidgetViewType.Plain             -> plainHeaderView()
+        is ExpanderWidgetViewType.IconLeft          -> iconLeftHeaderView()
+        is ExpanderWidgetViewType.IconRight         -> iconRightHeaderView()
+        is ExpanderWidgetViewType.ButtonBottom      -> this.buttonBottomHeaderView()
+        is ExpanderWidgetViewType.CircleAvatarLeft  -> this.circleAvatarLeftView()
+        is ExpanderWidgetViewType.CheckboxLeft      -> this.checkboxLeftHeaderView()
     }
 
 
@@ -430,7 +483,17 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
         title.color           = colorOrBlack(format.colorTheme(), entityId)
 
         title.marginSpacing = format.elementFormat().margins()
-        title.paddingSpacing = format.elementFormat().padding()
+
+        when (expanderWidget.format().viewType()) {
+            is ExpanderWidgetViewType.CheckboxLeft -> {
+                title.padding.topDp    = format.elementFormat().padding().topDp()
+                title.padding.bottomDp = format.elementFormat().padding().bottomDp()
+                title.padding.rightDp   = format.elementFormat().padding().rightDp()
+            }
+            else -> {
+                title.paddingSpacing = format.elementFormat().padding()
+            }
+        }
 
         return title.textView(context)
     }
@@ -452,11 +515,21 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        layout.paddingSpacing   = format.elementFormat().padding()
         layout.marginSpacing    = format.elementFormat().margins()
 
-//        layout.corners          = format.elementFormat().corners()
-        layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
+        // Padding
+        when (expanderWidget.format().viewType()) {
+            is ExpanderWidgetViewType.CheckboxLeft -> {
+                //layout.padding.leftDp   = format.elementFormat().padding().leftDp()
+                layout.padding.rightDp   = format.elementFormat().padding().rightDp()
+            }
+            else -> {
+                layout.paddingSpacing   = format.elementFormat().padding()
+            }
+        }
+
+        layout.corners          = format.elementFormat().corners()
+        // layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
 
         layout.backgroundColor  = colorOrBlack(format.elementFormat().backgroundColorTheme(),
                                                entityId)
@@ -631,28 +704,230 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
     }
 
 
-//    private fun showMoreButtonView() : TextView
-//    {
-//        val title               = TextViewBuilder()
-//
-//        val format              = if (this.isOpen)
-//                                    expanderWidget.format().headerIconOpenFormat()
-//                                else
-//                                    expanderWidget.format().headerIconClosedFormat()
-//
-//        title.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-//        title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-//
-//        title.textId            = R.string.show_more
-//
-//        format.styleTextViewBuilder(title, entityId, context)
-//
-//        title.color             = colorOrBlack(format.colorTheme(), entityId)
-//
-//        title.marginSpacing     = format.elementFormat().margins()
-//        title.paddingSpacing    = format.elementFormat().padding()
-//
-//        return title.textView(context)
-//    }
+    private fun circleAvatarLeftView() : LinearLayout
+    {
+        val headerFormat = if (this.isOpen)
+                               expanderWidget.format().headerOpenFormat()
+                           else
+                               expanderWidget.format().headerClosedFormat()
+
+        val layout = this.circleAvatarLeftViewLayout(headerFormat)
+
+        expanderWidget.format().avatarText.doMaybe   { avatarText ->
+        expanderWidget.format().avatarFormat.doMaybe { avatarFormat ->
+            Log.d("***EXANDER WIDGET", "rendering text avatar view")
+            layout.addView(this.circleTextAvatarView(avatarText, avatarFormat))
+        } }
+
+        val groupsLayout = this.circleAvatarGroupsViewLayout()
+
+        val groups = expanderWidget.headerGroups(entityId)
+        groups.forEach {
+            val view = it.view(entityId, context, expanderWidget.groupContext)
+            groupsLayout.addView(view)
+        }
+
+        layout.addView(groupsLayout)
+
+        return layout
+    }
+
+
+    private fun circleAvatarLeftViewLayout(headerFormat : TextFormat) : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        layout.paddingSpacing       = headerFormat.elementFormat().padding()
+        layout.marginSpacing        = headerFormat.elementFormat().margins()
+
+        layout.gravity              = Gravity.CENTER_VERTICAL
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun circleTextAvatarView(text : String, format : TextFormat) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout                  = LinearLayoutBuilder()
+        val textView                = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.widthDp              = 48
+        layout.heightDp             = 48
+
+        layout.gravity              = Gravity.CENTER
+
+        layout.corners              = Corners(24.0, 24.0, 24.0, 24.0)
+
+        layout.backgroundColor      = colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId)
+
+        layout.child(textView)
+
+        // (3) Text
+        // -------------------------------------------------------------------------------------
+
+        textView.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+        textView.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        textView.text               = text
+
+        format.styleTextViewBuilder(textView, entityId, context)
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun circleAvatarGroupsViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        return layout.linearLayout(context)
+    }
+
+
+    // HEADER > Checkbox Left
+    // -----------------------------------------------------------------------------------------
+
+    private fun checkboxLeftHeaderView() : LinearLayout
+    {
+        val layout = this.headerViewLayout()
+
+        val checkboxLayout = this.checkboxLayout()
+        val checkboxLayoutId = Util.generateViewId()
+        checkboxLayout.id = checkboxLayoutId
+        expanderWidget.checkboxLayoutId = checkboxLayoutId
+
+        checkboxLayout.addView(this.checkboxView())
+
+        layout.addView(checkboxLayout)
+
+        val headerLayout = checkboxLeftHeaderGroupsLayout()
+
+        val groups = expanderWidget.headerGroups(entityId)
+        groups.forEach {
+            val view = it.view(entityId, context, expanderWidget.groupContext)
+            headerLayout.addView(view)
+        }
+
+        layout.addView(headerLayout)
+
+        return layout
+    }
+
+
+    private fun checkboxLeftHeaderGroupsLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun checkboxLayout() : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        val headerFormat = if (this.isOpen)
+            expanderWidget.format().headerOpenFormat()
+        else
+            expanderWidget.format().headerClosedFormat()
+
+        val labelFormat = if (this.isOpen)
+            expanderWidget.format().headerLabelOpenFormat()
+        else
+            expanderWidget.format().headerLabelClosedFormat()
+
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.padding.topDp        = headerFormat.elementFormat().padding().topDp()
+        layout.padding.bottomDp     = headerFormat.elementFormat().padding().bottomDp()
+        layout.padding.leftDp       = headerFormat.elementFormat().padding().leftDp()
+        layout.padding.rightDp      = 8f
+
+        layout.onClick              = View.OnClickListener {
+            Router.send(MessageSheetUpdate(ExpanderWidgetUpdateToggle(expanderWidget.widgetId())))
+        }
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun checkboxView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout = LinearLayoutBuilder()
+        val icon   = ImageViewBuilder()
+
+        val headerFormat = if (this.isOpen)
+            expanderWidget.format().headerOpenFormat()
+        else
+            expanderWidget.format().headerClosedFormat()
+
+        val isSelected = expanderWidget.isSelected(entityId)
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        if (isSelected) {
+            layout.backgroundResource   = R.drawable.bg_widget_expander_checkbox_checked
+        }
+        else {
+            layout.backgroundResource   = R.drawable.bg_widget_expander_checkbox
+        }
+
+        layout.gravity              = Gravity.CENTER
+
+        layout.child(icon)
+
+        // (3 A) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.id                     = R.id.dialog_list_editor_checkbox_icon
+
+        icon.widthDp                = 16
+        icon.heightDp               = 16
+
+        icon.image                  = R.drawable.icon_check_bold
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
+        icon.color                  = colorOrBlack(iconColorTheme, entityId)
+
+        if (isSelected)
+        {
+            icon.visibility             = View.VISIBLE
+        }
+        else
+        {
+            icon.visibility             = View.GONE
+        }
+
+        return layout.linearLayout(context)
+    }
+
+
 
 }

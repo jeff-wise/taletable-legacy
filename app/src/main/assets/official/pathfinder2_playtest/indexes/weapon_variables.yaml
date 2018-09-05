@@ -1,6 +1,22 @@
 variables:
 - type: variable_text
   variable_text:
+    id: weapon_rapier_name
+    label: 'Weapon: Rapier: Name'
+    description: 'Weapon: Rapier: Name'
+    value:
+      type: text_literal
+      text_literal: 'Rapier'
+- type: variable_text
+  variable_text:
+    id: weapon_rapier_stats
+    label: 'Weapon: Rapier: Stats'
+    description: 'Weapon: Rapier: Stats'
+    value:
+      type: text_literal
+      text_literal: '1d6 piercing damage, finesse'
+- type: variable_text
+  variable_text:
     id: description_attack_roll
     label: Attack Roll Description
     description: Attack Roll Description
@@ -22,7 +38,7 @@ variables:
     description: 'Field Label: Is Critical Hit?'
     value:
       type: text_literal
-      text_literal: 'Critical hit?'
+      text_literal: 'Critical hit'
 - type: variable_text
   variable_text:
     id: field_label_is_sneak_attack
@@ -30,12 +46,30 @@ variables:
     description: 'Field Label: Is Sneak Attack?'
     value:
       type: text_literal
-      text_literal: 'Sneak attack?'
+      text_literal: 'Sneak attack'
 - type: variable_boolean
   variable_boolean:
     id: is_sneak_attack
     label: 'Is Sneak Attack?'
     description: 'Is Sneak Attack?'
+    is_contextual: true
+    value:
+      type: boolean_literal
+      boolean_literal: false
+- type: variable_boolean
+  variable_boolean:
+    id: is_critical_hit
+    label: 'Is Critical Hit?'
+    description: 'Is Critical Hit?'
+    is_contextual: true
+    value:
+      type: boolean_literal
+      boolean_literal: false
+- type: variable_boolean
+  variable_boolean:
+    id: use_finesse
+    label: 'Use Finesse?'
+    description: 'Use Finesse?'
     is_contextual: true
     value:
       type: boolean_literal

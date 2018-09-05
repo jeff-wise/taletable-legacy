@@ -4,8 +4,12 @@ package com.taletable.android.lib.ui;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
+
+import com.taletable.android.R;
 
 
 /**
@@ -157,11 +161,12 @@ public class TableLayoutBuilder
         // > Divider
         // --------------------------------------------------------------------------------------
 
-//        if (this.divider != null) {
+        if (this.divider != null) {
 //            tableLayout.setDividerDrawable(context.getResources().getDrawable(R.drawable.divider_choose_value));
-//            tableLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE | LinearLayout.VERTICAL);
 //            tableLayout.setDividerDrawable();
-//        }
+            tableLayout.setDividerDrawable(this.divider);
+            tableLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+        }
 
 
         // [2] Layout Parameters

@@ -3,13 +3,11 @@ package com.taletable.android.model.sheet.page
 
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue1
 import com.taletable.android.lib.orm.RowValue3
 import com.taletable.android.lib.orm.schema.PrimValue
 import com.taletable.android.lib.orm.schema.ProdValue
@@ -28,19 +26,17 @@ import lulo.value.ValueParser
 import maybe.Just
 import maybe.Nothing
 import java.io.Serializable
-import java.util.*
 
 
 
 /**
  * Page
  */
-data class Page(override val id : UUID,
-                val pageName : PageName,
+data class Page(val pageName : PageName,
                 val format : PageFormat,
                 val index : PageIndex,
                 val groups : List<Group>)
-                 : ProdType, ToDocument, SheetComponent, Serializable
+                 : ToDocument, SheetComponent, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -53,17 +49,6 @@ data class Page(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(pageName : PageName,
-                format : PageFormat,
-                index : PageIndex,
-                groups : List<Group>)
-        : this(UUID.randomUUID(),
-               pageName,
-               format,
-               index,
-               groups)
-
 
     companion object
     {
@@ -115,22 +100,6 @@ data class Page(override val id : UUID,
         "format" to this.format().toDocument(),
         "groups" to DocList(this.groups().map { it.toDocument() })
     ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_PageValue =
-        RowValue3(pageTable, PrimValue(this.pageName),
-                             ProdValue(this.format),
-                             PrimValue(this.index))
 
 
     // -----------------------------------------------------------------------------------------
@@ -261,19 +230,13 @@ data class PageIndex(val value : Int) : SQLSerializable, Serializable
 /**
  * Page Format
  */
-data class PageFormat(override val id : UUID,
-                      val elementFormat : ElementFormat)
-                       : ProdType, ToDocument, Serializable
+data class PageFormat(val elementFormat : ElementFormat)
+                       : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(elementFormat : ElementFormat)
-        : this(UUID.randomUUID(),
-               elementFormat)
-
 
     companion object : Factory<PageFormat>
     {
@@ -315,19 +278,5 @@ data class PageFormat(override val id : UUID,
     override fun toDocument() = DocDict(mapOf(
         "element_format" to this.elementFormat().toDocument()
     ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_PageFormatValue =
-        RowValue1(pageFormatTable, ProdValue(this.elementFormat))
 
 }

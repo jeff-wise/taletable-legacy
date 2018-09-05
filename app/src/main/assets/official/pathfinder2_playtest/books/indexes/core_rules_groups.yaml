@@ -927,8 +927,10 @@ groups:
             variable_prefix: simple_melee_weapon_name
             defines_namespace: true
             default_value:
-              type: text_literal
-              text_literal: 'Weapon Name'
+              type: variable_text_value
+              variable_text_value:
+                type: text_literal
+                text_literal: 'Weapon Name'
             format:
               column_format:
                 text_format:
@@ -948,8 +950,10 @@ groups:
             name: Quantity
             variable_prefix: simple_melee_weapon_damage
             default_value:
-              type: text_literal
-              text_literal: 'Weapon Damage'
+              type: variable_text_value
+              variable_text_value:
+                type: text_literal
+                text_literal: 'Weapon Damage'
             format:
               column_format:
                 text_format:
@@ -984,14 +988,18 @@ groups:
         - cells:
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: 'Club'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Club'
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: '1d4 bludgeoning'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1d4 bludgeoning'
           - type: table_widget_image_cell
             table_widget_image_cell:
               book_reference:
@@ -1002,14 +1010,18 @@ groups:
         - cells:
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: 'Dagger'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Dagger'
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: '1d4 piercing'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1d4 piercing'
           - type: table_widget_image_cell
             table_widget_image_cell:
               book_reference:
@@ -1020,14 +1032,18 @@ groups:
         - cells:
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: 'Greatclub'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Greatclub'
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: '1d8 bludgeoning'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1d8 bludgeoning'
           - type: table_widget_image_cell
             table_widget_image_cell:
               book_reference:
@@ -1038,14 +1054,18 @@ groups:
         - cells:
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: 'Handaxe'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Handaxe'
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: '1d6 slashing'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1d6 slashing'
           - type: table_widget_image_cell
             table_widget_image_cell:
               book_reference:
@@ -1056,14 +1076,18 @@ groups:
         - cells:
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: 'Javelin'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Javelin'
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: '1d6 piercing'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1d6 piercing'
           - type: table_widget_image_cell
             table_widget_image_cell:
               book_reference:
@@ -1074,14 +1098,18 @@ groups:
         - cells:
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: 'Light Hammer'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Light Hammer'
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: '1d4 bludgeoning'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1d4 bludgeoning'
           - type: table_widget_image_cell
             table_widget_image_cell:
               book_reference:
@@ -1092,14 +1120,18 @@ groups:
         - cells:
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: 'Mace'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Mace'
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: '1d6 bludgeoning'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1d6 bludgeoning'
           - type: table_widget_image_cell
             table_widget_image_cell:
               book_reference:
@@ -1110,14 +1142,18 @@ groups:
         - cells:
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: 'Quarterstaff'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Quarterstaff'
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: '1d6 bludgeoning'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1d6 bludgeoning'
           - type: table_widget_image_cell
             table_widget_image_cell:
               book_reference:
@@ -1128,14 +1164,18 @@ groups:
         - cells:
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: 'Sickle'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Sickle'
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: '1d4 slashing'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1d4 slashing'
           - type: table_widget_image_cell
             table_widget_image_cell:
               book_reference:
@@ -1146,14 +1186,18 @@ groups:
         - cells:
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: 'Spear'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Spear'
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: '1d6 piercing'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1d6 piercing'
           - type: table_widget_image_cell
             table_widget_image_cell:
               book_reference:
@@ -1249,8 +1293,10 @@ groups:
             variable_prefix: simple_ranged_weapon_name
             defines_namespace: true
             default_value:
-              type: text_literal
-              text_literal: 'Weapon Name'
+              type: variable_text_value
+              variable_text_value:
+                type: text_literal
+                text_literal: 'Weapon Name'
             format:
               column_format:
                 text_format:
@@ -1270,8 +1316,10 @@ groups:
             name: Quantity
             variable_prefix: simple_melee_weapon_damage
             default_value:
-              type: text_literal
-              text_literal: 'Weapon Damage'
+              type: variable_text_value
+              variable_text_value:
+                type: text_literal
+                text_literal: 'Weapon Damage'
             format:
               column_format:
                 text_format:
@@ -1306,14 +1354,18 @@ groups:
         - cells:
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: 'Crossbow, light'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Crossbow, light'
           - type: table_widget_text_cell
             table_widget_text_cell:
-              variable_value:
-                type: text_literal
-                text_literal: '1d8 piercing'
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1d8 piercing'
           - type: table_widget_image_cell
             table_widget_image_cell:
               book_reference:

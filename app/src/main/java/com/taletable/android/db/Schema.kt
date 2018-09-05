@@ -21,12 +21,6 @@ import com.taletable.android.model.engine.value.*
 import com.taletable.android.model.engine.variable.*
 import com.taletable.android.model.sheet.SheetName
 import com.taletable.android.model.sheet.SheetSummary
-import com.taletable.android.model.sheet.group.*
-import com.taletable.android.model.sheet.page.Page
-import com.taletable.android.model.sheet.page.PageFormat
-import com.taletable.android.model.sheet.page.PageIndex
-import com.taletable.android.model.sheet.page.PageName
-import com.taletable.android.model.sheet.section.SectionName
 import com.taletable.android.model.sheet.style.*
 import com.taletable.android.model.sheet.widget.*
 import com.taletable.android.model.sheet.widget.table.*
@@ -103,17 +97,17 @@ val bookTable =
 
 // BOOK FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val bookFormatTable =
-    Table3("book_format",
-           "element_format",
-           "chapter_index_format",
-           "chapter_button_format")
-
-typealias DB_BookFormatValue =
-    RowValue3<ProdValue<ElementFormat>,
-              ProdValue<ElementFormat>,
-              ProdValue<ChapterButtonFormat>>
+//
+//val bookFormatTable =
+//    Table3("book_format",
+//           "element_format",
+//           "chapter_index_format",
+//           "chapter_button_format")
+//
+//typealias DB_BookFormatValue =
+//    RowValue3<ProdValue<ElementFormat>,
+//              ProdValue<ElementFormat>,
+//              ProdValue<ChapterButtonFormat>>
 
 // BOOK INFO
 // ---------------------------------------------------------------------------------------------
@@ -158,16 +152,16 @@ typealias DB_BookSettingsValue =
 // BOOK CHAPTER
 // ---------------------------------------------------------------------------------------------
 
-val bookChapterTable =
-    Table3("book_chapter",
-           "chapter_id",
-           "title",
-           "sections")
-
-typealias DB_BookChapterValue =
-    RowValue3<PrimValue<BookChapterId>,
-              PrimValue<BookChapterTitle>,
-              CollValue<BookSection>>
+//val bookChapterTable =
+//    Table3("book_chapter",
+//           "chapter_id",
+//           "title",
+//           "sections")
+//
+//typealias DB_BookChapterValue =
+//    RowValue3<PrimValue<BookChapterId>,
+//              PrimValue<BookChapterTitle>,
+//              CollValue<BookSection>>
 
 
 // BOOK SECTION
@@ -188,29 +182,29 @@ typealias DB_BookSectionValue =
 // BOOK SECTION > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val bookSectionFormatTable =
-    Table1("book_section_format",
-           "page_header_format")
-
-
-typealias DB_BookSectionFormatValue =
-    RowValue1<ProdValue<BookSectionPageHeaderFormat>>
+//val bookSectionFormatTable =
+//    Table1("book_section_format",
+//           "page_header_format")
+//
+//
+//typealias DB_BookSectionFormatValue =
+//    RowValue1<ProdValue<BookSectionPageHeaderFormat>>
 
 
 // BOOK SECTION > FORMAT > PAGE HEADER FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val bookSectionPageHeaderFormatTable =
-    Table3("book_section_page_header_format",
-           "element_format",
-           "chapter_name_format",
-           "section_name_format")
-
-
-typealias DB_BookSectionPageHeaderFormatValue =
-    RowValue3<ProdValue<ElementFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>>
+//
+//val bookSectionPageHeaderFormatTable =
+//    Table3("book_section_page_header_format",
+//           "element_format",
+//           "chapter_name_format",
+//           "section_name_format")
+//
+//
+//typealias DB_BookSectionPageHeaderFormatValue =
+//    RowValue3<ProdValue<ElementFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>>
 
 
 // BOOK SUBSECTION
@@ -280,18 +274,18 @@ typealias DB_BorderValue =
 // CHAPTER BUTTON FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val chapterButtonFormatTable =
-    Table4("chapter_button_format",
-           "element_format",
-           "index_format",
-           "title_format",
-           "summary_format")
-
-typealias DB_ChapterButtonFormatValue =
-    RowValue4<ProdValue<ElementFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>>
+//val chapterButtonFormatTable =
+//    Table4("chapter_button_format",
+//           "element_format",
+//           "index_format",
+//           "title_format",
+//           "summary_format")
+//
+//typealias DB_ChapterButtonFormatValue =
+//    RowValue4<ProdValue<ElementFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>>
 
 
 // DICE ROLL
@@ -336,23 +330,23 @@ typealias DB_DividerValue =
 // ENGINE
 // ---------------------------------------------------------------------------------------------
 
-val engineTable = Table7("engine",
-                         "value_sets",
-                         "mechanics",
-                         "mechanic_categories",
-                         "functions",
-                         "programs",
-                         "summations",
-                         "procedures")
-
-typealias DB_EngineValue =
-    RowValue7<CollValue<ValueSet>,
-              CollValue<Mechanic>,
-              CollValue<MechanicCategory>,
-              CollValue<Function>,
-              CollValue<Program>,
-              CollValue<Summation>,
-              CollValue<Procedure>>
+//val engineTable = Table7("engine",
+//                         "value_sets",
+//                         "mechanics",
+//                         "mechanic_categories",
+//                         "functions",
+//                         "programs",
+//                         "summations",
+//                         "procedures")
+//
+//typealias DB_EngineValue =
+//    RowValue7<CollValue<ValueSet>,
+//              CollValue<Mechanic>,
+//              CollValue<MechanicCategory>,
+//              CollValue<Function>,
+//              CollValue<Program>,
+//              CollValue<Summation>,
+//              CollValue<Procedure>>
 
 
 // ELEMENT FORMAT
@@ -474,58 +468,58 @@ typealias DB_InvocationValue =
 // GROUP FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val groupFormatTable =
-    Table2("group_format",
-           "element_format",
-           "border")
-
-typealias DB_GroupFormatValue =
-    RowValue2<ProdValue<ElementFormat>,
-              MaybeProdValue<Border>>
+//val groupFormatTable =
+//    Table2("group_format",
+//           "element_format",
+//           "border")
+//
+//typealias DB_GroupFormatValue =
+//    RowValue2<ProdValue<ElementFormat>,
+//              MaybeProdValue<Border>>
 
 
 // GROUP ROW
 // ---------------------------------------------------------------------------------------------
 
-val groupRowTable =
-    Table2("group_row",
-           "format",
-           "index")
-
-typealias DB_GroupRowValue =
-    RowValue2<ProdValue<GroupRowFormat>,
-              PrimValue<GroupRowIndex>>
+//val groupRowTable =
+//    Table2("group_row",
+//           "format",
+//           "index")
+//
+//typealias DB_GroupRowValue =
+//    RowValue2<ProdValue<GroupRowFormat>,
+//              PrimValue<GroupRowIndex>>
 
 
 // GROUP ROW FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val groupRowFormatTable =
-    Table3("group_row_format",
-           "element_format",
-           "has_columns",
-           "border")
-
-typealias DB_GroupRowFormatValue =
-    RowValue3<ProdValue<ElementFormat>,
-              PrimValue<GroupRowHasColumns>,
-              MaybeProdValue<Border>>
+//
+//val groupRowFormatTable =
+//    Table3("group_row_format",
+//           "element_format",
+//           "has_columns",
+//           "border")
+//
+//typealias DB_GroupRowFormatValue =
+//    RowValue3<ProdValue<ElementFormat>,
+//              PrimValue<GroupRowHasColumns>,
+//              MaybeProdValue<Border>>
 
 
 // ICON
 // ---------------------------------------------------------------------------------------------
-
-val iconTable =
-    Table3("icon",
-           "icon_type",
-           "element_format",
-           "icon_format")
-
-
-typealias DB_IconValue =
-    RowValue3<PrimValue<IconType>,
-              ProdValue<ElementFormat>,
-              ProdValue<IconFormat>>
+//
+//val iconTable =
+//    Table3("icon",
+//           "icon_type",
+//           "element_format",
+//           "icon_format")
+//
+//
+//typealias DB_IconValue =
+//    RowValue3<PrimValue<IconType>,
+//              ProdValue<ElementFormat>,
+//              ProdValue<IconFormat>>
 
 
 // ICON FORMAT
@@ -586,144 +580,144 @@ typealias DB_MechanicCategoryValue =
 // MESSAGE
 // ---------------------------------------------------------------------------------------------
 
-val messageTable =
-    Table3("message",
-           "template",
-           "parts",
-           "format")
-
-typealias DB_MessageValue =
-    RowValue3<PrimValue<MessageTemplate>,
-              PrimValue<MessageParts>,
-              ProdValue<TextFormat>>
+//val messageTable =
+//    Table3("message",
+//           "template",
+//           "parts",
+//           "format")
+//
+//typealias DB_MessageValue =
+//    RowValue3<PrimValue<MessageTemplate>,
+//              PrimValue<MessageParts>,
+//              ProdValue<TextFormat>>
 
 // PAGE
 // ---------------------------------------------------------------------------------------------
-
-val pageTable =
-    Table3("page",
-           "page_name",
-           "format",
-           "index")
-
-typealias DB_PageValue =
-    RowValue3<PrimValue<PageName>,
-              ProdValue<PageFormat>,
-              PrimValue<PageIndex>>
+//
+//val pageTable =
+//    Table3("page",
+//           "page_name",
+//           "format",
+//           "index")
+//
+//typealias DB_PageValue =
+//    RowValue3<PrimValue<PageName>,
+//              ProdValue<PageFormat>,
+//              PrimValue<PageIndex>>
 
 
 // PAGE FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val pageFormatTable =
-    Table1("page_format",
-           "element_format")
-
-typealias DB_PageFormatValue =
-    RowValue1<ProdValue<ElementFormat>>
+//val pageFormatTable =
+//    Table1("page_format",
+//           "element_format")
+//
+//typealias DB_PageFormatValue =
+//    RowValue1<ProdValue<ElementFormat>>
 
 
 // PROCEDURE
 // ---------------------------------------------------------------------------------------------
 
-val procedureTable =
-    Table5("procedure",
-           "procedure_id",
-           "procedure_name",
-           "updates",
-           "description",
-           "action_label")
-
-typealias DB_ProcedureValue =
-    RowValue5<PrimValue<ProcedureId>,
-              PrimValue<ProcedureName>,
-              PrimValue<ProcedureUpdates>,
-              MaybeProdValue<Message>,
-              PrimValue<ProcedureActionLabel>>
+//val procedureTable =
+//    Table5("procedure",
+//           "procedure_id",
+//           "procedure_name",
+//           "updates",
+//           "description",
+//           "action_label")
+//
+//typealias DB_ProcedureValue =
+//    RowValue5<PrimValue<ProcedureId>,
+//              PrimValue<ProcedureName>,
+//              PrimValue<ProcedureUpdates>,
+//              MaybeProdValue<Message>,
+//              PrimValue<ProcedureActionLabel>>
 
 
 // PROGRAM
 // ---------------------------------------------------------------------------------------------
 
-val programTable =
-    Table5("program",
-           "program_id",
-           "label",
-           "description",
-           "type_signature",
-           "result_binding_name")
-
-typealias DB_ProgramValue =
-    RowValue5<PrimValue<ProgramId>,
-              PrimValue<ProgramLabel>,
-              PrimValue<ProgramDescription>,
-              ProdValue<ProgramTypeSignature>,
-//              CollValue<Statement>,
-              PrimValue<StatementBindingName>>
+//val programTable =
+//    Table5("program",
+//           "program_id",
+//           "label",
+//           "description",
+//           "type_signature",
+//           "result_binding_name")
+//
+//typealias DB_ProgramValue =
+//    RowValue5<PrimValue<ProgramId>,
+//              PrimValue<ProgramLabel>,
+//              PrimValue<ProgramDescription>,
+//              ProdValue<ProgramTypeSignature>,
+////              CollValue<Statement>,
+//              PrimValue<StatementBindingName>>
 
 
 // PROGRAM PARAMETER: BOOLEAN
 // ---------------------------------------------------------------------------------------------
 
-val programParameterBooleanTable =
-    Table4("program_parameter_boolean",
-           "name",
-           "default_value",
-           "label",
-           "input_message")
-
-typealias DB_ProgramParameterBooleanValue =
-    RowValue4<PrimValue<ProgramParameterName>,
-              MaybePrimValue<EngineValueBoolean>,
-              PrimValue<ProgramParameterLabel>,
-              ProdValue<Message>>
+//val programParameterBooleanTable =
+//    Table4("program_parameter_boolean",
+//           "name",
+//           "default_value",
+//           "label",
+//           "input_message")
+//
+//typealias DB_ProgramParameterBooleanValue =
+//    RowValue4<PrimValue<ProgramParameterName>,
+//              MaybePrimValue<EngineValueBoolean>,
+//              PrimValue<ProgramParameterLabel>,
+//              ProdValue<Message>>
 
 
 // PROGRAM PARAMETER: NUMBER
 // ---------------------------------------------------------------------------------------------
 
-val programParameterNumberTable =
-    Table4("program_parameter_number",
-           "name",
-           "default_value",
-           "label",
-           "input_message")
-
-typealias DB_ProgramParameterNumberValue =
-    RowValue4<PrimValue<ProgramParameterName>,
-              MaybePrimValue<EngineValueNumber>,
-              PrimValue<ProgramParameterLabel>,
-              ProdValue<Message>>
+//val programParameterNumberTable =
+//    Table4("program_parameter_number",
+//           "name",
+//           "default_value",
+//           "label",
+//           "input_message")
+//
+//typealias DB_ProgramParameterNumberValue =
+//    RowValue4<PrimValue<ProgramParameterName>,
+//              MaybePrimValue<EngineValueNumber>,
+//              PrimValue<ProgramParameterLabel>,
+//              ProdValue<Message>>
 
 
 // PROGRAM PARAMETER: TEXT
 // ---------------------------------------------------------------------------------------------
 
-val programParameterTextTable =
-    Table4("program_parameter_text",
-           "name",
-           "default_value",
-           "label",
-           "input_message")
-
-typealias DB_ProgramParameterTextValue =
-    RowValue4<PrimValue<ProgramParameterName>,
-              MaybePrimValue<EngineValueText>,
-              PrimValue<ProgramParameterLabel>,
-              ProdValue<Message>>
+//val programParameterTextTable =
+//    Table4("program_parameter_text",
+//           "name",
+//           "default_value",
+//           "label",
+//           "input_message")
+//
+//typealias DB_ProgramParameterTextValue =
+//    RowValue4<PrimValue<ProgramParameterName>,
+//              MaybePrimValue<EngineValueText>,
+//              PrimValue<ProgramParameterLabel>,
+//              ProdValue<Message>>
 
 
 // PROGRAM TYPE SIGNATURE
 // ---------------------------------------------------------------------------------------------
-
-val programTypeSignatureTable =
-    Table2("program_type_signature",
-           "parameters",
-           "result")
-
-typealias DB_ProgramTypeSignatureValue =
-    RowValue2<CollValue<ProgramParameter>,
-              PrimValue<EngineValueType>>
+//
+//val programTypeSignatureTable =
+//    Table2("program_type_signature",
+//           "parameters",
+//           "result")
+//
+//typealias DB_ProgramTypeSignatureValue =
+//    RowValue2<CollValue<ProgramParameter>,
+//              PrimValue<EngineValueType>>
 
 
 // ROLL MODIFIER
@@ -742,17 +736,17 @@ typealias DB_RollModifierValue =
 
 // SECTION
 // ---------------------------------------------------------------------------------------------
-
-val sectionTable =
-    Table3("section",
-           "section_name",
-           "pages",
-           "icon")
-
-typealias DB_SectionValue =
-    RowValue3<PrimValue<SectionName>,
-              CollValue<Page>,
-              PrimValue<IconType>>
+//
+//val sectionTable =
+//    Table3("section",
+//           "section_name",
+//           "pages",
+//           "icon")
+//
+//typealias DB_SectionValue =
+//    RowValue3<PrimValue<SectionName>,
+//              CollValue<Page>,
+//              PrimValue<IconType>>
 
 
 // SESSION
@@ -921,29 +915,29 @@ typealias DB_SummationValue =
 
 // TEXT FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val textFormatTable =
-    Table9("text_format",
-           "color_theme",
-           "size",
-           "font",
-           "font_style",
-           "is_underlined",
-           "number_format",
-           "roll_format",
-           "icon_format",
-           "element_format")
-
-typealias DB_TextFormatValue =
-    RowValue9<PrimValue<ColorTheme>,
-              PrimValue<TextSize>,
-              PrimValue<TextFont>,
-              PrimValue<TextFontStyle>,
-              PrimValue<IsUnderlined>,
-              PrimValue<NumberFormat>,
-              PrimValue<RollFormat>,
-              ProdValue<IconFormat>,
-              ProdValue<ElementFormat>>
+//
+//val textFormatTable =
+//    Table9("text_format",
+//           "color_theme",
+//           "size",
+//           "font",
+//           "font_style",
+//           "is_underlined",
+//           "number_format",
+//           "roll_format",
+//           "icon_format",
+//           "element_format")
+//
+//typealias DB_TextFormatValue =
+//    RowValue9<PrimValue<ColorTheme>,
+//              PrimValue<TextSize>,
+//              PrimValue<TextFont>,
+//              PrimValue<TextFontStyle>,
+//              PrimValue<IsUnderlined>,
+//              PrimValue<NumberFormat>,
+//              PrimValue<RollFormat>,
+//              ProdValue<IconFormat>,
+//              ProdValue<ElementFormat>>
 
 
 //// projection
@@ -1063,20 +1057,20 @@ typealias DB_UIColorsValue =
 // WIDGET: ACTION > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetActionFormatTable =
-    Table5("widget_roll_format",
-           "widget_format",
-           "view_type",
-           "description_format",
-           "button_format",
-           "button_icon")
-
-typealias DB_WidgetActionFormatValue =
-    RowValue5<ProdValue<WidgetFormat>,
-              PrimValue<ActionWidgetViewType>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              MaybePrimValue<IconType>>
+//val widgetActionFormatTable =
+//    Table5("widget_roll_format",
+//           "widget_format",
+//           "view_type",
+//           "description_format",
+//           "button_format",
+//           "button_icon")
+//
+//typealias DB_WidgetActionFormatValue =
+//    RowValue5<ProdValue<WidgetFormat>,
+//              PrimValue<ActionWidgetViewType>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              MaybePrimValue<IconType>>
 
 
 // WIDGET: BOOLEAN
@@ -1175,13 +1169,13 @@ typealias DB_WidgetActionFormatValue =
 
 // WIDGET: IMAGE FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val widgetImageFormatTable =
-    Table1("widget_image_format",
-           "widget_format")
-
-typealias DB_WidgetImageFormatValue =
-    RowValue1<ProdValue<WidgetFormat>>
+//
+//val widgetImageFormatTable =
+//    Table1("widget_image_format",
+//           "widget_format")
+//
+//typealias DB_WidgetImageFormatValue =
+//    RowValue1<ProdValue<WidgetFormat>>
 
 
 // WIDGET: LIST
@@ -1201,36 +1195,36 @@ val widgetListTable =
 // WIDGET: LIST > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetListFormatTable =
-    Table5("widget_list_format",
-           "widget_format",
-           "view_type",
-           "item_format",
-           "description_format",
-           "annotation_format")
-
-typealias DB_WidgetListFormatValue =
-    RowValue5<ProdValue<WidgetFormat>,
-              PrimValue<ListViewType>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>>
+//val widgetListFormatTable =
+//    Table5("widget_list_format",
+//           "widget_format",
+//           "view_type",
+//           "item_format",
+//           "description_format",
+//           "annotation_format")
+//
+//typealias DB_WidgetListFormatValue =
+//    RowValue5<ProdValue<WidgetFormat>,
+//              PrimValue<ListViewType>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>>
 
 
 
 // WIDGET: LOG
 // ---------------------------------------------------------------------------------------------
 
-val widgetLogTable =
-    Table3("widget_log",
-           "widget_id",
-           "format",
-           "entries")
-
-typealias DB_WidgetLogValue =
-    RowValue3<PrimValue<WidgetId>,
-              ProdValue<LogWidgetFormat>,
-              CollValue<LogEntry>>
+//val widgetLogTable =
+//    Table3("widget_log",
+//           "widget_id",
+//           "format",
+//           "entries")
+//
+//typealias DB_WidgetLogValue =
+//    RowValue3<PrimValue<WidgetId>,
+//              ProdValue<LogWidgetFormat>,
+//              CollValue<LogEntry>>
 
 
 // WIDGET: LOG > ENTRY
@@ -1254,312 +1248,312 @@ typealias DB_WidgetLogEntryValue =
 
 // WIDGET: LOG > FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val widgetLogFormatTable =
-    Table3("widget_log_format",
-           "format",
-           "entry_format",
-           "entry_view_type")
-
-typealias DB_WidgetLogFormatValue =
-    RowValue3<ProdValue<WidgetFormat>,
-              ProdValue<LogEntryFormat>,
-              PrimValue<EntryViewType>>
+//
+//val widgetLogFormatTable =
+//    Table3("widget_log_format",
+//           "format",
+//           "entry_format",
+//           "entry_view_type")
+//
+//typealias DB_WidgetLogFormatValue =
+//    RowValue3<ProdValue<WidgetFormat>,
+//              ProdValue<LogEntryFormat>,
+//              PrimValue<EntryViewType>>
 
 
 // WIDGET: LOG > ENTRY FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetLogEntryFormatTable =
-    Table5("widget_log_entry_format",
-           "title_format",
-           "author_format",
-           "summary_format",
-           "body_format",
-           "entry_format")
-
-typealias DB_WidgetLogEntryFormatValue =
-    RowValue5<ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>>
+//val widgetLogEntryFormatTable =
+//    Table5("widget_log_entry_format",
+//           "title_format",
+//           "author_format",
+//           "summary_format",
+//           "body_format",
+//           "entry_format")
+//
+//typealias DB_WidgetLogEntryFormatValue =
+//    RowValue5<ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>>
 
 
 // WIDGET: MECHANIC
 // ---------------------------------------------------------------------------------------------
 
-val widgetMechanicTable =
-    Table3("widget_mechanic",
-           "widget_id",
-           "format",
-           "category_reference")
-
-typealias DB_WidgetMechanicValue =
-    RowValue3<PrimValue<WidgetId>,
-              ProdValue<MechanicWidgetFormat>,
-              PrimValue<MechanicCategoryReference>>
+//val widgetMechanicTable =
+//    Table3("widget_mechanic",
+//           "widget_id",
+//           "format",
+//           "category_reference")
+//
+//typealias DB_WidgetMechanicValue =
+//    RowValue3<PrimValue<WidgetId>,
+//              ProdValue<MechanicWidgetFormat>,
+//              PrimValue<MechanicCategoryReference>>
 
 
 // WIDGET: MECHANIC > FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val widgetMechanicFormatTable =
-    Table8("widget_mechanic_format",
-           "widget_format",
-           "view_type",
-           "mechanic_format",
-           "header_format",
-           "mechanic_header_format",
-           "mechanic_summary_format",
-           "option_element_format",
-           "option_label_format")
-
-typealias DB_WidgetMechanicFormatValue =
-    RowValue8<ProdValue<WidgetFormat>,
-              PrimValue<MechanicWidgetViewType>,
-              ProdValue<ElementFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<ElementFormat>,
-              ProdValue<TextFormat>>
+//
+//val widgetMechanicFormatTable =
+//    Table8("widget_mechanic_format",
+//           "widget_format",
+//           "view_type",
+//           "mechanic_format",
+//           "header_format",
+//           "mechanic_header_format",
+//           "mechanic_summary_format",
+//           "option_element_format",
+//           "option_label_format")
+//
+//typealias DB_WidgetMechanicFormatValue =
+//    RowValue8<ProdValue<WidgetFormat>,
+//              PrimValue<MechanicWidgetViewType>,
+//              ProdValue<ElementFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<ElementFormat>,
+//              ProdValue<TextFormat>>
 
 
 // WIDGET: NUMBER
 // ---------------------------------------------------------------------------------------------
 
-val widgetNumberTable =
-    Table4("widget_number",
-           "widget_id",
-           "format",
-           "value_variable_id",
-           "inside_label")
-
-typealias DB_WidgetNumberValue =
-    RowValue4<PrimValue<WidgetId>,
-              ProdValue<NumberWidgetFormat>,
-              PrimValue<VariableId>,
-              MaybePrimValue<NumberWidgetLabel>>
+//val widgetNumberTable =
+//    Table4("widget_number",
+//           "widget_id",
+//           "format",
+//           "value_variable_id",
+//           "inside_label")
+//
+//typealias DB_WidgetNumberValue =
+//    RowValue4<PrimValue<WidgetId>,
+//              ProdValue<NumberWidgetFormat>,
+//              PrimValue<VariableId>,
+//              MaybePrimValue<NumberWidgetLabel>>
 
 
 // WIDGET: NUMBER > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetNumberFormatTable =
-    Table5("widget_number_format",
-           "widget_format",
-           "inside_label_format",
-           "outside_label_format",
-           "value_format",
-           "number_format")
-
-typealias DB_WidgetNumberFormatValue =
-    RowValue5<ProdValue<WidgetFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              PrimValue<NumberFormat>>
+//val widgetNumberFormatTable =
+//    Table5("widget_number_format",
+//           "widget_format",
+//           "inside_label_format",
+//           "outside_label_format",
+//           "value_format",
+//           "number_format")
+//
+//typealias DB_WidgetNumberFormatValue =
+//    RowValue5<ProdValue<WidgetFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              PrimValue<NumberFormat>>
 
 
 // WIDGET FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val widgetFormatTable =
-    Table3("widget_format",
-           "width",
-           "column",
-           "element_format")
-
-typealias DB_WidgetFormatValue =
-    RowValue3<PrimValue<WidgetWidth>,
-              PrimValue<RowColumn>,
-              ProdValue<ElementFormat>>
+//
+//val widgetFormatTable =
+//    Table3("widget_format",
+//           "width",
+//           "column",
+//           "element_format")
+//
+//typealias DB_WidgetFormatValue =
+//    RowValue3<PrimValue<WidgetWidth>,
+//              PrimValue<RowColumn>,
+//              ProdValue<ElementFormat>>
 
 
 // WIDGET: POINTS
 // ---------------------------------------------------------------------------------------------
-
-val widgetPointsTable =
-    Table5("widget_points",
-           "widget_id",
-           "format",
-           "limit_value_variable_id",
-           "current_value_variable_id",
-           "label")
-
-typealias DB_WidgetPointsValue =
-    RowValue5<PrimValue<WidgetId>,
-              ProdValue<PointsWidgetFormat>,
-              PrimValue<VariableId>,
-              PrimValue<VariableId>,
-              MaybePrimValue<PointsWidgetLabel>>
+//
+//val widgetPointsTable =
+//    Table5("widget_points",
+//           "widget_id",
+//           "format",
+//           "limit_value_variable_id",
+//           "current_value_variable_id",
+//           "label")
+//
+//typealias DB_WidgetPointsValue =
+//    RowValue5<PrimValue<WidgetId>,
+//              ProdValue<PointsWidgetFormat>,
+//              PrimValue<VariableId>,
+//              PrimValue<VariableId>,
+//              MaybePrimValue<PointsWidgetLabel>>
 
 
 // WIDGET: POINTS > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetPointsFormatTable =
-    Table6("widget_points_format",
-           "widget_format",
-           "limit_text_format",
-           "current_text_format",
-           "label_text_format",
-           "info_format",
-           "bar_format")
-
-typealias DB_WidgetPointsFormatValue =
-    RowValue6<ProdValue<WidgetFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<PointsWidgetInfoFormat>,
-              ProdValue<PointsWidgetBarFormat>>
+//val widgetPointsFormatTable =
+//    Table6("widget_points_format",
+//           "widget_format",
+//           "limit_text_format",
+//           "current_text_format",
+//           "label_text_format",
+//           "info_format",
+//           "bar_format")
+//
+//typealias DB_WidgetPointsFormatValue =
+//    RowValue6<ProdValue<WidgetFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<PointsWidgetInfoFormat>,
+//              ProdValue<PointsWidgetBarFormat>>
 
 // WIDGET: POINTS > INFO FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val widgetPointsInfoFormatTable =
-    Table2("widget_points_info_format",
-           "style",
-           "format")
-
-typealias DB_WidgetPointsInfoFormatValue =
-    RowValue2<PrimValue<PointsInfoStyle>,
-              ProdValue<TextFormat>>
+//
+//val widgetPointsInfoFormatTable =
+//    Table2("widget_points_info_format",
+//           "style",
+//           "format")
+//
+//typealias DB_WidgetPointsInfoFormatValue =
+//    RowValue2<PrimValue<PointsInfoStyle>,
+//              ProdValue<TextFormat>>
 
 
 // WIDGET: POINTS > BAR FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val widgetPointsBarFormatTable =
-    Table8("widget_points_bar_format",
-           "element_format",
-           "style",
-           "height",
-           "limit_format",
-           "current_format",
-           "counter_active_icon",
-           "counter_active_text",
-           "counter_inactive_text")
-
-typealias DB_WidgetPointsBarFormatValue =
-    RowValue8<ProdValue<ElementFormat>,
-              PrimValue<PointsBarStyle>,
-              PrimValue<PointsBarHeight>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              MaybePrimValue<IconType>,
-              MaybePrimValue<PointsWidgetCounterActiveText>,
-              MaybePrimValue<PointsWidgetCounterActiveText>>
+//
+//val widgetPointsBarFormatTable =
+//    Table8("widget_points_bar_format",
+//           "element_format",
+//           "style",
+//           "height",
+//           "limit_format",
+//           "current_format",
+//           "counter_active_icon",
+//           "counter_active_text",
+//           "counter_inactive_text")
+//
+//typealias DB_WidgetPointsBarFormatValue =
+//    RowValue8<ProdValue<ElementFormat>,
+//              PrimValue<PointsBarStyle>,
+//              PrimValue<PointsBarHeight>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              MaybePrimValue<IconType>,
+//              MaybePrimValue<PointsWidgetCounterActiveText>,
+//              MaybePrimValue<PointsWidgetCounterActiveText>>
 
 
 // WIDGET: QUOTE
 // ---------------------------------------------------------------------------------------------
-
-val widgetQuoteTable =
-    Table4("widget_quote",
-           "widget_id",
-           "format",
-           "quote_variable_id",
-           "source_variable_id")
-
-typealias DB_WidgetQuoteValue =
-    RowValue4<PrimValue<WidgetId>,
-              ProdValue<QuoteWidgetFormat>,
-              PrimValue<VariableId>,
-              MaybePrimValue<VariableId>>
+//
+//val widgetQuoteTable =
+//    Table4("widget_quote",
+//           "widget_id",
+//           "format",
+//           "quote_variable_id",
+//           "source_variable_id")
+//
+//typealias DB_WidgetQuoteValue =
+//    RowValue4<PrimValue<WidgetId>,
+//              ProdValue<QuoteWidgetFormat>,
+//              PrimValue<VariableId>,
+//              MaybePrimValue<VariableId>>
 
 
 // WIDGET: QUOTE > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetQuoteFormatTable =
-    Table5("widget_quote_format",
-           "widget_format",
-           "view_type",
-           "quote_format",
-           "source_format",
-           "icon_format")
-
-typealias DB_WidgetQuoteFormatValue =
-    RowValue5<ProdValue<WidgetFormat>,
-              PrimValue<QuoteViewType>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<IconFormat>>
+//val widgetQuoteFormatTable =
+//    Table5("widget_quote_format",
+//           "widget_format",
+//           "view_type",
+//           "quote_format",
+//           "source_format",
+//           "icon_format")
+//
+//typealias DB_WidgetQuoteFormatValue =
+//    RowValue5<ProdValue<WidgetFormat>,
+//              PrimValue<QuoteViewType>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<IconFormat>>
 
 
 // WIDGET: ROLL
 // ---------------------------------------------------------------------------------------------
 
-val widgetRollTable =
-    Table5("widget_roll",
-           "widget_id",
-           "format",
-           "roll_group",
-           "description",
-           "result_description")
-
-typealias DB_WidgetRollValue =
-    RowValue5<PrimValue<WidgetId>,
-              ProdValue<RollWidgetFormat>,
-              ProdValue<DiceRollGroup>,
-              MaybePrimValue<RollWidgetDescription>,
-              MaybePrimValue<RollWidgetResultDescription>>
+//val widgetRollTable =
+//    Table5("widget_roll",
+//           "widget_id",
+//           "format",
+//           "roll_group",
+//           "description",
+//           "result_description")
+//
+//typealias DB_WidgetRollValue =
+//    RowValue5<PrimValue<WidgetId>,
+//              ProdValue<RollWidgetFormat>,
+//              ProdValue<DiceRollGroup>,
+//              MaybePrimValue<RollWidgetDescription>,
+//              MaybePrimValue<RollWidgetResultDescription>>
 
 
 // WIDGET: ROLL > FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val widgetRollFormatTable =
-    Table6("widget_roll_format",
-           "widget_format",
-           "view_type",
-           "description_format",
-           "button_format",
-           "roll_text_location",
-           "roll_text_format")
-
-typealias DB_WidgetRollFormatValue =
-    RowValue6<ProdValue<WidgetFormat>,
-              PrimValue<RollWidgetViewType>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              PrimValue<RollTextLocation>,
-              ProdValue<TextFormat>>
+//
+//val widgetRollFormatTable =
+//    Table6("widget_roll_format",
+//           "widget_format",
+//           "view_type",
+//           "description_format",
+//           "button_format",
+//           "roll_text_location",
+//           "roll_text_format")
+//
+//typealias DB_WidgetRollFormatValue =
+//    RowValue6<ProdValue<WidgetFormat>,
+//              PrimValue<RollWidgetViewType>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              PrimValue<RollTextLocation>,
+//              ProdValue<TextFormat>>
 
 
 // WIDGET: STORY
 // ---------------------------------------------------------------------------------------------
 
-val widgetStoryTable =
-    Table3("widget_story",
-           "widget_id",
-           "format",
-           "story")
-
-typealias DB_WidgetStoryValue =
-    RowValue3<PrimValue<WidgetId>,
-              ProdValue<StoryWidgetFormat>,
-              CollValue<StoryPart>>
+//val widgetStoryTable =
+//    Table3("widget_story",
+//           "widget_id",
+//           "format",
+//           "story")
+//
+//typealias DB_WidgetStoryValue =
+//    RowValue3<PrimValue<WidgetId>,
+//              ProdValue<StoryWidgetFormat>,
+//              CollValue<StoryPart>>
 
 
 // WIDGET: STORY > FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val widgetStoryFormatTable =
-    Table4("widget_story_format",
-           "widget_format",
-           "line_height",
-           "line_spaceing",
-           "text_format")
-
-typealias DB_WidgetStoryFormatValue =
-    RowValue4<ProdValue<WidgetFormat>,
-              MaybePrimValue<LineHeight>,
-              MaybePrimValue<LineSpacing>,
-              ProdValue<TextFormat>>
+//
+//val widgetStoryFormatTable =
+//    Table4("widget_story_format",
+//           "widget_format",
+//           "line_height",
+//           "line_spaceing",
+//           "text_format")
+//
+//typealias DB_WidgetStoryFormatValue =
+//    RowValue4<ProdValue<WidgetFormat>,
+//              MaybePrimValue<LineHeight>,
+//              MaybePrimValue<LineSpacing>,
+//              ProdValue<TextFormat>>
 
 
 // WIDGET: STORY > PART > FORMAT
@@ -1578,70 +1572,70 @@ typealias DB_WidgetStoryPartFormatValue =
 
 // WIDGET: STORY > PART: SPAN
 // ---------------------------------------------------------------------------------------------
-
-val widgetStoryPartSpanTable =
-    Table3("widget_story_part_span",
-            "format",
-            "text_format",
-            "text")
-
-
-typealias DB_WidgetStoryPartSpanValue =
-    RowValue3<ProdValue<StoryPartFormat>,
-              ProdValue<TextFormat>,
-              PrimValue<StoryPartText>>
+//
+//val widgetStoryPartSpanTable =
+//    Table3("widget_story_part_span",
+//            "format",
+//            "text_format",
+//            "text")
+//
+//
+//typealias DB_WidgetStoryPartSpanValue =
+//    RowValue3<ProdValue<StoryPartFormat>,
+//              ProdValue<TextFormat>,
+//              PrimValue<StoryPartText>>
 
 
 // WIDGET: STORY > PART: VARIABLE
 // ---------------------------------------------------------------------------------------------
-
-val widgetStoryPartVariableTable =
-    Table4("widget_story_part_variable",
-           "format",
-           "text_format",
-           "variable_id",
-           "numeric_editor_type")
-
-typealias DB_WidgetStoryPartVariableValue =
-    RowValue4<ProdValue<StoryPartFormat>,
-              ProdValue<TextFormat>,
-              PrimValue<VariableId>,
-              PrimValue<NumericEditorType>>
+//
+//val widgetStoryPartVariableTable =
+//    Table4("widget_story_part_variable",
+//           "format",
+//           "text_format",
+//           "variable_id",
+//           "numeric_editor_type")
+//
+//typealias DB_WidgetStoryPartVariableValue =
+//    RowValue4<ProdValue<StoryPartFormat>,
+//              ProdValue<TextFormat>,
+//              PrimValue<VariableId>,
+//              PrimValue<NumericEditorType>>
 
 
 // WIDGET: STORY > PART: ICON
 // ---------------------------------------------------------------------------------------------
 
-val widgetStoryPartIconTable =
-    Table2("widget_story_part_icon",
-           "format",
-           "icon")
-
-typealias DB_WidgetStoryPartIconValue =
-    RowValue2<ProdValue<StoryPartFormat>,
-              ProdValue<Icon>>
+//val widgetStoryPartIconTable =
+//    Table2("widget_story_part_icon",
+//           "format",
+//           "icon")
+//
+//typealias DB_WidgetStoryPartIconValue =
+//    RowValue2<ProdValue<StoryPartFormat>,
+//              ProdValue<Icon>>
 
 
 // WIDGET: STORY > PART: ACTION
 // ---------------------------------------------------------------------------------------------
-
-val widgetStoryPartActionTable =
-    Table6("widget_story_part_action",
-           "format",
-           "text",
-           "action",
-           "text_format",
-           "icon_format",
-           "show_procedure_dialog")
-
-
-typealias DB_WidgetStoryPartActionValue =
-    RowValue6<ProdValue<StoryPartFormat>,
-              PrimValue<StoryPartText>,
-              ProdValue<Action>,
-              ProdValue<TextFormat>,
-              ProdValue<IconFormat>,
-              PrimValue<ShowProcedureDialog>>
+//
+//val widgetStoryPartActionTable =
+//    Table6("widget_story_part_action",
+//           "format",
+//           "text",
+//           "action",
+//           "text_format",
+//           "icon_format",
+//           "show_procedure_dialog")
+//
+//
+//typealias DB_WidgetStoryPartActionValue =
+//    RowValue6<ProdValue<StoryPartFormat>,
+//              PrimValue<StoryPartText>,
+//              ProdValue<Action>,
+//              ProdValue<TextFormat>,
+//              ProdValue<IconFormat>,
+//              PrimValue<ShowProcedureDialog>>
 
 
 // WIDGET: TABLE
@@ -1662,228 +1656,228 @@ val widgetTableTable =
 // WIDGET: TABLE > CELL: BOOLEAN
 // ---------------------------------------------------------------------------------------------
 
-val widgetTableCellBooleanTable =
-    Table2("widget_table_cell_boolean",
-           "format",
-           "variable_value")
-
-typealias DB_WidgetTableCellBooleanValue =
-    RowValue2<ProdValue<BooleanCellFormat>,
-              SumValue<BooleanVariableValue>>
+//val widgetTableCellBooleanTable =
+//    Table2("widget_table_cell_boolean",
+//           "format",
+//           "variable_value")
+//
+//typealias DB_WidgetTableCellBooleanValue =
+//    RowValue2<ProdValue<BooleanCellFormat>,
+//              SumValue<BooleanVariableValue>>
 
 
 // WIDGET: TABLE > CELL: BOOLEAN > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetTableCellBooleanFormatTable =
-    Table5("widget_table_cell_boolean_format",
-           "element_format",
-           "true_format",
-           "false_format",
-           "show_true_icon",
-           "show_false_icon")
-
-typealias DB_WidgetTableCellBooleanFormatValue =
-    RowValue5<MaybeProdValue<ElementFormat>,
-              MaybeProdValue<TextFormat>,
-              MaybeProdValue<TextFormat>,
-              MaybePrimValue<ShowTrueIcon>,
-              MaybePrimValue<ShowFalseIcon>>
+//val widgetTableCellBooleanFormatTable =
+//    Table5("widget_table_cell_boolean_format",
+//           "element_format",
+//           "true_format",
+//           "false_format",
+//           "show_true_icon",
+//           "show_false_icon")
+//
+//typealias DB_WidgetTableCellBooleanFormatValue =
+//    RowValue5<MaybeProdValue<ElementFormat>,
+//              MaybeProdValue<TextFormat>,
+//              MaybeProdValue<TextFormat>,
+//              MaybePrimValue<ShowTrueIcon>,
+//              MaybePrimValue<ShowFalseIcon>>
 
 
 // WIDGET: TABLE > CELL: NUMBER
 // ---------------------------------------------------------------------------------------------
-
-val widgetTableCellNumberTable =
-    Table4("widget_table_cell_number",
-           "format",
-           "variable_value",
-           "editor_type",
-           "action")
-
-typealias DB_WidgetTableCellNumberValue =
-    RowValue4<ProdValue<NumberCellFormat>,
-              SumValue<NumberVariableValue>,
-              MaybePrimValue<NumericEditorType>,
-              MaybeProdValue<Action>>
+//
+//val widgetTableCellNumberTable =
+//    Table4("widget_table_cell_number",
+//           "format",
+//           "variable_value",
+//           "editor_type",
+//           "action")
+//
+//typealias DB_WidgetTableCellNumberValue =
+//    RowValue4<ProdValue<NumberCellFormat>,
+//              SumValue<NumberVariableValue>,
+//              MaybePrimValue<NumericEditorType>,
+//              MaybeProdValue<Action>>
 
 
 // WIDGET: TABLE > CELL: NUMBER > FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val widgetTableCellNumberFormatTable =
-        Table1("widget_table_cell_number_format",
-                "text_format")
-
-typealias DB_WidgetTableCellNumberFormatValue =
-    RowValue1<MaybeProdValue<TextFormat>>
+//
+//val widgetTableCellNumberFormatTable =
+//        Table1("widget_table_cell_number_format",
+//                "text_format")
+//
+//typealias DB_WidgetTableCellNumberFormatValue =
+//    RowValue1<MaybeProdValue<TextFormat>>
 
 
 // WIDGET: TABLE > CELL: TEXT
 // ---------------------------------------------------------------------------------------------
 
-val widgetTableCellTextTable =
-        Table3("widget_table_cell_text",
-               "format",
-               "variable_value",
-               "action")
-
-typealias DB_WidgetTableCellTextValue =
-    RowValue3<ProdValue<TextCellFormat>,
-              SumValue<TextVariableValue>,
-              MaybeProdValue<Action>>
+//val widgetTableCellTextTable =
+//        Table3("widget_table_cell_text",
+//               "format",
+//               "variable_value",
+//               "action")
+//
+//typealias DB_WidgetTableCellTextValue =
+//    RowValue3<ProdValue<TextCellFormat>,
+//              SumValue<TextVariableValue>,
+//              MaybeProdValue<Action>>
 
 
 // WIDGET: TABLE > CELL: TEXT > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetTableCellTextFormatTable =
-        Table1("widget_table_cell_text_format",
-               "text_format")
-
-typealias DB_WidgetTableCellTextFormatValue =
-    RowValue1<MaybeProdValue<TextFormat>>
+//val widgetTableCellTextFormatTable =
+//        Table1("widget_table_cell_text_format",
+//               "text_format")
+//
+//typealias DB_WidgetTableCellTextFormatValue =
+//    RowValue1<MaybeProdValue<TextFormat>>
 
 
 // WIDGET: TABLE > COLUMN: BOOLEAN
 // ---------------------------------------------------------------------------------------------
 
-val widgetTableColumnBooleanTable =
-    Table5("widget_table_column_boolean",
-           "column_name",
-           "variable_prefix",
-           "is_column_namespaced",
-           "default_value",
-           "format")
-
-typealias DB_WidgetTableColumnBooleanValue =
-    RowValue5<PrimValue<ColumnName>,
-              PrimValue<ColumnVariablePrefix>,
-              PrimValue<IsColumnNamespaced>,
-              SumValue<BooleanVariableValue>,
-              ProdValue<BooleanColumnFormat>>
+//val widgetTableColumnBooleanTable =
+//    Table5("widget_table_column_boolean",
+//           "column_name",
+//           "variable_prefix",
+//           "is_column_namespaced",
+//           "default_value",
+//           "format")
+//
+//typealias DB_WidgetTableColumnBooleanValue =
+//    RowValue5<PrimValue<ColumnName>,
+//              PrimValue<ColumnVariablePrefix>,
+//              PrimValue<IsColumnNamespaced>,
+//              SumValue<BooleanVariableValue>,
+//              ProdValue<BooleanColumnFormat>>
 
 
 // WIDGET: TABLE > COLUMN: BOOLEAN > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetTableColumnBooleanFormatTable =
-    Table7("widget_table_column_boolean_format",
-           "column_name",
-           "true_format",
-           "false_format",
-           "true_text",
-           "false_text",
-           "show_true_icon",
-           "show_false_icon")
-
-typealias DB_WidgetTableColumnBooleanFormatValue =
-    RowValue7<ProdValue<ColumnFormat>,
-              MaybeProdValue<TextFormat>,
-              MaybeProdValue<TextFormat>,
-              PrimValue<ColumnTrueText>,
-              PrimValue<ColumnFalseText>,
-              PrimValue<ShowTrueIcon>,
-              PrimValue<ShowFalseIcon>>
+//val widgetTableColumnBooleanFormatTable =
+//    Table7("widget_table_column_boolean_format",
+//           "column_name",
+//           "true_format",
+//           "false_format",
+//           "true_text",
+//           "false_text",
+//           "show_true_icon",
+//           "show_false_icon")
+//
+//typealias DB_WidgetTableColumnBooleanFormatValue =
+//    RowValue7<ProdValue<ColumnFormat>,
+//              MaybeProdValue<TextFormat>,
+//              MaybeProdValue<TextFormat>,
+//              PrimValue<ColumnTrueText>,
+//              PrimValue<ColumnFalseText>,
+//              PrimValue<ShowTrueIcon>,
+//              PrimValue<ShowFalseIcon>>
 
 
 // WIDGET: TABLE > COLUMN: NUMBER
 // ---------------------------------------------------------------------------------------------
 
-val widgetTableColumnNumberTable =
-    Table7("widget_table_column_number",
-           "column_name",
-           "variable_prefix",
-           "is_column_namespaced",
-           "default_value",
-           "format",
-           "action",
-           "editor_type")
-
-typealias DB_WidgetTableColumnNumberValue =
-    RowValue7<PrimValue<ColumnName>,
-              PrimValue<ColumnVariablePrefix>,
-              PrimValue<IsColumnNamespaced>,
-              SumValue<NumberVariableValue>,
-              ProdValue<NumberColumnFormat>,
-              MaybeProdValue<Action>,
-              PrimValue<NumericEditorType>>
+//val widgetTableColumnNumberTable =
+//    Table7("widget_table_column_number",
+//           "column_name",
+//           "variable_prefix",
+//           "is_column_namespaced",
+//           "default_value",
+//           "format",
+//           "action",
+//           "editor_type")
+//
+//typealias DB_WidgetTableColumnNumberValue =
+//    RowValue7<PrimValue<ColumnName>,
+//              PrimValue<ColumnVariablePrefix>,
+//              PrimValue<IsColumnNamespaced>,
+//              SumValue<NumberVariableValue>,
+//              ProdValue<NumberColumnFormat>,
+//              MaybeProdValue<Action>,
+//              PrimValue<NumericEditorType>>
 
 
 // WIDGET: TABLE > COLUMN: NUMBER > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetTableColumnNumberFormatTable =
-    Table1("widget_table_column_number_format",
-           "column_format")
-
-typealias DB_WidgetTableColumnNumberFormatValue =
-    RowValue1<ProdValue<ColumnFormat>>
+//val widgetTableColumnNumberFormatTable =
+//    Table1("widget_table_column_number_format",
+//           "column_format")
+//
+//typealias DB_WidgetTableColumnNumberFormatValue =
+//    RowValue1<ProdValue<ColumnFormat>>
 
 
 // WIDGET: TABLE > COLUMN: TEXT
 // ---------------------------------------------------------------------------------------------
 
-val widgetTableColumnTextTable =
-    Table7("widget_table_column_text",
-           "column_name",
-           "variable_prefix",
-           "is_column_namespaced",
-           "default_value",
-           "format",
-           "action",
-           "defines_namespace")
-
-typealias DB_WidgetTableColumnTextValue =
-    RowValue7<PrimValue<ColumnName>,
-              PrimValue<ColumnVariablePrefix>,
-              PrimValue<IsColumnNamespaced>,
-              SumValue<TextVariableValue>,
-              ProdValue<TextColumnFormat>,
-              MaybeProdValue<Action>,
-              PrimValue<DefinesNamespace>>
+//val widgetTableColumnTextTable =
+//    Table7("widget_table_column_text",
+//           "column_name",
+//           "variable_prefix",
+//           "is_column_namespaced",
+//           "default_value",
+//           "format",
+//           "action",
+//           "defines_namespace")
+//
+//typealias DB_WidgetTableColumnTextValue =
+//    RowValue7<PrimValue<ColumnName>,
+//              PrimValue<ColumnVariablePrefix>,
+//              PrimValue<IsColumnNamespaced>,
+//              SumValue<TextVariableValue>,
+//              ProdValue<TextColumnFormat>,
+//              MaybeProdValue<Action>,
+//              PrimValue<DefinesNamespace>>
 
 
 // WIDGET: TABLE > COLUMN: TEXT > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetTableColumnTextFormatTable =
-    Table1("widget_table_column_text_format",
-           "column_format")
-
-typealias DB_WidgetTableColumnTextFormatValue =
-    RowValue1<ProdValue<ColumnFormat>>
+//val widgetTableColumnTextFormatTable =
+//    Table1("widget_table_column_text_format",
+//           "column_format")
+//
+//typealias DB_WidgetTableColumnTextFormatValue =
+//    RowValue1<ProdValue<ColumnFormat>>
 
 
 // WIDGET: TABLE > COLUMN > FORMAT
 // ---------------------------------------------------------------------------------------------
-
-val widgetTableColumnFormatTable =
-    Table2("widget_table_column_format",
-           "text_format",
-           "width")
-
-typealias DB_WidgetTableColumnFormatValue =
-    RowValue2<ProdValue<TextFormat>,
-              PrimValue<ColumnWidth>>
+//
+//val widgetTableColumnFormatTable =
+//    Table2("widget_table_column_format",
+//           "text_format",
+//           "width")
+//
+//typealias DB_WidgetTableColumnFormatValue =
+//    RowValue2<ProdValue<TextFormat>,
+//              PrimValue<ColumnWidth>>
 
 
 // WIDGET: TABLE > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetTableFormatTable =
-    Table4("widget_table_format",
-           "widget_format",
-           "header_format",
-           "row_format",
-           "cell_height")
-
-typealias DB_WidgetTableFormatValue =
-    RowValue4<ProdValue<WidgetFormat>,
-              ProdValue<TableWidgetRowFormat>,
-              ProdValue<TableWidgetRowFormat>,
-              PrimValue<Height>>
-
+//val widgetTableFormatTable =
+//    Table4("widget_table_format",
+//           "widget_format",
+//           "header_format",
+//           "row_format",
+//           "cell_height")
+//
+//typealias DB_WidgetTableFormatValue =
+//    RowValue4<ProdValue<WidgetFormat>,
+//              ProdValue<TableWidgetRowFormat>,
+//              ProdValue<TableWidgetRowFormat>,
+//              PrimValue<Height>>
+//
 
 // WIDGET: TABLE > ROW
 // ---------------------------------------------------------------------------------------------
@@ -1901,44 +1895,44 @@ val widgetTableRowTable =
 // WIDGET: TABLE > ROW > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetTableRowFormatTable =
-    Table1("widget_table_row_format",
-           "text_format")
-
-typealias DB_WidgetTableRowFormatValue =
-    RowValue1<ProdValue<TextFormat>>
+//val widgetTableRowFormatTable =
+//    Table1("widget_table_row_format",
+//           "text_format")
+//
+//typealias DB_WidgetTableRowFormatValue =
+//    RowValue1<ProdValue<TextFormat>>
 
 
 // WIDGET: TEXT
 // ---------------------------------------------------------------------------------------------
 
-val widgetTextTable =
-    Table3("widget_text",
-           "widget_id",
-           "format",
-           "value_variable_id")
-
-typealias DB_WidgetTextValue =
-    RowValue3<PrimValue<WidgetId>,
-              ProdValue<TextWidgetFormat>,
-              PrimValue<VariableId>>
+//val widgetTextTable =
+//    Table3("widget_text",
+//           "widget_id",
+//           "format",
+//           "value_variable_id")
+//
+//typealias DB_WidgetTextValue =
+//    RowValue3<PrimValue<WidgetId>,
+//              ProdValue<TextWidgetFormat>,
+//              PrimValue<VariableId>>
 
 
 // WIDGET: TEXT > FORMAT
 // ---------------------------------------------------------------------------------------------
 
-val widgetTextFormatTable =
-    Table4("widget_text_format",
-           "widget_format",
-           "inside_label_format",
-           "outside_label_format",
-           "value_format")
-
-typealias DB_WidgetTextFormat =
-    RowValue4<ProdValue<WidgetFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>,
-              ProdValue<TextFormat>>
+//val widgetTextFormatTable =
+//    Table4("widget_text_format",
+//           "widget_format",
+//           "inside_label_format",
+//           "outside_label_format",
+//           "value_format")
+//
+//typealias DB_WidgetTextFormat =
+//    RowValue4<ProdValue<WidgetFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>,
+//              ProdValue<TextFormat>>
 
 
 // VALUE: NUMBER

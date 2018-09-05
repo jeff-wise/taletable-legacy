@@ -6,16 +6,12 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
+import android.os.Build
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import com.taletable.android.activity.sheet.SheetActivityGlobal
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue2
-import com.taletable.android.lib.orm.schema.MaybeProdValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.model.engine.constraint.Trigger
 import com.taletable.android.model.engine.tag.Tag
@@ -653,22 +649,13 @@ data class GroupSetId(val value : UUID) : Serializable
 /**
  * Group Format
  */
-data class GroupFormat(override val id : UUID,
-                       val elementFormat : ElementFormat,
+data class GroupFormat(val elementFormat : ElementFormat,
                        val border : Maybe<Border>)
-                        : ToDocument, ProdType, Serializable
+                        : ToDocument, Serializable
 {
 
+    // | Constructors
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    constructor(elementFormat : ElementFormat,
-                border : Maybe<Border>)
-        : this(UUID.randomUUID(),
-               elementFormat,
-               border)
-
 
     companion object : Factory<GroupFormat>
     {
@@ -717,21 +704,6 @@ data class GroupFormat(override val id : UUID,
 
 
     fun border() : Maybe<Border> = this.border
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_GroupFormatValue =
-        RowValue2(groupFormatTable, ProdValue(this.elementFormat),
-                                    MaybeProdValue(this.border))
 
 }
 
@@ -798,6 +770,14 @@ private fun viewLayout(format : GroupFormat,
     layoutParams.bottomMargin = margins.bottomPx()
 
     layout.layoutParams = layoutParams
+
+
+    val elevation = format.elementFormat().elevation()
+    if (elevation.value != 0.0) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            layout.elevation = elevation.value.toFloat()
+        }
+    }
 
 //        val padding = widgetFormat.padding()
 //        layout.setPadding(padding.leftPx(),

@@ -56,6 +56,8 @@ data class UpdateTargetBooleanWidget(val booleanWidgetId : WidgetId) : UpdateTar
 
 data class UpdateTargetGroupWidget(val groupWidgetId : WidgetId) : UpdateTarget()
 
+data class UpdateTargetExpanderWidget(val expanderWidgetId : WidgetId) : UpdateTarget()
+
 data class UpdateTargetListWidget(val listWidgetId : WidgetId) : UpdateTarget()
 
 data class UpdateTargetNumberWidget(val numberWidgetId : WidgetId) : UpdateTarget()

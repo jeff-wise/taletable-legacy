@@ -389,19 +389,13 @@ class TableWidgetRowUI(val row : TableWidgetRow,
 /**
  * Table Widget Row Format
  */
-data class TableWidgetRowFormat(override val id : UUID,
-                                val textFormat : TextFormat)
-                                 : ToDocument, ProdType, Serializable
+data class TableWidgetRowFormat(val textFormat : TextFormat)
+                                 : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(textFormat : TextFormat)
-        : this(UUID.randomUUID(),
-               textFormat)
-
 
     companion object : Factory<TableWidgetRowFormat>
     {
@@ -443,21 +437,6 @@ data class TableWidgetRowFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun textFormat() : TextFormat = this.textFormat
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTableRowFormatValue =
-        RowValue1(widgetTableRowFormatTable,
-                  ProdValue(this.textFormat))
 
 
 }

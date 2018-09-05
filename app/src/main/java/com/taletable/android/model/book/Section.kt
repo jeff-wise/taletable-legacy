@@ -31,43 +31,24 @@ import java.util.*
 /**
  * Section
  */
-data class BookSection(override val id : UUID,
-                       val sectionId : BookSectionId,
+data class BookSection(val sectionId : BookSectionId,
                        val title : BookSectionTitle,
                        val introduction : List<BookContentId>,
                        val conclusion : List<BookContentId>,
                        val format : BookSectionFormat,
                        val subsections : MutableList<BookSubsection>)
-                            : ToDocument, ProdType, java.io.Serializable
+                        : ToDocument, Serializable
 {
 
-    // -----------------------------------------------------------------------------------------
-    // INDEXES
+    // | Indexes
     // -----------------------------------------------------------------------------------------
 
     private val subsectionById : MutableMap<BookSubsectionId, BookSubsection> =
                                     subsections().associateBy { it.subsectionId() }
                                             as MutableMap<BookSubsectionId, BookSubsection>
 
-
+    // | Constructors
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    constructor(sectionId : BookSectionId,
-                title : BookSectionTitle,
-                introduction: List<BookContentId>,
-                conclusion: List<BookContentId>,
-                format : BookSectionFormat,
-                subsections : List<BookSubsection>)
-        : this(UUID.randomUUID(),
-               sectionId,
-               title,
-               introduction,
-               conclusion,
-               format,
-               subsections.toMutableList())
-
 
     companion object : Factory<BookSection>
     {
@@ -94,8 +75,8 @@ data class BookSection(override val id : UUID,
                             { BookSectionFormat.fromDocument(it) }),
                       // Subsections
                       split(doc.maybeList("subsections"),
-                            effValue(listOf()),
-                            { it.map { BookSubsection.fromDocument(it) } })
+                            effValue(mutableListOf()),
+                            { it.mapMut { BookSubsection.fromDocument(it) } })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -147,22 +128,6 @@ data class BookSection(override val id : UUID,
 
     fun introductionContent(book : Book) : List<BookContent> =
             this.introduction.map { book.content(it) }.filterJust()
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_BookSectionValue =
-        RowValue3(bookSectionTable, PrimValue(this.sectionId),
-                                    PrimValue(this.title),
-                                    CollValue(this.subsections))
 
 }
 
@@ -242,19 +207,13 @@ data class BookSectionTitle(val value : String) : ToDocument, SQLSerializable, j
 /**
  * Book Section Format
  */
-data class BookSectionFormat(override val id : UUID,
-                             val pageHeaderFormat : BookSectionPageHeaderFormat)
-                             : ToDocument, ProdType, Serializable
+data class BookSectionFormat(val pageHeaderFormat : BookSectionPageHeaderFormat)
+                             : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(pageHeaderFormat : BookSectionPageHeaderFormat)
-        : this(UUID.randomUUID(),
-               pageHeaderFormat)
-
 
     companion object : Factory<BookSectionFormat>
     {
@@ -297,45 +256,21 @@ data class BookSectionFormat(override val id : UUID,
     fun pageHeaderFormat() : BookSectionPageHeaderFormat = this.pageHeaderFormat
 
 
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_BookSectionFormatValue =
-        RowValue1(bookSectionFormatTable,
-                  ProdValue(this.pageHeaderFormat))
-
 }
 
 
 /**
  * Section
  */
-data class BookSectionPageHeaderFormat(override val id : UUID,
-                                       val elementFormat : ElementFormat,
+data class BookSectionPageHeaderFormat(val elementFormat : ElementFormat,
                                        val chapterNameFormat : TextFormat,
                                        val sectionNameFormat: TextFormat)
-                                        : ToDocument, ProdType, Serializable
+                                        : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(elementFormat : ElementFormat,
-                chapterNameFormat : TextFormat,
-                sectionNameFormat : TextFormat)
-        : this(UUID.randomUUID(),
-               elementFormat,
-               chapterNameFormat,
-               sectionNameFormat)
-
 
     companion object : Factory<BookSectionPageHeaderFormat>
     {
@@ -397,22 +332,6 @@ data class BookSectionPageHeaderFormat(override val id : UUID,
 
     fun sectionNameFormat() : TextFormat = this.sectionNameFormat
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_BookSectionPageHeaderFormatValue =
-        RowValue3(bookSectionPageHeaderFormatTable,
-                  ProdValue(this.elementFormat),
-                  ProdValue(this.chapterNameFormat),
-                  ProdValue(this.sectionNameFormat))
 
 }
 

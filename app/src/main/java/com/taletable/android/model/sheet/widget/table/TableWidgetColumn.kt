@@ -3,21 +3,15 @@ package com.taletable.android.model.sheet.widget.table
 
 
 import com.taletable.android.app.ApplicationLog
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.*
-import com.taletable.android.lib.orm.schema.PrimValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.*
 import com.taletable.android.model.engine.variable.*
 import com.taletable.android.model.sheet.style.IconType
 import com.taletable.android.model.sheet.style.NumericEditorType
 import com.taletable.android.model.sheet.style.TextFormat
 import com.taletable.android.model.sheet.widget.Action
-import com.taletable.android.model.sheet.widget.table.column.BooleanColumnFormat
-import com.taletable.android.model.sheet.widget.table.column.ImageColumnFormat
-import com.taletable.android.model.sheet.widget.table.column.NumberColumnFormat
-import com.taletable.android.model.sheet.widget.table.column.TextColumnFormat
+import com.taletable.android.model.sheet.widget.table.cell.TextCellValue
+import com.taletable.android.model.sheet.widget.table.column.*
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.util.Util
 import effect.*
@@ -55,13 +49,13 @@ sealed class TableWidgetColumn(open val columnName : ColumnName,
             {
                 when (doc.case())
                 {
-                    "table_widget_boolean_column" -> TableWidgetBooleanColumn.fromDocument(doc)
+                    "table_widget_boolean_column" -> TableWidgetBooleanColumn.fromDocument(doc.nextCase())
                                                         as ValueParser<TableWidgetColumn>
-                    "table_widget_image_column"   -> TableWidgetImageColumn.fromDocument(doc)
+                    "table_widget_image_column"   -> TableWidgetImageColumn.fromDocument(doc.nextCase())
                                                         as ValueParser<TableWidgetColumn>
-                    "table_widget_number_column"  -> TableWidgetNumberColumn.fromDocument(doc)
+                    "table_widget_number_column"  -> TableWidgetNumberColumn.fromDocument(doc.nextCase())
                                                         as ValueParser<TableWidgetColumn>
-                    "table_widget_text_column"    -> TableWidgetTextColumn.fromDocument(doc)
+                    "table_widget_text_column"    -> TableWidgetTextColumn.fromDocument(doc.nextCase())
                                                         as ValueParser<TableWidgetColumn>
                     else                          -> effError<ValueError, TableWidgetColumn>(
                                                         UnknownCase(doc.case(), doc.path))
@@ -554,7 +548,7 @@ data class TableWidgetTextColumn(
         override val variableRelation : Maybe<VariableRelation>,
         override val isColumnNamespaced : IsColumnNamespaced,
         val tags : List<VariableTag>,
-        val defaultValue : TextVariableValue,
+        val defaultValue : TextCellValue,
         val format : TextColumnFormat,
         val action : Maybe<Action>,
         val columnVariableId : Maybe<VariableId>,
@@ -572,7 +566,7 @@ data class TableWidgetTextColumn(
                 variableRelation : Maybe<VariableRelation>,
                 isColumnNamespaced : IsColumnNamespaced,
                 tags : List<VariableTag>,
-                defaultValue : TextVariableValue,
+                defaultValue : TextCellValue,
                 format : TextColumnFormat,
                 action : Maybe<Action>,
                 columnVariableId : Maybe<VariableId>,
@@ -615,7 +609,7 @@ data class TableWidgetTextColumn(
                             effValue(listOf()),
                             { it.map { VariableTag.fromDocument(it) } }),
                       // Default Value
-                      doc.at("default_value") ap { TextVariableValue.fromDocument(it) },
+                      doc.at("default_value") ap { TextCellValue.fromDocument(it) },
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(TextColumnFormat.default()),
@@ -666,7 +660,7 @@ data class TableWidgetTextColumn(
     fun definesNamespaceBoolean() : Boolean = this.definesNamespace.value
 
 
-    fun defaultValue() : TextVariableValue = this.defaultValue
+    fun defaultValue() : TextCellValue = this.defaultValue
 
 
     fun columnVariableId() : Maybe<VariableId> = this.columnVariableId
@@ -894,22 +888,14 @@ data class PrimaryColumnIndex(val value : Int) : ToDocument, Serializable
 /**
  * Table Widget Column Format
  */
-data class ColumnFormat(override val id : UUID,
-                        val textFormat : TextFormat,
+data class ColumnFormat(val textFormat : TextFormat,
                         val width : ColumnWidth)
-                         : ToDocument, ProdType, Serializable
+                         : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(textFormat : TextFormat,
-                width : ColumnWidth)
-        : this(UUID.randomUUID(),
-               textFormat,
-               width)
-
 
     companion object : Factory<ColumnFormat>
     {
@@ -964,22 +950,6 @@ data class ColumnFormat(override val id : UUID,
 
 
     fun widthFloat() : Float = this.width.value
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-     override fun rowValue() : DB_WidgetTableColumnFormatValue =
-        RowValue2(widgetTableColumnFormatTable,
-                  ProdValue(this.textFormat),
-                  PrimValue(this.width))
 
 }
 

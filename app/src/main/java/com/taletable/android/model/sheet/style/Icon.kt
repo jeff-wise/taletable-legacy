@@ -552,25 +552,15 @@ sealed class IconType : ToDocument, SQLSerializable, Serializable
 /**
  * Icon
  */
-data class Icon(override val id : UUID,
-                val iconType : IconType,
+data class Icon(val iconType : IconType,
                 val elementFormat : ElementFormat,
                 val iconFormat : IconFormat)
-                 : ToDocument, ProdType, Serializable
+                 : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(iconType : IconType,
-                elementFormat : ElementFormat,
-                iconFormat : IconFormat)
-        : this(UUID.randomUUID(),
-               iconType,
-               elementFormat,
-               iconFormat)
-
 
     companion object : Factory<Icon>
     {
@@ -629,23 +619,6 @@ data class Icon(override val id : UUID,
 
 
     fun iconFormat() : IconFormat = this.iconFormat
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_IconValue =
-        RowValue3(iconTable,
-                  PrimValue(this.iconType),
-                  ProdValue(this.elementFormat),
-                  ProdValue(this.iconFormat))
 
 }
 

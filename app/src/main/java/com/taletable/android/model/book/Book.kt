@@ -737,25 +737,15 @@ data class BookContentTitle(val value : String) : ToDocument, Serializable
 /**
  * Book Format
  */
-data class BookFormat(override val id : UUID,
-                      val elementFormat : ElementFormat,
+data class BookFormat(val elementFormat : ElementFormat,
                       val chapterIndexFormat : ElementFormat,
                       val chapterButtonFormat : ChapterButtonFormat)
-                        : ToDocument, ProdType, Serializable
+                        : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(elementFormat : ElementFormat,
-                chapterIndexFormat : ElementFormat,
-                chapterButtonFormat : ChapterButtonFormat)
-        : this(UUID.randomUUID(),
-               elementFormat,
-               chapterIndexFormat,
-               chapterButtonFormat)
-
 
     companion object : Factory<BookFormat>
     {
@@ -811,51 +801,22 @@ data class BookFormat(override val id : UUID,
 
     fun chapterButtonFormat() : ChapterButtonFormat = this.chapterButtonFormat
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_BookFormatValue =
-        RowValue3(bookFormatTable,
-                  ProdValue(this.elementFormat),
-                  ProdValue(this.chapterIndexFormat),
-                  ProdValue(this.chapterButtonFormat))
-
 }
 
 
 /**
  * Chapter Button Format
  */
-data class ChapterButtonFormat(override val id : UUID,
-                               val elementFormat : ElementFormat,
+data class ChapterButtonFormat(val elementFormat : ElementFormat,
                                val indexFormat : TextFormat,
                                val titleFormat : TextFormat,
                                val summaryFormat : TextFormat)
-                                : ToDocument, ProdType, Serializable
+                                : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(elementFormat : ElementFormat,
-                indexFormat : TextFormat,
-                titleFormat : TextFormat,
-                summaryFormat : TextFormat)
-        : this(UUID.randomUUID(),
-               elementFormat,
-               indexFormat,
-               titleFormat,
-               summaryFormat)
-
 
     companion object : Factory<ChapterButtonFormat>
     {
@@ -926,24 +887,6 @@ data class ChapterButtonFormat(override val id : UUID,
 
 
     fun summaryFormat() : TextFormat = this.summaryFormat
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_ChapterButtonFormatValue =
-        RowValue4(chapterButtonFormatTable,
-                  ProdValue(this.elementFormat),
-                  ProdValue(this.indexFormat),
-                  ProdValue(this.titleFormat),
-                  ProdValue(this.summaryFormat))
 
 }
 

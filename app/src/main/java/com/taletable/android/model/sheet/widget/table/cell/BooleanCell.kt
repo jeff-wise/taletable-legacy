@@ -23,6 +23,7 @@ import com.taletable.android.model.sheet.widget.table.column.BooleanColumnFormat
 import com.taletable.android.model.sheet.widget.table.column.ShowFalseIcon
 import com.taletable.android.model.sheet.widget.table.column.ShowTrueIcon
 import com.taletable.android.rts.entity.EntityId
+import com.taletable.android.rts.entity.colorOrBlack
 import effect.*
 import effect.Val
 import lulo.document.*
@@ -40,31 +41,17 @@ import java.util.*
 /**
  * Boolean Cell Format
  */
-data class BooleanCellFormat(override val id : UUID,
-                             val elementFormat : Maybe<ElementFormat>,
+data class BooleanCellFormat(val elementFormat : Maybe<ElementFormat>,
                              val trueFormat : Maybe<TextFormat>,
                              val falseFormat : Maybe<TextFormat>,
                              val showTrueIcon : Maybe<ShowTrueIcon>,
                              val showFalseIcon : Maybe<ShowFalseIcon>)
-                              : ToDocument, ProdType, Serializable
+                              : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(elementFormat : Maybe<ElementFormat>,
-                trueFormat : Maybe<TextFormat>,
-                falseFormat : Maybe<TextFormat>,
-                showTrueIcon : Maybe<ShowTrueIcon>,
-                showFalseIcon : Maybe<ShowFalseIcon>)
-        : this(UUID.randomUUID(),
-               elementFormat,
-               trueFormat,
-               falseFormat,
-               showTrueIcon,
-               showFalseIcon)
-
 
     companion object : Factory<BooleanCellFormat>
     {
@@ -100,8 +87,7 @@ data class BooleanCellFormat(override val id : UUID,
         }
 
 
-        fun default() = BooleanCellFormat(UUID.randomUUID(),
-                                          Nothing(),
+        fun default() = BooleanCellFormat(Nothing(),
                                           Nothing(),
                                           Nothing(),
                                           Nothing(),
@@ -170,25 +156,6 @@ data class BooleanCellFormat(override val id : UUID,
             is Nothing -> columnFormat.resolveFalseFormat()
         }
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTableCellBooleanFormatValue =
-        RowValue5(widgetTableCellBooleanFormatTable,
-                  MaybeProdValue(this.elementFormat),
-                  MaybeProdValue(this.trueFormat),
-                  MaybeProdValue(this.falseFormat),
-                  MaybePrimValue(this.showTrueIcon),
-                  MaybePrimValue(this.showFalseIcon))
-
 }
 
 
@@ -252,7 +219,7 @@ object BooleanCellView
             val cellValue = cell.value(entityId)
             when (cellValue)
             {
-                is Val -> toggleCellValue(cellValue.value, cell, column, valueView, entityId, context)
+                is Val -> toggleCellValue(cellValue.value, cell, column, layout, entityId, context)
                 is Err -> ApplicationLog.error(cellValue.error)
             }
         }
@@ -262,31 +229,41 @@ object BooleanCellView
     private fun toggleCellValue(value : Boolean,
                                 cell : TableWidgetBooleanCell,
                                 column : TableWidgetBooleanColumn,
-                                valueView : TextView,
+                                layout : LinearLayout,
                                 entityId : EntityId,
                                 context : Context)
     {
         val cellFormat = cell.format()
 
-        val trueFormat  = cellFormat.resolveTrueFormat(column.format())
-        val falseFormat = cellFormat.resolveFalseFormat(column.format())
+        val newValue = !value
 
-        if (value)
-        {
-            cell.valueVariable(entityId) apDo { it.updateValue(false, entityId) }
+        cell.valueVariable(entityId) apDo { it.updateValue(newValue, entityId) }
 
-            valueView.text = column.format().falseTextString()
+        layout.removeAllViews()
+        layout.addView(valueTextView(newValue,
+                                     column,
+                                     cell.format(),
+                                     entityId,
+                                     context ))
 
-            falseFormat.styleTextView(valueView, entityId, context)
-        }
-        else
-        {
-            cell.valueVariable(entityId) apDo { it.updateValue(true, entityId) }
-
-            valueView.text = column.format().trueTextString()
-            trueFormat.styleTextView(valueView, entityId, context)
-        }
-
+//        val format = if (newValue) {
+//            cellFormat.resolveTrueFormat(column.format())
+//        } else {
+//            cellFormat.resolveFalseFormat(column.format())
+//        }
+//
+//
+//        if (newValue)
+//            valueView.text = column.format().trueTextString()
+//        else
+//            valueView.text = column.format().falseTextString()
+//
+//        format.styleTextView(valueView, entityId, context)
+//
+//        // TODO do this properly i.e. recreate view
+//        valueView.setBackgroundColor(colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId))
+//
+//        valueView.setTextColor(colorOrBlack(format.colorTheme(), entityId))
     }
 
 
@@ -341,23 +318,27 @@ object BooleanCellView
         value.width             = TableRow.LayoutParams.WRAP_CONTENT
         value.height            = TableRow.LayoutParams.WRAP_CONTENT
 
+
         // > VALUE
         if (cellValue)
             value.text          = column.format().trueTextString()
         else
             value.text          = column.format().falseTextString()
 
-        // > STYLE
-        //val defaultStyle  = cellFormat.resolveTextStyle(column.format())
-        val trueStyle     = cellFormat.resolveTrueFormat(column.format())
-        val falseStyle    = cellFormat.resolveFalseFormat(column.format())
 
-        if (cellValue)
-            trueStyle.styleTextViewBuilder(value, entityId, context)
-        else
-            falseStyle.styleTextViewBuilder(value, entityId, context)
-//        else
-//            defaultStyle.styleTextViewBuilder(value, sheetUIContext)
+        val format = if (cellValue) {
+            cellFormat.resolveTrueFormat(column.format())
+        } else {
+            cellFormat.resolveFalseFormat(column.format())
+        }
+
+        format.styleTextViewBuilder(value, entityId, context)
+
+        value.backgroundColor   = colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId)
+
+        value.corners           = format.elementFormat().corners()
+
+        value.paddingSpacing    = format.elementFormat().padding()
 
         return value.textView(context)
     }

@@ -46,8 +46,7 @@ import java.util.*
 /**
  * Mechanic Widget Format
  */
-data class MechanicWidgetFormat(override val id : UUID,
-                                val widgetFormat : WidgetFormat,
+data class MechanicWidgetFormat(val widgetFormat : WidgetFormat,
                                 val viewType : MechanicWidgetViewType,
                                 val mechanicFormat : ElementFormat,
                                 val headerFormat : TextFormat,
@@ -56,33 +55,12 @@ data class MechanicWidgetFormat(override val id : UUID,
                                 val annotationFormat : TextFormat,
                                 val optionElementFormat : ElementFormat,
                                 val optionLabelFormat : TextFormat)
-                                 : ToDocument, ProdType, Serializable
+                                 : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat,
-                viewType : MechanicWidgetViewType,
-                mechanicFormat : ElementFormat,
-                headerFormat : TextFormat,
-                mechanicHeaderFormat : TextFormat,
-                mechanicSummaryFormat : TextFormat,
-                annotationFormat : TextFormat,
-                optionElementFormat : ElementFormat,
-                optionLabelFormat : TextFormat)
-        : this(UUID.randomUUID(),
-               widgetFormat,
-               viewType,
-               mechanicFormat,
-               headerFormat,
-               mechanicHeaderFormat,
-               mechanicSummaryFormat,
-               annotationFormat,
-               optionElementFormat,
-               optionLabelFormat)
-
 
     companion object : Factory<MechanicWidgetFormat>
     {
@@ -203,28 +181,6 @@ data class MechanicWidgetFormat(override val id : UUID,
 
 
     fun optionLabelFormat() : TextFormat = this.optionLabelFormat
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetMechanicFormatValue =
-        RowValue8(widgetMechanicFormatTable,
-                  ProdValue(this.widgetFormat),
-                  PrimValue(this.viewType),
-                  ProdValue(this.mechanicFormat),
-                  ProdValue(this.headerFormat),
-                  ProdValue(this.mechanicHeaderFormat),
-                  ProdValue(this.mechanicSummaryFormat),
-                  ProdValue(this.optionElementFormat),
-                  ProdValue(this.optionLabelFormat))
 
 }
 

@@ -16,13 +16,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.activity.entity.engine.dice.DiceRollerActivity
-import com.taletable.android.db.DB_WidgetRollFormatValue
-import com.taletable.android.db.widgetRollFormatTable
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue6
-import com.taletable.android.lib.orm.schema.PrimValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
@@ -51,8 +45,7 @@ import java.util.*
 /**
  * Roll Widget Format
  */
-data class RollWidgetFormat(override val id : UUID,
-                            val widgetFormat : WidgetFormat,
+data class RollWidgetFormat(val widgetFormat : WidgetFormat,
                             val viewType : RollWidgetViewType,
                             val descriptionFormat : TextFormat,
                             val descriptionRollFormat : Maybe<TextFormat>,
@@ -60,31 +53,12 @@ data class RollWidgetFormat(override val id : UUID,
                             val buttonRollFormat : Maybe<TextFormat>,
                             val rollTextLocation : RollTextLocation,
                             val rollTextFormat : TextFormat)
-                             : ToDocument, ProdType, Serializable
+                             : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat,
-                viewType : RollWidgetViewType,
-                descriptionFormat : TextFormat,
-                descriptionRollFormat : Maybe<TextFormat>,
-                buttonFormat : TextFormat,
-                buttonRollFormat : Maybe<TextFormat>,
-                rollTextLocation : RollTextLocation,
-                rollTextFormat : TextFormat)
-        : this(UUID.randomUUID(),
-               widgetFormat,
-               viewType,
-               descriptionFormat,
-               descriptionRollFormat,
-               buttonFormat,
-               buttonRollFormat,
-               rollTextLocation,
-               rollTextFormat)
-
 
     companion object : Factory<RollWidgetFormat>
     {
@@ -193,25 +167,6 @@ data class RollWidgetFormat(override val id : UUID,
 
     fun rollTextFormat() : TextFormat = this.rollTextFormat
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetRollFormatValue =
-        RowValue6(widgetRollFormatTable,
-                  ProdValue(this.widgetFormat),
-                  PrimValue(this.viewType),
-                  ProdValue(this.descriptionFormat),
-                  ProdValue(this.buttonFormat),
-                  PrimValue(this.rollTextLocation),
-                  ProdValue(this.rollTextFormat))
 
 }
 
@@ -451,6 +406,7 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
             this.isRoll = false
 
             val format = rollWidget.format().buttonFormat()
+            val rollTextFormat = rollWidget.format().rollTextFormat()
 
             buttonResultTextView?.visibility = View.GONE
             buttonIconView?.visibility = View.VISIBLE
@@ -465,6 +421,8 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
             buttonRollTextView?.setTextColor(colorOrBlack(format.colorTheme(), entityId))
 
             buttonRollTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, format.sizeSp())
+
+            buttonRollTextView?.typeface = Font.typeface(rollTextFormat.font(), rollTextFormat.fontStyle(), context)
 
             val padding = format.elementFormat().padding()
             buttonLayout?.setPadding(padding.leftPx(), padding.topPx(), padding.rightPx(), padding.bottomPx())
@@ -505,6 +463,8 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
             buttonResultTextView?.setTextColor(colorOrBlack(format.colorTheme(), entityId))
 
             buttonResultTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, format.sizeSp())
+
+            buttonResultTextView?.typeface = Font.typeface(format.font(), format.fontStyle(), context)
 
             val padding = format.elementFormat().padding()
             buttonLayout?.setPadding(padding.leftPx(), padding.topPx(), padding.rightPx(), padding.bottomPx())
@@ -793,7 +753,10 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
         val icon            = ImageViewBuilder()
         val format          = rollWidget.format().buttonFormat()
 
-        icon.iconSize       = format.iconFormat().size()
+        //icon.iconSize       = format.iconFormat().size()
+
+        icon.widthDp        = format.iconFormat().size().width
+        icon.heightDp       = format.iconFormat().size().height
 
         icon.image          = R.drawable.icon_dice_roll_filled
 

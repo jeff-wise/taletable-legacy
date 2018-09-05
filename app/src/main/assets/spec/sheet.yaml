@@ -423,7 +423,6 @@ types:
           Groups in relation to the other layout elements. A group is the largest element of 
           a page and contains group rows. 
         </figcaption>
-      </figure>
     group: Group
     fields:
     - name: id
@@ -646,6 +645,12 @@ types:
         custom_type: border
       presence: optional
       description: The border.
+    - name: space_apart
+      type:
+        type: prim_type
+        prim_type: boolean
+      presence: optional
+      description: Space widgets apart.
 - type: sum_type
   sum_type:
     name: widget
@@ -956,19 +961,31 @@ types:
       presence: optional
       description: >
         The expander widget formatting options.
-    - name: groups
+    - name: header_group_references
       type:
         type: custom_coll_type
-        custom_coll_type: group
+        custom_coll_type: group_reference
+      presence: optional
+      description: Header group refs.
+    - name: group_references
+      type:
+        type: custom_coll_type
+        custom_coll_type: group_reference
       presence: required
       description: >
-        The groups.
+        The content group references.
     - name: book_reference
       type:
         type: custom_type
         custom_type: book_reference
       presence: optional
       description: Book reference.
+    - name: checkbox_variable_reference
+      type:
+        type: custom_type
+        custom_type: variable_reference
+      presence: optional
+      description: Checkbox variable reference.
 - type: product_type
   product_type:
     name: expander_widget_format
@@ -1026,6 +1043,18 @@ types:
         custom_type: icon
       presence: optional
       description: Text format
+    - name: avatar_text
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Avatar text.
+    - name: avatar_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: Avatar text format.
 - type: product_type
   product_type:
     name: widget_group
@@ -2019,6 +2048,12 @@ types:
         custom_type: text_format
       presence: optional
       description: Current Color Theme
+    - name: levels
+      type:
+        type: prim_coll_type
+        prim_coll_type: string
+      presence: optional
+      description: Levels
     - name: counter_active_icon
       type:
         type: custom_type
@@ -2689,6 +2724,12 @@ types:
         custom_type: text_format
       presence: optional
       description: The title bar format.
+    - name: divider
+      type:
+        type: custom_type
+        custom_type: border_edge
+      presence: optional
+      description: The title bar format.
 - type: sum_type
   sum_type: 
     name: table_widget_column
@@ -3003,7 +3044,7 @@ types:
     - name: default_value
       type:
         type: custom_type
-        custom_type: variable_text_value
+        custom_type: text_cell_value
       presence: required
       description: The column default value.
     - name: column_variable_id
@@ -3342,10 +3383,10 @@ types:
       Table widget text cell.
     group: 'Widget: Table'
     fields:
-    - name: variable_value
+    - name: value
       type: 
         type: custom_type
-        custom_type: variable_text_value
+        custom_type: text_cell_value
       presence: required
       description: >
         The cell variable value.
@@ -3370,6 +3411,16 @@ types:
       presence: optional
       description: >
         Action for the cells.
+- type: sum_type
+  sum_type:
+    name: text_cell_value
+    label: Text Cell Value
+    description: >
+      A table cell.
+    group: 'Widget: Table'
+    cases:
+    - type: variable_text_value
+    - type: variable_relation
 - type: product_type
   product_type:
     name: table_widget_text_cell_format
@@ -3707,6 +3758,12 @@ types:
         custom_type: border
       presence: optional
       description: Border
+    - name: elevation
+      type:
+        type: prim_type
+        prim_type: number
+      presence: optional
+      description: >
     - name: horizontal_alignment
       type:
         type: custom_type

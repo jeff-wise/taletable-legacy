@@ -2,11 +2,7 @@
 package com.taletable.android.model.sheet.widget.table.column
 
 
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue1
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.model.sheet.widget.table.ColumnFormat
@@ -15,25 +11,19 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import java.io.Serializable
-import java.util.*
 
 
 
 /**
  * Number Column Format
  */
-data class NumberColumnFormat(override val id : UUID,
-                              val columnFormat : ColumnFormat)
-                               : ToDocument, ProdType, Serializable
+data class NumberColumnFormat(val columnFormat : ColumnFormat)
+                               : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(columnFormat : ColumnFormat)
-        : this(UUID.randomUUID(), columnFormat)
-
 
     companion object : Factory<NumberColumnFormat>
     {
@@ -74,21 +64,6 @@ data class NumberColumnFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun columnFormat() : ColumnFormat = this.columnFormat
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTableColumnNumberFormatValue =
-        RowValue1(widgetTableColumnNumberFormatTable,
-                  ProdValue(this.columnFormat))
 
 }
 

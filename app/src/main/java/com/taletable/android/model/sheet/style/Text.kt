@@ -33,8 +33,7 @@ import java.util.*
 /**
  * Text Style
  */
-data class TextFormat(override val id : UUID,
-                      private val colorTheme : ColorTheme,
+data class TextFormat(private val colorTheme : ColorTheme,
                       private val size : TextSize,
                       private val font : TextFont,
                       private val fontStyle : TextFontStyle,
@@ -43,33 +42,12 @@ data class TextFormat(override val id : UUID,
                       private val rollFormat : RollFormat,
                       private val iconFormat : IconFormat,
                       private val elementFormat : ElementFormat)
-                      : ToDocument, ProdType, Serializable
+                      : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(colorTheme : ColorTheme,
-                size : TextSize,
-                font : TextFont,
-                fontStyle : TextFontStyle,
-                isUnderlined : IsUnderlined,
-                numberFormat : NumberFormat,
-                rollFormat : RollFormat,
-                iconFormat : IconFormat,
-                elementFormat : ElementFormat)
-        : this(UUID.randomUUID(),
-               colorTheme,
-               size,
-               font,
-               fontStyle,
-               isUnderlined,
-               numberFormat,
-               rollFormat,
-               iconFormat,
-               elementFormat)
-
 
     companion object : Factory<TextFormat>
     {
@@ -191,28 +169,6 @@ data class TextFormat(override val id : UUID,
 
 
     fun elementFormat() : ElementFormat = this.elementFormat
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_TextFormatValue =
-        RowValue9(textFormatTable, PrimValue(this.colorTheme),
-                                   PrimValue(this.size),
-                                   PrimValue(this.font),
-                                   PrimValue(this.fontStyle),
-                                   PrimValue(this.isUnderlined),
-                                   PrimValue(this.numberFormat),
-                                   PrimValue(this.rollFormat),
-                                   ProdValue(this.iconFormat),
-                                   ProdValue(this.elementFormat))
 
 
     // -----------------------------------------------------------------------------------------

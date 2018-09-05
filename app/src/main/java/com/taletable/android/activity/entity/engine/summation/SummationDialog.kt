@@ -189,7 +189,7 @@ class SummationViewBuilder(val summation : Summation,
         layout.addView(this.summationView())
 
         // Footer
-        layout.addView(this.footerView())
+        // layout.addView(this.footerView())
 
         return layout
     }
@@ -205,7 +205,7 @@ class SummationViewBuilder(val summation : Summation,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_7"))))
         layout.backgroundColor      = colorOrBlack(colorTheme, entityId)
 
         layout.corners          = Corners(2.0, 2.0, 2.0, 2.0)
@@ -227,12 +227,12 @@ class SummationViewBuilder(val summation : Summation,
         mainLayout.addView(this.nameView())
 
         // Total
-//        val total = summation.value(entityId)
-//        mainLayout.addView(this.totalView(Util.doubleString(total)))
+        val total = summation.value(entityId)
+        mainLayout.addView(this.totalView(Util.doubleString(total)))
 
         layout.addView(mainLayout)
 
-        layout.addView(this.headerBottomBorderView())
+        //layout.addView(this.headerBottomBorderView())
 
         return layout
     }
@@ -269,8 +269,8 @@ class SummationViewBuilder(val summation : Summation,
 
         layout.padding.topDp    = 10f
         layout.padding.bottomDp = 10f
-        layout.padding.leftDp   = 7f
-        layout.padding.rightDp  = 6f
+        layout.padding.leftDp   = 10f
+        layout.padding.rightDp  = 10f
 
         layout.corners          = Corners(2.0, 2.0, 0.0, 0.0)
 
@@ -310,12 +310,12 @@ class SummationViewBuilder(val summation : Summation,
         name.text           = summationLabel
 
         name.font           = Font.typeface(TextFont.default(),
-                                            TextFontStyle.Medium,
+                                            TextFontStyle.SemiBold,
                                             context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
         name.color          = colorOrBlack(colorTheme, entityId)
 
         name.sizeSp         = 18f
@@ -467,11 +467,11 @@ class SummationViewBuilder(val summation : Summation,
                                                 TextFontStyle.Bold,
                                                 context)
 
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
-//        total.color             = colorOrBlack(colorTheme, entityId)
-        total.color             = Color.WHITE
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+        total.color             = colorOrBlack(colorTheme, entityId)
+        //total.color             = Color.WHITE
 
 
 
@@ -587,7 +587,7 @@ class SummationViewBuilder(val summation : Summation,
 
         header.padding.topDp        = 4f
         header.padding.bottomDp     = 2f
-        header.margin.leftDp        = 7f
+        header.margin.leftDp        = 10f
 
         header.text                 = termName
 
@@ -625,13 +625,13 @@ class SummationViewBuilder(val summation : Summation,
         layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.margin.topDp             = 2f
-        layout.margin.rightDp           = 2f
-        layout.margin.leftDp            = 2f
+//        layout.margin.rightDp           = 2f
+//        layout.margin.leftDp            = 2f
 
         layout.padding.topDp            = 8f
         layout.padding.bottomDp         = 8f
-        layout.padding.leftDp           = 6f
-        layout.padding.rightDp          = 6f
+        layout.padding.leftDp           = 10f
+        layout.padding.rightDp          = 10f
 
 //        val bgColorTheme = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_6")),
@@ -689,14 +689,14 @@ class SummationViewBuilder(val summation : Summation,
         name.text                       = nameString
 
         name.font                       = Font.typeface(TextFont.default(),
-                                                        TextFontStyle.Medium,
+                                                        TextFontStyle.Regular,
                                                         context)
 
         name.sizeSp                     = 17f
 
         val nameColorTheme = ColorTheme(setOf(
                                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_15")),
-                                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         name.color                      = colorOrBlack(nameColorTheme, entityId)
 
         // (3 B) Value

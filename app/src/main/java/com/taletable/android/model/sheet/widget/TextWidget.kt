@@ -15,6 +15,7 @@ import com.taletable.android.lib.orm.RowValue4
 import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.lib.ui.TextViewBuilder
+import com.taletable.android.model.sheet.group.RowLayoutType
 import com.taletable.android.model.sheet.style.TextFormat
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.sheetOrError
@@ -32,44 +33,19 @@ import java.util.*
 /**
  * Text Widget Format
  */
-data class TextWidgetFormat(override val id : UUID,
-                            val widgetFormat : WidgetFormat,
+data class TextWidgetFormat(val widgetFormat : WidgetFormat,
                             val insideLabelFormat : TextFormat,
                             val outsideLabelFormat : TextFormat,
                             val valueFormat : TextFormat)
-                             : ToDocument, ProdType, Serializable
+                             : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(widgetFormat : WidgetFormat,
-                insideLabelFormat : TextFormat,
-                outsideLabelFormat : TextFormat,
-                valueFormat : TextFormat)
-        : this(UUID.randomUUID(),
-               widgetFormat,
-               insideLabelFormat,
-               outsideLabelFormat,
-               valueFormat)
-
-
-    constructor(widgetFormat : WidgetFormat,
-                valueFormat : TextFormat)
-        : this(UUID.randomUUID(),
-               widgetFormat,
-               TextFormat.default(),
-               TextFormat.default(),
-               valueFormat)
-
-
-    constructor(valueFormat : TextFormat)
-        : this(UUID.randomUUID(),
-               WidgetFormat.default(),
-               TextFormat.default(),
-               TextFormat.default(),
-               valueFormat)
+    constructor(widgetFormat : WidgetFormat, valueFormat : TextFormat)
+      : this(widgetFormat, TextFormat.default(), TextFormat.default(), valueFormat)
 
 
     companion object : Factory<TextWidgetFormat>
@@ -143,24 +119,6 @@ data class TextWidgetFormat(override val id : UUID,
 
     fun valueFormat() : TextFormat = this.valueFormat
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTextFormat =
-        RowValue4(widgetTextFormatTable,
-                  ProdValue(this.widgetFormat),
-                  ProdValue(this.insideLabelFormat),
-                  ProdValue(this.outsideLabelFormat),
-                  ProdValue(this.valueFormat))
-
 }
 
 
@@ -173,10 +131,11 @@ object TextWidgetView
 
     fun view(textWidget : TextWidget,
              format : TextWidgetFormat,
+             rowLayoutType : RowLayoutType,
              entityId : EntityId,
              context : Context) : View
     {
-        val layout = WidgetView.layout(format.widgetFormat(), entityId, context)
+        val layout = WidgetView.layout(format.widgetFormat(), entityId, context, rowLayoutType)
 
         val layoutId = Util.generateViewId()
         textWidget.layoutId = layoutId

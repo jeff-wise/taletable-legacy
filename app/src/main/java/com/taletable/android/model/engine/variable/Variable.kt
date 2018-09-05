@@ -114,6 +114,10 @@ sealed class Variable : ProdType, ToDocument, Serializable
         maybe(this.relationToVariableId[relation])
 
 
+    fun relatedVariableIdOrError(relation : VariableRelation) : AppEff<VariableId>  =
+            note(this.relationToVariableId[relation],
+                AppStateError(VariableDoesNotHaveRelation(this.variableId(), relation)))
+
     fun setRelation(relation : VariableRelation,
                     variableId : VariableId,
                     entityId : EntityId)
@@ -1212,6 +1216,16 @@ data class TextVariable(override val id : UUID,
                variableValue)
 
 
+    constructor(variableId : VariableId)
+        : this(UUID.randomUUID(),
+               variableId,
+               VariableLabel(""),
+               VariableDescription(""),
+               mutableListOf(),
+               Nothing(),
+               TextVariableLiteralValue(""))
+
+
     companion object : Factory<TextVariable>
     {
         override fun fromDocument(doc : SchemaDoc) : ValueParser<TextVariable> = when (doc)
@@ -1845,13 +1859,13 @@ sealed class VariableReference : ToDocument, SQLSerializable, Serializable
         override fun fromDocument(doc : SchemaDoc) : ValueParser<VariableReference> =
             when (doc.case())
             {
-                "variable_id"          -> VariableId.fromDocument(doc) as ValueParser<VariableReference>
-                "variable_tag"         -> VariableTag.fromDocument(doc) as ValueParser<VariableReference>
-                "variable_context"     -> VariableContext.fromDocument(doc) as ValueParser<VariableReference>
-                "related_variable"     -> RelatedVariable.fromDocument(doc) as ValueParser<VariableReference>
-                "variable_reference_contextual"     -> VariableReferenceContextual.fromDocument(doc) as ValueParser<VariableReference>
-                "related_variable_set" -> RelatedVariableSet.fromDocument(doc) as ValueParser<VariableReference>
-                else                   -> effError(UnknownCase(doc.case(), doc.path))
+                "variable_id"                   -> VariableId.fromDocument(doc) as ValueParser<VariableReference>
+                "variable_tag"                  -> VariableTag.fromDocument(doc) as ValueParser<VariableReference>
+                "variable_context"              -> VariableContext.fromDocument(doc) as ValueParser<VariableReference>
+                "related_variable"              -> RelatedVariable.fromDocument(doc) as ValueParser<VariableReference>
+                "variable_reference_contextual" -> VariableReferenceContextual.fromDocument(doc) as ValueParser<VariableReference>
+                "related_variable_set"          -> RelatedVariableSet.fromDocument(doc) as ValueParser<VariableReference>
+                else                            -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
 }

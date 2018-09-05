@@ -2,7 +2,6 @@
 package com.taletable.android.model.engine.program
 
 
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
 import com.taletable.android.lib.orm.RowValue4
@@ -42,7 +41,7 @@ import java.util.*
 sealed class ProgramParameter(open val name : ProgramParameterName,
                               open val label : ProgramParameterLabel,
                               open val inputMessage : Message)
-                               : ToDocument, ProdType, java.io.Serializable
+                               : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -169,8 +168,7 @@ data class ProgramParameterLabel(val value : String) : ToDocument, SQLSerializab
 
 
 
-data class ProgramParameterBoolean(override val id : UUID,
-                                   override val name : ProgramParameterName,
+data class ProgramParameterBoolean(override val name : ProgramParameterName,
                                    val defaultValue : Maybe<EngineValueBoolean>,
                                    override val label : ProgramParameterLabel,
                                    override val inputMessage : Message)
@@ -180,17 +178,6 @@ data class ProgramParameterBoolean(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(name : ProgramParameterName,
-                defaultValue : Maybe<EngineValueBoolean>,
-                label : ProgramParameterLabel,
-                inputMessage : Message)
-        : this(UUID.randomUUID(),
-               name,
-               defaultValue,
-               label,
-               inputMessage)
-
 
     companion object : Factory<ProgramParameterBoolean>
     {
@@ -244,30 +231,11 @@ data class ProgramParameterBoolean(override val id : UUID,
         is Nothing -> ""
     }
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_ProgramParameterBooleanValue =
-        RowValue4(programParameterBooleanTable,
-                  PrimValue(this.name),
-                  MaybePrimValue(this.defaultValue),
-                  PrimValue(this.label),
-                  ProdValue(this.inputMessage))
-
 }
 
 
 
-data class ProgramParameterNumber(override val id : UUID,
-                                  override val name : ProgramParameterName,
+data class ProgramParameterNumber(override val name : ProgramParameterName,
                                   val defaultValue : Maybe<EngineValueNumber>,
                                   val constraint : Maybe<ConstraintNumber>,
                                   override val label : ProgramParameterLabel,
@@ -278,19 +246,6 @@ data class ProgramParameterNumber(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(name : ProgramParameterName,
-                defaultValue : Maybe<EngineValueNumber>,
-                constraint : Maybe<ConstraintNumber>,
-                label : ProgramParameterLabel,
-                inputMessage : Message)
-        : this(UUID.randomUUID(),
-               name,
-               defaultValue,
-               constraint,
-               label,
-               inputMessage)
-
 
     companion object : Factory<ProgramParameterNumber>
     {
@@ -352,29 +307,11 @@ data class ProgramParameterNumber(override val id : UUID,
     }
 
 
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_ProgramParameterNumberValue =
-        RowValue4(programParameterNumberTable,
-                  PrimValue(this.name),
-                  MaybePrimValue(this.defaultValue),
-                  PrimValue(this.label),
-                  ProdValue(this.inputMessage))
-
 }
 
 
 
-data class ProgramParameterText(override val id : UUID,
-                                override val name : ProgramParameterName,
+data class ProgramParameterText(override val name : ProgramParameterName,
                                 val defaultValue : Maybe<EngineValueText>,
                                 override val label : ProgramParameterLabel,
                                 override val inputMessage : Message)
@@ -384,17 +321,6 @@ data class ProgramParameterText(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(name : ProgramParameterName,
-                defaultValue : Maybe<EngineValueText>,
-                label : ProgramParameterLabel,
-                inputMessage : Message)
-        : this(UUID.randomUUID(),
-               name,
-               defaultValue,
-               label,
-               inputMessage)
-
 
     companion object : Factory<ProgramParameterText>
     {
@@ -447,23 +373,5 @@ data class ProgramParameterText(override val id : UUID,
         is Just -> this.defaultValue.value.toString()
         is Nothing -> ""
     }
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_ProgramParameterTextValue =
-        RowValue4(programParameterTextTable,
-                  PrimValue(this.name),
-                  MaybePrimValue(this.defaultValue),
-                  PrimValue(this.label),
-                  ProdValue(this.inputMessage))
 
 }

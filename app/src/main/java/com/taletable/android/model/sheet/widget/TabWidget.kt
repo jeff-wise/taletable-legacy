@@ -4,6 +4,7 @@ package com.taletable.android.model.sheet.widget
 
 import android.content.Context
 import android.support.design.widget.TabLayout
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -19,7 +20,10 @@ import com.taletable.android.model.sheet.group.GroupReference
 import com.taletable.android.model.sheet.style.BorderEdge
 import com.taletable.android.model.sheet.style.ElementFormat
 import com.taletable.android.model.sheet.style.TextFormat
+import com.taletable.android.model.theme.ColorId
 import com.taletable.android.model.theme.ColorTheme
+import com.taletable.android.model.theme.ThemeColorId
+import com.taletable.android.model.theme.ThemeId
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
 import com.taletable.android.rts.entity.groups
@@ -479,6 +483,7 @@ class TabWidgetUI(val tabWidget : WidgetTab,
     // -----------------------------------------------------------------------------------------
 
     private var contentViewLayout : LinearLayout? = null
+    private var tabBarViewLayout : LinearLayout? = null
 
     private var currentTabIndex : Int = 0
 
@@ -521,6 +526,13 @@ class TabWidgetUI(val tabWidget : WidgetTab,
 
 
             this.currentTabIndex = index
+
+            when (tabWidget.format().viewType()) {
+                is TabWidgetViewType.Basic -> {
+                    this.tabBarViewLayout?.removeAllViews()
+                    this.tabBarViewLayout?.addView(this.tabBarView())
+                }
+            }
         }
     }
 
@@ -534,7 +546,10 @@ class TabWidgetUI(val tabWidget : WidgetTab,
         val layout = this.viewLayout()
 
         // Tab Bar
-        layout.addView(this.tabBarView())
+        val tabBarLayout = this.tabBarViewLayout()
+        this.tabBarViewLayout = tabBarLayout
+        tabBarLayout.addView(this.tabBarView())
+        layout.addView(tabBarLayout)
 
         // Content
         val contentViewLayout = this.contentViewLayout()
@@ -614,6 +629,18 @@ class TabWidgetUI(val tabWidget : WidgetTab,
         }
 
     }
+
+
+    private fun tabBarViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        return layout.linearLayout(context)
+    }
+
 
     // VIEWS > Tab Bar > Underline
     // -----------------------------------------------------------------------------------------
@@ -720,18 +747,18 @@ class TabWidgetUI(val tabWidget : WidgetTab,
 
     private fun tabBarBasicView() : LinearLayout
     {
-        val layout = this.tabBarViewLayout()
+        val layout = this.tabBarBasicViewLayout()
 
         tabWidget.tabs().forEachIndexed { index, tab ->
             val isSelected = index == currentTabIndex
-            layout.addView(this.tabView(tab.tabName.value, isSelected))
+            layout.addView(this.tabView(tab.tabName.value, index, isSelected))
         }
 
         return layout
     }
 
 
-    private fun tabBarViewLayout() : LinearLayout
+    private fun tabBarBasicViewLayout() : LinearLayout
     {
         val layout          = LinearLayoutBuilder()
 
@@ -740,22 +767,32 @@ class TabWidgetUI(val tabWidget : WidgetTab,
 
         layout.orientation  = LinearLayout.HORIZONTAL
 
+
         return layout.linearLayout(context)
     }
 
 
 
-    private fun tabView(labelString : String, isSelected : Boolean) : LinearLayout
+    private fun tabView(labelString : String, index : Int, isSelected : Boolean) : LinearLayout
     {
-        val layout = this.tabViewLayout()
+        val format =    if (isSelected)
+            tabWidget.format().selectedTabFormat()
+        else
+            tabWidget.format().unselectedTabFormat()
+
+        val layout = this.tabViewLayout(format, index)
 
         layout.addView(tabTextView(labelString, isSelected))
+
+        format.elementFormat().border().bottom().doMaybe { bottomBorder ->
+            layout.addView(tabBottomBorderView(format, bottomBorder))
+        }
 
         return layout
     }
 
 
-    private fun tabViewLayout() : LinearLayout
+    private fun tabViewLayout(format : TextFormat, index : Int) : LinearLayout
     {
         val layout          = LinearLayoutBuilder()
 
@@ -765,7 +802,13 @@ class TabWidgetUI(val tabWidget : WidgetTab,
 
         layout.orientation  = LinearLayout.VERTICAL
 
-        layout.gravity      = Gravity.CENTER
+        layout.backgroundColor   = colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId)
+
+        layout.onClick      = View.OnClickListener {
+            showTab(index)
+        }
+
+//        layout.gravity      = Gravity.CENTER
 
         return layout.linearLayout(context)
     }
@@ -786,6 +829,8 @@ class TabWidgetUI(val tabWidget : WidgetTab,
 
         label.layoutGravity     = format.elementFormat().alignment().gravityConstant()
 
+//        label.backgroundColor   = colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId)
+
         label.text              = labelString
 
         label.color             = colorOrBlack(format.colorTheme(), entityId)
@@ -800,6 +845,19 @@ class TabWidgetUI(val tabWidget : WidgetTab,
         label.marginSpacing     = format.elementFormat().margins()
 
         return label.textView(context)
+    }
+
+
+    private fun tabBottomBorderView(format : TextFormat, borderEdge : BorderEdge) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.heightDp         = borderEdge.thickness().value
+
+        layout.backgroundColor  = colorOrBlack(borderEdge.colorTheme(), entityId)
+
+        return layout.linearLayout(context)
     }
 
 //

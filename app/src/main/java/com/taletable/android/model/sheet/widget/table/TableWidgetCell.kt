@@ -16,9 +16,7 @@ import com.taletable.android.app.ApplicationLog
 import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue2
 import com.taletable.android.lib.orm.RowValue3
-import com.taletable.android.lib.orm.RowValue4
 import com.taletable.android.lib.orm.schema.*
 import com.taletable.android.lib.ui.LayoutType
 import com.taletable.android.lib.ui.LinearLayoutBuilder
@@ -103,11 +101,11 @@ sealed class TableWidgetCell : ToDocument, Serializable
 /**
  * Table Widget Boolean Cell
  */
-data class TableWidgetBooleanCell(override val id : UUID,
+data class TableWidgetBooleanCell(val id : UUID,
                                   val format : BooleanCellFormat,
                                   val variableValue : BooleanVariableValue,
                                   var variableId : VariableId?)
-                                  : TableWidgetCell(), ProdType
+                                  : TableWidgetCell()
 {
 
     var namespace : VariableNamespace? = null
@@ -180,22 +178,6 @@ data class TableWidgetBooleanCell(override val id : UUID,
 
     override fun variableIdOrError() : AppEff<VariableId> =
             note(this.variableId, AppSheetError(CellVariableUndefined(this.id)))
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTableCellBooleanValue =
-        RowValue2(widgetTableCellBooleanTable,
-                  ProdValue(this.format),
-                  SumValue(this.variableValue))
 
 
     // -----------------------------------------------------------------------------------------
@@ -337,13 +319,13 @@ data class TableWidgetImageCell(private val id : UUID,
 /**
  * Table Widget Number Cell
  */
-data class TableWidgetNumberCell(override val id : UUID,
+data class TableWidgetNumberCell(val id : UUID,
                                  val format : NumberCellFormat,
                                  val variableValue : NumberVariableValue,
                                  val editorType : Maybe<NumericEditorType>,
                                  val action : Maybe<Action>,
                                  var variableId : VariableId?)
-                                  : TableWidgetCell(), ProdType
+                                  : TableWidgetCell()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -503,25 +485,6 @@ data class TableWidgetNumberCell(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTableCellNumberValue =
-        RowValue4(widgetTableCellNumberTable,
-                  ProdValue(this.format),
-                  SumValue(this.variableValue),
-                  MaybePrimValue(this.editorType),
-                  MaybeProdValue(this.action))
-
-
-
-    // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
 
@@ -569,12 +532,12 @@ data class TableWidgetNumberCell(override val id : UUID,
 /**
  * Table Widget Text Cell
  */
-data class TableWidgetTextCell(override val id : UUID,
+data class TableWidgetTextCell(val id : UUID,
                                val format : TextCellFormat,
-                               var variableValue : TextVariableValue,
+                               var value : TextCellValue,
                                val action : Maybe<Action>,
                                var variableId : VariableId?)
-                                : TableWidgetCell(), ProdType
+                                : TableWidgetCell()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -592,19 +555,19 @@ data class TableWidgetTextCell(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(variableValue : TextVariableValue)
+    constructor(value : TextCellValue)
         : this(UUID.randomUUID(),
                TextCellFormat.default(),
-               variableValue,
+               value,
                Nothing(),
                null)
 
     constructor(format : TextCellFormat,
-                variableValue : TextVariableValue,
+                value : TextCellValue,
                 action : Maybe<Action>)
         : this(UUID.randomUUID(),
                format,
-               variableValue,
+               value,
                action,
                null)
 
@@ -620,10 +583,8 @@ data class TableWidgetTextCell(override val id : UUID,
                       split(doc.maybeAt("format"),
                             effValue(TextCellFormat.default()),
                              { TextCellFormat.fromDocument(it) }),
-                      // Variable Value
-                      doc.at("variable_value") ap {
-                          TextVariableValue.fromDocument(it)
-                      },
+                      // Value
+                      doc.at("value") ap { TextCellValue.fromDocument(it) },
                       // Action
                       split(doc.maybeAt("action"),
                             effValue<ValueError,Maybe<Action>>(Nothing()),
@@ -640,8 +601,7 @@ data class TableWidgetTextCell(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "format" to this.format().toDocument(),
-        "variable_value" to this.variableValue().toDocument()
+        "format" to this.format().toDocument()
     ))
     .maybeMerge(this.action().apply {
         Just(Pair("action", it.toDocument() as SchemaDoc)) })
@@ -654,7 +614,7 @@ data class TableWidgetTextCell(override val id : UUID,
     fun format() : TextCellFormat = this.format
 
 
-    fun variableValue() : TextVariableValue = this.variableValue
+    fun value() : TextCellValue = this.value
 
 
     override fun variableIdOrError() : AppEff<VariableId> =
@@ -688,23 +648,6 @@ data class TableWidgetTextCell(override val id : UUID,
 
 
     override fun variableId() = this.variableId
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTableCellTextValue =
-        RowValue3(widgetTableCellTextTable,
-                  ProdValue(this.format),
-                  SumValue(this.variableValue),
-                  MaybeProdValue(this.action))
 
 
     // -----------------------------------------------------------------------------------------
@@ -760,121 +703,6 @@ enum class TableWidgetCellType
     TEXT
 }
 
-
-/**
- * Table Widget Cell Format
- */
-//data class CellFormat(override val id : UUID,
-//                      val textStyle : Prod<TextFormat>,
-//                      val alignment : Prim<Alignment>,
-//                      val backgroundColorTheme : Prim<ColorTheme>)
-//                       : ToDocument, ProdType, Serializable
-//{
-//
-//    // -----------------------------------------------------------------------------------------
-//    // INIT
-//    // -----------------------------------------------------------------------------------------
-//
-//    init
-//    {
-//        this.textStyle.name             = "text_style"
-//        this.alignment.name             = "alignment"
-//        this.backgroundColorTheme.name  = "background_color_theme"
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    constructor(textStyle: TextFormat,
-//                alignment : Alignment,
-//                backgroundColorTheme : ColorTheme)
-//        : this(UUID.randomUUID(),
-//               Prod(textStyle),
-//               Prim(alignment),
-//               Prim(backgroundColorTheme))
-//
-//
-//    companion object : Factory<CellFormat>
-//    {
-//
-//        private fun defaultTextStyle()            = TextFormat.default()
-//        private fun defaultAlignment()            = Alignment.Center
-//        private fun defaultBackgroundColorTheme() = ColorTheme.transparent
-//
-//
-//        override fun fromDocument(doc: SchemaDoc): ValueParser<CellFormat> = when (doc)
-//        {
-//            is DocDict ->
-//            {
-//                apply(::CellFormat,
-//                      // ProdType Id
-//                      effValue(UUID.randomUUID()),
-//                      // Text Style
-//                      split(doc.maybeAt("text_style"),
-//                            effValue(Prod.default(defaultTextStyle())),
-//                            { effApply(::Prod, TextFormat.fromDocument(it)) }),
-//                      // Alignment
-//                      split(doc.maybeAt("alignment"),
-//                            effValue<ValueError,Prim<Alignment>>(Prim.default(defaultAlignment())),
-//                            { effApply(::Prim, Alignment.fromDocument(it)) }),
-//                      // Background Color
-//                      split(doc.maybeAt("background_color_theme"),
-//                            effValue(Prim(defaultBackgroundColorTheme())),
-//                            { effApply(::Prim, ColorTheme.fromDocument(it)) })
-//                    )
-//            }
-//            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-//        }
-//
-//
-//        fun default() = CellFormat(UUID.randomUUID(),
-//                                   Prod.default(defaultTextStyle()),
-//                                   Prim.default(defaultAlignment()),
-//                                   Prim.default(defaultBackgroundColorTheme()))
-//
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // TO DOCUMENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun toDocument() = DocDict(mapOf(
-//        "text_style" to this.textStyle().toDocument(),
-//        "alignment" to this.alignment().toDocument(),
-//        "background_color_theme" to this.backgroundColorTheme().toDocument()
-//    ))
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // GETTERS
-//    // -----------------------------------------------------------------------------------------
-//
-//    fun textStyle() : TextFormat = this.textStyle.value
-//
-//    fun alignment() : Alignment = this.alignment.value
-//
-//    fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // MODEL
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun onLoad() { }
-//
-//    override val name : String = "table_widget_cell_format"
-//
-//    override val prodTypeObject = this
-//
-//    override fun persistentFunctors() : List<com.taletable.tome.lib.functor.Val<*>> =
-//            listOf(this.textStyle,
-//                   this.alignment,
-//                   this.backgroundColorTheme)
-//
-//}
 
 
 object TableWidgetCellView

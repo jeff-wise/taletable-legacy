@@ -244,13 +244,13 @@ types:
         prim_type: string
       presence: required
       description: The chapter title.
-    - name: introduction
+    - name: summary
       type:
-        type: custom_coll_type
-        custom_coll_type: book_content_id 
+        type: prim_type
+        prim_type: string
       presence: optional
-      description: A brief description of the game rules.
-    - name: conclusion
+      description: The chapter title.
+    - name: content
       type:
         type: custom_coll_type
         custom_coll_type: book_content_id 

@@ -13,8 +13,6 @@ import com.taletable.android.R
 import com.taletable.android.activity.sheet.SheetActivityRequest
 import com.taletable.android.activity.sheet.procedure.RunProcedureActivity
 import com.taletable.android.activity.entity.engine.procedure.ProcedureDialog
-import com.taletable.android.db.DB_WidgetActionFormatValue
-import com.taletable.android.db.widgetActionFormatTable
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
 import com.taletable.android.lib.orm.RowValue5
@@ -51,37 +49,19 @@ import java.util.*
 /**
  * Action Widget Format
  */
-data class ActionWidgetFormat(override val id : UUID,
-                              val widgetFormat : WidgetFormat,
+data class ActionWidgetFormat(val widgetFormat : WidgetFormat,
                               val viewType : ActionWidgetViewType,
                               val descriptionFormat : TextFormat,
                               val descriptionInactiveFormat : Maybe<TextFormat>,
                               val buttonFormat : TextFormat,
                               val buttonInactiveFormat : Maybe<TextFormat>,
                               val buttonIcon : Maybe<IconType>)
-                               : ToDocument, ProdType, Serializable
+                               : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat,
-                viewType : ActionWidgetViewType,
-                descriptionFormat : TextFormat,
-                descriptionInactiveFormat : Maybe<TextFormat>,
-                buttonFormat : TextFormat,
-                buttonInactiveFormat : Maybe<TextFormat>,
-                buttonIcon : Maybe<IconType>)
-        : this(UUID.randomUUID(),
-               widgetFormat,
-               viewType,
-               descriptionFormat,
-               descriptionInactiveFormat,
-               buttonFormat,
-               buttonInactiveFormat,
-               buttonIcon)
-
 
     companion object : Factory<ActionWidgetFormat>
     {
@@ -178,25 +158,6 @@ data class ActionWidgetFormat(override val id : UUID,
 
 
     fun buttonIcon() : Maybe<IconType> = this.buttonIcon
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetActionFormatValue =
-        RowValue5(widgetActionFormatTable,
-                  ProdValue(this.widgetFormat),
-                  PrimValue(this.viewType),
-                  ProdValue(this.descriptionFormat),
-                  ProdValue(this.buttonFormat),
-                  MaybePrimValue(this.buttonIcon))
 
 }
 

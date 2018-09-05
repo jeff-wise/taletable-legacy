@@ -13,19 +13,18 @@ import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.activity.entity.book.BookActivity
 import com.taletable.android.activity.sheet.dialog.openTextVariableEditorDialog
+import com.taletable.android.app.AppEff
 import com.taletable.android.app.AppError
 import com.taletable.android.app.AppSheetError
 import com.taletable.android.app.ApplicationLog
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue1
-import com.taletable.android.lib.orm.schema.MaybeProdValue
 import com.taletable.android.lib.ui.ImageViewBuilder
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.lib.ui.TextViewBuilder
 import com.taletable.android.model.book.BookReference
 import com.taletable.android.model.engine.value.ValueReference
+import com.taletable.android.model.engine.variable.TextVariableValue
+import com.taletable.android.model.engine.variable.VariableRelation
 import com.taletable.android.model.sheet.style.TextFormat
 import com.taletable.android.model.sheet.widget.WidgetId
 import com.taletable.android.model.sheet.widget.table.*
@@ -36,30 +35,26 @@ import com.taletable.android.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
-import java.util.*
 
 
 
 /**
  * Text Cell Format
  */
-data class TextCellFormat(override val id : UUID,
-                          val textFormat : Maybe<TextFormat>)
-                           : ToDocument, ProdType, Serializable
+data class TextCellFormat(val textFormat : Maybe<TextFormat>)
+                           : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(textFormat: Maybe<TextFormat>)
-        : this(UUID.randomUUID(), textFormat)
 
     companion object : Factory<TextCellFormat>
     {
@@ -79,7 +74,7 @@ data class TextCellFormat(override val id : UUID,
         }
 
 
-        fun default() = TextCellFormat(UUID.randomUUID(), Nothing())
+        fun default() = TextCellFormat(Nothing())
 
     }
 
@@ -111,22 +106,88 @@ data class TextCellFormat(override val id : UUID,
         }
 
 
+}
+
+
+@Suppress("UNCHECKED_CAST")
+sealed class TextCellValue : ToDocument, Serializable
+{
+
+    companion object : Factory<TextCellValue>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TextCellValue> =
+            when (doc.case())
+            {
+                "variable_text_value" -> TextCellValueValue.fromDocument(doc.nextCase()) as ValueParser<TextCellValue>
+                "variable_relation"   -> TextCellValueRelation.fromDocument(doc.nextCase()) as ValueParser<TextCellValue>
+                else                  -> effError(UnknownCase(doc.case(), doc.path))
+            }
+    }
+
+
+    fun value(entityId : EntityId) : AppEff<Maybe<String>> = when (this)
+    {
+        is TextCellValueValue -> {
+            this.value.value(entityId)
+        }
+        else -> effValue(Just(""))
+    }
+}
+
+
+/**
+ * Text Cell DValue : Value
+ */
+data class TextCellValueValue(val value : TextVariableValue) : TextCellValue(), Serializable
+{
+
     // -----------------------------------------------------------------------------------------
-    // MODEL
+    // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
+    companion object : Factory<TextCellValueValue>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TextCellValueValue> =
+                apply(::TextCellValueValue, TextVariableValue.fromDocument(doc))
+
+    }
 
 
-    override val prodTypeObject = this
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
 
-
-    override fun rowValue() : DB_WidgetTableCellTextFormatValue =
-        RowValue1(widgetTableCellTextFormatTable,
-                  MaybeProdValue(this.textFormat))
-
+    override fun toDocument() = this.value.toDocument()
 
 }
+
+
+
+/**
+ * Text Cell DValue : Value
+ */
+data class TextCellValueRelation(val relation : VariableRelation) : TextCellValue(), Serializable
+{
+
+    // | Constructors
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TextCellValueRelation>
+    {
+        override fun fromDocument(doc : SchemaDoc): ValueParser<TextCellValueRelation> =
+                apply(::TextCellValueRelation, VariableRelation.fromDocument(doc))
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.relation.toDocument()
+
+}
+
+
 
 
 class TextCellUI(val cell : TableWidgetTextCell,

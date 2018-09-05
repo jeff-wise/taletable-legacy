@@ -25,7 +25,6 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import java.io.Serializable
-import java.util.*
 
 
 
@@ -62,41 +61,11 @@ data class Sheet(private var sheetId : EntityId,
 
     private val widgetById : MutableMap<WidgetId,Widget> = mutableMapOf()
 
-    private val actionWidgetById : MutableMap<UUID,ActionWidget> = mutableMapOf()
-
-    private val booleanWidgetById : MutableMap<UUID,BooleanWidget> = mutableMapOf()
-
-    private val numberWidgetById : MutableMap<UUID,NumberWidget> = mutableMapOf()
-
-    private val listWidgetById : MutableMap<UUID,ListWidget> = mutableMapOf()
-
-    private val pointsWidgetById : MutableMap<UUID,PointsWidget> = mutableMapOf()
-
-    private val storyWidgetById : MutableMap<UUID,StoryWidget> = mutableMapOf()
-
-    private val tableWidgetById : MutableMap<UUID,TableWidget> = mutableMapOf()
-
-    private val textWidgetById : MutableMap<UUID,TextWidget> = mutableMapOf()
-
 
     // Index Widgets
     // -----------------------------------------------------------------------------------------
 
     init {
-
-//        this.forEachWidget {
-//            when (it) {
-//                is ActionWidget  -> actionWidgetById.put(it.id, it)
-//                is BooleanWidget -> booleanWidgetById.put(it.id, it)
-//                is NumberWidget  -> numberWidgetById.put(it.id, it)
-//                is ListWidget    -> listWidgetById.put(it.id, it)
-//                is PointsWidget  -> pointsWidgetById.put(it.id, it)
-//                is StoryWidget   -> storyWidgetById.put(it.id, it)
-//                is TableWidget   -> tableWidgetById.put(it.id, it)
-//                is TextWidget    -> textWidgetById.put(it.id, it)
-//            }
-//        }
-
         this.forEachWidget {
             this.indexWidget(it)
         }
@@ -210,16 +179,30 @@ data class Sheet(private var sheetId : EntityId,
                 page.groups().forEach { group ->
                     group.rows().forEach { row ->
                         row.widgets().forEach {
+                            f(it)
                             when (it) {
                                 is ExpanderWidget -> {
-                                    f(it)
-                                    it.groups().forEach {
+                                    it.headerGroups(this.entityId()).forEach {
+                                        it.rows().forEach {
+                                            it.widgets().forEach { f(it) }
+                                        }
+                                    }
+                                    it.contentGroups(this.entityId()).forEach {
                                         it.rows().forEach {
                                             it.widgets().forEach { f(it) }
                                         }
                                     }
                                 }
-                                else -> f(it)
+                                is WidgetGroup -> {
+                                    it.groups(this.entityId()).forEach {
+                                        it.rows().forEach {
+                                            it.widgets().forEach {
+                                                Log.d("***SHEET", "indexing widget: ${it.widgetId()}")
+                                                f(it)
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -369,6 +352,19 @@ data class Sheet(private var sheetId : EntityId,
                 this.widget(widgetUpdate.widgetId) apDo {
                     when (it) {
                         is WidgetGroup -> {
+                            it.update(widgetUpdate, this.entityId(), rootView, context)
+                        }
+                    }
+                }
+            }
+            is WidgetUpdateExpanderWidget ->
+            {
+                Log.d("***SHEET ", "update expander widget")
+                this.widget(widgetUpdate.widgetId) apDo {
+                    Log.d("***SHEET ", "found expander widget")
+                    when (it) {
+                        is ExpanderWidget -> {
+                            Log.d("***SHEET ", "expander widget update")
                             it.update(widgetUpdate, this.entityId(), rootView, context)
                         }
                     }

@@ -5,6 +5,7 @@ package com.taletable.android.activity.entity.book.fragment
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,6 @@ import com.taletable.android.R
 import com.taletable.android.activity.entity.book.BookActivity
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.book.*
-import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
@@ -24,7 +24,6 @@ import com.taletable.android.model.theme.official.officialThemeLight
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.book
 import com.taletable.android.rts.entity.groups
-import maybe.Just
 
 
 
@@ -127,16 +126,14 @@ class ChapterUI(val chapter : BookChapter,
         val layout = this.viewLayout()
         scrollView.addView(layout)
 
-        // Title
-        layout.addView(this.titleView())
-
-        // Introduction
-        layout.addView(this.contentView(chapter.introductionContent(book)))
+        // Header
+        layout.addView(this.headerView())
 
         // Section List
         layout.addView(this.sectionListView())
 
-        // Conclusion
+        // Content
+        layout.addView(this.contentView(chapter.content(book)))
 
         return scrollView
     }
@@ -163,16 +160,51 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.orientation          = LinearLayout.VERTICAL
 
-        layout.margin.leftDp        = 6f
-        layout.margin.rightDp       = 6f
-
         layout.padding.bottomDp     = 70f
 
         return layout.linearLayout(context)
     }
 
+    // VIEWS > Header
+    // --------------------------------------------------------------------------------------------
 
-    // VIEWS > Title
+    private fun headerView() : LinearLayout
+    {
+        val layout = this.headerViewLayout()
+
+        layout.addView(this.titleView())
+
+        layout.addView(this.summaryView())
+
+        layout.addView(this.toolbarView())
+
+        return layout
+    }
+
+
+    private fun headerViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.backgroundColor  = Color.WHITE
+
+        layout.margin.topDp     = 10f
+
+        layout.padding.leftDp   = 15f
+        layout.padding.rightDp  = 15f
+        layout.padding.topDp    = 12f
+        layout.padding.bottomDp = 12f
+
+        return layout.linearLayout(context)
+    }
+
+
+    // VIEWS > Header > Title
     // --------------------------------------------------------------------------------------------
 
     private fun titleView() : TextView
@@ -184,30 +216,121 @@ class ChapterUI(val chapter : BookChapter,
 
         title.text               = chapter.title().value
 
-        title.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+        title.font               = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Regular,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
         title.color              = theme.colorOrBlack(colorTheme)
 
-        title.sizeSp             = 28f
-
-        title.corners            = Corners(2.0, 2.0, 2.0, 2.0)
-
-        title.backgroundColor    = Color.WHITE
-
-        title.padding.topDp      = 8f
-        title.padding.bottomDp   = 8f
-        title.padding.leftDp     = 10f
-        title.padding.rightDp    = 10f
-
-        title.margin.topDp       = 10f
+        title.sizeSp             = 30f
 
         return title.textView(context)
     }
+
+
+    // VIEWS > Header > Summary
+    // --------------------------------------------------------------------------------------------
+
+    private fun summaryView() : TextView
+    {
+        val title               = TextViewBuilder()
+
+        title.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        title.margin.topDp      = 14f
+
+        chapter.summary().doMaybe {
+            title.text = it.value
+        }
+
+        title.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Regular,
+                                                context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+        title.color              = theme.colorOrBlack(colorTheme)
+
+        title.sizeSp             = 19f
+
+        return title.textView(context)
+    }
+
+
+    // VIEWS > Header > Toolbar
+    // --------------------------------------------------------------------------------------------
+
+    private fun toolbarView() : LinearLayout
+    {
+        val layout = this.toolbarViewLayout()
+
+        layout.addView(this.toolbarButtonView(R.drawable.icon_bookmark))
+        layout.addView(this.toolbarButtonView(R.drawable.icon_share))
+        layout.addView(this.toolbarButtonView(R.drawable.icon_ellipsis_filled))
+
+        return layout
+    }
+
+
+    private fun toolbarViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.margin.topDp     = 18f
+        layout.margin.bottomDp  = 12f
+        layout.margin.rightDp   = 4f
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+        layout.layoutGravity    = Gravity.END
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun toolbarButtonView(iconId : Int) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val icon                = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.margin.leftDp    = 24f
+
+        layout.child(icon)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 22
+        icon.heightDp           = 22
+
+        icon.image              = iconId
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+        icon.color              = theme.colorOrBlack(colorTheme)
+
+        return layout.linearLayout(context)
+    }
+
 
 
     // VIEWS > Content
@@ -238,13 +361,6 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.backgroundColor      = Color.WHITE
 
-        layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
-
-        layout.padding.topDp        = 8f
-        layout.padding.bottomDp     = 8f
-        layout.padding.leftDp       = 8f
-        layout.padding.rightDp      = 8f
-
         return layout.linearLayout(context)
     }
 
@@ -273,6 +389,10 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.orientation          = LinearLayout.VERTICAL
 
+        layout.elevation            = 2f
+
+        layout.margin.bottomDp      = 8f
+
         return layout.linearLayout(context)
     }
 
@@ -300,12 +420,10 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.backgroundColor      = Color.WHITE
 
-        layout.corners              = Corners(1.0, 1.0, 1.0, 1.0)
-
-        layout.padding.topDp        = 10f
-        layout.padding.bottomDp     = 10f
-        layout.padding.leftDp       = 8f
-        layout.padding.rightDp      = 8f
+        layout.padding.topDp        = 14f
+        layout.padding.bottomDp     = 14f
+        layout.padding.leftDp       = 15f
+        layout.padding.rightDp      = 15f
 
         layout.margin.topDp         = 1f
 
@@ -335,18 +453,16 @@ class ChapterUI(val chapter : BookChapter,
 
         summary.text                = summaryString
 
-        summary.font                = Font.typeface(TextFont.default(),
-                                                    TextFontStyle.Regular,
+        summary.font                = Font.typeface(TextFont.RobotoCondensed,
+                                                    TextFontStyle.Bold,
                                                     context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
-        summary.sizeSp              = 19f
-
-        summary.corners             = Corners(2.0, 2.0, 2.0, 2.0)
+        summary.sizeSp              = 18f
 
         summary.backgroundColor     = Color.WHITE
 

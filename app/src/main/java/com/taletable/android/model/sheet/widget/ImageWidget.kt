@@ -9,11 +9,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.taletable.android.R
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue1
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.SQLBlob
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
@@ -41,20 +38,14 @@ import java.util.*
 /**
  * Image Widget Format
  */
-data class ImageWidgetFormat(override val id : UUID,
-                             val widgetFormat : WidgetFormat)
-                             : ToDocument, ProdType, Serializable
+data class ImageWidgetFormat(val widgetFormat : WidgetFormat)
+                             : ToDocument, Serializable
 {
 
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat)
-        : this(UUID.randomUUID(),
-               widgetFormat)
-
 
     companion object : Factory<ImageWidgetFormat>
     {
@@ -95,21 +86,6 @@ data class ImageWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetImageFormatValue =
-        RowValue1(widgetImageFormatTable,
-                  ProdValue(this.widgetFormat))
 
 }
 

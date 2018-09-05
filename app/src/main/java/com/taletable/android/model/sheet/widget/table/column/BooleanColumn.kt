@@ -2,8 +2,6 @@
 package com.taletable.android.model.sheet.widget.table.column
 
 
-import com.taletable.android.db.DB_WidgetTableColumnBooleanFormatValue
-import com.taletable.android.db.widgetTableColumnBooleanFormatTable
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
 import com.taletable.android.lib.orm.RowValue7
@@ -32,37 +30,19 @@ import java.util.*
 /**
  * Boolean Column Format
  */
-data class BooleanColumnFormat(override val id : UUID,
-                               val columnFormat : ColumnFormat,
+data class BooleanColumnFormat(val columnFormat : ColumnFormat,
                                val trueFormat : Maybe<TextFormat>,
                                val falseFormat : Maybe<TextFormat>,
                                val trueText : ColumnTrueText,
                                val falseText : ColumnFalseText,
                                val showTrueIcon : ShowTrueIcon,
                                val showFalseIcon : ShowFalseIcon)
-                                : ToDocument, ProdType, Serializable
+                                : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(format : ColumnFormat,
-                trueFormat : Maybe<TextFormat>,
-                falseFormat : Maybe<TextFormat>,
-                trueText : ColumnTrueText,
-                falseText : ColumnFalseText,
-                showTrueIcon : ShowTrueIcon,
-                showFalseIcon : ShowFalseIcon)
-        : this(UUID.randomUUID(),
-               format,
-               trueFormat,
-               falseFormat,
-               trueText,
-               falseText,
-               showTrueIcon,
-               showFalseIcon)
-
 
     companion object : Factory<BooleanColumnFormat>
     {
@@ -185,27 +165,6 @@ data class BooleanColumnFormat(override val id : UUID,
                 is Just -> this.falseFormat.value
                 else    -> this.columnFormat.textFormat()
             }
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODELS
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTableColumnBooleanFormatValue =
-        RowValue7(widgetTableColumnBooleanFormatTable,
-                  ProdValue(this.columnFormat),
-                  MaybeProdValue(this.trueFormat),
-                  MaybeProdValue(this.falseFormat),
-                  PrimValue(this.trueText),
-                  PrimValue(this.falseText),
-                  PrimValue(this.showTrueIcon),
-                  PrimValue(this.showFalseIcon))
 
 }
 

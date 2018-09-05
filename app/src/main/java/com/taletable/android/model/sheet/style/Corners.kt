@@ -17,10 +17,10 @@ import java.io.Serializable
 
 
 
-data class Corners(private val topLeftRadius : Double,
-                   private val topRightRadius : Double,
-                   private val bottomRightRadius : Double,
-                   private val bottomLeftRadius : Double)
+data class Corners(val topLeftRadius : Double,
+                   val topRightRadius : Double,
+                   val bottomRightRadius : Double,
+                   val bottomLeftRadius : Double)
                     : ToDocument, SQLSerializable, Serializable
 {
 

@@ -6,9 +6,13 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import com.taletable.android.R.string.group
 import com.taletable.android.activity.sheet.SheetActivityGlobal
 import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
@@ -23,6 +27,7 @@ import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLValue
 import com.taletable.android.lib.orm.sql.asSQLValue
 import com.taletable.android.lib.ui.LinearLayoutBuilder
+import com.taletable.android.lib.ui.RelativeLayoutBuilder
 import com.taletable.android.model.sheet.style.*
 import com.taletable.android.model.sheet.widget.Widget
 import com.taletable.android.rts.entity.EntityId
@@ -45,25 +50,14 @@ import java.util.*
 /**
  * Group Row
  */
-data class GroupRow(override val id : UUID,
-                    private val format : GroupRowFormat,
+data class GroupRow(private val format : GroupRowFormat,
                     private var index : GroupRowIndex,
                     private val widgets : MutableList<Widget>)
-                      : ToDocument, ProdType, SheetComponent, Comparable<GroupRow>, Serializable
+                      : ToDocument, SheetComponent, Comparable<GroupRow>, Serializable
 {
 
+    // | Constructors
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    constructor(format : GroupRowFormat,
-                index : GroupRowIndex,
-                widgets : List<Widget>)
-        : this(UUID.randomUUID(),
-               format,
-               index,
-               widgets.toMutableList())
-
 
     companion object
     {
@@ -113,22 +107,6 @@ data class GroupRow(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_GroupRowValue =
-        RowValue2(groupRowTable,
-                  ProdValue(this.format),
-                  PrimValue(this.index))
-
-
-    // -----------------------------------------------------------------------------------------
     // COMPARABLE
     // -----------------------------------------------------------------------------------------
 
@@ -174,13 +152,13 @@ data class GroupRow(override val id : UUID,
 
 
 
-    private fun viewLayout(entityId : EntityId, context : Context) : LinearLayout
+    private fun viewLayout(entityId : EntityId, context : Context) : ViewGroup
     {
         val layout = GroupRowTouchView(context)
+
         val elementFormat = this.format().elementFormat()
 
-
-        layout.orientation = LinearLayout.VERTICAL
+        // layout.orientation = LinearLayout.VERTICAL
 
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                                      LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -219,9 +197,13 @@ data class GroupRow(override val id : UUID,
 
     private fun widgetsView(groupContext : Maybe<GroupContext>,
                             entityId : EntityId,
-                            context : Context) : LinearLayout
+                            context : Context) : ViewGroup
     {
-        val layout = this.widgetsViewLayout(context)
+        val layout = if (this.format().spaceApart) {
+            this.widgetsSpaceApartLayout(context)
+        } else {
+            this.widgetsViewLayout(context)
+        }
 
         if (this.format().hasColumns().value)
         {
@@ -229,7 +211,7 @@ data class GroupRow(override val id : UUID,
             val largestColIndex = colIndiceSet.max()
 
             if (largestColIndex == 1) {
-                this.widgets().forEach { layout.addView(it.view(groupContext, entityId, context)) }
+                this.widgets().forEach { layout.addView(it.view(groupContext, this.format().layoutType(), entityId, context)) }
             }
             else {
                 val colToLayout : MutableMap<Int,LinearLayout> = mutableMapOf()
@@ -239,7 +221,7 @@ data class GroupRow(override val id : UUID,
 
                 this.widgets().forEach {
                     val layout = colToLayout[it.widgetFormat().column()]
-                    layout?.addView(it.view(groupContext, entityId, context))
+                    layout?.addView(it.view(groupContext, this.format().layoutType(), entityId, context))
                 }
 
                 colToLayout.keys.sorted().forEach {
@@ -250,7 +232,7 @@ data class GroupRow(override val id : UUID,
         else
         {
             this.widgets().forEach {
-                layout.addView(it.view(groupContext, entityId, context))
+                layout.addView(it.view(groupContext, this.format().layoutType(), entityId, context))
             }
         }
 
@@ -292,6 +274,20 @@ data class GroupRow(override val id : UUID,
 
         return layout.linearLayout(context)
     }
+
+
+    fun widgetsSpaceApartLayout(context : Context) : RelativeLayout
+    {
+        val layout              = RelativeLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.paddingSpacing   = this.format.elementFormat().padding()
+
+        return layout.relativeLayout(context)
+    }
+
 
 
     private fun dividerView(format : BorderEdge,
@@ -354,34 +350,31 @@ class GroupRowTouchView(context : Context) : LinearLayout(context)
 }
 
 
+
+sealed class RowLayoutType
+
+
+object RowLayoutTypeLinear : RowLayoutType()
+
+object RowLayoutTypeRelative : RowLayoutType()
+
+
 /**
  * Group Row Format
  */
-data class GroupRowFormat(override val id : UUID,
-                          private val elementFormat : ElementFormat,
+data class GroupRowFormat(private val elementFormat : ElementFormat,
                           val hasColumns : GroupRowHasColumns,
+                          val spaceApart : Boolean,
                           val border : Maybe<Border>)
-                           : ToDocument, ProdType, Serializable
+                           : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(elementFormat : ElementFormat,
-                hasColumns : GroupRowHasColumns,
-                border : Maybe<Border>)
-        : this(UUID.randomUUID(),
-               elementFormat,
-               hasColumns,
-               border)
-
-
-    constructor(elementFormat : ElementFormat)
-        : this(UUID.randomUUID(),
-               elementFormat,
-               GroupRowHasColumns(false),
-               Nothing())
+    constructor(elementFormat: ElementFormat)
+        : this(elementFormat, GroupRowHasColumns.default(), false, Nothing())
 
 
     companion object : Factory<GroupRowFormat>
@@ -405,6 +398,10 @@ data class GroupRowFormat(override val id : UUID,
                       split(doc.maybeAt("has_columns"),
                             effValue(GroupRowHasColumns.default()),
                             { GroupRowHasColumns.fromDocument(it) }),
+                      // Space Apart
+                      split(doc.maybeBoolean("space_apart"),
+                            effValue(false),
+                            { effValue(it) }),
                       // Border
                       split(doc.maybeAt("border"),
                             effValue<ValueError,Maybe<Border>>(Nothing()),
@@ -417,6 +414,7 @@ data class GroupRowFormat(override val id : UUID,
 
         fun default() = GroupRowFormat(defaultElementFormat(),
                                        defaultHasColumns(),
+                                       false,
                                        Nothing())
 
     }
@@ -444,21 +442,12 @@ data class GroupRowFormat(override val id : UUID,
     fun border() : Maybe<Border> = this.border
 
 
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_GroupRowFormatValue =
-        RowValue3(groupRowFormatTable,
-                  ProdValue(this.elementFormat),
-                  PrimValue(this.hasColumns),
-                  MaybeProdValue(this.border))
+    fun layoutType() : RowLayoutType = if (spaceApart) {
+                                           RowLayoutTypeRelative
+                                       }
+                                       else {
+                                           RowLayoutTypeLinear
+                                       }
 
 }
 

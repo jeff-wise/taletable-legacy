@@ -74,38 +74,94 @@ content:
 chapters:
 - id: ancestries_and_backgrounds
   title: 'Ancestries and Backgrounds'
+  summary: 'The ancestries and backgrounds for player characters.'
   sections:
+  - id: reading_ancestry_entries
+    title: 'Reading Ancestry Entries'
+  - id: dwarf
+    title: 'Dwarf'
+  - id: elf
+    title: 'Elf'
+  - id: gnome
+    title: 'Gnome'
+  - id: goblin
+    title: 'Goblin'
+  - id: halfling
+    title: 'Halfling'
+  - id: human
+    title: 'Human'
+  - id: backgrounds
+    title: 'Backgrounds'
+  - id: languages
+    title: 'Languages'
 - id: classes
   title: 'Classes'
   sections:
+  - id: alchemist
+    title: 'Alchemist'
+  - id: barbarian
+    title: 'Barbarian'
+  - id: bard
+    title: 'Bard'
+  - id: cleric
+    title: 'Cleric'
+  - id: druid
+    title: 'Druid'
+  - id: fighter
+    title: 'Fighter'
+  - id: monk
+    title: 'Monk'
+  - id: paladin
+    title: 'Paladin'
+  - id: ranger
+    title: 'Ranger'
+  - id: rogue
+    title: 'Rogue'
+  - id: sorcerer
+    title: 'Sorcerer'
+  - id: wizard
+    title: 'Wizard'
 - id: skills
   title: 'Skills'
   sections:
+  - id: skill_uses
+    title: 'Skill Uses'
+  - id: key_ability
+    title: 'Key Ability'
+  - id: skill_checks_and_skill_dcs
+    title: 'Skill Checks and Skill DCs'
+  - id: downtime_skill_activities
+    title: 'Downtime Skill Activities'
+  - id: signature_skills
+    title: 'Signature Skills'
+  - id: skill_descriptions
+    title: 'Skill Descriptions'
 - id: feats
   title: 'Feats'
   sections:
 - id: equipment
   title: 'Equipment'
   sections:
+  - id: coins_and_currency
+    title: 'Coins and Currency'
+  - id: price
+    title: 'Price'
+  - id: item_level
+    title: 'Item Level'
+  - id: carrying_and_using_items
+    title: 'Carrying and Using Items'
+  - id: item_damage
+    title: 'Item Damage'
+  - id: armor_and_shields
+    title: 'Armor and Shields'
   - id: weapons
     title: 'Weapons'
-    introduction:
-    - section_weapons_introduction
-    subsections:
-    - id: weapon_proficiency
-      title: 'Weapon Proficiency'
-      body:
-      - subsection_weapon_proficiency
-    - id: weapon_properties
-      title: 'Weapon Properties'
-      subtitle: 'Special features of weapons.'
-      body:
-      - subsection_weapon_properties
-    - id: weapon_list
-      title: 'Weapon List'
-      subtitle: 'The weapons in the game.'
-      body:
-      - subsection_weapon_list
+  - id: gear
+    title: 'Gear'
+  - id: item_quality
+    title: 'Item Quality'
+  - id: items_and_sizes
+    title: 'Items and Sizes'
 - id: spells
   title: 'Spells'
   sections:

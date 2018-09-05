@@ -114,31 +114,17 @@ sealed class QuoteViewType : ToDocument, SQLSerializable, Serializable
 /**
  * Quote Widget Format
  */
-data class QuoteWidgetFormat(override val id : UUID,
-                             val widgetFormat : WidgetFormat,
+data class QuoteWidgetFormat(val widgetFormat : WidgetFormat,
                              val viewType : QuoteViewType,
                              val quoteFormat : TextFormat,
                              val sourceFormat : TextFormat,
                              val iconFormat : IconFormat)
-                             : ToDocument, ProdType, Serializable
+                             : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat,
-                viewType : QuoteViewType,
-                quoteStyle : TextFormat,
-                sourceStyle : TextFormat,
-                iconFormat : IconFormat)
-        : this(UUID.randomUUID(),
-               widgetFormat,
-               viewType,
-               quoteStyle,
-               sourceStyle,
-               iconFormat)
-
 
     companion object : Factory<QuoteWidgetFormat>
     {
@@ -216,25 +202,6 @@ data class QuoteWidgetFormat(override val id : UUID,
     fun sourceFormat() : TextFormat = this.sourceFormat
 
     fun iconFormat() : IconFormat = this.iconFormat
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetQuoteFormatValue =
-        RowValue5(widgetQuoteFormatTable,
-                  ProdValue(this.widgetFormat),
-                  PrimValue(this.viewType),
-                  ProdValue(this.quoteFormat),
-                  ProdValue(this.sourceFormat),
-                  ProdValue(this.iconFormat))
 
 }
 

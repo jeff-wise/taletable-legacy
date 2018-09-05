@@ -64,6 +64,12 @@ persisted_entities:
   - entity_id: '13445fda-8a44-46ce-8f74-6a424fbf771f'
     index_type: variable
     path: 'pathfinder2_playtest/indexes/weapon_variables.yaml'
+  - entity_id: '072ebf42-2a3c-4608-b762-b11bcc7c91dd'
+    index_type: group
+    path: 'pathfinder2_playtest/indexes/action_groups.yaml'
+  - entity_id: '5e1b5c8c-6713-4853-9484-bbf359b3334f'
+    index_type: variable
+    path: 'pathfinder2_playtest/indexes/action_variables.yaml'
 - entity_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
   entity_type: book
   name: 'Core Rules'

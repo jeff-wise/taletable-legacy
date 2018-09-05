@@ -2,13 +2,7 @@
 package com.taletable.android.model.book
 
 
-import com.taletable.android.db.DB_BookChapterValue
-import com.taletable.android.db.bookChapterTable
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue3
-import com.taletable.android.lib.orm.schema.CollValue
-import com.taletable.android.lib.orm.schema.PrimValue
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
@@ -18,23 +12,25 @@ import effect.effValue
 import effect.split
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import maybe.filterJust
 import java.io.Serializable
-import java.util.*
 
 
 
 /**
  * Chapter
  */
-data class BookChapter(override val id : UUID,
-                       val chapterId : BookChapterId,
+data class BookChapter(val chapterId : BookChapterId,
                        val title : BookChapterTitle,
-                       val introduction : List<BookContentId>,
-                       val conclusion : List<BookContentId>,
+                       val summary : Maybe<BookChapterSummary>,
+                       val content : List<BookContentId>,
                        val sections : MutableList<BookSection>)
-                            : ToDocument, ProdType, Serializable
+                        : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -50,19 +46,6 @@ data class BookChapter(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(chapterId : BookChapterId,
-                title : BookChapterTitle,
-                introduction: List<BookContentId>,
-                conclusion: List<BookContentId>,
-                sections : List<BookSection>)
-        : this(UUID.randomUUID(),
-               chapterId,
-               title,
-               introduction,
-               conclusion,
-               sections.toMutableList())
-
-
     companion object : Factory<BookChapter>
     {
         override fun fromDocument(doc : SchemaDoc) : ValueParser<BookChapter> = when (doc)
@@ -74,17 +57,17 @@ data class BookChapter(override val id : UUID,
                       doc.at("id") apply { BookChapterId.fromDocument(it) },
                       // Title
                       doc.at("title") apply { BookChapterTitle.fromDocument(it) },
-                      // Introduction
-                      split(doc.maybeList("introduction"),
-                            effValue(listOf()),
-                            { it.map { BookContentId.fromDocument(it) } }),
+                      // Summary
+                      split(doc.maybeAt("summary"),
+                            effValue<ValueError,Maybe<BookChapterSummary>>(Nothing()),
+                            { apply(::Just, BookChapterSummary.fromDocument(it))  }),
                       // Conclusion
-                      split(doc.maybeList("conclusion"),
+                      split(doc.maybeList("content"),
                             effValue(listOf()),
                             { it.map { BookContentId.fromDocument(it) } }),
                       // Sections
                       doc.list("sections") apply {
-                          it.map { BookSection.fromDocument(it) }
+                          it.mapMut { BookSection.fromDocument(it) }
                       })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -113,45 +96,27 @@ data class BookChapter(override val id : UUID,
     fun title() : BookChapterTitle = this.title
 
 
+    fun summary() : Maybe<BookChapterSummary> = this.summary
+
+
     fun sections() : List<BookSection> = this.sections
 
 
-    fun introduction() : List<BookContentId> = this.introduction
+    fun content() : List<BookContentId> = this.content
 
 
-    fun conclusion() : List<BookContentId> = this.conclusion
-
-
-    // -----------------------------------------------------------------------------------------
-    // API
+    // | Sections
     // -----------------------------------------------------------------------------------------
 
     fun sectionWithId(sectionId : BookSectionId) : BookSection? =
         this.sectionById[sectionId]
 
 
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_BookChapterValue =
-        RowValue3(bookChapterTable, PrimValue(this.chapterId),
-                                    PrimValue(this.title),
-                                    CollValue(this.sections))
-
-
-    // -----------------------------------------------------------------------------------------
-    // CONTENT
+    // | Content
     // -----------------------------------------------------------------------------------------
 
-    fun introductionContent(book : Book) : List<BookContent> =
-            this.introduction.map { book.content(it) }.filterJust()
+    fun content(book : Book) : List<BookContent> =
+            this.content.map { book.content(it) }.filterJust()
 
 }
 
@@ -195,7 +160,7 @@ data class BookChapterId(val value : String) : ToDocument, SQLSerializable, Seri
 /**
  * Book Chapter Title
  */
-data class BookChapterTitle(val value : String) : ToDocument, SQLSerializable, Serializable
+data class BookChapterTitle(val value : String) : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -218,12 +183,37 @@ data class BookChapterTitle(val value : String) : ToDocument, SQLSerializable, S
 
     override fun toDocument() = DocText(this.value)
 
+}
+
+
+
+/**
+ * Book Chapter Summary
+ */
+data class BookChapterSummary(val value : String) : ToDocument, Serializable
+{
 
     // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
+    // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    override fun asSQLValue() : SQLValue = SQLText({ this.value })
+    companion object : Factory<BookChapterSummary>
+    {
+        override fun fromDocument(doc : SchemaDoc): ValueParser<BookChapterSummary> = when (doc)
+        {
+            is DocText -> effValue(BookChapterSummary(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
 
 }
+
 

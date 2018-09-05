@@ -5,8 +5,6 @@ package com.taletable.android.model.engine
 import com.taletable.android.app.AppEff
 import com.taletable.android.app.AppEngineError
 import com.taletable.android.app.AppError
-import com.taletable.android.db.DB_EngineValue
-import com.taletable.android.db.engineTable
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
 import com.taletable.android.lib.orm.RowValue7
@@ -38,6 +36,7 @@ import effect.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import maybe.apply
 import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
@@ -47,8 +46,7 @@ import java.util.*
 /**
  * Engine
  */
-data class Engine(override val id : UUID,
-                  val valueSets : List<ValueSet>,
+data class Engine(val valueSets : List<ValueSet>,
                   val mechanics : List<Mechanic>,
                   val mechanicCategories : List<MechanicCategory>,
                   val functions : List<Function>,
@@ -56,7 +54,7 @@ data class Engine(override val id : UUID,
                   val summations : List<Summation>,
                   val procedures : List<Procedure>,
                   val tasks : List<Task>)
-                   : ToDocument, ProdType, Serializable
+                   : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -122,8 +120,6 @@ data class Engine(override val id : UUID,
             is DocDict ->
             {
                 apply(::Engine,
-                      // ID
-                      effValue(UUID.randomUUID()),
                       // Value Sets
                       doc.list("value_sets") apply {
                           it.map { ValueSet.fromDocument(it) }
@@ -173,26 +169,6 @@ data class Engine(override val id : UUID,
         "summations" to DocList(this.summations.map { it.toDocument() }),
         "procedures" to DocList(this.procedures.map { it.toDocument() })
     ))
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_EngineValue =
-        RowValue7(engineTable, CollValue(this.valueSets),
-                               CollValue(this.mechanics),
-                               CollValue(this.mechanicCategories),
-                               CollValue(this.functions),
-                               CollValue(this.programs),
-                               CollValue(this.summations),
-                               CollValue(this.procedures))
 
 
     // -----------------------------------------------------------------------------------------

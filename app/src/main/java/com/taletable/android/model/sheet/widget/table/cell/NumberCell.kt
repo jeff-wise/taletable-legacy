@@ -12,7 +12,6 @@ import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.taletable.android.app.ApplicationLog
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.ProdType
 import com.taletable.android.lib.orm.RowValue1
@@ -42,25 +41,19 @@ import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
-import java.util.*
 
 
 
 /**
  * Number Cell Format
  */
-data class NumberCellFormat(override val id : UUID,
-                            val textFormat : Maybe<TextFormat>)
-                            : ToDocument, ProdType, Serializable
+data class NumberCellFormat(val textFormat : Maybe<TextFormat>)
+                            : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(textFormat : Maybe<TextFormat>)
-            : this(UUID.randomUUID(), textFormat)
-
 
     companion object : Factory<NumberCellFormat>
     {
@@ -80,7 +73,7 @@ data class NumberCellFormat(override val id : UUID,
         }
 
 
-        fun default() = NumberCellFormat(UUID.randomUUID(), Nothing())
+        fun default() = NumberCellFormat(Nothing())
 
     }
 
@@ -110,21 +103,6 @@ data class NumberCellFormat(override val id : UUID,
             is Just -> this.textFormat.value
             else    -> columnFormat.columnFormat().textFormat()
         }
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetTableCellNumberFormatValue =
-        RowValue1(widgetTableCellNumberFormatTable,
-                  MaybeProdValue(this.textFormat))
 
 }
 

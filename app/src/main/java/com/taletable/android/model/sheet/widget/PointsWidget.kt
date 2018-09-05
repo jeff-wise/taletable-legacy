@@ -3,6 +3,7 @@ package com.taletable.android.model.sheet.widget
 
 
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -12,15 +13,14 @@ import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.taletable.android.app.ApplicationLog
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.*
-import com.taletable.android.lib.orm.schema.MaybePrimValue
-import com.taletable.android.lib.orm.schema.PrimValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.*
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.sheet.style.*
+import com.taletable.android.model.theme.ColorId
+import com.taletable.android.model.theme.ColorTheme
+import com.taletable.android.model.theme.ThemeColorId
+import com.taletable.android.model.theme.ThemeId
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
 import com.taletable.android.rts.entity.sheet.UpdateTargetPointsWidget
@@ -35,41 +35,23 @@ import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
-import java.util.*
 
 
 
 /**
  * Points Widget Format
  */
-data class PointsWidgetFormat(override val id : UUID,
-                              val widgetFormat : WidgetFormat,
+data class PointsWidgetFormat(val widgetFormat : WidgetFormat,
                               val limitTextFormat : TextFormat,
                               val currentTextFormat : TextFormat,
                               val labelTextFormat : TextFormat,
                               val infoFormat : PointsWidgetInfoFormat,
                               val barFormat : PointsWidgetBarFormat)
-                               : ToDocument, ProdType, Serializable
+                               : ToDocument, Serializable
 {
 
+    // | Constructors
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    constructor(widgetFormat : WidgetFormat,
-                limitTextFormat : TextFormat,
-                currentTextFormat : TextFormat,
-                labelTextFormat : TextFormat,
-                infoFormat : PointsWidgetInfoFormat,
-                barFormat : PointsWidgetBarFormat)
-        : this(UUID.randomUUID(),
-               widgetFormat,
-               limitTextFormat,
-               currentTextFormat,
-               labelTextFormat,
-               infoFormat,
-               barFormat)
-
 
     companion object : Factory<PointsWidgetFormat>
     {
@@ -162,26 +144,6 @@ data class PointsWidgetFormat(override val id : UUID,
 
     fun barFormat() : PointsWidgetBarFormat = this.barFormat
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetPointsFormatValue =
-        RowValue6(widgetPointsFormatTable,
-                  ProdValue(this.widgetFormat),
-                  ProdValue(this.limitTextFormat),
-                  ProdValue(this.currentTextFormat),
-                  ProdValue(this.labelTextFormat),
-                  ProdValue(this.infoFormat),
-                  ProdValue(this.barFormat))
-
 }
 
 
@@ -259,80 +221,37 @@ data class PointsBarHeight(val value : Int) : ToDocument, SQLSerializable, Seria
 /**
  * Points Bar Style
  */
-sealed class PointsBarStyle : ToDocument, SQLSerializable, Serializable
+sealed class PointsBarStyle : ToDocument, Serializable
 {
 
     object None : PointsBarStyle()
     {
-        // SQL SERIALIZABLE
-        // -------------------------------------------------------------------------------------
-
-        override fun asSQLValue() : SQLValue = SQLText({ "none" })
-
-        // TO DOCUMENT
-        // -------------------------------------------------------------------------------------
-
         override fun toDocument() = DocText("none")
-
     }
-
 
     object Simple : PointsBarStyle()
     {
-        // SQL SERIALIZABLE
-        // -------------------------------------------------------------------------------------
-
-        override fun asSQLValue() : SQLValue = SQLText({ "simple" })
-
-        // TO DOCUMENT
-        // -------------------------------------------------------------------------------------
-
         override fun toDocument() = DocText("simple")
-
     }
-
 
     object OppositeLabels : PointsBarStyle()
     {
-        // SQL SERIALIZABLE
-        // -------------------------------------------------------------------------------------
-
-        override fun asSQLValue() : SQLValue = SQLText({ "opposite_labels" })
-
-        // TO DOCUMENT
-        // -------------------------------------------------------------------------------------
-
         override fun toDocument() = DocText("opposite_labels")
-
     }
-
 
     object Counter : PointsBarStyle()
     {
-        // SQL SERIALIZABLE
-        // -------------------------------------------------------------------------------------
-
-        override fun asSQLValue() : SQLValue = SQLText({ "counter" })
-
-        // TO DOCUMENT
-        // -------------------------------------------------------------------------------------
-
         override fun toDocument() = DocText("counter")
-
     }
 
     object SetCounter : PointsBarStyle()
     {
-        // SQL SERIALIZABLE
-        // -------------------------------------------------------------------------------------
-
-        override fun asSQLValue() : SQLValue = SQLText({ "set_counter" })
-
-        // TO DOCUMENT
-        // -------------------------------------------------------------------------------------
-
         override fun toDocument() = DocText("set_counter")
+    }
 
+    object Levels : PointsBarStyle()
+    {
+        override fun toDocument() = DocText("levels")
     }
 
 
@@ -352,6 +271,7 @@ sealed class PointsBarStyle : ToDocument, SQLSerializable, Serializable
                                         PointsBarStyle.OppositeLabels)
                 "counter"         -> effValue<ValueError,PointsBarStyle>(PointsBarStyle.Counter)
                 "set_counter"     -> effValue<ValueError,PointsBarStyle>(PointsBarStyle.SetCounter)
+                "levels"          -> effValue<ValueError,PointsBarStyle>(PointsBarStyle.Levels)
                 else              -> effError<ValueError,PointsBarStyle>(
                                     UnexpectedValue("PointsBarStyle", doc.text, doc.path))
             }
@@ -365,53 +285,46 @@ sealed class PointsBarStyle : ToDocument, SQLSerializable, Serializable
 /**
  * Points Info Style
  */
-sealed class PointsInfoStyle : ToDocument, SQLSerializable, Serializable
+sealed class PointsInfoStyle : ToDocument, Serializable
 {
 
     object CurrentSlashLimit : PointsInfoStyle()
     {
-        override fun asSQLValue() : SQLValue = SQLText({ "current_slash_limit" })
-
         override fun toDocument() = DocText("current_slash_limit")
     }
 
     object LimitLabelMaxRight : PointsInfoStyle()
     {
-        override fun asSQLValue() : SQLValue = SQLText({ "limit_label_max_right" })
-
         override fun toDocument() = DocText("limit_label_max_right")
     }
 
 
     object LabelLeftSlashRight : PointsInfoStyle()
     {
-        override fun asSQLValue() : SQLValue = SQLText({ "label_left_slash_right" })
-
         override fun toDocument() = DocText("label_left_slash_right")
     }
 
 
     object CenterLabelRight : PointsInfoStyle()
     {
-        override fun asSQLValue() : SQLValue = SQLText({ "center_label_right" })
-
         override fun toDocument() = DocText("center_label_right")
     }
 
 
     object LabelTopSlashBottom : PointsInfoStyle()
     {
-        override fun asSQLValue() : SQLValue = SQLText({ "label_top_slash_bottom" })
-
         override fun toDocument() = DocText("label_top_slash_bottom")
     }
 
 
     object LabelOnly : PointsInfoStyle()
     {
-        override fun asSQLValue() : SQLValue = SQLText({ "label_only" })
-
         override fun toDocument() = DocText("label_only")
+    }
+
+    object None : PointsInfoStyle()
+    {
+        override fun toDocument() = DocText("none")
     }
 
 
@@ -433,6 +346,7 @@ sealed class PointsInfoStyle : ToDocument, SQLSerializable, Serializable
                                                 PointsInfoStyle.LabelTopSlashBottom)
                 "label_only"             -> effValue<ValueError, PointsInfoStyle>(
                                                 PointsInfoStyle.LabelOnly)
+                "none"                   -> effValue<ValueError, PointsInfoStyle>(PointsInfoStyle.None)
                 else                  -> effError<ValueError, PointsInfoStyle>(
                                              UnexpectedValue("PointsInfoStyle", doc.text, doc.path))
             }
@@ -483,22 +397,14 @@ data class PointsWidgetCounterActiveText(val value : String)
 /**
  * Points Widget Info Format
  */
-data class PointsWidgetInfoFormat(override val id : UUID,
-                                  val style : PointsInfoStyle,
+data class PointsWidgetInfoFormat(val style : PointsInfoStyle,
                                   val format : TextFormat)
-                                  : ToDocument, ProdType, Serializable
+                                  : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(style : PointsInfoStyle,
-                format : TextFormat)
-        : this(UUID.randomUUID(),
-               style,
-               format)
-
 
     companion object : Factory<PointsWidgetInfoFormat>
     {
@@ -551,62 +457,27 @@ data class PointsWidgetInfoFormat(override val id : UUID,
 
     fun format() : TextFormat = this.format
 
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetPointsInfoFormatValue =
-        RowValue2(widgetPointsInfoFormatTable,
-                  PrimValue(this.style),
-                  ProdValue(this.format))
-
 }
 
 
 /**
  * Bar Format
  */
-data class PointsWidgetBarFormat(override val id : UUID,
-                                 val elementFormat : ElementFormat,
+data class PointsWidgetBarFormat(val elementFormat : ElementFormat,
                                  val barStyle : PointsBarStyle,
                                  val barHeight : PointsBarHeight,
                                  val limitFormat : TextFormat,
                                  val currentFormat : TextFormat,
+                                 val levels : List<String>,
                                  val counterActiveIcon : Maybe<IconType>,
                                  val counterActiveText : Maybe<PointsWidgetCounterActiveText>,
                                  val counterInactiveText : Maybe<PointsWidgetCounterActiveText>)
-                                  : ToDocument, ProdType, Serializable
+                                  : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
+    // | Constructors
     // -----------------------------------------------------------------------------------------
-
-    constructor(elementFormat : ElementFormat,
-                barStyle : PointsBarStyle,
-                barHeight : PointsBarHeight,
-                limitFormat : TextFormat,
-                currentFormat : TextFormat,
-                counterActiveIcon : Maybe<IconType>,
-                counterActiveText : Maybe<PointsWidgetCounterActiveText>,
-                counterInactiveText : Maybe<PointsWidgetCounterActiveText>)
-        : this(UUID.randomUUID(),
-               elementFormat,
-               barStyle,
-               barHeight,
-               limitFormat,
-               currentFormat,
-               counterActiveIcon,
-               counterActiveText,
-               counterInactiveText)
-
 
     companion object : Factory<PointsWidgetBarFormat>
     {
@@ -643,6 +514,10 @@ data class PointsWidgetBarFormat(override val id : UUID,
                       split(doc.maybeAt("current_format"),
                             effValue(defaultCurrentFormat()),
                             { TextFormat.fromDocument(it) }),
+                      // Levels
+                      split(doc.maybeList("levels"),
+                            effValue(listOf()),
+                            { it.stringList() }),
                       // Counter Active Icon
                       split(doc.maybeAt("counter_active_icon"),
                             effValue<ValueError,Maybe<IconType>>(Nothing()),
@@ -666,6 +541,7 @@ data class PointsWidgetBarFormat(override val id : UUID,
                                         defaultBarHeight(),
                                         defaultLimitFormat(),
                                         defaultCurrentFormat(),
+                                        listOf(),
                                         Nothing(),
                                         Nothing(),
                                         Nothing())
@@ -705,32 +581,13 @@ data class PointsWidgetBarFormat(override val id : UUID,
     fun currentFormat() : TextFormat = this.currentFormat
 
 
+    fun levels() : List<String> = this.levels
+
+
     fun counterActiveText() : Maybe<PointsWidgetCounterActiveText> = this.counterActiveText
 
 
     fun counterInactiveText() : Maybe<PointsWidgetCounterActiveText> = this.counterInactiveText
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_WidgetPointsBarFormatValue =
-        RowValue8(widgetPointsBarFormatTable,
-                  ProdValue(this.elementFormat),
-                  PrimValue(this.barStyle),
-                  PrimValue(this.barHeight),
-                  ProdValue(this.limitFormat),
-                  ProdValue(this.currentFormat),
-                  MaybePrimValue(this.counterActiveIcon),
-                  MaybePrimValue(this.counterActiveText),
-                  MaybePrimValue(this.counterInactiveText))
 
 }
 
@@ -796,6 +653,10 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
             is PointsBarStyle.SetCounter ->
             {
                 contentLayout.addView(this.counterBarView())
+            }
+            is PointsBarStyle.Levels ->
+            {
+                contentLayout.addView(this.levelsBarView())
             }
             is PointsBarStyle.None ->
             {
@@ -1327,9 +1188,6 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
     {
         val layout              = LinearLayoutBuilder()
         val format              = pointsWidget.format().barFormat().limitFormat()
-
-//        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 //
         val width = format.elementFormat().width()
         when (width) {
@@ -1399,6 +1257,233 @@ class PointsWidgetViewBuilder(val pointsWidget : PointsWidget,
 
         return layout.linearLayout(context)
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // LEVELS VIEW
+    // -----------------------------------------------------------------------------------------
+
+    private fun levelsBarView() : LinearLayout
+    {
+        val layout  = this.levelsBarViewLayout()
+
+        val limitValue      = pointsWidget.limitValue(entityId)?.toInt()
+        var currentValue    = pointsWidget.currentValue(entityId)?.toInt()
+
+        if (limitValue != null && currentValue != null && limitValue > 0)
+        {
+            for (i in 1..limitValue) {
+                val levelString = pointsWidget.format().barFormat().levels().getOrElse(i - 1, {"X"})
+
+                val isFirst = i == 1
+                val isLast  = i == limitValue
+                val barFormat = pointsWidget.format().barFormat().elementFormat()
+
+                if (i <= currentValue)
+                {
+                    val format = pointsWidget.format().barFormat().currentFormat()
+                    val activeView = this.levelsBarActiveView(i, format, barFormat, isFirst, isLast)
+                    activeView.addView(levelTextView(levelString, format))
+                    layout.addView(activeView)
+                }
+                else
+                {
+                    val format = pointsWidget.format().barFormat().limitFormat()
+                    val inactiveView = this.levelsBarInactiveView(i, format, barFormat, isFirst, isLast)
+                    inactiveView.addView(levelTextView(levelString, format))
+                    layout.addView(inactiveView)
+                }
+
+                if (i != limitValue)
+                    layout.addView(this.levelsDividerView())
+            }
+        }
+
+        return layout
+    }
+
+
+    private fun levelsDividerView() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.widthDp          = 1
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
+        layout.backgroundColor  = colorOrBlack(colorTheme, entityId)
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun levelsBarViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        val barFormat = pointsWidget.format().barFormat()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.backgroundColor  = colorOrBlack(barFormat.elementFormat().backgroundColorTheme(),
+                                               entityId)
+
+        layout.corners          = barFormat.elementFormat().corners()
+
+        layout.paddingSpacing   = barFormat.elementFormat().padding()
+        layout.marginSpacing    = barFormat.elementFormat().margins()
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun levelsBarActiveView(index : Int,
+                                    activeFormat : TextFormat,
+                                    barFormat : ElementFormat,
+                                    isFirst : Boolean,
+                                    isLast : Boolean) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        val width = activeFormat.elementFormat().width()
+        when (width) {
+            is Width.Fixed -> layout.widthDp = width.value.toInt()
+            else           -> layout.width = LinearLayout.LayoutParams.WRAP_CONTENT
+        }
+
+        val height = activeFormat.elementFormat().height()
+        when (height) {
+            is Height.Fixed -> layout.heightDp = height.value.toInt()
+            else            -> layout.height = LinearLayout.LayoutParams.WRAP_CONTENT
+        }
+
+        layout.backgroundColor  = colorOrBlack(activeFormat.elementFormat().backgroundColorTheme(),
+                                               entityId)
+
+        if (isFirst) {
+            layout.corners          = Corners(barFormat.corners().topLeftRadius,
+                                              0.0,
+                                              0.0,
+                                              barFormat.corners().bottomLeftRadius)
+        }
+        else if (isLast) {
+            layout.corners          = Corners(0.0,
+                                              barFormat.corners().topRightRadius,
+                                              barFormat.corners().bottomRightRadius,
+                                              0.0)
+        }
+        else {
+            layout.corners          = activeFormat.elementFormat().corners()
+        }
+
+        layout.gravity          = Gravity.CENTER
+
+        layout.paddingSpacing   = activeFormat.elementFormat().padding()
+        layout.marginSpacing    = activeFormat.elementFormat().margins()
+
+        layout.onClick = View.OnClickListener {
+            pointsWidget.currentValueVariable(entityId) apDo { valueVariable ->
+            valueVariable.valueOrError(entityId)        apDo { value ->
+                if (value.toInt() != index) {
+                    valueVariable.updateValue(index.toDouble(), entityId)
+                }
+                else {
+                    valueVariable.updateValue((index - 1).toDouble(), entityId)
+                }
+            } }
+        }
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun levelsBarInactiveView(index : Int,
+                                      format : TextFormat,
+                                      barFormat: ElementFormat,
+                                      isFirst : Boolean,
+                                      isLast : Boolean) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        val width = format.elementFormat().width()
+        when (width) {
+            is Width.Fixed -> layout.widthDp = width.value.toInt()
+            else           -> layout.width = LinearLayout.LayoutParams.WRAP_CONTENT
+        }
+
+        val height = format.elementFormat().height()
+        when (height) {
+            is Height.Fixed -> layout.heightDp = height.value.toInt()
+            else            -> layout.height = LinearLayout.LayoutParams.WRAP_CONTENT
+        }
+
+        layout.backgroundColor  = colorOrBlack(format.elementFormat().backgroundColorTheme(),
+                                               entityId)
+
+        if (isFirst) {
+            layout.corners          = Corners(barFormat.corners().topLeftRadius,
+                                              0.0,
+                                              0.0,
+                                              barFormat.corners().bottomLeftRadius)
+        }
+        else if (isLast) {
+            layout.corners          = Corners(0.0,
+                                              barFormat.corners().topRightRadius,
+                                              barFormat.corners().bottomRightRadius,
+                                              0.0)
+        }
+        else {
+            layout.corners          = format.elementFormat().corners()
+        }
+
+        layout.paddingSpacing   = format.elementFormat().padding()
+        layout.marginSpacing    = format.elementFormat().margins()
+
+        layout.gravity          = format.elementFormat().alignment().gravityConstant() or
+                                    format.elementFormat().verticalAlignment().gravityConstant()
+
+        layout.onClick = View.OnClickListener {
+            pointsWidget.currentValueVariable(entityId) apDo { valueVariable ->
+            valueVariable.valueOrError(entityId)        apDo { value ->
+                if (value.toInt() != index) {
+                    valueVariable.updateValue(index.toDouble(), entityId)
+                }
+            } }
+        }
+
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun levelTextView(level : String, textFormat : TextFormat) : TextView
+    {
+        val current                 = TextViewBuilder()
+
+        current.width               = LinearLayout.LayoutParams.WRAP_CONTENT
+        current.height              = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        current.text                = level
+
+        current.color               = colorOrBlack(textFormat.colorTheme(), entityId)
+
+        current.sizeSp              = textFormat.sizeSp()
+
+        current.font                = Font.typeface(textFormat.font(),
+                                                    textFormat.fontStyle(),
+                                                    context)
+
+        current.paddingSpacing      = textFormat.elementFormat().padding()
+        current.marginSpacing       = textFormat.elementFormat().margins()
+
+        return current.textView(context)
+    }
+
 
 
     // -----------------------------------------------------------------------------------------
