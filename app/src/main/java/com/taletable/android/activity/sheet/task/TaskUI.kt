@@ -131,7 +131,7 @@ class TaskUI(val entityId : EntityId,
 
         layout.margin.topDp     = 4f
 
-        layout.elevation        = 2f
+//        layout.elevation        = 2f
 
         layout.margin.bottomDp  = 4f
 

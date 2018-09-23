@@ -98,6 +98,406 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: skill_acrobatics_proficiency_modifier
+  - summation_id: skill_arcana_roll
+    summation_name: 'Skill: Arcana: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_arcana_proficiency_modifier
+  - summation_id: skill_athletics_roll
+    summation_name: 'Skill: Athletics: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: strength_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_athletics_proficiency_modifier
+  - summation_id: skill_crafting_roll
+    summation_name: 'Skill: Crafting: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_crafting_proficiency_modifier
+  - summation_id: skill_deception_roll
+    summation_name: 'Skill: Deception: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: charisma_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_deception_proficiency_modifier
+  - summation_id: skill_diplomacy_roll
+    summation_name: 'Skill: Diplomacy: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: charisma_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_diplomacy_proficiency_modifier
+  - summation_id: skill_intimidation_roll
+    summation_name: 'Skill: Intimidation: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: charisma_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_intimidation_proficiency_modifier
+  - summation_id: skill_lore_roll
+    summation_name: 'Skill: Lore: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_lore_proficiency_modifier
+  - summation_id: skill_medicine_roll
+    summation_name: 'Skill: Medicine: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_medicine_proficiency_modifier
+  - summation_id: skill_nature_roll
+    summation_name: 'Skill: Nature: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_nature_proficiency_modifier
+  - summation_id: skill_occultism_roll
+    summation_name: 'Skill: Occultism: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_occultism_proficiency_modifier
+  - summation_id: skill_performance_roll
+    summation_name: 'Skill: Performance: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: charisma_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_performance_proficiency_modifier
+  - summation_id: skill_religion_roll
+    summation_name: 'Skill: Religion: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_religion_proficiency_modifier
+  - summation_id: skill_society_roll
+    summation_name: 'Skill: Society: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: intelligence_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_society_proficiency_modifier
+  - summation_id: skill_stealth_roll
+    summation_name: 'Skill: Stealth: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_stealth_proficiency_modifier
+  - summation_id: skill_survival_roll
+    summation_name: 'Skill: Survival: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: wisdom_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_survival_proficiency_modifier
+  - summation_id: skill_thievery_roll
+    summation_name: 'Skill: Thievery: Roll'
+    terms:
+    - type: summation_term_dice_roll
+      summation_term_dice_roll:
+        value:
+          type: dice_roll
+          dice_roll:
+            quantities:
+            - sides: 20
+              quantity: 1
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: dexterity_modifier
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_thievery_proficiency_modifier
   - summation_id: weapon_rapier_attack_roll
     summation_name: Rapier Attack Roll
     terms:
@@ -125,7 +525,6 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: proficiency_bonus
-
   - summation_id: weapon_dagger_attack_roll
     summation_name: Dagger Attack Roll
     terms:
@@ -219,6 +618,54 @@ engine:
 variables:
 - type: variable_number
   variable_number:
+    id: base_strength
+    label: Base Strength
+    description: Base Strength
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_number
+  variable_number:
+    id: base_dexterity
+    label: Base Dexterity
+    description: Base Dexterity
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_number
+  variable_number:
+    id: base_constitution
+    label: Base Constitution
+    description: Base Constitution
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_number
+  variable_number:
+    id: base_intelligence
+    label: Base Intelligence
+    description: Base Intelligence
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_number
+  variable_number:
+    id: base_wisdom
+    label: Base Wisdom
+    description: Base Wisdom
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_number
+  variable_number:
+    id: base_charisma
+    label: Base Charisma
+    description: Base Charisma
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_number
+  variable_number:
     id: saving_throw_fortitude_proficiency_rank
     label: 'Saving Throw: Fortitude: Proficiency Rank'
     description: 'Saving Throw: Fortitude: Proficiency Rank'
@@ -303,14 +750,20 @@ variables:
     value:
       type: text_literal
       text_literal: 'Acrobatics'
-- type: variable_number
-  variable_number:
+- type: variable_text
+  variable_text:
     id: skill_acrobatics_proficiency_rank
     label: 'Skill: Acrobatics: Proficiency'
     description: 'Skill: Acrobatics: Proficiency'
     value:
-      type: number_literal
-      number_literal: 2
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: trained
 - type: variable_number
   variable_number:
     id: skill_acrobatics_proficiency_rank_modifier
@@ -319,12 +772,12 @@ variables:
     value:
       type: program_invocation
       program_invocation:
-        program_id: ability_modifier
+        program_id: proficiency_modifier_from_rank
         parameters:
-        - name: proficiency_modifier_from_rank
+        - name: proficiency_rank
           value:
-            type: data_reference_number
-            data_reference_number:
+            type: data_reference_text
+            data_reference_text:
               type: variable_reference
               variable_reference:
                 type: variable_id
@@ -337,6 +790,792 @@ variables:
     value:
       type: summation_id
       summation_id: skill_acrobatics_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_arcana_label
+    label: 'Skill: Arcana: Label'
+    description: 'Skill: Arcana: Label'
+    value:
+      type: text_literal
+      text_literal: 'Arcana'
+- type: variable_text
+  variable_text:
+    id: skill_arcana_proficiency_rank
+    label: 'Skill: Arcana: Proficiency'
+    description: 'Skill: Arcana: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: untrained
+- type: variable_number
+  variable_number:
+    id: skill_arcana_proficiency_rank_modifier
+    label: 'Skill: Arcana: Proficiency Rank Modifier'
+    description: 'Skill: Arcana: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_arcana_proficiency_rank
+- type: variable_text
+  variable_text:
+    id: skill_arcana_proficiency_name
+    label: 'Skill: Arcana: Proficiency Name'
+    description: 'Skill: Arcana: Proficiency Name'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_name_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_number
+            data_reference_number:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_arcana_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_arcana_proficiency_modifier
+    label: 'Skill: Arcana: Proficiency Modifier'
+    description: 'Skill: Arcana: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_arcana_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_athletics_label
+    label: 'Skill: Athletics: Label'
+    description: 'Skill: Athletics: Label'
+    value:
+      type: text_literal
+      text_literal: 'Athletics'
+- type: variable_text
+  variable_text:
+    id: skill_athletics_proficiency_rank
+    label: 'Skill: Athletics: Proficiency'
+    description: 'Skill: Athletics: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: trained
+- type: variable_number
+  variable_number:
+    id: skill_athletics_proficiency_rank_modifier
+    label: 'Skill: Athletics: Proficiency Rank Modifier'
+    description: 'Skill: Athletics: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_athletics_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_athletics_proficiency_modifier
+    label: 'Skill: Athletics: Proficiency Modifier'
+    description: 'Skill: Athletics: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_athletics_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_crafting_label
+    label: 'Skill: Crafting: Label'
+    description: 'Skill: Crafting: Label'
+    value:
+      type: text_literal
+      text_literal: 'Crafting'
+- type: variable_text
+  variable_text:
+    id: skill_crafting_proficiency_rank
+    label: 'Skill: Crafting: Proficiency'
+    description: 'Skill: Crafting: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: trained
+- type: variable_number
+  variable_number:
+    id: skill_crafting_proficiency_rank_modifier
+    label: 'Skill: Crafting: Proficiency Rank Modifier'
+    description: 'Skill: Crafting: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_crafting_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_crafting_proficiency_modifier
+    label: 'Skill: Crafting: Proficiency Modifier'
+    description: 'Skill: Crafting: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_crafting_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_deception_label
+    label: 'Skill: Deception: Label'
+    description: 'Skill: Deception: Label'
+    value:
+      type: text_literal
+      text_literal: 'Deception'
+- type: variable_text
+  variable_text:
+    id: skill_deception_proficiency_rank
+    label: 'Skill: Deception: Proficiency'
+    description: 'Skill: Deception: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: trained
+- type: variable_number
+  variable_number:
+    id: skill_deception_proficiency_rank_modifier
+    label: 'Skill: Deception: Proficiency Rank Modifier'
+    description: 'Skill: Deception: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_deception_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_deception_proficiency_modifier
+    label: 'Skill: Deception: Proficiency Modifier'
+    description: 'Skill: Deception: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_deception_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_diplomacy_label
+    label: 'Skill: Diplomacy: Label'
+    description: 'Skill: Diplomacy: Label'
+    value:
+      type: text_literal
+      text_literal: 'Diplomacy'
+- type: variable_text
+  variable_text:
+    id: skill_diplomacy_proficiency_rank
+    label: 'Skill: Diplomacy: Proficiency'
+    description: 'Skill: Diplomacy: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: trained
+- type: variable_number
+  variable_number:
+    id: skill_diplomacy_proficiency_rank_modifier
+    label: 'Skill: Diplomacy: Proficiency Rank Modifier'
+    description: 'Skill: Diplomacy: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_diplomacy_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_diplomacy_proficiency_modifier
+    label: 'Skill: Diplomacy: Proficiency Modifier'
+    description: 'Skill: Diplomacy: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_diplomacy_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_intimidation_label
+    label: 'Skill: Intimidation: Label'
+    description: 'Skill: Intimidation: Label'
+    value:
+      type: text_literal
+      text_literal: 'Intimidation'
+- type: variable_text
+  variable_text:
+    id: skill_intimidation_proficiency_rank
+    label: 'Skill: Intimidation: Proficiency'
+    description: 'Skill: Intimidation: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: trained
+- type: variable_number
+  variable_number:
+    id: skill_intimidation_proficiency_rank_modifier
+    label: 'Skill: Intimidation: Proficiency Rank Modifier'
+    description: 'Skill: Intimidation: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_intimidation_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_intimidation_proficiency_modifier
+    label: 'Skill: Intimidation: Proficiency Modifier'
+    description: 'Skill: Intimidation: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_intimidation_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_lore_label
+    label: 'Skill: Lore: Label'
+    description: 'Skill: Lore: Label'
+    value:
+      type: text_literal
+      text_literal: 'Lore'
+- type: variable_text
+  variable_text:
+    id: skill_lore_proficiency_rank
+    label: 'Skill: Lore: Proficiency'
+    description: 'Skill: Lore: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: untrained
+- type: variable_number
+  variable_number:
+    id: skill_lore_proficiency_rank_modifier
+    label: 'Skill: Lore: Proficiency Rank Modifier'
+    description: 'Skill: Lore: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_lore_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_lore_proficiency_modifier
+    label: 'Skill: Lore: Proficiency Modifier'
+    description: 'Skill: Lore: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_lore_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_medicine_label
+    label: 'Skill: Medicine: Label'
+    description: 'Skill: Medicine: Label'
+    value:
+      type: text_literal
+      text_literal: 'Medicine'
+- type: variable_text
+  variable_text:
+    id: skill_medicine_proficiency_rank
+    label: 'Skill: Medicine: Proficiency'
+    description: 'Skill: Medicine: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: untrained
+- type: variable_number
+  variable_number:
+    id: skill_medicine_proficiency_rank_modifier
+    label: 'Skill: Medicine: Proficiency Rank Modifier'
+    description: 'Skill: Medicine: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_medicine_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_medicine_proficiency_modifier
+    label: 'Skill: Medicine: Proficiency Modifier'
+    description: 'Skill: Medicine: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_medicine_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_nature_label
+    label: 'Skill: Nature: Label'
+    description: 'Skill: Nature: Label'
+    value:
+      type: text_literal
+      text_literal: 'Nature'
+- type: variable_text
+  variable_text:
+    id: skill_nature_proficiency_rank
+    label: 'Skill: Nature: Proficiency'
+    description: 'Skill: Nature: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: untrained
+- type: variable_number
+  variable_number:
+    id: skill_nature_proficiency_rank_modifier
+    label: 'Skill: Nature: Proficiency Rank Modifier'
+    description: 'Skill: Nature: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_nature_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_nature_proficiency_modifier
+    label: 'Skill: Nature: Proficiency Modifier'
+    description: 'Skill: Nature: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_nature_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_occultism_label
+    label: 'Skill: Occultism: Label'
+    description: 'Skill: Occultism: Label'
+    value:
+      type: text_literal
+      text_literal: 'Occultism'
+- type: variable_text
+  variable_text:
+    id: skill_occultism_proficiency_rank
+    label: 'Skill: Occultism: Proficiency'
+    description: 'Skill: Occultism: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: untrained
+- type: variable_number
+  variable_number:
+    id: skill_occultism_proficiency_rank_modifier
+    label: 'Skill: Occultism: Proficiency Rank Modifier'
+    description: 'Skill: Occultism: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_occultism_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_occultism_proficiency_modifier
+    label: 'Skill: Occultism: Proficiency Modifier'
+    description: 'Skill: Occultism: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_occultism_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_performance_label
+    label: 'Skill: Performance: Label'
+    description: 'Skill: Performance: Label'
+    value:
+      type: text_literal
+      text_literal: 'Performance'
+- type: variable_text
+  variable_text:
+    id: skill_performance_proficiency_rank
+    label: 'Skill: Performance: Proficiency'
+    description: 'Skill: Performance: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: trained
+- type: variable_number
+  variable_number:
+    id: skill_performance_proficiency_rank_modifier
+    label: 'Skill: Performance: Proficiency Rank Modifier'
+    description: 'Skill: Performance: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_performance_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_performance_proficiency_modifier
+    label: 'Skill: Performance: Proficiency Modifier'
+    description: 'Skill: Performance: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_performance_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_religion_label
+    label: 'Skill: Religion: Label'
+    description: 'Skill: Religion: Label'
+    value:
+      type: text_literal
+      text_literal: 'Religion'
+- type: variable_text
+  variable_text:
+    id: skill_religion_proficiency_rank
+    label: 'Skill: Religion: Proficiency'
+    description: 'Skill: Religion: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: untrained
+- type: variable_number
+  variable_number:
+    id: skill_religion_proficiency_rank_modifier
+    label: 'Skill: Religion: Proficiency Rank Modifier'
+    description: 'Skill: Religion: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_religion_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_religion_proficiency_modifier
+    label: 'Skill: Religion: Proficiency Modifier'
+    description: 'Skill: Religion: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_religion_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_society_label
+    label: 'Skill: Society: Label'
+    description: 'Skill: Society: Label'
+    value:
+      type: text_literal
+      text_literal: 'Society'
+- type: variable_text
+  variable_text:
+    id: skill_society_proficiency_rank
+    label: 'Skill: Society: Proficiency'
+    description: 'Skill: Society: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: trained
+- type: variable_number
+  variable_number:
+    id: skill_society_proficiency_rank_modifier
+    label: 'Skill: Society: Proficiency Rank Modifier'
+    description: 'Skill: Society: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_society_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_society_proficiency_modifier
+    label: 'Skill: Society: Proficiency Modifier'
+    description: 'Skill: Society: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_society_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_stealth_label
+    label: 'Skill: Stealth: Label'
+    description: 'Skill: Stealth: Label'
+    value:
+      type: text_literal
+      text_literal: 'Stealth'
+- type: variable_text
+  variable_text:
+    id: skill_stealth_proficiency_rank
+    label: 'Skill: Stealth: Proficiency'
+    description: 'Skill: Stealth: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: trained
+- type: variable_number
+  variable_number:
+    id: skill_stealth_proficiency_rank_modifier
+    label: 'Skill: Stealth: Proficiency Rank Modifier'
+    description: 'Skill: Stealth: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_stealth_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_stealth_proficiency_modifier
+    label: 'Skill: Stealth: Proficiency Modifier'
+    description: 'Skill: Stealth: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_stealth_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_survival_label
+    label: 'Skill: Survival: Label'
+    description: 'Skill: Survival: Label'
+    value:
+      type: text_literal
+      text_literal: 'Survival'
+- type: variable_text
+  variable_text:
+    id: skill_survival_proficiency_rank
+    label: 'Skill: Survival: Proficiency'
+    description: 'Skill: Survival: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: trained
+- type: variable_number
+  variable_number:
+    id: skill_survival_proficiency_rank_modifier
+    label: 'Skill: Survival: Proficiency Rank Modifier'
+    description: 'Skill: Survival: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_survival_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_survival_proficiency_modifier
+    label: 'Skill: Survival: Proficiency Modifier'
+    description: 'Skill: Survival: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_survival_proficiency_modifier
+- type: variable_text
+  variable_text:
+    id: skill_thievery_label
+    label: 'Skill: Thievery: Label'
+    description: 'Skill: Thievery: Label'
+    value:
+      type: text_literal
+      text_literal: 'Thievery'
+- type: variable_text
+  variable_text:
+    id: skill_thievery_proficiency_rank
+    label: 'Skill: Thievery: Proficiency'
+    description: 'Skill: Thievery: Proficiency'
+    value:
+      type: value_reference
+      value_reference:
+        value_set_id:
+          type: text_literal
+          text_literal: proficiency_ranks
+        value_id:
+          type: text_literal
+          text_literal: trained
+- type: variable_number
+  variable_number:
+    id: skill_thievery_proficiency_rank_modifier
+    label: 'Skill: Thievery: Proficiency Rank Modifier'
+    description: 'Skill: Thievery: Proficiency Modifier'
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: proficiency_modifier_from_rank
+        parameters:
+        - name: proficiency_rank
+          value:
+            type: data_reference_text
+            data_reference_text:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: skill_thievery_proficiency_rank
+- type: variable_number
+  variable_number:
+    id: skill_thievery_proficiency_modifier
+    label: 'Skill: Thievery: Proficiency Modifier'
+    description: 'Skill: Thievery: Proficiency Modifier'
+    value:
+      type: summation_id
+      summation_id: skill_thievery_proficiency_modifier
 - type: variable_text
   variable_text:
     id: name
@@ -736,20 +1975,64 @@ variables:
         program_id: hit_die_by_class
 - type: variable_number
   variable_number:
-    id: base_strength
-    label: Base Strength
-    description: Base Strength
+    id: ability_boost_level_one_one
+    label: '1st Level Ability Boost'
+    description: '1st Level Ability Boost'
+    tags:
+    - ability_boost_dexterity
     value:
       type: number_literal
-      number_literal: 13
+      number_literal: 2
 - type: variable_number
   variable_number:
-    id: strength
-    label: Strength
-    description: Strength
+    id: ability_boost_level_one_two
+    label: '1st Level Ability Boost'
+    description: '1st Level Ability Boost'
+    tags:
+    - ability_boost_dexterity
     value:
-      type: summation_id
-      summation_id: strength
+      type: number_literal
+      number_literal: 2
+- type: variable_number
+  variable_number:
+    id: ability_boost_level_one_three
+    label: '1st Level Ability Boost'
+    description: '1st Level Ability Boost'
+    tags:
+    - ability_boost_dexterity
+    value:
+      type: number_literal
+      number_literal: 2
+- type: variable_number
+  variable_number:
+    id: ability_boost_level_one_four
+    label: '1st Level Ability Boost'
+    description: '1st Level Ability Boost'
+    tags:
+    - ability_boost_strength
+    value:
+      type: number_literal
+      number_literal: 2
+- type: variable_number
+  variable_number:
+    id: ability_boost_human_one
+    label: 'Human Ability Boost'
+    description: 'Human Ability Boost'
+    tags:
+    - ability_boost_intelligence
+    value:
+      type: number_literal
+      number_literal: 2
+- type: variable_number
+  variable_number:
+    id: ability_boost_human_two
+    label: 'Human Ability Boost'
+    description: 'Human Ability Boost'
+    tags:
+    - ability_boost_charisma
+    value:
+      type: number_literal
+      number_literal: 2
 - type: variable_number
   variable_number:
     id: carrying_capacity
@@ -766,194 +2049,6 @@ variables:
     value:
       type: number_literal
       number_literal: 390
-- type: variable_number
-  variable_number:
-    id: strength_modifier
-    label: Strength Modifier
-    description: Strength Modifier
-    value:
-      type: program_invocation
-      program_invocation:
-        program_id: ability_modifier
-        parameters:
-        - name: ability_score
-          value:
-            type: data_reference_number
-            data_reference_number:
-              type: variable_reference
-              variable_reference:
-                type: variable_id
-                variable_id: strength
-- type: variable_number
-  variable_number:
-    id: base_dexterity
-    label: Base Dexterity
-    description: Base Dexterity
-    value:
-      type: number_literal
-      number_literal: 15
-- type: variable_number
-  variable_number:
-    id: dexterity
-    label: Dexterity
-    description: Dexterity
-    value:
-      type: summation_id
-      summation_id: dexterity
-- type: variable_number
-  variable_number:
-    id: dexterity_modifier
-    label: Dexterity Modifier
-    description: Dexterity Modifier
-    value:
-      type: program_invocation
-      program_invocation:
-        program_id: ability_modifier
-        parameters:
-        - name: ability_score
-          value:
-            type: data_reference_number
-            data_reference_number:
-              type: variable_reference
-              variable_reference:
-                type: variable_id
-                variable_id: dexterity
-- type: variable_number
-  variable_number:
-    id: base_constitution
-    label: Base Constitution
-    description: Base Constitution
-    value:
-      type: number_literal
-      number_literal: 12
-- type: variable_number
-  variable_number:
-    id: constitution
-    label: Constitution
-    description: Constitution
-    value:
-      type: summation_id
-      summation_id: constitution
-- type: variable_number
-  variable_number:
-    id: constitution_modifier
-    label: Constitution Modifier
-    description: Constitution Modifier
-    value:
-      type: program_invocation
-      program_invocation:
-        program_id: ability_modifier
-        parameters:
-        - name: ability_score
-          value:
-            type: data_reference_number
-            data_reference_number:
-              type: variable_reference
-              variable_reference:
-                type: variable_id
-                variable_id: constitution
-- type: variable_number
-  variable_number:
-    id: base_intelligence
-    label: Base Intelligence
-    description: Base Intelligence
-    value:
-      type: number_literal
-      number_literal: 12
-- type: variable_number
-  variable_number:
-    id: intelligence
-    label: Intelligence
-    description: Intelligence
-    value:
-      type: summation_id
-      summation_id: intelligence
-- type: variable_number
-  variable_number:
-    id: intelligence_modifier
-    label: Intelligence Modifier
-    description: Intelligence Modifier
-    value:
-      type: program_invocation
-      program_invocation:
-        program_id: ability_modifier
-        parameters:
-        - name: ability_score
-          value:
-            type: data_reference_number
-            data_reference_number:
-              type: variable_reference
-              variable_reference:
-                type: variable_id
-                variable_id: intelligence
-- type: variable_number
-  variable_number:
-    id: base_wisdom
-    label: Base Wisdom
-    description: Base Wisdom
-    value:
-      type: number_literal
-      number_literal: 9
-- type: variable_number
-  variable_number:
-    id: wisdom
-    label: Wisdom
-    description: Wisdom
-    value:
-      type: summation_id
-      summation_id: wisdom
-- type: variable_number
-  variable_number:
-    id: wisdom_modifier
-    label: Wisdom Modifier
-    description: Wisdom Modifier
-    value:
-      type: program_invocation
-      program_invocation:
-        program_id: ability_modifier
-        parameters:
-        - name: ability_score
-          value:
-            type: data_reference_number
-            data_reference_number:
-              type: variable_reference
-              variable_reference:
-                type: variable_id
-                variable_id: wisdom
-- type: variable_number
-  variable_number:
-    id: base_charisma
-    label: Base Charisma
-    description: Base Charisma
-    value:
-      type: number_literal
-      number_literal: 12
-- type: variable_number
-  variable_number:
-    id: charisma
-    label: Charisma
-    description: Charisma
-    value:
-      type: summation_id
-      summation_id: charisma
-- type: variable_number
-  variable_number:
-    id: charisma_modifier
-    label: Charisma Modifier
-    description: Charisma Modifier
-    value:
-      type: program_invocation
-      program_invocation:
-        program_id: ability_modifier
-        parameters:
-        - name: ability_score
-          value:
-            type: data_reference_number
-            data_reference_number:
-              type: variable_reference
-              variable_reference:
-                type: variable_id
-                variable_id: charisma
 - type: variable_text
   variable_text:
     id: passive_perception_label
@@ -1354,7 +2449,7 @@ variables:
     description: Name Label
     value:
       type: text_literal
-      text_literal: 'Who am I?'
+      text_literal: 'My name is'
 - type: variable_text
   variable_text:
     id: motto
@@ -1516,7 +2611,7 @@ variables:
     description: Deity Label
     value:
       type: text_literal
-      text_literal: 'My deity'
+      text_literal: 'My religion'
 - type: variable_text
   variable_text:
     id: my_body_label
@@ -1615,12 +2710,20 @@ variables:
       text_literal: 'Movement'
 - type: variable_text
   variable_text:
-    id: attacks_label
+    id: my_attacks_label
     label: Attacks Label
     description: Attacks Label
     value:
       type: text_literal
       text_literal: 'My Attacks'
+- type: variable_text
+  variable_text:
+    id: attacks_label
+    label: Attacks Label
+    description: Attacks Label
+    value:
+      type: text_literal
+      text_literal: 'Attacks'
 - type: variable_text
   variable_text:
     id: number_of_attacks_label
@@ -1783,12 +2886,12 @@ variables:
       text_literal: 'Total weight of my gear'
 - type: variable_text
   variable_text:
-    id: encumbrance_label
-    label: Encumbrance Label
-    description: Encumbrance Label
+    id: bulk_label
+    label: Bulk Label
+    description: Bulk Label
     value:
       type: text_literal
-      text_literal: 'Encumbrance'
+      text_literal: 'MY BULK'
 - type: variable_text
   variable_text:
     id: max_hit_points_label
@@ -2383,16 +3486,40 @@ sections:
           corners:
             top_right_radius: 2
             top_left_radius: 2
-            bottom_left_radius: 0
-            bottom_right_radius: 0
+            bottom_left_radius: 2
+            bottom_right_radius: 2
           margins:
             left: 6
             right: 6
+            bottom: 10
           padding:
             left: 8
             right: 8
             top: 8
+            bottom: 8
       rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+            margins:
+              bottom: 0
+        widgets:
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: light_blue_grey_20
+                size: 16
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  horizontal_alignment: left
+            value_variable_id: name_label
       - widgets:
         - type: widget_story
           widget_story:
@@ -2414,8 +3541,8 @@ sections:
                       color_id: light_blue_8
                     - theme_id: light
                       color_id: light_blue_tint_1
-                  font_style: semi_bold
-                  size: 22
+                  font_style: medium
+                  size: 26
 #      - format:
 #          element_format:
 #            horizontal_alignment: left
@@ -2445,8 +3572,8 @@ sections:
             - theme_id: light
               color_id: white
           corners:
-            top_right_radius: 0
-            top_left_radius: 0
+            top_right_radius: 2
+            top_left_radius: 2
             bottom_left_radius: 2
             bottom_right_radius: 2
           margins:
@@ -2457,6 +3584,8 @@ sections:
       - format:
           element_format:
             corners:
+              top_right_radius: 2
+              top_left_radius: 2
               bottom_left_radius: 2
               bottom_right_radius: 2
             padding:
@@ -2494,7 +3623,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: dark_blue_grey_18
-                size: 13.5
+                size: 15
               unselected_tab_format:
                 element_format:
                   border:
@@ -2513,7 +3642,7 @@ sections:
                   theme_color_ids:
                   - theme_id: light
                     color_id: light_blue_grey_17
-                size: 13.5
+                size: 15
               tab_format:
                 underline_thickness: 1
                 underline_color_theme:
@@ -3253,7 +4382,7 @@ sections:
                     - theme_id: dark
                       color_id: medium_grey_7
                     - theme_id: light
-                      color_id: light_grey_6
+                      color_id: light_blue_shade_1
                 current_format:
                   color_theme:
                     theme_color_ids:
@@ -3322,7 +4451,7 @@ sections:
                     theme_color_ids:
                     - theme_id: light
                       color_id: light_blue_tint_1
-                  height: 42
+                  height: 44
                   horizontal_alignment: left
                   padding:
                     left: 12
@@ -3340,7 +4469,7 @@ sections:
                   width:
                     type: width_wrap
                     width_wrap: wrap
-                  height: 42
+                  height: 44
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
@@ -3383,7 +4512,7 @@ sections:
                     theme_color_ids:
                     - theme_id: light
                       color_id: dark_blue_grey_20
-                  height: 42
+                  height: 44
                   horizontal_alignment: left
                   margins:
                     left: 12
@@ -3403,7 +4532,7 @@ sections:
                   width:
                     type: width_wrap
                     width_wrap: wrap
-                  height: 42
+                  height: 44
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
@@ -3459,7 +4588,7 @@ sections:
                     theme_color_ids:
                     - theme_id: light
                       color_id: light_blue_tint_1
-                  height: 42
+                  height: 44
                   horizontal_alignment: left
                   padding:
                     left: 12
@@ -3477,7 +4606,7 @@ sections:
                   width:
                     type: width_wrap
                     width_wrap: wrap
-                  height: 42
+                  height: 44
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
@@ -3520,7 +4649,7 @@ sections:
                     theme_color_ids:
                     - theme_id: light
                       color_id: dark_blue_grey_20
-                  height: 42
+                  height: 44
                   horizontal_alignment: left
                   margins:
                     left: 12
@@ -3540,7 +4669,7 @@ sections:
                   width:
                     type: width_wrap
                     width_wrap: wrap
-                  height: 42
+                  height: 44
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
@@ -3596,7 +4725,7 @@ sections:
                     theme_color_ids:
                     - theme_id: light
                       color_id: light_blue_tint_1
-                  height: 42
+                  height: 44
                   horizontal_alignment: left
                   padding:
                     left: 12
@@ -3614,7 +4743,7 @@ sections:
                   width:
                     type: width_wrap
                     width_wrap: wrap
-                  height: 42
+                  height: 44
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
@@ -3657,7 +4786,7 @@ sections:
                     theme_color_ids:
                     - theme_id: light
                       color_id: dark_blue_grey_20
-                  height: 42
+                  height: 44
                   horizontal_alignment: left
                   margins:
                     left: 12
@@ -3677,7 +4806,7 @@ sections:
                   width:
                     type: width_wrap
                     width_wrap: wrap
-                  height: 42
+                  height: 44
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
@@ -3733,7 +4862,7 @@ sections:
                     theme_color_ids:
                     - theme_id: light
                       color_id: light_blue_tint_1
-                  height: 42
+                  height: 44
                   horizontal_alignment: left
                   padding:
                     left: 12
@@ -3751,7 +4880,7 @@ sections:
                   width:
                     type: width_wrap
                     width_wrap: wrap
-                  height: 42
+                  height: 44
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
@@ -3794,7 +4923,7 @@ sections:
                     theme_color_ids:
                     - theme_id: light
                       color_id: dark_blue_grey_20
-                  height: 42
+                  height: 44
                   horizontal_alignment: left
                   margins:
                     left: 12
@@ -3814,7 +4943,7 @@ sections:
                   width:
                     type: width_wrap
                     width_wrap: wrap
-                  height: 42
+                  height: 44
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
@@ -3870,7 +4999,7 @@ sections:
                     theme_color_ids:
                     - theme_id: light
                       color_id: light_blue_tint_1
-                  height: 42
+                  height: 44
                   horizontal_alignment: left
                   padding:
                     left: 12
@@ -3888,7 +5017,7 @@ sections:
                   width:
                     type: width_wrap
                     width_wrap: wrap
-                  height: 42
+                  height: 44
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
@@ -3931,7 +5060,7 @@ sections:
                     theme_color_ids:
                     - theme_id: light
                       color_id: dark_blue_grey_20
-                  height: 42
+                  height: 44
                   horizontal_alignment: left
                   margins:
                     left: 12
@@ -3951,7 +5080,7 @@ sections:
                   width:
                     type: width_wrap
                     width_wrap: wrap
-                  height: 42
+                  height: 44
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
@@ -4007,7 +5136,7 @@ sections:
                     theme_color_ids:
                     - theme_id: light
                       color_id: light_blue_tint_1
-                  height: 42
+                  height: 44
                   horizontal_alignment: left
                   padding:
                     left: 12
@@ -4025,7 +5154,7 @@ sections:
                   width:
                     type: width_wrap
                     width_wrap: wrap
-                  height: 42
+                  height: 44
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
@@ -4068,7 +5197,7 @@ sections:
                     theme_color_ids:
                     - theme_id: light
                       color_id: dark_blue_grey_20
-                  height: 42
+                  height: 44
                   horizontal_alignment: left
                   margins:
                     left: 12
@@ -4088,7 +5217,7 @@ sections:
                   width:
                     type: width_wrap
                     width_wrap: wrap
-                  height: 42
+                  height: 44
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
@@ -4159,8 +5288,17 @@ sections:
             right: 10
       rows:
       - format:
+          border:
+            bottom:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_4
+              thickness: 1
           element_format:
             horizontal_alignment: left
+            padding:
+              bottom: 4
         widgets:
         - type: widget_text
           widget_text:
@@ -4171,18 +5309,18 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_20
                   - theme_id: light
-                    color_id: dark_grey_22
-                size: 15
+                    color_id: dark_grey_14
                 font_style: bold
+                size: 17
               widget_format:
                 element_format:
                   horizontal_alignment: left
-                  margins:
-                    bottom: 8
             value_variable_id: my_body_label
       - format:
           element_format:
             horizontal_alignment: left
+            padding:
+              top: 4
         widgets:
         - type: widget_text
           widget_text:
@@ -4199,8 +5337,8 @@ sections:
               widget_format:
                 element_format:
                   corners:
-                    top_left_radius: 2
-                    top_right_radius: 2
+                    top_left_radius: 0
+                    top_right_radius: 0
                     bottom_left_radius: 2
                     bottom_right_radius: 2
                   background_color_theme:
@@ -4216,6 +5354,35 @@ sections:
                     type: width_wrap
                     width_wrap: wrap
             value_variable_id: gender
+        - type: widget_text
+          widget_text:
+            format:
+              widget_format:
+                element_format:
+                  width:
+                    type: width_wrap
+                    width_wrap: wrap
+                  height: 36
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue_grey_5
+                  corners:
+                    bottom_right_radius: 2
+                    top_right_radius: 2
+                  padding:
+                    left: 10
+                    right: 10
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_14
+                font_style: semi_bold
+                size: 17
+            value_variable_id: gender_label
         - type: widget_text
           widget_text:
             format:
@@ -4418,31 +5585,32 @@ sections:
             left: 6
             right: 6
       rows:
-#      - format:
-#          element_format:
-#            horizontal_alignment: left
-#            padding:
-#              left: 8
-#              right: 8
-#              top: 6
-#              bottom: 2
-#        widgets:
-#        - type: widget_text
-#          widget_text:
-#            format:
-#              value_format:
-#                color_theme:
-#                  theme_color_ids:
-#                  - theme_id: dark
-#                    color_id: light_grey_20
-#                  - theme_id: light
-#                    color_id: dark_grey_20
-#                size: 16
-#                font_style: bold
-#              widget_format:
-#                element_format:
-#                  horizontal_alignment: left
-#            value_variable_id: alignment_label
+      - format:
+          element_format:
+            horizontal_alignment: left
+            margins:
+              bottom: -6
+            padding:
+              left: 8
+              right: 8
+              top: 8
+        widgets:
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_14
+                font_style: bold
+                size: 17
+              widget_format:
+                element_format:
+                  horizontal_alignment: left
+            value_variable_id: alignment_label
       - format:
           element_format:
             padding:
@@ -4458,12 +5626,12 @@ sections:
                   width:
                     type: width_justify
                     width_justify: justify
-              line_spacing: 2
-              line_height: 32
+              line_spacing: 0
+              line_height: 26
               text_format:
                 element_format:
                   padding:
-                    top: 2
+                    top: 0
                     bottom: 10
             story:
             - type: story_part_span
@@ -4527,32 +5695,32 @@ sections:
             top: 8
             bottom: 2
       rows:
-#      - format:
-#          element_format:
-#            horizontal_alignment: left
-#            padding:
-#              left: 8
-#              right: 8
-#              top: 6
-#              bottom: 6
-#        widgets:
-#        - type: widget_text
-#          widget_text:
-##            id: deity_label
-#            format:
-#              value_format:
-#                color_theme:
-#                  theme_color_ids:
-#                  - theme_id: dark
-#                    color_id: light_grey_20
-#                  - theme_id: light
-#                    color_id: dark_grey_12
-#                size: 17
-#                font_style: bold
-#              widget_format:
-#                element_format:
-#                  horizontal_alignment: left
-#            value_variable_id: deity_label
+      - format:
+          element_format:
+            horizontal_alignment: left
+            margins:
+              bottom: -6
+            padding:
+              left: 8
+              right: 8
+              top: 8
+        widgets:
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_14
+                font_style: bold
+                size: 17
+              widget_format:
+                element_format:
+                  horizontal_alignment: left
+            value_variable_id: deity_label
       - format:
           element_format:
             padding:
@@ -4569,17 +5737,16 @@ sections:
                   width:
                     type: width_justify
                     width_justify: justify
-              line_spacing: 2
-              line_height: 32
+              line_spacing: 0
+              line_height: 26
               text_format:
                 element_format:
                   padding:
-                    top: 2
                     bottom: 10
             story:
             - type: story_part_span
               story_part_span:
-                text: 'I worship '
+                text: 'I worship'
                 text_format:
                   color_theme:
                     theme_color_ids:
@@ -4611,10 +5778,10 @@ sections:
                     - theme_id: light
                       color_id: light_blue
                   font_style: bold
-                  size: 18
+                  size: 19
             - type: story_part_span
               story_part_span:
-                text: '. Her churches are the streets and the open roads.'
+                text: '. Her churches are the taverns and the open roads.'
                 text_format:
                   color_theme:
                     theme_color_ids:
@@ -4624,7 +5791,6 @@ sections:
                       color_id: dark_grey_16
                   font_style: medium
                   size: 18
-
     - format:
         element_format:
           background_color_theme:
@@ -4647,8 +5813,8 @@ sections:
             padding:
               left: 8
               right: 8
-              top: 6
-              bottom: 2
+              top: 8
+              bottom: 4
         widgets:
         - type: widget_text
           widget_text:
@@ -4659,7 +5825,7 @@ sections:
                   - theme_id: dark
                     color_id: dark_grey_23
                   - theme_id: light
-                    color_id: dark_grey_12
+                    color_id: dark_grey_14
                 font_style: bold
                 size: 17
               widget_format:
@@ -4680,16 +5846,16 @@ sections:
               widget_format:
                 element_format:
                   margins:
-                    top: 2
+                    top: 0
               description_format:
                 color_theme:
                   theme_color_ids:
                   - theme_id: dark
                     color_id: dark_grey_23
                   - theme_id: light
-                    color_id: dark_grey_12
+                    color_id: dark_grey_16
                 font_style: medium
-                size: 17
+                size: 18
               item_format:
                 color_theme:
                   theme_color_ids:
@@ -4698,7 +5864,7 @@ sections:
                   - theme_id: light
                     color_id: light_blue
                 font_style: bold
-                size: 17
+                size: 19
             value_set_id: languages
             values_variable_id: known_languages
             description: 'I can speak '
@@ -5077,8 +6243,10 @@ sections:
                 variable_prefix: value
                 relation: value
                 default_value:
-                  type: number_literal
-                  number_literal: 1
+                  type: variable_number_value
+                  variable_number_value:
+                    type: number_literal
+                    number_literal: 1
                 format:
                   column_format:
                     text_format:
@@ -5098,8 +6266,10 @@ sections:
                 variable_prefix: duration
                 relation: duration
                 default_value:
-                  type: number_literal
-                  number_literal: 1
+                  type: variable_number_value
+                  variable_number_value:
+                    type: number_literal
+                    number_literal: 1
                 format:
                   column_format:
                     text_format:
@@ -6018,7 +7188,7 @@ sections:
           margins:
             left: 6
             right: 6
-            bottom: 12
+            bottom: 8
       rows:
       - format:
           element_format:
@@ -6029,7 +7199,7 @@ sections:
             format:
               widget_format:
                 element_format:
-                  height: 42
+                  height: 44
               roll_text_location: button
               view_type: inline_right_button
               button_format:
@@ -6062,7 +7232,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: green_tint_1
+                      color_id: purple_tint_2
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
@@ -6136,104 +7306,43 @@ sections:
                 summation_id: skill_acrobatics_roll
             description: 'Acrobatics'
             result_description: 'Acrobatics'
-        - type: widget_points
-          widget_points:
+        - type: widget_text
+          widget_text:
             format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
               widget_format:
                 element_format:
-                  margins:
-                    left: 10
-              limit_text_format:
-                element_format:
-                  vertical_alignment: middle
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: dark_grey_10
-                size: 18
-              current_text_format:
-                element_format:
-                  vertical_alignment: middle
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: light_blue
-                font_style: bold
-                size: 20
-              label_text_format:
-                element_format:
-                  margins:
-                    left: 5
-                  padding:
-                    top: 1.5
-                  vertical_alignment: middle
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: light_blue
-                font_style: medium
-                size: 18
-              info_format:
-                style: none
-              bar_format:
-                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
                   corners:
                     top_left_radius: 2
                     top_right_radius: 2
-                    bottom_right_radius: 2
                     bottom_left_radius: 2
-                bar_style: levels
-                levels: ['T','E','M','L']
-                limit_format:
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: white
-                    height: 42
-                    padding:
-                      left: 4
-                      right: 4
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: medium_grey_7
-                    - theme_id: light
-                      color_id: light_grey_14
-                  font_style: bold
-                  size: 17
-                current_format:
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: white
-                    height: 42
-                    padding:
-                      left: 4
-                      right: 4
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_10
-                    - theme_id: light
-                      color_id: dark_grey_14
-                  font_style: bold
-                  size: 17
-            limit_value_variable_id: max_skill_proficiency
-            current_value_variable_id: skill_acrobatics_proficiency_rank
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_acrobatics_proficiency_rank
     - format:
         element_format:
           margins:
             left: 6
             right: 6
-            bottom: 12
+            bottom: 8
       rows:
       - format:
           element_format:
@@ -6244,7 +7353,7 @@ sections:
             format:
               widget_format:
                 element_format:
-                  height: 42
+                  height: 44
               roll_text_location: button
               view_type: inline_right_button
               button_format:
@@ -6277,7 +7386,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: green_tint_1
+                      color_id: purple_tint_2
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
@@ -6348,107 +7457,46 @@ sections:
             roll_group:
               roll_references:
               - type: summation_id
-                summation_id: skill_acrobatics_roll
+                summation_id: skill_arcana_roll
             description: 'Arcana'
             result_description: 'Arcana'
-        - type: widget_points
-          widget_points:
+        - type: widget_text
+          widget_text:
             format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
               widget_format:
                 element_format:
-                  margins:
-                    left: 10
-              limit_text_format:
-                element_format:
-                  vertical_alignment: middle
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: dark_grey_10
-                size: 18
-              current_text_format:
-                element_format:
-                  vertical_alignment: middle
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: light_blue
-                font_style: bold
-                size: 20
-              label_text_format:
-                element_format:
-                  margins:
-                    left: 5
-                  padding:
-                    top: 1.5
-                  vertical_alignment: middle
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: light_blue
-                font_style: medium
-                size: 18
-              info_format:
-                style: none
-              bar_format:
-                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
                   corners:
                     top_left_radius: 2
                     top_right_radius: 2
-                    bottom_right_radius: 2
                     bottom_left_radius: 2
-                bar_style: levels
-                levels: ['T','E','M','L']
-                limit_format:
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: white
-                    height: 42
-                    padding:
-                      left: 4
-                      right: 4
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: medium_grey_7
-                    - theme_id: light
-                      color_id: light_grey_14
-                  font_style: bold
-                  size: 17
-                current_format:
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: white
-                    height: 42
-                    padding:
-                      left: 4
-                      right: 4
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_10
-                    - theme_id: light
-                      color_id: dark_grey_14
-                  font_style: bold
-                  size: 17
-            limit_value_variable_id: max_skill_proficiency
-            current_value_variable_id: skill_acrobatics_proficiency_rank
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_arcana_proficiency_rank
     - format:
         element_format:
           margins:
             left: 6
             right: 6
-            bottom: 12
+            bottom: 8
       rows:
       - format:
           element_format:
@@ -6459,7 +7507,7 @@ sections:
             format:
               widget_format:
                 element_format:
-                  height: 42
+                  height: 44
               roll_text_location: button
               view_type: inline_right_button
               button_format:
@@ -6492,7 +7540,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: green_tint_1
+                      color_id: purple_tint_2
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
@@ -6563,101 +7611,2196 @@ sections:
             roll_group:
               roll_references:
               - type: summation_id
-                summation_id: skill_acrobatics_roll
+                summation_id: skill_athletics_roll
             description: 'Athletics'
             result_description: 'Athletics'
-        - type: widget_points
-          widget_points:
+        - type: widget_text
+          widget_text:
             format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
               widget_format:
                 element_format:
-                  margins:
-                    left: 10
-              limit_text_format:
-                element_format:
-                  vertical_alignment: middle
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: dark_grey_10
-                size: 18
-              current_text_format:
-                element_format:
-                  vertical_alignment: middle
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: light_blue
-                font_style: bold
-                size: 20
-              label_text_format:
-                element_format:
-                  margins:
-                    left: 5
-                  padding:
-                    top: 1.5
-                  vertical_alignment: middle
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_10
-                  - theme_id: light
-                    color_id: light_blue
-                font_style: medium
-                size: 18
-              info_format:
-                style: none
-              bar_format:
-                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
                   corners:
                     top_left_radius: 2
                     top_right_radius: 2
-                    bottom_right_radius: 2
                     bottom_left_radius: 2
-                bar_style: levels
-                levels: ['T','E','M','L']
-                limit_format:
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: white
-                    height: 42
-                    padding:
-                      left: 4
-                      right: 4
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_athletics_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
                   color_theme:
                     theme_color_ids:
-                    - theme_id: dark
-                      color_id: medium_grey_7
                     - theme_id: light
-                      color_id: light_grey_14
-                  font_style: bold
-                  size: 17
-                current_format:
-                  element_format:
-                    background_color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: white
-                    height: 42
-                    padding:
-                      left: 4
-                      right: 4
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
                   color_theme:
                     theme_color_ids:
-                    - theme_id: dark
-                      color_id: light_blue_10
                     - theme_id: light
-                      color_id: dark_grey_14
-                  font_style: bold
-                  size: 17
-            limit_value_variable_id: max_skill_proficiency
-            current_value_variable_id: skill_acrobatics_proficiency_rank
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_crafting_roll
+            description: 'Crafting'
+            result_description: 'Crafting'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_crafting_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_deception_roll
+            description: 'Deception'
+            result_description: 'Deception'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_deception_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_diplomacy_roll
+            description: 'Diplomacy'
+            result_description: 'Diplomacy'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_diplomacy_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_intimidation_roll
+            description: 'Intimidation'
+            result_description: 'Intimidation'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_intimidation_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_lore_roll
+            description: 'Lore'
+            result_description: 'Lore'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_lore_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_medicine_roll
+            description: 'Medicine'
+            result_description: 'Medicine'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_medicine_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_nature_roll
+            description: 'Nature'
+            result_description: 'Nature'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_nature_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_occultism_roll
+            description: 'Occultism'
+            result_description: 'Occultism'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_occultism_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_performance_roll
+            description: 'Performance'
+            result_description: 'Performance'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_performance_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_religion_roll
+            description: 'Religion'
+            result_description: 'Religion'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_religion_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_society_roll
+            description: 'Society'
+            result_description: 'Society'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_society_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_stealth_roll
+            description: 'Stealth'
+            result_description: 'Stealth'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_stealth_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_survival_roll
+            description: 'Survival'
+            result_description: 'Survival'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_survival_proficiency_rank
+    - format:
+        element_format:
+          margins:
+            left: 6
+            right: 6
+            bottom: 8
+      rows:
+      - format:
+          element_format:
+            horizontal_alignment: left
+        widgets:
+        - type: widget_roll
+          widget_roll:
+            format:
+              widget_format:
+                element_format:
+                  height: 44
+              roll_text_location: button
+              view_type: inline_right_button
+              button_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 10
+                    left: 10
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                size: 19
+              button_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: purple_tint_2
+                  corners:
+                    top_right_radius: 2
+                    bottom_right_radius: 2
+                  padding:
+                    right: 14
+                    left: 14
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                icon_format:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  size:
+                    width: 20
+                    height: 20
+                font_style: bold
+                size: 21
+              description_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              description_roll_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    bottom_left_radius: 2
+                  padding:
+                    right: 8
+                    left: 8
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_grey_12
+                font_style: semi_bold
+                size: 18
+              roll_text_format:
+                element_format:
+                  padding:
+                    left: 3
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                font_style: bold
+                size: 20
+                roll_format: modifier_only
+            roll_group:
+              roll_references:
+              - type: summation_id
+                summation_id: skill_thievery_roll
+            description: 'Thievery'
+            result_description: 'Thievery'
+        - type: widget_text
+          widget_text:
+            format:
+              value_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_20
+                  - theme_id: light
+                    color_id: dark_grey_16
+                size: 18
+                font_style: semi_bold
+              widget_format:
+                element_format:
+                  background_color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: white
+                  corners:
+                    top_left_radius: 2
+                    top_right_radius: 2
+                    bottom_left_radius: 2
+                    bottom_right_radius: 2
+                  horizontal_alignment: left
+                  height: 44
+                  margins:
+                    left: 12
+                  padding:
+                    left: 12
+                    right: 12
+            value_variable_id: skill_thievery_proficiency_rank
   - name: Feats
     format:
       element_format:
@@ -6681,6 +9824,12 @@ sections:
           widget_table:
             title_variable_id: feats_table_label
             primary_column_index: 1
+            editor_options:
+              type: editor_options_subset
+              editor_options_subset:
+                sort:
+                  sort_type: alphabetical
+                  order: ascending
             format:
               widget_format:
                 element_format:
@@ -6812,7 +9961,7 @@ sections:
                         - theme_id: dark
                           color_id: light_grey_5
                         - theme_id: light
-                          color_id: dark_grey_14
+                          color_id: dark_grey_20
                       font_style: semi_bold
                       size: 17
                     width: 2
@@ -6820,21 +9969,34 @@ sections:
               table_widget_number_column:
                 name: LEVEL
                 variable_prefix: quantity
-                relation: quantity
+                relation: feat_level
                 default_value:
-                  type: number_literal
-                  number_literal: 1
+                  type: variable_relation
+                  variable_relation: feat_level
                 format:
                   column_format:
                     text_format:
+                      element_format:
+                        background_color_theme:
+                          theme_color_ids:
+                          - theme_id: light
+                            color_id: light_blue_grey_20
+                        corners:
+                          top_left_radius: 2
+                          top_right_radius: 2
+                          bottom_right_radius: 2
+                          bottom_left_radius: 2
+                        padding:
+                          top: 1
+                          bottom: 1
+                          right: 12
+                          left: 12
                       color_theme:
                         theme_color_ids:
-                        - theme_id: dark
-                          color_id: light_grey_7
                         - theme_id: light
-                          color_id: dark_grey_16
-                      font_style: semi_bold
-                      size: 19
+                          color_id: white
+                      font_style: bold
+                      size: 18
                     width: 1
                   editor_type: adder
             rows:
@@ -7132,6 +10294,8 @@ sections:
             color_id: dark_grey_11
           - theme_id: light
             color_id: light_blue_grey_9
+        padding:
+          bottom: 70
     groups:
     - format:
         element_format:
@@ -7263,8 +10427,10 @@ sections:
                 variable_prefix: quantity
                 relation: quantity
                 default_value:
-                  type: number_literal
-                  number_literal: 1
+                  type: variable_number_value
+                  variable_number_value:
+                    type: number_literal
+                    number_literal: 1
                 format:
                   column_format:
                     text_format:
@@ -7351,9 +10517,11 @@ sections:
                       text_literal: light_armor_leather
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  variable_value:
-                    type: number_literal
-                    number_literal: 1
+                  value:
+                    type: variable_number_value
+                    variable_number_value:
+                      type: number_literal
+                      number_literal: 1
               - type: table_widget_boolean_cell
                 table_widget_boolean_cell:
                   variable_value:
@@ -7369,9 +10537,11 @@ sections:
                       text_literal: shield
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  variable_value:
-                    type: number_literal
-                    number_literal: 1
+                  value:
+                    type: variable_number_value
+                    variable_number_value:
+                      type: number_literal
+                      number_literal: 1
               - type: table_widget_boolean_cell
                 table_widget_boolean_cell:
                   variable_value:
@@ -7513,8 +10683,10 @@ sections:
                 variable_prefix: quantity
                 relation: quantity
                 default_value:
-                  type: number_literal
-                  number_literal: 1
+                  type: variable_number_value
+                  variable_number_value:
+                    type: number_literal
+                    number_literal: 1
                 format:
                   column_format:
                     text_format:
@@ -7601,9 +10773,11 @@ sections:
                       text_literal: rapier
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  variable_value:
-                    type: number_literal
-                    number_literal: 1
+                  value:
+                    type: variable_number_value
+                    variable_number_value:
+                      type: number_literal
+                      number_literal: 1
               - type: table_widget_boolean_cell
                 table_widget_boolean_cell:
                   variable_value:
@@ -7619,9 +10793,11 @@ sections:
                       text_literal: dagger
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  variable_value:
-                    type: number_literal
-                    number_literal: 2
+                  value:
+                    type: variable_number_value
+                    variable_number_value:
+                      type: number_literal
+                      number_literal: 2
               - type: table_widget_boolean_cell
                 table_widget_boolean_cell:
                   variable_value:
@@ -7826,7 +11002,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_grey_20
+                      color_id: dark_blue_grey_23
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
@@ -7884,7 +11060,7 @@ sections:
                   background_color_theme:
                     theme_color_ids:
                     - theme_id: light
-                      color_id: light_blue_grey_20
+                      color_id: dark_blue_grey_23
                   corners:
                     top_right_radius: 2
                     bottom_right_radius: 2
@@ -7906,13 +11082,6 @@ sections:
           padding:
             top: 16
             bottom: 15
-        border:
-          bottom:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_grey_10
-            thickness: 1
       rows:
       - widgets:
         - type: widget_table
@@ -8041,8 +11210,10 @@ sections:
                 name: Quantity
                 variable_prefix: backpack_item_quantity
                 default_value:
-                  type: number_literal
-                  number_literal: 1
+                  type: variable_number_value
+                  variable_number_value:
+                    type: number_literal
+                    number_literal: 1
                 relation: quantity
                 format:
                   column_format:
@@ -8068,9 +11239,11 @@ sections:
                       text_literal: bedroll
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  variable_value:
-                    type: number_literal
-                    number_literal: 1
+                  value:
+                    type: variable_number_value
+                    variable_number_value:
+                      type: number_literal
+                      number_literal: 1
             - cells:
               - type: table_widget_text_cell
                 table_widget_text_cell:
@@ -8081,9 +11254,11 @@ sections:
                       text_literal: mess_kit
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  variable_value:
-                    type: number_literal
-                    number_literal: 1
+                  value:
+                    type: variable_number_value
+                    variable_number_value:
+                      type: number_literal
+                      number_literal: 1
             - cells:
               - type: table_widget_text_cell
                 table_widget_text_cell:
@@ -8094,9 +11269,11 @@ sections:
                       text_literal: tinderbox
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  variable_value:
-                    type: number_literal
-                    number_literal: 1
+                  value:
+                    type: variable_number_value
+                    variable_number_value:
+                      type: number_literal
+                      number_literal: 1
             - cells:
               - type: table_widget_text_cell
                 table_widget_text_cell:
@@ -8107,9 +11284,11 @@ sections:
                       text_literal: torch
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  variable_value:
-                    type: number_literal
-                    number_literal: 10
+                  value:
+                    type: variable_number_value
+                    variable_number_value:
+                      type: number_literal
+                      number_literal: 1
             - cells:
               - type: table_widget_text_cell
                 table_widget_text_cell:
@@ -8120,9 +11299,11 @@ sections:
                       text_literal: rations_1_day
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  variable_value:
-                    type: number_literal
-                    number_literal: 10
+                  value:
+                    type: variable_number_value
+                    variable_number_value:
+                      type: number_literal
+                      number_literal: 10
             - cells:
               - type: table_widget_text_cell
                 table_widget_text_cell:
@@ -8133,9 +11314,11 @@ sections:
                       text_literal: waterskin
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  variable_value:
-                    type: number_literal
-                    number_literal: 1
+                  value:
+                    type: variable_number_value
+                    variable_number_value:
+                      type: number_literal
+                      number_literal: 1
             - cells:
               - type: table_widget_text_cell
                 table_widget_text_cell:
@@ -8146,9 +11329,11 @@ sections:
                       text_literal: rope_hempen_50_foot
               - type: table_widget_number_cell
                 table_widget_number_cell:
-                  variable_value:
-                    type: number_literal
-                    number_literal: 1
+                  value:
+                    type: variable_number_value
+                    variable_number_value:
+                      type: number_literal
+                      number_literal: 1
     - format:
         element_format:
           padding:
@@ -8163,7 +11348,6 @@ sections:
         widgets:
         - type: widget_text
           widget_text:
-#            id: encumbrance_label
             format:
               value_format:
                 color_theme:
@@ -8171,17 +11355,19 @@ sections:
                   - theme_id: dark
                     color_id: light_grey_20
                   - theme_id: light
-                    color_id: dark_grey_18
+                    color_id: dark_blue_grey_20
                 font_style: bold
-                size: 16
+                size: 13.5
               widget_format:
                 element_format:
                   horizontal_alignment: left
                   margins:
                     bottom: 10
-            value_variable_id: encumbrance_label
+            value_variable_id: bulk_label
       - format:
           has_columns: true
+          element_format:
+            horizontal_alignment: left
         widgets:
         - type: widget_text
           widget_text:
@@ -8242,300 +11428,6 @@ sections:
                     color_id: white
                 font_style: bold
                 size: 20
-  - name: Features
-    format:
-      element_format:
-        background_color_theme:
-          theme_color_ids:
-          - theme_id: dark
-            color_id: dark_grey_10
-          - theme_id: light
-            color_id: light_blue_grey_9
-        padding:
-          bottom: 50
-    groups:
-    - format:
-        element_format:
-          background_color_theme:
-            theme_color_ids:
-            - theme_id: light
-              color_id: white
-          corners:
-            top_left_radius: 2
-            top_right_radius: 2
-            bottom_right_radius: 2
-            bottom_left_radius: 2
-          margins:
-            left: 6
-            right: 6
-            top: 10
-      rows:
-      - widgets:
-        - type: widget_mechanic
-          widget_mechanic:
-#            id: race_mechanics
-            category_reference:
-              type: mechanic_category_tag
-              mechanic_category_tag: race
-            format:
-              widget_format:
-                element_format:
-                  width:
-                    type: width_justify
-                    width_justify: justify
-              header_format:
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_23
-                  - theme_id: light
-                    color_id: light_blue
-                font_style: medium
-                size: 15
-                element_format:
-                  padding:
-                    left: 8
-                    right: 8
-                    top: 6
-                    bottom: 6
-                  border:
-                    bottom:
-                      color_theme:
-                        theme_color_ids:
-                        - theme_id: light
-                          color_id: light_grey_10
-                      thickness: 1
-              mechanic_header_format:
-                size: 18
-                font_style: semi_bold
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: dark_grey_10
-              mechanic_summary_format:
-                size: 16
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: dark_grey_12
-              mechanic_format:
-                border:
-                  bottom:
-                    color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: light_grey_10
-                    thickness: 1
-                padding:
-                  top: 10
-                  bottom: 10
-                  left: 8
-                  right: 8
-    - format:
-        element_format:
-          background_color_theme:
-            theme_color_ids:
-            - theme_id: light
-              color_id: white
-          corners:
-            top_left_radius: 2
-            top_right_radius: 2
-            bottom_right_radius: 2
-            bottom_left_radius: 2
-          margins:
-            left: 6
-            right: 6
-            top: 10
-      rows:
-      - widgets:
-        - type: widget_mechanic
-          widget_mechanic:
-#            id: background_mechanics
-            category_reference:
-              type: mechanic_category_tag
-              mechanic_category_tag: background
-            format:
-              widget_format:
-                element_format:
-                  width:
-                    type: width_justify
-                    width_justify: justify
-              header_format:
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_23
-                  - theme_id: light
-                    color_id: light_blue
-                font_style: medium
-                size: 15
-                element_format:
-                  padding:
-                    left: 8
-                    right: 8
-                    top: 6
-                    bottom: 6
-                  border:
-                    bottom:
-                      color_theme:
-                        theme_color_ids:
-                        - theme_id: light
-                          color_id: light_grey_10
-                      thickness: 1
-              mechanic_header_format:
-                size: 18
-                font_style: semi_bold
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: dark_grey_10
-              mechanic_summary_format:
-                size: 16
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: dark_grey_12
-              mechanic_format:
-                border:
-                  bottom:
-                    color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: light_grey_10
-                    thickness: 1
-                padding:
-                  top: 10
-                  bottom: 10
-                  left: 8
-                  right: 8
-    - format:
-        element_format:
-          background_color_theme:
-            theme_color_ids:
-            - theme_id: light
-              color_id: white
-          corners:
-            top_left_radius: 2
-            top_right_radius: 2
-            bottom_right_radius: 2
-            bottom_left_radius: 2
-          margins:
-            left: 6
-            right: 6
-            top: 10
-      rows:
-      - widgets:
-        - type: widget_mechanic
-          widget_mechanic:
-#            id: class_mechanics
-            category_reference:
-              type: mechanic_category_tag
-              mechanic_category_tag: class
-            format:
-              widget_format:
-                element_format:
-                  width:
-                    type: width_justify
-                    width_justify: justify
-              header_format:
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: dark_grey_23
-                  - theme_id: light
-                    color_id: light_blue
-                font_style: medium
-                size: 15
-                element_format:
-                  padding:
-                    left: 8
-                    right: 8
-                    top: 6
-                    bottom: 6
-                  border:
-                    bottom:
-                      color_theme:
-                        theme_color_ids:
-                        - theme_id: light
-                          color_id: light_grey_10
-                      thickness: 1
-              annotation_format:
-                element_format:
-                  background_color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_grey_2
-                  corners:
-                    top_left_radius: 2
-                    top_right_radius: 2
-                    bottom_right_radius: 2
-                    bottom_left_radius: 2
-                  padding:
-                    top: 3
-                    bottom: 3
-                    left: 6
-                    right: 6
-                size: 16
-                font_style: regular
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_12
-                  - theme_id: light
-                    color_id: dark_grey_18
-              mechanic_header_format:
-                size: 18
-                font_style: semi_bold
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: dark_grey_10
-              mechanic_summary_format:
-                size: 16
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: dark_grey_12
-              mechanic_format:
-                border:
-                  bottom:
-                    color_theme:
-                      theme_color_ids:
-                      - theme_id: light
-                        color_id: light_grey_10
-                    thickness: 1
-                padding:
-                  top: 10
-                  bottom: 10
-                  left: 8
-                  right: 8
-              option_element_format:
-                background_color_theme:
-                  theme_color_ids:
-                  - theme_id: light
-                    color_id: red_70
-                corners:
-                  top_left_radius: 2
-                  top_right_radius: 2
-                  bottom_right_radius: 2
-                  bottom_left_radius: 2
-                margins:
-                  top: 8
-                padding:
-                  top: 14
-                  bottom: 14
-                  left: 6
-                  right: 6
-              option_label_format:
-                size: 18
-                font_style: bold
-                color_theme:
-                  theme_color_ids:
-                  - theme_id: dark
-                    color_id: light_grey_26
-                  - theme_id: light
-                    color_id: white
-
 - name: Adventure
   icon: adventure
   pages:

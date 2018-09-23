@@ -2,17 +2,15 @@
 package com.taletable.android.activity.sheet.dialog
 
 
-import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.app.DialogFragment
 import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.lib.ui.*
@@ -29,10 +27,11 @@ import com.taletable.android.rts.entity.colorOrBlack
 import com.taletable.android.rts.entity.sheet.*
 
 
+
 /**
  * Text Editor Dialog
  */
-class TextEditorDialog : DialogFragment()
+class TextEditorDialog : BottomSheetDialogFragment()
 {
 
 
@@ -67,6 +66,8 @@ class TextEditorDialog : DialogFragment()
 
             dialog.arguments = args
 
+            dialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.BottomSheetDialog)
+
             return dialog
         }
     }
@@ -76,7 +77,49 @@ class TextEditorDialog : DialogFragment()
     // DIALOG FRAGMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onCreateDialog(savedInstanceState : Bundle?) : Dialog
+//    override fun onCreateDialog(savedInstanceState : Bundle?) : Dialog
+//    {
+//        // (1) Read State
+//        // -------------------------------------------------------------------------------------
+//
+//        this.title          = arguments?.getString("title")
+//        this.text           = arguments?.getString("text")
+//        this.updateTarget   = arguments?.getSerializable("update_target") as UpdateTarget?
+//        this.entityId       = arguments?.getSerializable("entity_id") as EntityId
+//
+//
+//        // (2) Initialize UI
+//        // -------------------------------------------------------------------------------------
+//
+//        val dialog = Dialog(context)
+//
+//        val dialogLayout = this.dialogLayout()
+//
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+//        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//
+//        dialog.window.attributes.windowAnimations = R.style.DialogAnimation
+//
+//        dialog.setContentView(dialogLayout)
+//
+//        val window = dialog.window
+//        val wlp = window.attributes
+//
+//        wlp.gravity = Gravity.BOTTOM
+//        window.attributes = wlp
+//
+//        val width  = LinearLayout.LayoutParams.MATCH_PARENT
+//        val height = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        dialog.window.setLayout(width, height)
+//
+//        return dialog
+//    }
+//
+
+    override fun onCreateView(inflater : LayoutInflater,
+                              container : ViewGroup?,
+                              savedInstanceState : Bundle?) : View?
     {
         // (1) Read State
         // -------------------------------------------------------------------------------------
@@ -87,33 +130,6 @@ class TextEditorDialog : DialogFragment()
         this.entityId       = arguments?.getSerializable("entity_id") as EntityId
 
 
-        // (2) Initialize UI
-        // -------------------------------------------------------------------------------------
-
-        val dialog = Dialog(activity)
-
-        val dialogLayout = this.dialogLayout()
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        dialog.setContentView(dialogLayout)
-
-        val width  = context?.resources?.getDimension(R.dimen.action_dialog_width)
-        val height = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        width?.let {
-            dialog.window.setLayout(width.toInt(), height)
-        }
-
-        return dialog
-    }
-
-
-    override fun onCreateView(inflater : LayoutInflater,
-                              container : ViewGroup?,
-                              savedInstanceState : Bundle?) : View?
-    {
         val title        = this.title
         val text         = this.text
         val entityId     = this.entityId
@@ -205,12 +221,9 @@ class TextEditorViewBuilder(val title : String,
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.heightDp             = LinearLayout.LayoutParams.MATCH_PARENT
 
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-        layout.backgroundColor      = Color.WHITE // SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        layout.backgroundColor      = Color.WHITE
 
-        layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
+        layout.corners              = Corners(6.0, 6.0, 0.0, 0.0)
 
         return layout.linearLayout(context)
     }
@@ -226,7 +239,11 @@ class TextEditorViewBuilder(val title : String,
         val mainLayout = this.headerMainViewLayout()
 
         // Name
+
+        mainLayout.addView(this.iconView())
+
         mainLayout.addView(this.nameView())
+
 
         layout.addView(mainLayout)
 
@@ -246,17 +263,17 @@ class TextEditorViewBuilder(val title : String,
     }
 
 
-    private fun headerMainViewLayout() : RelativeLayout
+    private fun headerMainViewLayout() : LinearLayout
     {
-        val layout                  = RelativeLayoutBuilder()
+        val layout                  = LinearLayoutBuilder()
 
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.padding.topDp        = 8f
-        layout.padding.bottomDp     = 8f
+        layout.padding.topDp        = 10f
+        layout.padding.bottomDp     = 10f
 
-        layout.padding.leftDp       = 10f
+        layout.padding.leftDp       = 12f
         layout.padding.rightDp      = 12f
 
 //        val colorTheme = ColorTheme(setOf(
@@ -266,9 +283,11 @@ class TextEditorViewBuilder(val title : String,
 
         layout.gravity              = Gravity.CENTER_VERTICAL
 
-        layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
+        layout.corners              = Corners(6.0, 6.0, 0.0, 0.0)
 
-        return layout.relativeLayout(context)
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        return layout.linearLayout(context)
     }
 
 
@@ -285,29 +304,60 @@ class TextEditorViewBuilder(val title : String,
     }
 
 
+    private fun iconView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout                  = LinearLayoutBuilder()
+        val iconView                = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.margin.rightDp       = 6f
+
+        layout.child(iconView)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        iconView.widthDp            = 21
+        iconView.heightDp           = 21
+
+        iconView.image              = R.drawable.icon_edit
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+        iconView.color              = colorOrBlack(iconColorTheme, entityId)
+
+        return layout.linearLayout(context)
+    }
+
+
     private fun nameView() : TextView
     {
         val name            = TextViewBuilder()
 
-        name.layoutType     = LayoutType.RELATIVE
-        name.width          = RelativeLayout.LayoutParams.WRAP_CONTENT
-        name.height         = RelativeLayout.LayoutParams.WRAP_CONTENT
-
-        name.addRule(RelativeLayout.ALIGN_PARENT_START)
-        name.addRule(RelativeLayout.CENTER_VERTICAL)
+        name.width          = LinearLayout.LayoutParams.WRAP_CONTENT
+        name.height         = LinearLayout.LayoutParams.WRAP_CONTENT
 
         name.text           = this.title
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_6"))))
         name.color          = colorOrBlack(colorTheme, entityId)
 
-        name.font           = Font.typeface(TextFont.default(),
+        name.font           = Font.typeface(TextFont.RobotoCondensed,
                                             TextFontStyle.Regular,
                                             context)
 
-        name.sizeSp         = 16f
+        name.sizeSp         = 21f
 
         return name.textView(context)
     }
@@ -342,7 +392,7 @@ class TextEditorViewBuilder(val title : String,
         value.width                 = LinearLayout.LayoutParams.MATCH_PARENT
         value.height                = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        value.font                  = Font.typeface(TextFont.default(),
+        value.font                  = Font.typeface(TextFont.RobotoCondensed,
                                                     TextFontStyle.Regular,
                                                     context)
 
@@ -351,7 +401,7 @@ class TextEditorViewBuilder(val title : String,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         value.color                 = colorOrBlack(textColorTheme, entityId)
 
-        value.sizeSp                = 19f
+        value.sizeSp                = 22f
 
 //        val bgColorTheme = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
@@ -366,10 +416,10 @@ class TextEditorViewBuilder(val title : String,
 
         value.gravity               = Gravity.TOP
 
-        value.padding.leftDp        = 8f
-        value.padding.rightDp       = 8f
-        value.padding.topDp         = 8f
-        value.padding.bottomDp      = 8f
+        value.padding.leftDp        = 12f
+        value.padding.rightDp       = 12f
+        value.padding.topDp         = 12f
+        value.padding.bottomDp      = 12f
 
         // value.corners               = Corners(3.0, 3.0, 0.0, 0.0)
 
@@ -418,8 +468,6 @@ class TextEditorViewBuilder(val title : String,
 
         layout.backgroundColor  = Color.WHITE
 
-        layout.corners          = Corners(0.0, 0.0, 2.0, 2.0)
-
         return layout.linearLayout(context)
     }
 
@@ -435,11 +483,11 @@ class TextEditorViewBuilder(val title : String,
 
         layout.gravity          = Gravity.END or Gravity.CENTER_VERTICAL
 
-        layout.padding.topDp    = 8f
-        layout.padding.bottomDp = 8f
+        layout.padding.topDp    = 12f
+        layout.padding.bottomDp = 12f
 
-        layout.padding.leftDp = 8f
-        layout.padding.rightDp = 8f
+        layout.padding.leftDp   = 12f
+        layout.padding.rightDp  = 12f
 
         return layout.linearLayout(context)
     }
@@ -462,24 +510,17 @@ class TextEditorViewBuilder(val title : String,
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-//        layout.gravity          = Gravity.END or Gravity.CENTER_VERTICAL
-
         val bgColorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("green_90"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("green_tint_3"))))
         layout.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
 
-//        layout.backgroundResource = R.drawable.bg_dialog_text_edit_done
+        layout.padding.topDp    = 10f
+        layout.padding.bottomDp = 10f
+        layout.padding.leftDp   = 16f
+        layout.padding.rightDp  = 16f
 
-         layout.corners              = Corners(4.0, 4.0, 4.0, 4.0)
-
-//        layout.margin.leftDp    = 1f
-
-        layout.padding.topDp    = 6f
-        layout.padding.bottomDp = 6f
-        layout.padding.leftDp = 12f
-        layout.padding.rightDp = 12f
-
+        layout.corners              = Corners(4.0, 4.0, 4.0, 4.0)
 
         layout.onClick          = View.OnClickListener {
             Log.d("***TEXT EDITOR", "on click text editor")
@@ -541,11 +582,11 @@ class TextEditorViewBuilder(val title : String,
 //                ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
         label.color         = Color.WHITE //  SheetManager.color(sheetUIContext.sheetId, labelColorTheme)
 
-        label.font          = Font.typeface(TextFont.default(),
+        label.font          = Font.typeface(TextFont.RobotoCondensed,
                                             TextFontStyle.Bold,
                                             context)
 
-        label.sizeSp        = 17f
+        label.sizeSp        = 19f
 
         return layout.linearLayout(context)
     }
@@ -570,7 +611,7 @@ class TextEditorViewBuilder(val title : String,
 
         val bgColorTheme  = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_14"))))
         layout.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
 
 //        layout.backgroundResource = R.drawable.bg_dialog_text_edit_done
@@ -579,10 +620,10 @@ class TextEditorViewBuilder(val title : String,
 
         layout.margin.rightDp    = 10f
 
-        layout.padding.topDp    = 6f
-        layout.padding.bottomDp = 6f
-        layout.padding.leftDp = 10f
-        layout.padding.rightDp = 10f
+        layout.padding.topDp    = 10f
+        layout.padding.bottomDp = 10f
+        layout.padding.leftDp = 16f
+        layout.padding.rightDp = 16f
 
         layout.child(label)
 
@@ -613,14 +654,15 @@ class TextEditorViewBuilder(val title : String,
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
         label.color         = colorOrBlack(labelColorTheme, entityId)
+        label.color         = Color.WHITE
 
-        label.font          = Font.typeface(TextFont.default(),
+        label.font          = Font.typeface(TextFont.RobotoCondensed,
                                             TextFontStyle.Bold,
                                             context)
 
-        label.sizeSp        = 17f
+        label.sizeSp        = 19f
 
         return layout.linearLayout(context)
     }

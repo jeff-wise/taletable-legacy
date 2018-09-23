@@ -9,9 +9,11 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.app.DialogFragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.TypedValue
 import android.view.*
 import android.widget.*
 import com.taletable.android.R
@@ -22,9 +24,7 @@ import com.taletable.android.model.engine.variable.TextListVariable
 import com.taletable.android.model.engine.variable.VariableId
 import com.taletable.android.model.entity.ListWidgetUpdateSetCurrentValue
 import com.taletable.android.model.entity.TableWidgetUpdateSubset
-import com.taletable.android.model.sheet.style.Corners
-import com.taletable.android.model.sheet.style.TextFont
-import com.taletable.android.model.sheet.style.TextFontStyle
+import com.taletable.android.model.sheet.style.*
 import com.taletable.android.model.theme.ColorId
 import com.taletable.android.model.theme.ColorTheme
 import com.taletable.android.model.theme.ThemeColorId
@@ -47,18 +47,19 @@ import java.io.Serializable
 /**
  * Subset Editor Dialog
  */
-class SubsetEditorDialog : DialogFragment()
+class SubsetEditorDialog : BottomSheetDialogFragment()
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var valueSetId    : ValueSetId?       = null
-    private var setVariableId : Maybe<VariableId> = Nothing()
-    private var currentValues : List<ValueId>     = listOf()
-    private var updateTarget  : UpdateTarget?     = null
-    private var entityId      : EntityId?         = null
+    private var valueSetId    : ValueSetId?         = null
+    private var setVariableId : Maybe<VariableId>   = Nothing()
+    private var currentValues : List<ValueId>       = listOf()
+    private var updateTarget  : UpdateTarget?       = null
+    private var entityId      : EntityId?           = null
+    private var options       : SubsetEditorOptions = SubsetEditorOptions.default()
 
 
     // -----------------------------------------------------------------------------------------
@@ -71,7 +72,8 @@ class SubsetEditorDialog : DialogFragment()
                         setVariableId : Maybe<VariableId>,
                         currentValues : List<ValueId>,
                         updateTarget : UpdateTarget,
-                        entityId : EntityId) : SubsetEditorDialog
+                        entityId : EntityId,
+                        options : SubsetEditorOptions? = null) : SubsetEditorDialog
         {
             val dialog = SubsetEditorDialog()
 
@@ -81,7 +83,12 @@ class SubsetEditorDialog : DialogFragment()
             args.putSerializable("current_values", currentValues as Serializable)
             args.putSerializable("update_target", updateTarget)
             args.putSerializable("entity_id", entityId)
+            args.putSerializable("options", options)
+
+
             dialog.arguments = args
+
+            dialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.BottomSheetDialog)
 
             return dialog
         }
@@ -92,7 +99,53 @@ class SubsetEditorDialog : DialogFragment()
     // DIALOG FRAGMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onCreateDialog(savedInstanceState : Bundle?) : Dialog
+//    override fun onCreateDialog(savedInstanceState : Bundle?) : Dialog
+//    {
+//        // (1) Read State
+//        // -------------------------------------------------------------------------------------
+//
+//        this.valueSetId    = arguments?.getSerializable("value_set_id") as ValueSetId
+//        this.setVariableId = arguments?.getSerializable("set_variable_id") as Maybe<VariableId>
+//        this.currentValues = arguments?.getSerializable("current_values") as List<ValueId>
+//        this.updateTarget  = arguments?.getSerializable("update_target") as UpdateTarget
+//        this.entityId      = arguments?.getSerializable("entity_id") as EntityId
+//
+//        val options = arguments?.getSerializable("options") as SubsetEditorOptions?
+//        if (options != null)
+//            this.options = options
+//
+//        // (2) Initialize UI
+//        // -------------------------------------------------------------------------------------
+//
+//        val dialog = Dialog(context)
+//
+//        val dialogLayout = this.dialogLayout()
+//
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+//        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//
+//        dialog.window.attributes.windowAnimations = R.style.DialogAnimation
+//
+//        dialog.setContentView(dialogLayout)
+//
+//        val window = dialog.window
+//        val wlp = window.attributes
+//
+//        wlp.gravity = Gravity.BOTTOM
+//        window.attributes = wlp
+//
+//        val width  = LinearLayout.LayoutParams.MATCH_PARENT
+//        val height = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        dialog.window.setLayout(width, height)
+//
+//        return dialog
+//    }
+
+
+    override fun onCreateView(inflater : LayoutInflater,
+                              container : ViewGroup?,
+                              savedInstanceState : Bundle?) : View?
     {
         // (1) Read State
         // -------------------------------------------------------------------------------------
@@ -103,33 +156,11 @@ class SubsetEditorDialog : DialogFragment()
         this.updateTarget  = arguments?.getSerializable("update_target") as UpdateTarget
         this.entityId      = arguments?.getSerializable("entity_id") as EntityId
 
-        // (2) Initialize UI
-        // -------------------------------------------------------------------------------------
-
-        val dialog = Dialog(activity)
-
-        val dialogLayout = this.dialogLayout()
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        dialog.setContentView(dialogLayout)
-
-        val width  = context?.resources?.getDimension(R.dimen.action_dialog_width)
-        val height = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        width?.let {
-            dialog.window.setLayout(width.toInt(), height)
-        }
-
-        return dialog
-    }
+        val options = arguments?.getSerializable("options") as SubsetEditorOptions?
+        if (options != null)
+            this.options = options
 
 
-    override fun onCreateView(inflater : LayoutInflater,
-                              container : ViewGroup?,
-                              savedInstanceState : Bundle?) : View?
-    {
         val entityId = this.entityId
         val valueSetId = this.valueSetId
         val updateTarget = this.updateTarget
@@ -145,6 +176,7 @@ class SubsetEditorDialog : DialogFragment()
                                                    this.setVariableId,
                                                    this.currentValues,
                                                    updateTarget,
+                                                   this.options,
                                                    this,
                                                    entityId,
                                                    context)
@@ -186,6 +218,7 @@ class ListEditorUI(val valueSet : ValueSet,
                    val setVariableId : Maybe<VariableId>,
                    val currentValues : List<ValueId>,
                    val updateTarget : UpdateTarget,
+                   val options : SubsetEditorOptions,
                    val dialog : SubsetEditorDialog,
                    val entityId : EntityId,
                    val context : Context)
@@ -300,45 +333,81 @@ class ListEditorUI(val valueSet : ValueSet,
 
         layout.backgroundColor      = Color.WHITE
 
-        layout.padding.leftDp       = 10f
-        layout.padding.rightDp      = 10f
+        layout.padding.leftDp       = 12f
+        layout.padding.rightDp      = 13f
         layout.padding.topDp        = 4f
         layout.padding.bottomDp     = 4f
 
-        layout.corners              = Corners(2.0, 2.0, 0.0, 0.0)
+        layout.corners              = Corners(5.0, 5.0, 0.0, 0.0)
 
         return layout.relativeLayout(context)
     }
 
 
-    private fun headerTitleTextView() : TextView
+    private fun headerTitleTextView() : LinearLayout
     {
-        val title               = TextViewBuilder()
+        // 1 | Declarations
+        // -------------------------------------------------------------------------------------
 
-        title.layoutType        = LayoutType.RELATIVE
-        title.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+        val layout              = LinearLayoutBuilder()
+        val iconView            = ImageViewBuilder()
+        val titleView           = TextViewBuilder()
 
-        title.addRule(RelativeLayout.CENTER_VERTICAL)
-        title.addRule(RelativeLayout.ALIGN_PARENT_START)
+        // 2 | Layout
+        // -------------------------------------------------------------------------------------
 
-        title.text              = this.valueSet.labelString()
+        layout.layoutType       = LayoutType.RELATIVE
+        layout.width            = RelativeLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT
 
-        title.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.addRule(RelativeLayout.CENTER_VERTICAL)
+        layout.addRule(RelativeLayout.ALIGN_PARENT_START)
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.child(iconView)
+              .child(titleView)
+
+        // 3 | Icon
+        // -------------------------------------------------------------------------------------
+
+        iconView.widthDp        = 23
+        iconView.heightDp       = 23
+
+        iconView.image          = R.drawable.icon_checklist
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+        iconView.color          = colorOrBlack(iconColorTheme, entityId)
+
+        iconView.margin.topDp   = 2f
+
+        // 3 | Label
+        // -------------------------------------------------------------------------------------
+
+        titleView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        titleView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        titleView.text              = this.valueSet.labelString()
+
+        titleView.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Regular,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
-        title.color             = colorOrBlack(colorTheme, entityId)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+        titleView.color             = colorOrBlack(colorTheme, entityId)
 
-        title.sizeSp            = 17f
+        titleView.sizeSp            = 21f
 
-        title.margin.leftDp     = 0.5f
+        titleView.margin.leftDp     = 8f
 
 
-        return title.textView(context)
+        return layout.linearLayout(context)
     }
 
 
@@ -347,8 +416,9 @@ class ListEditorUI(val valueSet : ValueSet,
         // (1) Declarations
         // -------------------------------------------------------------------------------------
 
-        val layout  = LinearLayoutBuilder()
-        val icon    = ImageViewBuilder()
+        val layout          = LinearLayoutBuilder()
+        val icon            = ImageViewBuilder()
+        val labelView       = TextViewBuilder()
 
         // (2) Layout
         // -------------------------------------------------------------------------------------
@@ -357,16 +427,16 @@ class ListEditorUI(val valueSet : ValueSet,
         layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.corners      = Corners(3.0, 3.0, 3.0, 3.0)
+        layout.corners      = Corners(6.0, 6.0, 6.0, 6.0)
 
-        layout.padding.topDp    = 10f
-        layout.padding.bottomDp = 10f
-        layout.padding.leftDp   = 20f
-        layout.padding.rightDp  = 20f
+        layout.padding.topDp    = 6f
+        layout.padding.bottomDp = 6f
+        layout.padding.leftDp   = 14f
+        layout.padding.rightDp  = 14f
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("green_tint_3"))))
         layout.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
 
         layout.addRule(RelativeLayout.ALIGN_PARENT_END)
@@ -397,7 +467,7 @@ class ListEditorUI(val valueSet : ValueSet,
         }
 
 
-        layout.child(icon)
+        layout.child(labelView)
 
         // (3) Icon
         // -------------------------------------------------------------------------------------
@@ -409,6 +479,23 @@ class ListEditorUI(val valueSet : ValueSet,
 
         icon.color          = Color.WHITE
 
+
+        // (4) Label View
+        // -------------------------------------------------------------------------------------
+
+        labelView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        labelView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        labelView.text              = context.getString(R.string.done).toUpperCase()
+
+        labelView.color             = Color.WHITE
+
+
+        labelView.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                    TextFontStyle.Bold,
+                                                    context)
+
+        labelView.sizeSp            = 19f
 
         return layout.linearLayout(context)
     }
@@ -428,7 +515,7 @@ class ListEditorUI(val valueSet : ValueSet,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_4"))))
         recyclerView.backgroundColor      = colorOrBlack(colorTheme, entityId)
 
 //        recyclerView.divider = SimpleDividerItemDecoration(sheetUIContext.context, dividerColor)
@@ -498,6 +585,56 @@ class ListEditorUI(val valueSet : ValueSet,
 
     private fun valueSetIndexList(valueSets : Set<ValueSet>,
                                   entityId : EntityId) : List<Any>
+
+    {
+        val sort = this.options.sort()
+
+        return when (sort) {
+            is Just -> {
+                valueSetIndexListAlphabetical(valueSets, entityId)
+            }
+            else -> {
+                valueSetIndexListBySet(valueSets, entityId)
+            }
+        }
+    }
+
+
+    private fun valueSetIndexListAlphabetical(valueSets : Set<ValueSet>,
+                                              entityId : EntityId) : List<Any>
+    {
+        val valuesList : MutableList<Any> = mutableListOf()
+
+        val values = valueSets.flatMap {
+            val values = it.values(entityId)
+            when (values) {
+                is Val -> values.value
+                is Err -> setOf()
+            }
+        }
+
+
+        var lastChar = '!'
+
+        values.sortedBy { it.valueString() }.forEach { value ->
+            value.valueString().firstOrNull()?.let { firstChar ->
+                val firstCharLower = firstChar.toLowerCase()
+                if (firstCharLower != lastChar) {
+                    valuesList.add(ValueSetLabel(firstChar.toString().toUpperCase()))
+                    lastChar = firstCharLower
+                }
+
+                valuesList.add(value)
+            }
+        }
+
+
+        return valuesList
+    }
+
+
+    private fun valueSetIndexListBySet(valueSets : Set<ValueSet>,
+                                       entityId : EntityId) : List<Any>
     {
         fun valueSetItems(valueSet : ValueSet) : List<Any>
         {
@@ -513,7 +650,59 @@ class ListEditorUI(val valueSet : ValueSet,
     }
 
 
+
     private fun variableValuesInSet(textListVariable : TextListVariable,
+                                    valueSet : ValueSetCompound) : List<Any>
+    {
+
+        val sort = this.options.sort()
+        return when (sort)
+        {
+            is Just -> {
+
+
+                if (sort.value.sortType == SubsetEditorSortType.Alphabetical)
+                {
+                    variableValuesByFirstLetter(textListVariable)
+                }
+                else
+                {
+                    variableValuesBySet(textListVariable, valueSet)
+                }
+            }
+            is Nothing -> {
+                variableValuesBySet(textListVariable, valueSet)
+            }
+        }
+    }
+
+
+    private fun variableValuesByFirstLetter(textListVariable: TextListVariable) : List<Any>
+    {
+        val valuesList : MutableList<Any> = mutableListOf()
+
+
+        textListVariable.value(entityId).apDo { values ->
+
+            var lastChar = '!'
+
+            values.forEach { value ->
+                val firstChar = value.first()
+                if (firstChar != lastChar) {
+                    valuesList.add(firstChar.toString().toUpperCase())
+                    lastChar = firstChar
+                }
+
+                valuesList.add(value)
+            }
+        }
+
+
+        return valuesList
+    }
+
+
+    private fun variableValuesBySet(textListVariable : TextListVariable,
                                     valueSet : ValueSetCompound) : List<Any>
     {
         val valuesBySetId : MutableMap<ValueSetLabel,MutableSet<Value>> = mutableMapOf()
@@ -583,7 +772,7 @@ object ListEditor
         mainLayout.addView(this.valueHeaderView(entityId, context))
 
         // Summary
-        mainLayout.addView(this.valueSummaryView(entityId, context))
+        // mainLayout.addView(this.valueSummaryView(entityId, context))
 
         // Reference Link
         mainLayout.addView(this.referenceView(entityId, context))
@@ -605,14 +794,11 @@ object ListEditor
 
         layout.id                   = R.id.dialog_list_editor_item_layout
 
-        layout.padding.leftDp       = 10f
-        layout.padding.rightDp      = 10f
+        layout.padding.leftDp       = 14f
+        layout.padding.rightDp      = 14f
 
-        layout.padding.topDp        = 10f
-        layout.padding.bottomDp     = 10f
-
-        layout.margin.leftDp        = 2f
-        layout.margin.rightDp       = 2f
+        layout.padding.topDp        = 12f
+        layout.padding.bottomDp     = 12f
 
         layout.margin.topDp         = 1f
 
@@ -645,8 +831,7 @@ object ListEditor
 
         layout.backgroundResource   = R.drawable.bg_checkbox_unselected
 
-        layout.margin.leftDp       = 5f
-        layout.margin.rightDp       = 15f
+        layout.margin.rightDp       = 16f
 
         layout.child(icon)
 
@@ -658,7 +843,7 @@ object ListEditor
         icon.widthDp                = 18
         icon.heightDp               = 18
 
-        icon.image                  = R.drawable.icon_check
+        icon.image                  = R.drawable.icon_check_bold
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
@@ -749,11 +934,11 @@ object ListEditor
         name.width                  = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height                 = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.font                   = Font.typeface(TextFont.Cabin,
-                                                    TextFontStyle.Medium,
+        name.font                   = Font.typeface(TextFont.RobotoCondensed,
+                                                    TextFontStyle.Regular,
                                                     context)
 
-        name.sizeSp                 = 17f
+        name.sizeSp                 = 22f
 
         return layout.linearLayout(context)
     }
@@ -770,7 +955,7 @@ object ListEditor
 
         summary.visibility      = View.GONE
 
-        summary.font            = Font.typeface(TextFont.Cabin,
+        summary.font            = Font.typeface(TextFont.RobotoCondensed,
                                                 TextFontStyle.Regular,
                                                 context)
 
@@ -839,7 +1024,7 @@ object ListEditor
 
         label.textId            = R.string.read_about_in_rulebook
 
-        label.font              = Font.typeface(TextFont.Cabin,
+        label.font              = Font.typeface(TextFont.RobotoCondensed,
                                                 TextFontStyle.Regular,
                                                 context)
 
@@ -863,7 +1048,7 @@ object ListEditor
         name.width          = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height         = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.font           = Font.typeface(TextFont.Cabin,
+        name.font           = Font.typeface(TextFont.RobotoCondensed,
                                             TextFontStyle.Regular,
                                             context)
 
@@ -872,10 +1057,10 @@ object ListEditor
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         name.color              = colorOrBlack(colorTheme, entityId)
 
-        name.sizeSp             = 16f
+        name.sizeSp             = 17f
 
-        name.margin.leftDp      = 10f
-        name.margin.rightDp     = 10f
+        name.margin.leftDp      = 13f
+        name.margin.rightDp     = 13f
 
         name.margin.topDp       = 6f
         name.margin.bottomDp    = 6f
@@ -1101,7 +1286,7 @@ class ListEditorValueViewHolder(itemView : View,
 
     val unselectedNameColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
     val unselectedNameColor = colorOrBlack(unselectedNameColorTheme, entityId)
 
     val unselectedSummaryColorTheme = ColorTheme(setOf(
@@ -1111,7 +1296,7 @@ class ListEditorValueViewHolder(itemView : View,
 
     val selectedNameColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_tint_1"))))
     val selectedNameColor = colorOrBlack(selectedNameColorTheme, entityId)
 
 //    val unselectedBgColorTheme = ColorTheme(setOf(
@@ -1127,7 +1312,8 @@ class ListEditorValueViewHolder(itemView : View,
     val checkUnselectedColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-    val checkUnselectedColor = colorOrBlack(checkUnselectedColorTheme, entityId)
+//    val checkUnselectedColor = colorOrBlack(checkUnselectedColorTheme, entityId)
+    val checkUnselectedColor = Color.WHITE
 
 
     // -----------------------------------------------------------------------------------------
@@ -1234,6 +1420,10 @@ class ListEditorHeaderViewHolder(val headerView : View) : RecyclerView.ViewHolde
     fun setHeaderText(headerString : String)
     {
         this.headerTextView?.text = headerString
+
+        if (headerString.length == 1) {
+            this.headerTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, 21f)
+        }
     }
 
 }

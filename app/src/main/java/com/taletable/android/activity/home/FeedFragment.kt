@@ -162,7 +162,7 @@ class FeedFragment : Fragment()
         val titleTextFormat =
                 TextFormat.default()
                    .withColorTheme(ColorTheme(setOf(
-                       ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8")))))
+                       ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12")))))
                    .withSize(TextSize(19f))
                    .withFont(TextFont.RobotoCondensed)
                    .withFontStyle(TextFontStyle.Bold)
@@ -190,13 +190,13 @@ class FeedFragment : Fragment()
 
         val row1Format = GroupRowFormat(ElementFormat.default()
                                           .withHorizontalAlignment(Alignment.Left)
-                                          .withLeftMargin(12.0)
-                                          .withRightMargin(12.0))
+                                          .withLeftMargin(10.0)
+                                          .withRightMargin(10.0))
 
         val row2Format = GroupRowFormat(ElementFormat.default()
                                           .withHorizontalAlignment(Alignment.Left)
-                                          .withLeftMargin(12.0)
-                                          .withRightMargin(12.0))
+                                          .withLeftMargin(10.0)
+                                          .withRightMargin(10.0))
 
         val groupRows = listOf(
                 GroupRow(row1Format,
@@ -215,7 +215,7 @@ class FeedFragment : Fragment()
         val card = Card(CardTitle("Featured Session"),
                         CardReason("Recommended"),
                         Just(AppActionOpenSession(SessionId(UUID.randomUUID()))),
-                        Just(CardActionLabel("Open Session")),
+                        Just(CardActionLabel("Read the Pathfinder Playtest Rulebook")),
                         groups.map { GroupReferenceLiteral(it) })
 
 
@@ -239,7 +239,7 @@ class FeedFragment : Fragment()
         val titleTextFormat =
                 TextFormat.default()
                    .withColorTheme(ColorTheme(setOf(
-                       ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8")))))
+                       ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12")))))
                    .withSize(TextSize(19f))
                    .withFont(TextFont.RobotoCondensed)
                    .withFontStyle(TextFontStyle.Bold)
@@ -267,13 +267,13 @@ class FeedFragment : Fragment()
 
         val row1Format = GroupRowFormat(ElementFormat.default()
                                           .withHorizontalAlignment(Alignment.Left)
-                                          .withLeftMargin(12.0)
-                                          .withRightMargin(12.0))
+                                          .withLeftMargin(10.0)
+                                          .withRightMargin(10.0))
 
         val row2Format = GroupRowFormat(ElementFormat.default()
                                           .withHorizontalAlignment(Alignment.Left)
-                                          .withLeftMargin(12.0)
-                                          .withRightMargin(12.0))
+                                          .withLeftMargin(10.0)
+                                          .withRightMargin(10.0))
 
         val groupRows = listOf(
                 GroupRow(row1Format,
@@ -292,7 +292,7 @@ class FeedFragment : Fragment()
         val card = Card(CardTitle("Featured Session"),
                         CardReason("Recommended"),
                         Just(AppActionOpenSession(SessionId(UUID.randomUUID()))),
-                        Just(CardActionLabel("Open Session")),
+                        Just(CardActionLabel("Play as Casmey, a Level 1 Human Rogue")),
                         groups.map { GroupReferenceLiteral(it) })
 
 

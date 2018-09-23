@@ -4,12 +4,10 @@ package com.taletable.android.model.sheet.widget
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.widget.*
 import com.taletable.android.R
@@ -320,6 +318,7 @@ class TableWidgetUI(val tableWidget : TableWidget,
         val updateTarget = UpdateTargetTableWidget(tableWidget.widgetId())
         openTextListVariableEditorDialog(variable,
                                          updateTarget,
+                                         tableWidget.editorOptions(),
                                          entityId,
                                          context)
     }

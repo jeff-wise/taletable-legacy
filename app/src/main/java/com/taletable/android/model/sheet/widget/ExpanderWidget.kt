@@ -388,7 +388,6 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
 
     fun updateCheckboxView(layout : LinearLayout)
     {
-        Log.d("***EXPaNDER WIDGET", "update checkbox view")
         layout.removeAllViews()
         layout.addView(this.checkboxView())
     }
@@ -715,7 +714,6 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
 
         expanderWidget.format().avatarText.doMaybe   { avatarText ->
         expanderWidget.format().avatarFormat.doMaybe { avatarFormat ->
-            Log.d("***EXANDER WIDGET", "rendering text avatar view")
             layout.addView(this.circleTextAvatarView(avatarText, avatarFormat))
         } }
 

@@ -10,12 +10,9 @@ import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
 import android.support.design.widget.TabLayout
-import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
-import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -23,6 +20,7 @@ import android.util.AttributeSet
 import android.view.*
 import android.widget.*
 import com.taletable.android.R
+import com.taletable.android.activity.entity.book.fragment.BookFragment
 import com.taletable.android.activity.session.NewSessionActivity
 import com.taletable.android.activity.sheet.SheetActivity
 import com.taletable.android.lib.ui.*
@@ -33,7 +31,6 @@ import com.taletable.android.router.Router
 import com.taletable.android.rts.session.*
 import com.taletable.android.util.Util
 import com.taletable.android.util.configureToolbar
-import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionHelper
 import io.reactivex.disposables.CompositeDisposable
 
 // pinned
@@ -74,8 +71,6 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private var rfabHelper : RapidFloatingActionHelper? = null
-
 
     var hasSavedSessions : Boolean = false
 
@@ -103,13 +98,13 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
         // (3) Configure View
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar(getString(R.string.tale_table), TextFont.Cabin, TextFontStyle.Medium)
+        this.configureToolbar(getString(R.string.tale_table), TextFont.RobotoCondensed, TextFontStyle.Bold, 19f)
 
-        this.findViewById<TextView>(R.id.toolbar_title)?.let { titleTextView ->
-//            titleTextView.text     = " tome "
-            titleTextView.textSize = Util.spToPx(4.8f, this).toFloat()
-//            titleTextView.typeface = Font.typeface(TextFont.Kaushan, TextFontStyle.Regular, this)
-        }
+//        this.findViewById<TextView>(R.id.toolbar_title)?.let { titleTextView ->
+////            titleTextView.text     = " tome "
+//            titleTextView.textSize = Util.spToPx(4.8f, this).toFloat()
+//            titleTextView.typeface = Font.typeface(TextFont.RobotoCondensed, TextFontStyle.Regular, this)
+//        }
 
         this.applyTheme(officialAppThemeLight)
 
@@ -121,7 +116,23 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
 
         this.initializeListeners()
 
-        this.initializeViewPager()
+
+        if (findViewById<View>(R.id.fragment_container) != null) {
+
+            if (savedInstanceState != null) {
+                return
+            }
+
+            // Create a new Fragment to be placed in the activity layout
+            val feedFragment = FeedFragment.newInstance()
+
+            // Add the fragment to the 'fragment_container' FrameLayout
+            supportFragmentManager.beginTransaction()
+                                  .add(R.id.fragment_container, feedFragment)
+                                  .commit()
+        }
+
+//        this.initializeViewPager()
 
     }
 
@@ -185,117 +196,118 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
     // UI
     // -----------------------------------------------------------------------------------------
 
-    private fun initializeViewPager()
-    {
-        val viewPager = this.findViewById<ViewPager>(R.id.view_pager)
-        viewPager?.adapter = HomePagerAdapter(supportFragmentManager)
-
-        val tabLayout = this.findViewById<TabLayout>(R.id.tab_layout)
-
-
-        val context = this
-
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
-                override fun onTabSelected(tab : TabLayout.Tab) {
-                    super.onTabSelected(tab)
-                    val tabIconColor = ContextCompat.getColor(context, R.color.light_theme_light_blue)
-
-                    val iconView = tab.customView?.findViewById<ImageView>(R.id.tab_icon)
-                    iconView?.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN)
-
-                    val labelView = tab.customView?.findViewById<TextView>(R.id.tab_label)
-                    labelView?.setTextColor(tabIconColor)
-                }
-
-                override fun onTabUnselected(tab : TabLayout.Tab) {
-                    super.onTabUnselected(tab)
-                    val tabIconColor = ContextCompat.getColor(context, R.color.light_theme_dark_grey_18)
-
-                    val iconView = tab.customView?.findViewById<ImageView>(R.id.tab_icon)
-                    iconView?.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN)
-
-                    val labelView = tab.customView?.findViewById<TextView>(R.id.tab_label)
-                    labelView?.setTextColor(tabIconColor)
-                }
-
-                override fun onTabReselected(tab : TabLayout.Tab) {
-                    super.onTabReselected(tab)
-                }
-        })
-
-        tabLayout?.setupWithViewPager(viewPager)
-
-        tabLayout.getTabAt(0)?.customView = tabView(R.drawable.icon_activity_feed, 19, R.string.feed, officialAppThemeLight)
-        tabLayout.getTabAt(1)?.customView = tabView(R.drawable.icon_die, 19, R.string.play, officialAppThemeLight)
-        tabLayout.getTabAt(2)?.customView = tabView(R.drawable.icon_group, 22, R.string.share, officialAppThemeLight)
-
-
-        val tab = tabLayout.getTabAt(0)
-        val tabIconColor = ContextCompat.getColor(context, R.color.light_theme_light_blue)
-        val iconView = tab?.customView?.findViewById<ImageView>(R.id.tab_icon)
-        iconView?.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN)
-
-        val labelView = tab?.customView?.findViewById<TextView>(R.id.tab_label)
-        labelView?.setTextColor(tabIconColor)
-
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
-        val subToolbar = findViewById<LinearLayout>(R.id.sub_toolbar)
-        val tabDivider = findViewById<LinearLayout>(R.id.tab_divider)
-
-        val playUI = PlayUI(officialAppThemeLight, context)
-//        subToolbar?.addView(playUI.savedSessionListHeaderView())
-
-        fab.setOnClickListener {
-            val intent = Intent(this, NewSessionActivity::class.java)
-            startActivity(intent)
-        }
-
-        fab.hide()
-
-        viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-
-            override fun onPageScrolled(position : Int, positionOffset : Float, positionOffsetPixels : Int) {
-            }
-
-            override fun onPageSelected(position : Int)
-            {
-                when (position)
-                {
-                    0 -> {
-                        subToolbar?.visibility = View.GONE
-                        tabDivider?.visibility = View.GONE
-                        fab?.hide()
-                    }
-                    1 -> {
-                        if (hasSavedSessions)
-                        {
-                            subToolbar?.visibility = View.VISIBLE
-                            tabDivider?.visibility = View.VISIBLE
-
-                            fab?.show()
-                        }
-                        else {
-                            fab?.hide()
-                            subToolbar?.visibility = View.GONE
-                            tabDivider?.visibility = View.GONE
-                        }
-                    }
-                    else -> {
-                        subToolbar?.visibility = View.GONE
-                        tabDivider?.visibility = View.GONE
-                        fab?.hide()
-                    }
-                }
-            }
-
-
-            override fun onPageScrollStateChanged(state : Int) {
-
-            }
-    });
-
-    }
+//    private fun initializeViewPager()
+//    {
+//        val viewPager = this.findViewById<ViewPager>(R.id.view_pager)
+//        viewPager?.adapter = HomePagerAdapter(supportFragmentManager)
+//
+//        val tabLayout = this.findViewById<TabLayout>(R.id.tab_layout)
+//
+//
+//        val context = this
+//
+//
+//        tabLayout.addOnTabSelectedListener(object : TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+//                override fun onTabSelected(tab : TabLayout.Tab) {
+//                    super.onTabSelected(tab)
+//                    val tabIconColor = ContextCompat.getColor(context, R.color.light_theme_dark_blue_grey_12)
+//
+//                    val iconView = tab.customView?.findViewById<ImageView>(R.id.tab_icon)
+//                    iconView?.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN)
+//
+//                    val labelView = tab.customView?.findViewById<TextView>(R.id.tab_label)
+//                    labelView?.setTextColor(tabIconColor)
+//                }
+//
+//                override fun onTabUnselected(tab : TabLayout.Tab) {
+//                    super.onTabUnselected(tab)
+//                    val tabIconColor = ContextCompat.getColor(context, R.color.light_theme_dark_grey_18)
+//
+//                    val iconView = tab.customView?.findViewById<ImageView>(R.id.tab_icon)
+//                    iconView?.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN)
+//
+//                    val labelView = tab.customView?.findViewById<TextView>(R.id.tab_label)
+//                    labelView?.setTextColor(tabIconColor)
+//                }
+//
+//                override fun onTabReselected(tab : TabLayout.Tab) {
+//                    super.onTabReselected(tab)
+//                }
+//        })
+//
+//        tabLayout?.setupWithViewPager(viewPager)
+//
+//        tabLayout.getTabAt(0)?.customView = tabView(R.drawable.icon_activity_feed, 21, R.string.feed, officialAppThemeLight)
+//        tabLayout.getTabAt(1)?.customView = tabView(R.drawable.icon_die, 21, R.string.play, officialAppThemeLight)
+//        tabLayout.getTabAt(2)?.customView = tabView(R.drawable.icon_group, 23, R.string.share, officialAppThemeLight)
+//
+//
+//        val tab = tabLayout.getTabAt(0)
+//        //val tabIconColor = ContextCompat.getColor(context, R.color.light_theme_light_blue)
+//        val tabIconColor = ContextCompat.getColor(context, R.color.light_theme_dark_blue_grey_12)
+//        val iconView = tab?.customView?.findViewById<ImageView>(R.id.tab_icon)
+//        iconView?.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN)
+//
+//        val labelView = tab?.customView?.findViewById<TextView>(R.id.tab_label)
+//        labelView?.setTextColor(tabIconColor)
+//
+//        val fab = findViewById<FloatingActionButton>(R.id.fab)
+//        val subToolbar = findViewById<LinearLayout>(R.id.sub_toolbar)
+//        val tabDivider = findViewById<LinearLayout>(R.id.tab_divider)
+//
+//        val playUI = PlayUI(officialAppThemeLight, context)
+////        subToolbar?.addView(playUI.savedSessionListHeaderView())
+//
+//        fab.setOnClickListener {
+//            val intent = Intent(this, NewSessionActivity::class.java)
+//            startActivity(intent)
+//        }
+//
+//        fab.hide()
+//
+//        viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+//
+//            override fun onPageScrolled(position : Int, positionOffset : Float, positionOffsetPixels : Int) {
+//            }
+//
+//            override fun onPageSelected(position : Int)
+//            {
+//                when (position)
+//                {
+//                    0 -> {
+//                        subToolbar?.visibility = View.GONE
+//                        tabDivider?.visibility = View.GONE
+//                        fab?.hide()
+//                    }
+//                    1 -> {
+//                        if (hasSavedSessions)
+//                        {
+//                            subToolbar?.visibility = View.VISIBLE
+//                            tabDivider?.visibility = View.VISIBLE
+//
+//                            fab?.show()
+//                        }
+//                        else {
+//                            fab?.hide()
+//                            subToolbar?.visibility = View.GONE
+//                            tabDivider?.visibility = View.GONE
+//                        }
+//                    }
+//                    else -> {
+//                        subToolbar?.visibility = View.GONE
+//                        tabDivider?.visibility = View.GONE
+//                        fab?.hide()
+//                    }
+//                }
+//            }
+//
+//
+//            override fun onPageScrollStateChanged(state : Int) {
+//
+//            }
+//    });
+//
+//    }
 
 
     private fun initializeView()
@@ -349,12 +361,12 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
             window.statusBarColor = theme.colorOrBlack(statusBarColorTheme)
         }
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//
-//            val flags = window.decorView.getSystemUiVisibility() or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-//            window.decorView.setSystemUiVisibility(flags)
-//            this.getWindow().setStatusBarColor(Color.WHITE);
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            val flags = window.decorView.getSystemUiVisibility() or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.decorView.setSystemUiVisibility(flags)
+            this.getWindow().setStatusBarColor(Color.WHITE);
+        }
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
@@ -364,7 +376,11 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
         toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
 
         // Toolbar > Icons
-        var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_14"))))
+
+        var iconColor = theme.colorOrBlack(iconColorTheme)
 
         val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_main_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
@@ -375,25 +391,37 @@ class HomeActivity : AppCompatActivity() //, RapidFloatingActionContentLabelList
         // TITLE
         // -------------------------------------------------------------------------------------
         val titleView = this.findViewById<TextView>(R.id.toolbar_title)
-        titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
+
+
+        val titleColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_14"))))
+        titleView.setTextColor(theme.colorOrBlack(titleColorTheme))
 
         // TAB LAYOUT
         // -------------------------------------------------------------------------------------
-        val tabLayout = this.findViewById<HomeTabLayout>(R.id.tab_layout) as HomeTabLayout
-
-        // Tab Layout > Background
-        tabLayout.setBackgroundColor(theme.colorOrBlack(uiColors.tabBarBackgroundColorId()))
-
-        val hlColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
-
-        // Tab Layout > Text
-        tabLayout.setTabTextColors(theme.colorOrBlack(uiColors.tabTextNormalColorId()),
-                                   theme.colorOrBlack(hlColorTheme))
-
-        // Tab Layout > Underline
-        tabLayout.setSelectedTabIndicatorColor(theme.colorOrBlack(hlColorTheme))
+//        val tabLayout = this.findViewById<HomeTabLayout>(R.id.tab_layout) as HomeTabLayout
+//
+//        // Tab Layout > Background
+//        tabLayout.setBackgroundColor(theme.colorOrBlack(uiColors.tabBarBackgroundColorId()))
+//
+//        val lineColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+//
+//        val hlColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+//
+//        val tabNormalColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_24"))))
+//
+//        // Tab Layout > Text
+//        tabLayout.setTabTextColors(theme.colorOrBlack(tabNormalColorTheme),
+//                                   theme.colorOrBlack(hlColorTheme))
+//
+//        // Tab Layout > Underline
+//        tabLayout.setSelectedTabIndicatorColor(theme.colorOrBlack(lineColorTheme))
 
     }
 

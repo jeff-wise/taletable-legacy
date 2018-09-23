@@ -28,6 +28,7 @@
             android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:elevation="0dp"
             android:background="@color/transparent">
 
             <android.support.v7.widget.Toolbar
@@ -45,27 +46,33 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="12dp"
-                        android:paddingBottom="12dp">
+                        android:layout_height="50dp"
+                        android:background="@drawable/bg_session_button"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp">
 
                         <ImageView
                             android:id="@+id/toolbar_menu_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
-                            android:layout_marginStart="15dp"
+                            android:layout_marginStart="7dp"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="15dp"
                             android:background="#00000000"
-                            android:src="@drawable/ic_toolbar_sheet_app_menu" />
+                            android:src="@drawable/ic_toolbar_chevron_down" />
 
                         <TextView
                             android:id="@+id/toolbar_title"
+                            android:layout_gravity="start"
                             android:textSize="18sp"
-                            android:textColor="@color/white"
+                            android:textColor="@color/light_theme_dark_grey_10"
+                            android:text="@string/new_session"
                             android:layout_centerVertical="true"
-                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_toEndOf="@id/toolbar_menu_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
 
@@ -74,19 +81,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="15dp"
+                            android:layout_marginEnd="7dp"
+                            android:layout_centerVertical="true"
+                            android:paddingTop="2dp"
                             android:background="#00000000"
                             android:src="@drawable/ic_toolbar_options" />
 
                     </RelativeLayout>
-
-                    <LinearLayout
-                        android:id="@+id/toolbar_content"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:orientation="horizontal">
-                    </LinearLayout>
 
                     <com.taletable.android.lib.ui.CustomTabLayout
                         android:id="@+id/tab_layout"
@@ -95,7 +96,6 @@
                         android:background="@color/white"
                         app:tabGravity="fill"
                         app:tabMode="scrollable"
-                        app:elevation="3dp"
                         app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
                         app:tabTextColor="@color/dark_blue_hl_8"
                         app:tabSelectedTextColor="@color/dark_blue_hlx_5"
@@ -105,6 +105,7 @@
                 </LinearLayout>
 
             </android.support.v7.widget.Toolbar>
+
 
             <!--<View-->
                 <!--android:layout_width="match_parent"-->
@@ -129,6 +130,18 @@
             <!---->
             <!---->
         <!--</LinearLayout>-->
+
+
+        <LinearLayout
+            android:id="@+id/toolbar_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/light_theme_dark_blue_grey_10"
+            android:visibility="gone"
+            android:layout_marginTop="56dp"
+            android:orientation="horizontal">
+        </LinearLayout>
+
 
 
         <android.support.v4.view.ViewPager
@@ -164,18 +177,18 @@
             <!--android:background="@color/light_theme_light_grey_7">-->
         <!--</LinearLayout>-->
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/session_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:clickable="true"
-            app:borderWidth="0dp"
-            android:src="@drawable/ic_fab_session"
-            app:layout_anchor="@id/view_pager"
-            app:layout_anchorGravity="bottom|end"
-            app:backgroundTint="@color/light_theme_dark_grey_10"
-            app:rippleColor="#FFF" />
+        <!--<android.support.design.widget.FloatingActionButton-->
+            <!--android:id="@+id/session_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="16dp"-->
+            <!--android:clickable="true"-->
+            <!--app:borderWidth="0dp"-->
+            <!--android:src="@drawable/ic_fab_session"-->
+            <!--app:layout_anchor="@id/view_pager"-->
+            <!--app:layout_anchorGravity="bottom|end"-->
+            <!--app:backgroundTint="@color/light_theme_dark_grey_10"-->
+            <!--app:rippleColor="#FFF" />-->
 
         <!--<android.support.design.widget.FloatingActionButton-->
             <!--android:id="@+id/session_button"-->
@@ -207,9 +220,12 @@
 
     <android.support.design.widget.NavigationView
         android:id="@+id/left_nav_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:layout_marginEnd="-65dp"
+        android:layout_marginRight="-65dp"
+        android:fitsSystemWindows="true"
         android:background="@color/light_theme_light_blue_grey_8" />
 
     <android.support.design.widget.NavigationView

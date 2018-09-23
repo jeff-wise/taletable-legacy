@@ -444,7 +444,9 @@ data class SummationTermLinearCombination(
                 return Just(sum)
 
             }
-            is Err -> ApplicationLog.error(variablesEff.error)
+            is Err -> {
+                //ApplicationLog.error(variablesEff.error)
+            }
         }
 
         return Nothing()
@@ -501,7 +503,9 @@ data class SummationTermLinearCombination(
 
                 return TermSummary(this.termName().toNullable()?.value, components, this)
             }
-            is Err -> ApplicationLog.error(variablesEff.error)
+            is Err -> {
+                // ApplicationLog.error(variablesEff.error)
+            }
         }
 
         return null

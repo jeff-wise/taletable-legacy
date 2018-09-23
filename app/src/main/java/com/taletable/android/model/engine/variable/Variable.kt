@@ -701,6 +701,17 @@ data class NumberVariable(override val id : UUID,
                constraint)
 
 
+    constructor(variableId : VariableId)
+        : this(UUID.randomUUID(),
+               variableId,
+               VariableLabel(""),
+               VariableDescription(""),
+               mutableListOf(),
+               Nothing(),
+               NumberVariableLiteralValue(1.0),
+               Nothing())
+
+
     companion object : Factory<NumberVariable>
     {
         override fun fromDocument(doc : SchemaDoc) : ValueParser<NumberVariable> = when (doc)

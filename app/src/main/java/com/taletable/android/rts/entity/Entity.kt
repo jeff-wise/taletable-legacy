@@ -288,6 +288,7 @@ fun initialize(entityId : EntityId)
     entityRecord(entityId) apDo { record ->
         when (record) {
             is EntitySheetRecord -> {
+                Log.d("***ENTITY", "initialize sheet")
                 initializeSheet(record.sheet)
             }
             is EntityGameRecord -> {
@@ -880,7 +881,9 @@ fun variables(variableReference : VariableReference,
 
 
 fun variablesWithTag(variableTag : VariableTag, entityId : EntityId) : AppEff<Set<Variable>> =
-    entityEngineState(entityId).apply { it.variablesWithTag(variableTag) }
+    entityEngineState(entityId).apply {
+        effValue<AppError,Set<Variable>>(it.variablesWithTag(variableTag))
+    }
 
 
 fun onVariableUpdate(variable : Variable, entityId : EntityId) {

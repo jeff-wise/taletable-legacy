@@ -13,9 +13,198 @@ variables:
     value:
       type: number_literal
       number_literal: 4
+- type: variable_number
+  variable_number:
+    id: strength
+    label: Strength
+    description: Strength
+    value:
+      type: summation_id
+      summation_id: strength
+- type: variable_number
+  variable_number:
+    id: strength_modifier
+    label: Strength Modifier
+    description: Strength Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameters:
+        - name: ability_score
+          value:
+            type: data_reference_number
+            data_reference_number:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: strength
+- type: variable_number
+  variable_number:
+    id: dexterity
+    label: Dexterity
+    description: Dexterity
+    value:
+      type: summation_id
+      summation_id: dexterity
+- type: variable_number
+  variable_number:
+    id: dexterity_modifier
+    label: Dexterity Modifier
+    description: Dexterity Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameters:
+        - name: ability_score
+          value:
+            type: data_reference_number
+            data_reference_number:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: dexterity
+- type: variable_number
+  variable_number:
+    id: constitution
+    label: Constitution
+    description: Constitution
+    value:
+      type: summation_id
+      summation_id: constitution
+- type: variable_number
+  variable_number:
+    id: constitution_modifier
+    label: Constitution Modifier
+    description: Constitution Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameters:
+        - name: ability_score
+          value:
+            type: data_reference_number
+            data_reference_number:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: constitution
+- type: variable_number
+  variable_number:
+    id: intelligence
+    label: Intelligence
+    description: Intelligence
+    value:
+      type: summation_id
+      summation_id: intelligence
+- type: variable_number
+  variable_number:
+    id: intelligence_modifier
+    label: Intelligence Modifier
+    description: Intelligence Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameters:
+        - name: ability_score
+          value:
+            type: data_reference_number
+            data_reference_number:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: intelligence
+- type: variable_number
+  variable_number:
+    id: wisdom
+    label: Wisdom
+    description: Wisdom
+    value:
+      type: summation_id
+      summation_id: wisdom
+- type: variable_number
+  variable_number:
+    id: wisdom_modifier
+    label: Wisdom Modifier
+    description: Wisdom Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameters:
+        - name: ability_score
+          value:
+            type: data_reference_number
+            data_reference_number:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: wisdom
+- type: variable_number
+  variable_number:
+    id: charisma
+    label: Charisma
+    description: Charisma
+    value:
+      type: summation_id
+      summation_id: charisma
+- type: variable_number
+  variable_number:
+    id: charisma_modifier
+    label: Charisma Modifier
+    description: Charisma Modifier
+    value:
+      type: program_invocation
+      program_invocation:
+        program_id: ability_modifier
+        parameters:
+        - name: ability_score
+          value:
+            type: data_reference_number
+            data_reference_number:
+              type: variable_reference
+              variable_reference:
+                type: variable_id
+                variable_id: charisma
 engine:
   tasks:
   value_sets:
+  - type: value_set_base
+    value_set_base:
+      value_set_id: proficiency_ranks
+      label: Proficiency Ranks
+      label_singular: Proficiency Rank
+      description: Proficiency ranks.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: untrained
+          description: Untrained
+          value: Untrained
+      - type: value_text
+        value_text:
+          value_id: trained
+          description: Trained
+          value: Trained
+      - type: value_text
+        value_text:
+          value_id: expert
+          description: Expert
+          value: Expert
+      - type: value_text
+        value_text:
+          value_id: master
+          description: Master
+          value: Master
+      - type: value_text
+        value_text:
+          value_id: lengendary
+          description: Legendary
+          value: Legendary
   - type: value_set_base
     value_set_base:
       value_set_id: states
@@ -655,6 +844,25 @@ engine:
           value_id: feat_rogue_bludgeoner
           description: Bludgeoner feat.
           value: 'Bludgeoner'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_bludgeoner_type
+              label: 'Feat: Class: Rogue: Bludgeoner: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_bludgeoner_level
+              label: 'Feat: Class: Rogue: Bludgeoner: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 1
       - type: value_text
         value_text:
           value_id: feat_rogue_nimble_dodge
@@ -669,17 +877,472 @@ engine:
               relation: feat_type
               value:
                 type: text_literal
-                text_literal: 'class'
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_bludgeoner_level
+              label: 'Feat: Class: Rogue: Bludgeoner: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 1
       - type: value_text
         value_text:
           value_id: feat_rogue_trap_finder
           description: Trap Finder feat.
           value: 'Trap Finder'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_trap_finder_type
+              label: 'Feat: Class: Rogue: Trap Finder: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_bludgeoner_level
+              label: 'Feat: Class: Rogue: Trap Finder: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 1
       - type: value_text
         value_text:
           value_id: feat_rogue_youre_next
           description: You're Next feat.
           value: 'You''re Next'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_youre_next_type
+              label: 'Feat: Class: Rogue: You''re Next: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_bludgeoner_level
+              label: 'Feat: Class: Rogue: You''re Next: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 1
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_footpads_focus
+          description: 'Foot''s Focus feat.'
+          value: 'Footpad''s Focus'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_footpads_focus_type
+              label: 'Feat: Class: Rogue: Footpads''s Focus: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_bludgeoner_level
+              label: 'Feat: Class: Rogue: Footpad''s Focus: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_mobility
+          description: 'Mobility feat.'
+          value: 'Mobility'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_mobility_type
+              label: 'Feat: Class: Rogue: Mobility: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_mobility_level
+              label: 'Feat: Class: Rogue: Mobility: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_quick_draw
+          description: 'Quick Draw feat.'
+          value: 'Quick Draw'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_quick_draw_type
+              label: 'Feat: Class: Rogue: Quick Draw: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_quick_draw_level
+              label: 'Feat: Class: Rogue: Quick Draw: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_snipers_aim_draw
+          description: 'Sniper''s Aim feat.'
+          value: 'Sniper''s Aim'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_snipers_aim_type
+              label: 'Feat: Class: Rogue: Sniper''s Aim: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_snipers_aim_level
+              label: 'Feat: Class: Rogue: Sniper''s Aim: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 2
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_battle_assessment
+          description: 'Battle Assessment feat.'
+          value: 'Battle Assessment'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_battle_assessment_type
+              label: 'Feat: Class: Rogue: Battle Assessment: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_battle_assessment_level
+              label: 'Feat: Class: Rogue: Battle Assessment: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_dread_striker
+          description: 'Dread Striker feat.'
+          value: 'Dread Striker'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_dread_striker_type
+              label: 'Feat: Class: Rogue: Dread Striker: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_dread_striker_level
+              label: 'Feat: Class: Rogue: Dread Striker: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_poison_weapon
+          description: 'Poison Weapon feat.'
+          value: 'Poison Weapon'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_poison_weapon_type
+              label: 'Feat: Class: Rogue: Poison Weapon: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_poison_weapon_level
+              label: 'Feat: Class: Rogue: Poison Weapon: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_reactive_pursuit
+          description: 'Reactive Pursuit feat.'
+          value: 'Reactive Pursuit'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_reactive_pursuit_type
+              label: 'Feat: Class: Rogue: Reactive Pursuit: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_reactive_pursuit_level
+              label: 'Feat: Class: Rogue: Reactive Pursuit: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_running_reload
+          description: 'Running Reload feat.'
+          value: 'Running Reload'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_running_reload_type
+              label: 'Feat: Class: Rogue: Running Reload: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_running_reload_level
+              label: 'Feat: Class: Rogue: Running Reload: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_sabotage
+          description: 'Sabotage feat.'
+          value: 'Sabotage'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_sabotage_type
+              label: 'Feat: Class: Rogue: Sabotage: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_sabotage_level
+              label: 'Feat: Class: Rogue: Sabotage: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_scouts_warning
+          description: 'Scout''s Warning feat.'
+          value: 'Scout''s Warning'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_scouts_warning_type
+              label: 'Feat: Class: Rogue: Scout''s Warning: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_scouts_warning_level
+              label: 'Feat: Class: Rogue: Scout''s Warning: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_unbalancing_blow
+          description: 'Unbalancing Blow feat.'
+          value: 'Unbalancing Blow'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_unbalancing_blow_type
+              label: 'Feat: Class: Rogue: Unbalancing Blow: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_unbalancing_blow_level
+              label: 'Feat: Class: Rogue: Unbalancing Blow: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 4
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_blind_fight
+          description: 'Blind Fight feat.'
+          value: 'Blind Fight'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_blind_fight_type
+              label: 'Feat: Class: Rogue: Blind Fight: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_blind_fight_level
+              label: 'Feat: Class: Rogue: Blind Fight: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 6
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_gang_up
+          description: 'Gang Up feat.'
+          value: 'Gang Up'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_gang_up_type
+              label: 'Feat: Class: Rogue: Gang Up: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_gang_up_level
+              label: 'Feat: Class: Rogue: Gang Up: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 6
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_light_step
+          description: 'Light Step feat.'
+          value: 'Light Step'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_light_step_type
+              label: 'Feat: Class: Rogue: Light Step: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_light_step_level
+              label: 'Feat: Class: Rogue: Light Step: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 6
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_skirmish_strike
+          description: 'Skirmish Strike feat.'
+          value: 'Skirmish Strike'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_skirmish_strike_type
+              label: 'Feat: Class: Rogue: Skirmish Strike: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_skirmish_strike_level
+              label: 'Feat: Class: Rogue: Skirmish Strike: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 6
+      - type: value_text
+        value_text:
+          value_id: feat_rogue_twist_the_knife
+          description: 'Twist the Knife feat.'
+          value: 'Twist the Knife'
+          variables:
+          - type: variable_text
+            variable_text:
+              id: feat_rogue_twist_the_knife_type
+              label: 'Feat: Class: Rogue: Twist the Knife: Type'
+              description: The type of feat.
+              relation: feat_type
+              value:
+                type: text_literal
+                text_literal: 'Rogue'
+          - type: variable_number
+            variable_number:
+              id: feat_rogue_twist_the_knife_level
+              label: 'Feat: Class: Rogue: Twist the Knife: Level'
+              description: The level requirement for the feat.
+              relation: feat_level
+              value:
+                type: number_literal
+                number_literal: 6
   - type: value_set_compound
     value_set_compound:
       value_set_id: feats
@@ -4932,66 +5595,6 @@ engine:
     requirements:
     - name: 'is_race_human'
     variables:
-    - type: variable_number
-      variable_number:
-        id: human_strength_bonus
-        label: Human Strength Bonus
-        description: Human Strength Bonus
-        tags:
-        - strength_racial_modifier
-        value:
-          type: number_literal
-          number_literal: 1
-    - type: variable_number
-      variable_number:
-        id: human_dexterity_bonus
-        label: Human Dexterity Bonus
-        description: Human Dexterity Bonus
-        tags:
-        - dexterity_racial_modifier
-        value:
-          type: number_literal
-          number_literal: 1
-    - type: variable_number
-      variable_number:
-        id: human_constitution_bonus
-        label: Human Constitution Bonus
-        description: Human Constitution Bonus
-        tags:
-        - constitution_racial_modifier
-        value:
-          type: number_literal
-          number_literal: 1
-    - type: variable_number
-      variable_number:
-        id: human_intelligence_bonus
-        label: Human Intelligence Bonus
-        description: Human Intelligence Bonus
-        tags:
-        - intelligence_racial_modifier
-        value:
-          type: number_literal
-          number_literal: 1
-    - type: variable_number
-      variable_number:
-        id: human_wisdom_bonus
-        label: Human Wisdom Bonus
-        description: Human Wisdom Bonus
-        tags:
-        - wisdom_racial_modifier
-        value:
-          type: number_literal
-          number_literal: 1
-    - type: variable_number
-      variable_number:
-        id: human_charisma_bonus
-        label: Human Charisma Bonus
-        description: Human Charisma Bonus
-        tags:
-        - charisma_racial_modifier
-        value:
-          type: number_literal
-          number_literal: 1
   - id: human_languages
     label: Languages
     description: 'You can speak, read, and write Common and one extra language of your choice.'
@@ -5251,42 +5854,80 @@ engine:
   - function_id: proficiency_modifier_from_rank
     label: Proficiency Modifier from Proficiency Rank
     description: |-
-      The proficiency modifier from the proficiency rank where 0 = Untrained 1 = T, 2 = E, 3 = M,
+      The proficiency modifier from the proficiency rank.
+    type_signature:
+      parameter1_type: text
+      result_type: number
+    tuples:
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: Untrained
+      result:
+        type: engine_value_number
+        engine_value_number: -2
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: Trained
+      result:
+        type: engine_value_number
+        engine_value_number: 0
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: Expert
+      result:
+        type: engine_value_number
+        engine_value_number: 1
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: Master
+      result:
+        type: engine_value_number
+        engine_value_number: 2
+    - parameter1:
+        type: engine_value_text
+        engine_value_text: Legendary
+      result:
+        type: engine_value_number
+        engine_value_number: 3
+  - function_id: proficiency_name_from_rank
+    label: Proficiency Name from Proficiency Rank
+    description: |-
+      The proficiency name from the proficiency rank where 0 = Untrained 1 = T, 2 = E, 3 = M,
       and 4 = L
     type_signature:
       parameter1_type: number
-      result_type: number
+      result_type: text
     tuples:
     - parameter1:
         type: engine_value_number
         engine_value_number: 0
       result:
-        type: engine_value_number
-        engine_value_number: -2
+        type: engine_value_text
+        engine_value_text: 'Untrained'
     - parameter1:
         type: engine_value_number
         engine_value_number: 1
       result:
-        type: engine_value_number
-        engine_value_number: 0
+        type: engine_value_text
+        engine_value_text: 'Trained'
     - parameter1:
         type: engine_value_number
         engine_value_number: 2
       result:
-        type: engine_value_number
-        engine_value_number: 1
+        type: engine_value_text
+        engine_value_text: 'Expert'
     - parameter1:
         type: engine_value_number
         engine_value_number: 3
       result:
-        type: engine_value_number
-        engine_value_number: 2
+        type: engine_value_text
+        engine_value_text: 'Master'
     - parameter1:
         type: engine_value_number
         engine_value_number: 4
       result:
-        type: engine_value_number
-        engine_value_number: 3
+        type: engine_value_text
+        engine_value_text: 'Legendary'
   - function_id: background_personality_trait_value_set_id
     label: Background Personality Trait Value Set Id
     description: Swashbuckler background personality trait value set ids.
@@ -5874,6 +6515,25 @@ engine:
         type: program_parameter_name
         program_parameter_name: proficiency_rank
     result_binding_name: result
+  - program_id: proficiency_name_from_rank
+    label: Proficiency Name From Rank
+    description: The name for each proficiency rank.
+    type_signature:
+      parameters:
+      - type: program_parameter_number
+        program_parameter_number:
+          name: proficiency_rank
+          label: Proficiency Rank
+          input_message:
+            template: Proficiency Rank
+      result: text
+    statements:
+    - binding_name: result
+      function_id: proficiency_name_from_rank
+      parameter1:
+        type: program_parameter_name
+        program_parameter_name: proficiency_rank
+    result_binding_name: result
   - program_id: ability_modifier
     label: Ability Modifier
     description: Calcuates the ability modifier of an ability score.
@@ -6170,6 +6830,278 @@ engine:
           variable_reference:
             type: variable_id
             variable_id: skill_acrobatics_proficiency_rank_modifier
+  - summation_id: skill_arcana_proficiency_modifier
+    summation_name: 'Skill: Arcana: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_arcana_proficiency_rank_modifier
+  - summation_id: skill_athletics_proficiency_modifier
+    summation_name: 'Skill: Athletics: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_athletics_proficiency_rank_modifier
+  - summation_id: skill_crafting_proficiency_modifier
+    summation_name: 'Skill: Crafting: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_crafting_proficiency_rank_modifier
+  - summation_id: skill_deception_proficiency_modifier
+    summation_name: 'Skill: Deception: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_deception_proficiency_rank_modifier
+  - summation_id: skill_diplomacy_proficiency_modifier
+    summation_name: 'Skill: Diplomacy: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_diplomacy_proficiency_rank_modifier
+  - summation_id: skill_intimidation_proficiency_modifier
+    summation_name: 'Skill: Intimidation: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_intimidation_proficiency_rank_modifier
+  - summation_id: skill_lore_proficiency_modifier
+    summation_name: 'Skill: Lore: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_lore_proficiency_rank_modifier
+  - summation_id: skill_medicine_proficiency_modifier
+    summation_name: 'Skill: Medicine: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_medicine_proficiency_rank_modifier
+  - summation_id: skill_nature_proficiency_modifier
+    summation_name: 'Skill: Nature: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_nature_proficiency_rank_modifier
+  - summation_id: skill_occultism_proficiency_modifier
+    summation_name: 'Skill: Occultism: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_occultism_proficiency_rank_modifier
+  - summation_id: skill_performance_proficiency_modifier
+    summation_name: 'Skill: Performance: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_performance_proficiency_rank_modifier
+  - summation_id: skill_religion_proficiency_modifier
+    summation_name: 'Skill: Religion: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_religion_proficiency_rank_modifier
+  - summation_id: skill_society_proficiency_modifier
+    summation_name: 'Skill: Society: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_society_proficiency_rank_modifier
+  - summation_id: skill_stealth_proficiency_modifier
+    summation_name: 'Skill: Stealth: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_stealth_proficiency_rank_modifier
+  - summation_id: skill_survival_proficiency_modifier
+    summation_name: 'Skill: Survival: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_survival_proficiency_rank_modifier
+  - summation_id: skill_thievery_proficiency_modifier
+    summation_name: 'Skill: Thievery: Proficiency Modifier'
+    terms:
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: level
+    - type: summation_term_number
+      summation_term_number:
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_id
+            variable_id: skill_thievery_proficiency_rank_modifier
   - summation_id: weapon_rapier_damage_roll
     summation_name: Rapier Damage Roll
     terms:
@@ -6239,6 +7171,14 @@ engine:
           variable_reference:
             type: variable_tag
             variable_tag: strength_racial_modifier
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Ability Boosts
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: ability_boost_strength
   - summation_id: dexterity
     summation_name: Dexterity
     terms:
@@ -6257,6 +7197,14 @@ engine:
           variable_reference:
             type: variable_tag
             variable_tag: dexterity_racial_modifier
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Ability Boosts
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: ability_boost_dexterity
   - summation_id: constitution
     summation_name: Constitution
     terms:
@@ -6275,6 +7223,14 @@ engine:
           variable_reference:
             type: variable_tag
             variable_tag: constitution_racial_modifier
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Ability Boosts
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: ability_boost_constitution
   - summation_id: intelligence
     summation_name: Intelligence
     terms:
@@ -6293,6 +7249,14 @@ engine:
           variable_reference:
             type: variable_tag
             variable_tag: intelligence_racial_modifier
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Ability Boosts
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: ability_boost_intelligence
   - summation_id: wisdom
     summation_name: Wisdom
     terms:
@@ -6311,6 +7275,14 @@ engine:
           variable_reference:
             type: variable_tag
             variable_tag: wisdom_racial_modifier
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Ability Boosts
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: ability_boost_wisdom
   - summation_id: charisma
     summation_name: Charisma
     terms:
@@ -6329,6 +7301,14 @@ engine:
           variable_reference:
             type: variable_tag
             variable_tag: charisma_racial_modifier
+    - type: summation_term_number
+      summation_term_number:
+        term_name: Ability Boosts
+        value:
+          type: variable_reference
+          variable_reference:
+            type: variable_tag
+            variable_tag: ability_boost_charisma
   - summation_id: initiative
     summation_name: Initiative
     terms:
@@ -6550,567 +7530,6 @@ engine:
             type: variable_id
             variable_id: charisma_modifier
 
-  - summation_id: skill_animal_handling_roll
-    summation_name: Skill (Animal Handling) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: wisdom_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_animal_handling_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_arcana_roll
-    summation_name: Skill (Arcana) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: intelligence_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_arcana_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_athletics_roll
-    summation_name: Skill (Athletics) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: strength_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_athletics_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_deception_roll
-    summation_name: Skill (Deception) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: charisma_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_deception_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_history_roll
-    summation_name: Skill (History) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: intelligence_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_history_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_insight_roll
-    summation_name: Skill (Insight) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: wisdom_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_insight_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_intimidation_roll
-    summation_name: Skill (Intimidation) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: charisma_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_intimidation_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_investigation_roll
-    summation_name: Skill (Investigation) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: intelligence_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_investigation_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_medicine_roll
-    summation_name: Skill (Medicine) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: wisdom_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_medicine_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_nature_roll
-    summation_name: Skill (Nature) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: intelligence_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_nature_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_perception_roll
-    summation_name: Skill (Perception) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: wisdom_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_perception_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_performance_roll
-    summation_name: Skill (Performance) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: charisma_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_performance_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_persuasion_roll
-    summation_name: Skill (Persuasion) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: charisma_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_persuasion_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_religion_roll
-    summation_name: Skill (Religion) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: intelligence_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_religion_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_sleight_of_hand_roll
-    summation_name: Skill (Sleight of Hand) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: dexterity_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_sleight_of_hand_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_stealth_roll
-    summation_name: Skill (Stealth) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: dexterity_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_stealth_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
-  - summation_id: skill_survival_roll
-    summation_name: Skill (Survival) Roll
-    terms:
-    - type: summation_term_dice_roll
-      summation_term_dice_roll:
-        value:
-          type: dice_roll
-          dice_roll:
-            quantities:
-            - sides: 20
-              quantity: 1
-    - type: summation_term_number
-      summation_term_number:
-        value:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: wisdom_modifier
-    - type: summation_term_conditional
-      summation_term_conditional:
-        condition:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: skill_survival_is_proficient
-        when_true:
-          type: variable_reference
-          variable_reference:
-            type: variable_id
-            variable_id: proficiency_bonus
-        when_false:
-          type: number_literal
-          number_literal: 0
   - summation_id: skill_check_roll
     summation_name: Skill Check Roll
     terms:

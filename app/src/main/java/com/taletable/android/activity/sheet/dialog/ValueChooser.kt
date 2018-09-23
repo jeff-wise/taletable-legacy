@@ -40,6 +40,7 @@ import com.taletable.android.model.theme.ThemeId
 import com.taletable.android.router.Router
 import com.taletable.android.rts.entity.*
 import com.taletable.android.rts.entity.sheet.*
+import com.taletable.android.util.SimpleDividerItemDecoration
 import effect.Err
 import maybe.Just
 import effect.Val
@@ -109,21 +110,27 @@ class ValueChooserDialogFragment : DialogFragment()
         // (2) Initialize UI
         // -------------------------------------------------------------------------------------
 
-        val dialog = Dialog(activity)
+        val dialog = Dialog(context)
 
         val dialogLayout = this.dialogLayout()
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
+        dialog.window.attributes.windowAnimations = R.style.DialogAnimation
+
         dialog.setContentView(dialogLayout)
 
-        val width  = context?.resources?.getDimension(R.dimen.action_dialog_width)
+        val window = dialog.window
+        val wlp = window.attributes
+
+        wlp.gravity = Gravity.BOTTOM
+        window.attributes = wlp
+
+        val width  = LinearLayout.LayoutParams.MATCH_PARENT
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        width?.let {
-            dialog.window.setLayout(width.toInt(), height)
-        }
+        dialog.window.setLayout(width, height)
 
         return dialog
     }
@@ -298,13 +305,9 @@ object ValueChooserView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_4")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_80"))))
-        layout.backgroundColor      = colorOrBlack(colorTheme, entityId)
-//        layout.backgroundColor      = Color.WHITE
+        layout.backgroundColor      = Color.WHITE
 
-        layout.corners              = Corners(3.0, 3.0, 0.0, 0.0)
+        layout.corners              = Corners(1.0, 1.0, 0.0, 0.0)
 
         return layout.linearLayout(context)
     }
@@ -333,8 +336,8 @@ object ValueChooserView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.padding.leftDp       = 8f
-        layout.padding.rightDp      = 8f
+        layout.padding.leftDp       = 14f
+        layout.padding.rightDp      = 14f
         layout.padding.topDp        = 14f
         layout.padding.bottomDp     = 14f
 
@@ -353,17 +356,16 @@ object ValueChooserView
 
         title.text              = titleString
 
-        title.font              = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+        title.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Regular,
                                                 context)
 
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
-//        title.color           = colorOrBlack(colorTheme, entityId)
-        title.color           = Color.WHITE
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        title.color           = colorOrBlack(colorTheme, entityId)
 
-        title.sizeSp          = 17f
+        title.sizeSp          = 21f
 
         title.margin.leftDp   = 0.5f
 
@@ -390,14 +392,14 @@ object ValueChooserView
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_4"))))
         recyclerView.backgroundColor      = colorOrBlack(colorTheme, entityId)
 
         val dividerColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
 //        val dividerColor = SheetManager.color(sheetUIContext.sheetId, dividerColorTheme)
-        // recyclerView.divider = SimpleDividerItemDecoration(sheetUIContext.context, dividerColor)
+         //recyclerView.divider = ValueDividerItemDecoration(entityId, context)
 
         when (valueSet)
         {
@@ -480,13 +482,31 @@ object ValueChooserView
         // Header
         layout.addView(this.valueHeaderView(entityId, context))
 
+        layout.addView(this.valueDividerView(entityId, context))
+
         // Summary
-        layout.addView(this.valueSummaryView(entityId, context))
+        //layout.addView(this.valueSummaryView(entityId, context))
 
         // Reference Link
 //        layout.addView(this.referenceView(entityId, context))
 
         return layout
+    }
+
+
+    private fun valueDividerView(entityId : EntityId, context : Context) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.heightDp         = 1
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_4"))))
+        layout.backgroundColor      = colorOrBlack(colorTheme, entityId)
+
+        return layout.linearLayout(context)
     }
 
 
@@ -500,16 +520,11 @@ object ValueChooserView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.padding.leftDp       = 6f
-        layout.padding.rightDp      = 6f
+        layout.padding.leftDp        = 14f
+        layout.padding.rightDp       = 14f
 
-        layout.padding.topDp        = 6f
-        layout.padding.bottomDp     = 6f
 
-        layout.margin.leftDp        = 2f
-        layout.margin.rightDp       = 2f
-
-        layout.margin.topDp         = 1f
+//         layout.margin.topDp         = 1f
 
 //        val colorTheme = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
@@ -536,6 +551,9 @@ object ValueChooserView
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
+        layout.padding.topDp        = 14f
+        layout.padding.bottomDp     = 14f
+
         layout.gravity              = Gravity.CENTER_VERTICAL
 
         layout.child(icon)
@@ -546,17 +564,17 @@ object ValueChooserView
 
         icon.id                     = R.id.choose_value_item_icon
 
-        icon.widthDp                = 17
-        icon.heightDp               = 17
+        icon.widthDp                = 21
+        icon.heightDp               = 21
 
-        icon.image                  = R.drawable.icon_check_bold
+        icon.image                  = R.drawable.icon_check
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_12")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
         icon.color                  = colorOrBlack(iconColorTheme, entityId)
 
-        icon.margin.rightDp         = 4f
+        icon.margin.rightDp         = 8f
         icon.margin.topDp         = 1f
 
         icon.visibility             = View.GONE
@@ -569,11 +587,11 @@ object ValueChooserView
         name.width                  = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height                 = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.font                   = Font.typeface(TextFont.Cabin,
-                                                    TextFontStyle.Medium,
+        name.font                   = Font.typeface(TextFont.RobotoCondensed,
+                                                    TextFontStyle.Regular,
                                                     context)
 
-        name.sizeSp                 = 18f
+        name.sizeSp                 = 21f
 
         return layout.linearLayout(context)
     }
@@ -588,7 +606,7 @@ object ValueChooserView
 
         summary.id              = R.id.choose_value_item_summary
 
-        summary.font            = Font.typeface(TextFont.Cabin,
+        summary.font            = Font.typeface(TextFont.RobotoCondensed,
                                                 TextFontStyle.Regular,
                                                 context)
 
@@ -614,7 +632,7 @@ object ValueChooserView
         name.width              = LinearLayout.LayoutParams.MATCH_PARENT
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.font               = Font.typeface(TextFont.default(),
+        name.font               = Font.typeface(TextFont.RobotoCondensed,
                                                 TextFontStyle.Regular,
                                                 context)
 
@@ -891,13 +909,13 @@ class ValueViewHolder(itemView : View, val entityId : EntityId, val context : Co
 
     val normalColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
     val greyColor = colorOrBlack(normalColorTheme, entityId)
 
 
     val hlColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_green_8")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("green_tint_1"))))
     val greenColor = colorOrBlack(hlColorTheme, entityId)
 
     val hlSummaryColorTheme = ColorTheme(setOf(

@@ -17,11 +17,21 @@
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/dark_blue_hlx_7</item>
         <item name="colorPrimaryDark">@color/dark_blue_hlx_7</item>
+        <item name="android:windowAnimationStyle">@null</item>
         <item name="colorAccent">@color/dark_blue_hlx_7</item>
         <item name="colorControlNormal">@color/dark_blue_hlx_7</item>
         <item name="colorControlActivated">@color/dark_blue_hlx_7</item>
         <item name="colorControlHighlight">@color/dark_blue_hlx_7</item>
         <item name="colorSwitchThumbNormal">@color/dark_blue_hl_8</item>
+    </style>
+
+
+    <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
+    </style>
+
+    <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
 

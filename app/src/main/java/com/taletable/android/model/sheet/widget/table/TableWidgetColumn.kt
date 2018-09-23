@@ -10,6 +10,7 @@ import com.taletable.android.model.sheet.style.IconType
 import com.taletable.android.model.sheet.style.NumericEditorType
 import com.taletable.android.model.sheet.style.TextFormat
 import com.taletable.android.model.sheet.widget.Action
+import com.taletable.android.model.sheet.widget.table.cell.NumberCellValue
 import com.taletable.android.model.sheet.widget.table.cell.TextCellValue
 import com.taletable.android.model.sheet.widget.table.column.*
 import com.taletable.android.rts.entity.EntityId
@@ -369,7 +370,7 @@ data class TableWidgetNumberColumn(
                 override val variableRelation : Maybe<VariableRelation>,
                 override val isColumnNamespaced : IsColumnNamespaced,
                 val tags : List<VariableTag>,
-                val defaultValue : NumberVariableValue,
+                val defaultValue : NumberCellValue,
                 val format : NumberColumnFormat,
                 val action : Maybe<Action>,
                 val editorType : NumericEditorType)
@@ -385,7 +386,7 @@ data class TableWidgetNumberColumn(
                 variableRelation : Maybe<VariableRelation>,
                 isColumnNamespaced : IsColumnNamespaced,
                 tags : List<VariableTag>,
-                defaultValue : NumberVariableValue,
+                defaultValue : NumberCellValue,
                 format : NumberColumnFormat,
                 action : Maybe<Action>,
                 editorType : NumericEditorType)
@@ -429,7 +430,7 @@ data class TableWidgetNumberColumn(
                             effValue(listOf()),
                             { it.map { VariableTag.fromDocument(it) } }),
                       // Default Value
-                      doc.at("default_value") ap { NumberVariableValue.fromDocument(it) },
+                      doc.at("default_value") ap { NumberCellValue.fromDocument(it) },
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(NumberColumnFormat.default()),
@@ -457,7 +458,6 @@ data class TableWidgetNumberColumn(
         "name" to this.columnName().toDocument(),
         "variable_prefix" to this.variablePrefix().toDocument(),
         "is_namespaced" to this.isColumnNamespaced.toDocument(),
-        "default_value" to this.defaultValue().toDocument(),
         "format" to this.format().toDocument(),
         "editor_type" to this.editorType().toDocument()
     ))
@@ -469,7 +469,7 @@ data class TableWidgetNumberColumn(
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun defaultValue() : NumberVariableValue = this.defaultValue
+    fun defaultValue() : NumberCellValue = this.defaultValue
 
 
     fun format() : NumberColumnFormat = this.format

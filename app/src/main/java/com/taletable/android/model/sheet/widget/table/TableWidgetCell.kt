@@ -321,7 +321,7 @@ data class TableWidgetImageCell(private val id : UUID,
  */
 data class TableWidgetNumberCell(val id : UUID,
                                  val format : NumberCellFormat,
-                                 val variableValue : NumberVariableValue,
+                                 val value : NumberCellValue,
                                  val editorType : Maybe<NumericEditorType>,
                                  val action : Maybe<Action>,
                                  var variableId : VariableId?)
@@ -341,33 +341,33 @@ data class TableWidgetNumberCell(val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(variableValue : NumberVariableValue)
+    constructor(value : NumberCellValue)
         : this(UUID.randomUUID(),
                NumberCellFormat.default(),
-               variableValue,
+               value,
                Nothing(),
                Nothing(),
                null)
 
 
     constructor(format : NumberCellFormat,
-                variableValue : NumberVariableValue,
+                value : NumberCellValue,
                 editorType : Maybe<NumericEditorType>,
                 action : Maybe<Action>)
         : this(UUID.randomUUID(),
                format,
-               variableValue,
+               value,
                editorType,
                action,
                null)
 
 
     constructor(format : NumberCellFormat,
-                variableValue : NumberVariableValue,
+                value : NumberCellValue,
                 editorType : Maybe<NumericEditorType>)
         : this(UUID.randomUUID(),
                format,
-               variableValue,
+               value,
                editorType,
                Nothing(),
                null)
@@ -387,9 +387,9 @@ data class TableWidgetNumberCell(val id : UUID,
                       split(doc.maybeAt("format"),
                             effValue(defaultNumberCellFormat()),
                             { NumberCellFormat.fromDocument(it) }),
-                      // Variable Value
-                      doc.at("variable_value") ap {
-                          NumberVariableValue.fromDocument(it)
+                      // Value
+                      doc.at("value") ap {
+                          NumberCellValue.fromDocument(it)
                       },
                       // Editor Type
                       split(doc.maybeAt("editor_type"),
@@ -411,8 +411,7 @@ data class TableWidgetNumberCell(val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
-        "format" to this.format().toDocument(),
-        "variable_value" to this.variableValue().toDocument()
+        "format" to this.format().toDocument()
     ))
     .maybeMerge(this.editorType.apply {
         Just(Pair("editor_type", it.toDocument() as SchemaDoc)) })
@@ -427,7 +426,7 @@ data class TableWidgetNumberCell(val id : UUID,
     fun format() : NumberCellFormat = this.format
 
 
-    fun variableValue() : NumberVariableValue = this.variableValue
+    fun value() : NumberCellValue = this.value
 
 
     fun editorType() : Maybe<NumericEditorType> = this.editorType
@@ -733,8 +732,8 @@ object TableWidgetCellView
 //        }
 
         //if (cellFormat.backgroundColorTheme.isDefault()) {
-        layout.backgroundColor  = colorOrBlack(columnFormat.textFormat().elementFormat().backgroundColorTheme(),
-                                        entityId)
+//        layout.backgroundColor  = colorOrBlack(columnFormat.textFormat().elementFormat().backgroundColorTheme(),
+//                                        entityId)
 //        } else {
 //            layout.backgroundColor  = SheetManager.color(sheetUIContext.sheetId,
 //                                        cellFormat.backgroundColorTheme())

@@ -344,7 +344,10 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
             this.invocation.dependencies(entityId)
 
 
-    override fun value(entityId : EntityId) = TODO("Not Implemented")
+    //override fun value(entityId : EntityId) = TODO("Not Implemented")
+
+    override fun value(entityId : EntityId) : AppEff<Maybe<String>> =
+            effApply(::Just, this.invocation.textValue(entityId))
 
 
     override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =

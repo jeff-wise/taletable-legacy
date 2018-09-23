@@ -3,7 +3,6 @@ package com.taletable.android.activity.sheet
 
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -24,7 +23,6 @@ import android.widget.*
 import com.taletable.android.R
 import com.taletable.android.activity.AppOptionsUI
 import com.taletable.android.activity.entity.engine.procedure.ProcedureUpdateDialog
-import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.activity.sheet.history.HistoryPagerAdapter
 import com.taletable.android.activity.sheet.page.PagePagerAdapter
 import com.taletable.android.activity.sheet.task.TaskPagerAdapter
@@ -41,7 +39,11 @@ import com.taletable.android.rts.entity.sheet.*
 import com.taletable.android.util.configureToolbar
 import maybe.Just
 import io.reactivex.disposables.CompositeDisposable
-
+import android.opengl.ETC1.getHeight
+import android.support.v4.content.ContextCompat
+import android.view.animation.TranslateAnimation
+import com.taletable.android.activity.session.sessionView
+import com.taletable.android.model.theme.official.officialAppThemeLight
 
 
 object SheetActivityGlobal
@@ -105,6 +107,9 @@ class SheetActivity : AppCompatActivity()
     private val messageListenerDisposable : CompositeDisposable = CompositeDisposable()
 
 
+    private var sessionIsOpen : Boolean = false
+
+
     // -----------------------------------------------------------------------------------------
     // ACTIVITY API
     // -----------------------------------------------------------------------------------------
@@ -135,7 +140,7 @@ class SheetActivity : AppCompatActivity()
         // (4) Configure UI
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar("Character Sheet", TextFont.Cabin, TextFontStyle.Medium, 17f)
+        this.configureToolbar("Character Sheet", TextFont.RobotoCondensed, TextFontStyle.Regular, 18f)
 
         this.initializeViews()
 
@@ -293,19 +298,65 @@ class SheetActivity : AppCompatActivity()
 
 
         this.sheetId?.let {
-            val mainTabBarUI = MainTabBarUI(it, officialThemeLight, this)
-            toolbarContentLayout?.addView(mainTabBarUI.view())
+//            val mainTabBarUI = MainTabBarUI(it, officialThemeLight, this)
+//            toolbarContentLayout?.addView(mainTabBarUI.view())
+        }
+
+
+
+        findViewById<ImageView>(R.id.toolbar_menu_button)?.let { buttonView ->
+            buttonView.setOnClickListener {
+//                val intent = Intent(this, SessionActivity::class.java)
+//                startActivity(intent)
+//                overridePendingTransition(R.anim.activity_slide_in_left, R.anim.activity_slide_out_right)
+                this.findViewById<LinearLayout>(R.id.toolbar_content)?.let { view ->
+
+                    if (!this.sessionIsOpen)
+                    {
+                        view.setVisibility(View.VISIBLE);
+
+                        view.addView(sessionView(officialAppThemeLight, this))
+
+                        this.findViewById<TabLayout>(R.id.tab_layout)?.visibility = View.GONE
+                        this.findViewById<ViewPager>(R.id.view_pager)?.visibility = View.GONE
+
+//                        val animate = TranslateAnimation(
+//                                0f, // fromXDelta
+//                                0f, // toXDelta
+//                                0f,                // toYDelta
+//                        view.height.toFloat()) // fromYDelta
+//                        animate.duration = 1000
+//                        animate.fillAfter = true
+//                        view.startAnimation(animate)
+                        buttonView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_toolbar_chevron_right))
+
+                        this.sessionIsOpen = true
+                    }
+                    else {
+                        view.removeAllViews()
+                        view.setVisibility(View.GONE);
+
+                        this.findViewById<TabLayout>(R.id.tab_layout)?.visibility = View.VISIBLE
+                        this.findViewById<ViewPager>(R.id.view_pager)?.visibility = View.VISIBLE
+
+                        buttonView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_toolbar_chevron_down))
+
+                        this.sessionIsOpen = false
+                    }
+
+                }
+            }
         }
     }
 
 
     private fun initializeFAB()
     {
-        val fab = findViewById<FloatingActionButton>(R.id.session_button)
-        fab.setOnClickListener {
-            val intent = Intent(this, SessionActivity::class.java)
-            startActivity(intent)
-        }
+//        val fab = findViewById<FloatingActionButton>(R.id.session_button)
+//        fab.setOnClickListener {
+//            val intent = Intent(this, SessionActivity::class.java)
+//            startActivity(intent)
+//        }
     }
 
 
@@ -331,12 +382,12 @@ class SheetActivity : AppCompatActivity()
         val appOptionsViewBuilder = AppOptionsUI(this)
         leftNavView.addView(appOptionsViewBuilder.view())
 
-        menuLeft.setOnClickListener {
-            if (drawerLayout.isDrawerOpen(GravityCompat.START))
-                drawerLayout.closeDrawer(GravityCompat.START)
-            else
-                drawerLayout.openDrawer(GravityCompat.START)
-        }
+//        menuLeft.setOnClickListener {
+//            if (drawerLayout.isDrawerOpen(GravityCompat.START))
+//                drawerLayout.closeDrawer(GravityCompat.START)
+//            else
+//                drawerLayout.openDrawer(GravityCompat.START)
+//        }
 
         // Right Sidebar
         // -------------------------------------------------------------------------------------
@@ -509,28 +560,28 @@ class MainTabBarUI(val sheetId : EntityId,
         {
             1 -> {
 //                pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgSelectedColorTheme))
-                pagesTabLayoutView?.setBackgroundColor(Color.WHITE)
-                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
-                historyTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+//                pagesTabLayoutView?.setBackgroundColor(Color.WHITE)
+//                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+//                historyTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
 
                 pagesTabTextView?.setTextColor(theme.colorOrBlack(selectedColorTheme))
                 tasksTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
                 historyTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
             }
             2 -> {
-                pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
-//                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgSelectedColorTheme))
-                tasksTabLayoutView?.setBackgroundColor(Color.WHITE)
-                historyTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+//                pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+////                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgSelectedColorTheme))
+//                tasksTabLayoutView?.setBackgroundColor(Color.WHITE)
+//                historyTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
 
                 pagesTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
                 tasksTabTextView?.setTextColor(theme.colorOrBlack(selectedColorTheme))
                 historyTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
             }
             3 -> {
-                pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
-                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
-                historyTabLayoutView?.setBackgroundColor(Color.WHITE)
+//                pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+//                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+//                historyTabLayoutView?.setBackgroundColor(Color.WHITE)
 
                 pagesTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
                 tasksTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
@@ -644,6 +695,8 @@ class MainTabBarUI(val sheetId : EntityId,
         layout.gravity          = Gravity.CENTER
 
         layout.orientation      = LinearLayout.VERTICAL
+
+        layout.backgroundColor  = Color.WHITE
 
         layout.padding.topDp    = 8f
 

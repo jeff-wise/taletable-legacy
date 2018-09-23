@@ -23,7 +23,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/dark_theme_primary_88"
                 app:contentInsetStart="0dp"
-                android:elevation="3dp"
+                android:elevation="6dp"
                 android:theme="@style/AppTheme.NoActionBar" >
 
                 <RelativeLayout
@@ -91,7 +91,7 @@
                     android:src="@drawable/ic_fab_toc"
                     app:layout_anchor="@id/fragment_container"
                     app:layout_anchorGravity="bottom|right"
-                    app:backgroundTint="@color/light_theme_dark_grey_10"
+                    app:backgroundTint="@color/light_theme_red_tint_3"
                     app:rippleColor="#FFF" />
 
             </android.support.design.widget.CoordinatorLayout>

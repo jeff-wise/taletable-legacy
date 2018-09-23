@@ -934,7 +934,7 @@ class EntityState(val entityId : EntityId,
         when (variableReference)
         {
             is VariableId      -> effApply(::setOf, this.variable(variableReference))
-            is VariableTag     -> this.variablesWithTag(variableReference)
+            is VariableTag     -> effValue(this.variablesWithTag(variableReference))
             is VariableReferenceContextual -> {
                 val context = variableReference.context
                 when (context)
@@ -986,16 +986,18 @@ class EntityState(val entityId : EntityId,
                     }
                     return relatedVariableSet
                 }
-                this.variablesWithTag(variableTag)
-                     .apply { effValue<AppError,Set<Variable>>(relatedVariables(it)) }
+                effValue(relatedVariables(this.variablesWithTag(variableTag)))
+//                     .apply { effValue<AppError,Set<Variable>>(relatedVariables(it)) }
             }
 
         }
 
 
-    fun variablesWithTag(variableTag : VariableTag) : AppEff<Set<Variable>> =
-        note(this.variablesByTag.get(variableTag),
-             AppStateError(VariableWithTagDoesNotExist(entityId, variableTag)))
+    // TODO errors vs events. tag does not exist is not an error
+    fun variablesWithTag(variableTag : VariableTag) : Set<Variable> =
+            this.variablesByTag.get(variableTag) ?: setOf()
+//        note(this.variablesByTag.get(variableTag),
+//             AppStateError(VariableWithTagDoesNotExist(entityId, variableTag)))
 
 
 

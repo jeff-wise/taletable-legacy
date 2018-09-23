@@ -38,13 +38,13 @@
                         android:layout_marginStart="15dp"
                         android:layout_centerVertical="true"
                         android:background="#00000000"
-                        android:src="@drawable/ic_toolbar_close"
+                        android:src="@drawable/ic_toolbar_back"
                         android:tint="@color/dark_theme_primary_15" />
 
                     <TextView
                         android:id="@+id/toolbar_title"
                         android:layout_gravity="start"
-                        android:textSize="18sp"
+                        android:textSize="19sp"
                         android:textColor="@color/light_theme_dark_grey_10"
                         android:text="@string/new_session"
                         android:layout_centerVertical="true"
@@ -53,15 +53,27 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
-                    <LinearLayout
-                        android:id="@+id/toolbar_done_button"
+                    <ImageView
+                        android:id="@+id/toolbar_options_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="#00000000"
                         android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="15dp"
                         android:layout_centerVertical="true"
-                        android:layout_marginEnd="15dp"/>
+                        android:paddingTop="2dp"
+                        android:background="#00000000"
+                        android:src="@drawable/ic_toolbar_options" />
+
+
+                    <!--<LinearLayout-->
+                        <!--android:id="@+id/toolbar_done_button"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:orientation="horizontal"-->
+                        <!--android:background="#00000000"-->
+                        <!--android:layout_alignParentEnd="true"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_marginEnd="15dp"/>-->
 
                 </RelativeLayout>
 
@@ -90,7 +102,7 @@
                     android:src="@drawable/ic_fab_add"
                     app:layout_anchor="@id/content"
                     app:layout_anchorGravity="bottom|end"
-                    app:backgroundTint="@color/light_theme_dark_grey_10"
+                    app:backgroundTint="@color/light_theme_light_blue_tint_3"
                     app:rippleColor="#FFF" />
 
             </android.support.design.widget.CoordinatorLayout>

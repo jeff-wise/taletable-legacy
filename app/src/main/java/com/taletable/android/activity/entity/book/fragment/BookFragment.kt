@@ -170,25 +170,25 @@ class BookUI(val book : Book,
         header.width            = LinearLayout.LayoutParams.MATCH_PARENT
         header.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        header.backgroundColor  = Color.WHITE
+        // header.backgroundColor  = Color.WHITE
 
-        header.textId           = headerStringId
+        header.text             = context.getString(headerStringId).toUpperCase()
 
         header.font             = Font.typeface(TextFont.RobotoCondensed,
-                                                TextFontStyle.Regular,
+                                                TextFontStyle.Bold,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
         header.color            = theme.colorOrBlack(colorTheme)
 
-        header.sizeSp           = 16f
+        header.sizeSp           = 15f
 
-        header.padding.topDp     = 8f
+        header.padding.topDp     = 12f
         header.padding.bottomDp  = 8f
 
-        header.padding.leftDp    = 12f
+        header.padding.leftDp    = 10f
         header.padding.rightDp   = 12f
 
         return header.textView(context)
@@ -289,9 +289,9 @@ class BookUI(val book : Book,
 
         layout.backgroundColor      = Color.WHITE
 
-        layout.padding.topDp        = 10f
-        layout.padding.bottomDp     = 10f
-        layout.padding.leftDp       = 12f
+        layout.padding.topDp        = 14f
+        layout.padding.bottomDp     = 14f
+        layout.padding.leftDp       = 10f
         layout.padding.rightDp      = 14f
 
         layout.margin.topDp         = 1f
@@ -315,15 +315,15 @@ class BookUI(val book : Book,
         summary.text                = summaryString
 
         summary.font                = Font.typeface(TextFont.RobotoCondensed,
-                                                    TextFontStyle.Bold,
+                                                    TextFontStyle.Regular,
                                                     context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
-        summary.sizeSp              = 18f
+        summary.sizeSp              = 20f
 
         summary.backgroundColor     = Color.WHITE
 

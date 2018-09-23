@@ -11,14 +11,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.activity.sheet.dialog.openNumberVariableEditorDialog
+import com.taletable.android.app.AppEff
 import com.taletable.android.app.ApplicationLog
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue1
-import com.taletable.android.lib.orm.schema.MaybeProdValue
 import com.taletable.android.lib.ui.ImageViewBuilder
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.lib.ui.TextViewBuilder
+import com.taletable.android.model.engine.variable.NumberVariableValue
+import com.taletable.android.model.engine.variable.VariableRelation
 import com.taletable.android.model.sheet.style.NumberFormat
 import com.taletable.android.model.sheet.style.TextFormat
 import com.taletable.android.model.sheet.widget.WidgetId
@@ -35,6 +35,7 @@ import com.taletable.android.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import maybe.Just
@@ -188,10 +189,18 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
     {
         val layout                  = LinearLayoutBuilder()
 
+        val format = this.cell.format().resolveTextFormat(column.format())
+
         layout.orientation          = LinearLayout.HORIZONTAL
+
         layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
+        layout.backgroundColor      = colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId)
+
+        layout.corners              = format.elementFormat().corners()
+
+        layout.paddingSpacing       = format.elementFormat().padding()
 
         //val valueStyle = this.cell.format().resolveTextStyle(this.column.format())
 
@@ -278,145 +287,82 @@ class NumberCellViewBuilder(val cell : TableWidgetNumberCell,
 }
 
 
-//
-//
-//    /**
-//     * Get the cell's integer value as a string.
-//     * @return The cell's value as a string.
-//     */
-//    public String valueString()
-//    {
-//        Integer integerValue = this.value();
-//
-//        if (integerValue != null)
-//        {
-//            String integerString = integerValue.toString();
-//
-//            String valuePrefixString = null;
-//            if (this.column != null)
-//                valuePrefixString = this.format().resolveValuePrefix(column.format().valuePrefixString());
-//            if (valuePrefixString != null)
-//                integerString = valuePrefixString + integerString;
-//
-//            return integerString;
-//        }
-//
-//        return "";
-//    }
-//
-//
-//    // ** Format
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * The number cell formatting options.
-//     * @return The format.
-//     */
-//    public NumberCellFormat format()
-//    {
-//        return this.format.getValue();
-//    }
-//
-//
-//    // ** Edit Dialog Type
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * The type of edit dialog.
-//     * @return The edit dialog type.
-//     */
-//    public ArithmeticDialogType editDialogType()
-//    {
-//        return this.editDialogType.getValue();
-//    }
-//
-//
-//    public void setEditDialogType(ArithmeticDialogType editDialogType)
-//    {
-//        if (editDialogType != null)
-//            this.editDialogType.setValue(editDialogType);
-//        else
-//            this.editDialogType.setValue(ArithmeticDialogType.INCREMENTAL);
-//    }
-//
-//
+@Suppress("UNCHECKED_CAST")
+sealed class NumberCellValue : ToDocument, Serializable
+{
 
-//    // > Clicks
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * On a short click, open the appropriate editor.
-//     */
-//    private void onNumberCellShortClick(Context context)
-//    {
-//        SheetActivityOld sheetActivity = (SheetActivityOld) context;
-//
-//        switch (this.editDialogType())
-//        {
-//            case INCREMENTAL:
-//                ArrayList<DialogOptionButton> dialogButtons = new ArrayList<>();
-//
-//                DialogOptionButton addRowButton =
-//                        new DialogOptionButton(R.string.add_row,
-//                                               R.drawable.ic_dialog_table_widget_add_row,
-//                                               null);
-//
-//                DialogOptionButton editRowButton =
-//                        new DialogOptionButton(R.string.edit_row,
-//                                               R.drawable.ic_dialog_table_widget_edit_row,
-//                                               null);
-//
-//                DialogOptionButton editTableButton =
-//                        new DialogOptionButton(R.string.edit_table,
-//                                               R.drawable.ic_dialog_table_widget_widget,
-//                                               null);
-//
-//                dialogButtons.add(addRowButton);
-//                dialogButtons.add(editRowButton);
-//                dialogButtons.add(editTableButton);
-//
-//                CalculatorDialogFragment dialog =
-//                            CalculatorDialogFragment.newInstance(valueVariable(), dialogButtons);
-//                dialog.show(sheetActivity.getSupportFragmentManager(), "");
-//                break;
-//        }
-//    }
-//
-//
-//    // INTERNAL
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Initialize the text cell state.
-//     */
-//    private void initializeNumberCell()
-//    {
-//        // [1] The boolean cell's value view ID. It is null until the view is created.
-//        // --------------------------------------------------------------------------------------
-//
-//        this.valueViewId = null;
-//
-//        // [2] Initialize the value variable
-//        // --------------------------------------------------------------------------------------
-//
-//        // [3] Widget Container
-//        // --------------------------------------------------------------------------------------
-//
-//    }
-//
-//
-//    /**
-//     * When the text widget's value is updated.
-//     */
-//    private void onValueUpdate()
-//    {
-//        if (this.valueViewId != null && !this.valueVariable.isNull())
-//        {
-//            Activity activity = (Activity) SheetManagerOld.currentSheetContext();
-//            TextView textView = (TextView) activity.findViewById(this.valueViewId);
-//
-//            if (this.value() != null && textView != null)
-//                textView.setText(this.valueString());
-//        }
-//    }
+    companion object : Factory<NumberCellValue>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<NumberCellValue> =
+            when (doc.case())
+            {
+                "variable_number_value" -> NumberCellValueValue.fromDocument(doc.nextCase()) as ValueParser<NumberCellValue>
+                "variable_relation"     -> NumberCellValueRelation.fromDocument(doc.nextCase()) as ValueParser<NumberCellValue>
+                else                    -> effError(UnknownCase(doc.case(), doc.path))
+            }
+    }
+
+
+    fun value(entityId : EntityId) : AppEff<Maybe<Double>> = when (this)
+    {
+        is NumberCellValueValue -> {
+            this.value.value(entityId)
+        }
+        else -> effValue(Just(0.0))
+    }
+}
+
+
+/**
+ * Number Cell Value : Value
+ */
+data class NumberCellValueValue(val value : NumberVariableValue) : NumberCellValue(), Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<NumberCellValueValue>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<NumberCellValueValue> =
+                apply(::NumberCellValueValue, NumberVariableValue.fromDocument(doc))
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.value.toDocument()
+
+}
+
+
+
+/**
+ * Number Cell Value : Relation
+ */
+data class NumberCellValueRelation(val relation : VariableRelation) : NumberCellValue(), Serializable
+{
+
+    // | Constructors
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<NumberCellValueRelation>
+    {
+        override fun fromDocument(doc : SchemaDoc): ValueParser<NumberCellValueRelation> =
+                apply(::NumberCellValueRelation, VariableRelation.fromDocument(doc))
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.relation.toDocument()
+
+}
+
 

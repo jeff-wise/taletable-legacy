@@ -8,16 +8,13 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.*
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.taletable.android.R
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.engine.tag.TagQuery
@@ -90,7 +87,7 @@ class GroupSearchActivity : AppCompatActivity()
 
         val title = this.title
         if (title != null)
-            this.configureToolbar(title, TextFont.Cabin, TextFontStyle.SemiBold)
+            this.configureToolbar(title, TextFont.RobotoCondensed, TextFontStyle.Bold)
         else
             this.configureToolbar(getString(R.string.groups))
 
@@ -102,7 +99,7 @@ class GroupSearchActivity : AppCompatActivity()
         {
             is SearchMode.ChooseMultiple ->
             {
-                this.initializeFAB()
+                // this.initializeFAB()
             }
 
         }
@@ -122,6 +119,11 @@ class GroupSearchActivity : AppCompatActivity()
 
     private fun initializeView()
     {
+        val toolbarView = findViewById<LinearLayout>(R.id.toolbar_content)
+        toolbarView?.let {
+            it.addView(searchToolbarView(officialAppThemeLight, this))
+        }
+
         val contentView = this.findViewById<LinearLayout>(R.id.content)
 
         this.entityId?.let {
@@ -131,21 +133,21 @@ class GroupSearchActivity : AppCompatActivity()
     }
 
 
-    private fun initializeFAB()
-    {
-        val fab = this.findViewById<FloatingActionButton>(R.id.fab)
-
-        when (this.searchMode)
-        {
-            is SearchMode.ChooseMultiple ->
-            {
-                fab.visibility = View.VISIBLE
-                fab.setOnClickListener {
-
-                }
-            }
-        }
-    }
+//    private fun initializeFAB()
+//    {
+//        val fab = this.findViewById<FloatingActionButton>(R.id.fab)
+//
+//        when (this.searchMode)
+//        {
+//            is SearchMode.ChooseMultiple ->
+//            {
+//                fab.visibility = View.VISIBLE
+//                fab.setOnClickListener {
+//
+//                }
+//            }
+//        }
+//    }
 
 
     private fun applyTheme(theme : Theme)
@@ -169,12 +171,11 @@ class GroupSearchActivity : AppCompatActivity()
 //            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
         }
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//
-//            val flags = window.decorView.getSystemUiVisibility() or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-//            window.decorView.setSystemUiVisibility(flags)
-//            this.getWindow().setStatusBarColor(Color.WHITE);
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val flags = window.decorView.getSystemUiVisibility() or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.decorView.setSystemUiVisibility(flags)
+            this.getWindow().setStatusBarColor(Color.WHITE);
+        }
 
         // TOOLBAR
         // -------------------------------------------------------------------------------------
@@ -200,6 +201,82 @@ class GroupSearchActivity : AppCompatActivity()
     }
 
 }
+
+
+
+
+private fun searchToolbarView(theme : Theme, context : Context) : RelativeLayout
+{
+    val layout = searchToolbarViewLayout(context)
+
+    layout.addView(searchToolbarCheckAllView(context))
+
+    val countView = searchToolbarCountView(theme, context)
+    val countViewLayoutParams = countView.layoutParams as RelativeLayout.LayoutParams
+    countViewLayoutParams.addRule(RelativeLayout.END_OF, R.id.checkbox)
+    countView.layoutParams = countViewLayoutParams
+
+    return layout
+}
+
+
+
+private fun searchToolbarViewLayout(context : Context) : RelativeLayout
+{
+    val layout                  = RelativeLayoutBuilder()
+
+    layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+    layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    return layout.relativeLayout(context)
+}
+
+
+
+private fun searchToolbarCheckAllView(context : Context) : LinearLayout
+{
+    val layout                  = LinearLayoutBuilder()
+
+    layout.id                   = R.id.checkbox
+
+    layout.layoutType           = LayoutType.RELATIVE
+    layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
+    layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+    layout.addRule(RelativeLayout.CENTER_VERTICAL)
+    layout.addRule(RelativeLayout.ALIGN_PARENT_START)
+
+    layout.backgroundResource   = R.drawable.bg_checkbox_unselected
+
+    return layout.linearLayout(context)
+}
+
+
+private fun searchToolbarCountView(theme : Theme, context : Context) : TextView
+{
+    val countView               = TextViewBuilder()
+
+    countView.layoutType        = LayoutType.RELATIVE
+    countView.width             = RelativeLayout.LayoutParams.WRAP_CONTENT
+    countView.height            = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+    countView.addRule(RelativeLayout.CENTER_VERTICAL)
+
+    countView.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Regular,
+                                                context)
+
+    val nameColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+    countView.color              = theme.colorOrBlack(nameColorTheme)
+
+    countView.sizeSp             = 16f
+
+    return countView.textView(context)
+}
+
+
 
 
 sealed class SearchMode : Serializable
@@ -264,6 +341,8 @@ class GroupSearchUI(val searchMode : SearchMode,
 
         tagQuery?.let { tagQuery ->
             val groupList = groups(tagQuery, entityId)
+            Log.d("***GROUP SEARCH", "tag query: $tagQuery")
+            Log.d("***GROUP SEARCH", "groups found: $groupList")
             recyclerView.adapter = GroupSearchResultRecyclerViewAdapter(groupList, selectedGroupIds, searchMode, theme, entityId, context)
         }
 
@@ -320,7 +399,7 @@ class GroupSearchUI(val searchMode : SearchMode,
         headerView.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         headerView.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        headerView.font               = Font.typeface(TextFont.default(),
+        headerView.font               = Font.typeface(TextFont.RobotoCondensed,
                                                     TextFontStyle.Regular,
                                                     context)
 
@@ -476,8 +555,8 @@ class GroupSearchUI(val searchMode : SearchMode,
         nameView.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         nameView.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        nameView.font               = Font.typeface(TextFont.default(),
-                                                    TextFontStyle.Medium,
+        nameView.font               = Font.typeface(TextFont.RobotoCondensed,
+                                                    TextFontStyle.Regular,
                                                     context)
 
         val nameColorTheme = ColorTheme(setOf(
@@ -500,7 +579,7 @@ class GroupSearchUI(val searchMode : SearchMode,
         nameView.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         nameView.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        nameView.font               = Font.typeface(TextFont.default(),
+        nameView.font               = Font.typeface(TextFont.RobotoCondensed,
                                                     TextFontStyle.Regular,
                                                     context)
 

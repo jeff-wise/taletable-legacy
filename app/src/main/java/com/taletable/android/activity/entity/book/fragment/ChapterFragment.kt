@@ -23,6 +23,7 @@ import com.taletable.android.model.theme.*
 import com.taletable.android.model.theme.official.officialThemeLight
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.book
+import com.taletable.android.rts.entity.colorOrBlack
 import com.taletable.android.rts.entity.groups
 
 
@@ -191,14 +192,17 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.backgroundColor  = Color.WHITE
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
+        layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
 
-        layout.margin.topDp     = 10f
+        //layout.margin.topDp     = 10f
 
-        layout.padding.leftDp   = 15f
-        layout.padding.rightDp  = 15f
-        layout.padding.topDp    = 12f
-        layout.padding.bottomDp = 12f
+        layout.padding.leftDp   = 10f
+        layout.padding.rightDp  = 14f
+        layout.padding.topDp    = 16f
+        layout.padding.bottomDp = 16f
 
         return layout.linearLayout(context)
     }
@@ -216,7 +220,7 @@ class ChapterUI(val chapter : BookChapter,
 
         title.text               = chapter.title().value
 
-        title.font               = Font.typeface(TextFont.RobotoCondensed,
+        title.font               = Font.typeface(TextFont.Merriweather,
                                                 TextFontStyle.Regular,
                                                 context)
 
@@ -224,8 +228,9 @@ class ChapterUI(val chapter : BookChapter,
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
         title.color              = theme.colorOrBlack(colorTheme)
+        title.color              = Color.WHITE
 
-        title.sizeSp             = 30f
+        title.sizeSp             = 32f
 
         return title.textView(context)
     }
@@ -241,7 +246,7 @@ class ChapterUI(val chapter : BookChapter,
         title.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        title.margin.topDp      = 14f
+        title.margin.topDp      = 50f
 
         chapter.summary().doMaybe {
             title.text = it.value
@@ -253,8 +258,9 @@ class ChapterUI(val chapter : BookChapter,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_20"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_10"))))
         title.color              = theme.colorOrBlack(colorTheme)
+//        title.color             = Color.WHITE
 
         title.sizeSp             = 19f
 
@@ -311,15 +317,15 @@ class ChapterUI(val chapter : BookChapter,
         layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.margin.leftDp    = 24f
+        layout.margin.leftDp    = 26f
 
         layout.child(icon)
 
         // (3) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp            = 22
-        icon.heightDp           = 22
+        icon.widthDp            = 21
+        icon.heightDp           = 21
 
         icon.image              = iconId
 
@@ -327,6 +333,7 @@ class ChapterUI(val chapter : BookChapter,
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         icon.color              = theme.colorOrBlack(colorTheme)
+        icon.color              = Color.WHITE
 
         return layout.linearLayout(context)
     }
@@ -393,6 +400,9 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.margin.bottomDp      = 8f
 
+
+        layout.margin.topDp         = 20f
+
         return layout.linearLayout(context)
     }
 
@@ -422,8 +432,8 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.padding.topDp        = 14f
         layout.padding.bottomDp     = 14f
-        layout.padding.leftDp       = 15f
-        layout.padding.rightDp      = 15f
+        layout.padding.leftDp       = 10f
+        layout.padding.rightDp      = 14f
 
         layout.margin.topDp         = 1f
 
@@ -454,15 +464,15 @@ class ChapterUI(val chapter : BookChapter,
         summary.text                = summaryString
 
         summary.font                = Font.typeface(TextFont.RobotoCondensed,
-                                                    TextFontStyle.Bold,
+                                                    TextFontStyle.Regular,
                                                     context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_18"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
-        summary.sizeSp              = 18f
+        summary.sizeSp              = 20f
 
         summary.backgroundColor     = Color.WHITE
 

@@ -235,6 +235,7 @@
     <string name="edit_table">Edit Table</string>
 
     <string name="add">Add</string>
+    <string name="undo">Undo</string>
     <string name="add_dice">Add dice</string>
     <string name="subtract">Subtract</string>
 
@@ -450,6 +451,7 @@
     <string name="dice_roll_editor">Dice Roll Editor</string>
 
     <string name="column">Column</string>
+    <string name="none_selected">None selected</string>
 
 
     <string name="last_used">Last Used</string>

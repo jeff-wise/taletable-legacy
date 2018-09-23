@@ -42,6 +42,8 @@ import com.taletable.android.model.entity.*
 import com.taletable.android.model.sheet.group.*
 import com.taletable.android.model.sheet.style.*
 import com.taletable.android.model.sheet.widget.table.*
+import com.taletable.android.model.sheet.widget.table.cell.NumberCellValueRelation
+import com.taletable.android.model.sheet.widget.table.cell.NumberCellValueValue
 import com.taletable.android.model.sheet.widget.table.cell.TextCellValueRelation
 import com.taletable.android.model.sheet.widget.table.cell.TextCellValueValue
 import com.taletable.android.rts.entity.*
@@ -3497,7 +3499,8 @@ data class TableWidget(private val widgetId : WidgetId,
                        private val sort : Maybe<TableSort>,
                        private val titleVariableId : Maybe<VariableId>,
                        private val primaryColumnIndex : Maybe<PrimaryColumnIndex>,
-                       private val bookReference : Maybe<BookReference>) : Widget()
+                       private val bookReference : Maybe<BookReference>,
+                       private val editorOptions : Maybe<EditorOptions>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -3581,7 +3584,11 @@ data class TableWidget(private val widgetId : WidgetId,
                      // Book Reference
                      split(doc.maybeAt("book_reference"),
                            effValue<ValueError,Maybe<BookReference>>(Nothing()),
-                           { apply(::Just, BookReference.fromDocument(it)) })
+                           { apply(::Just, BookReference.fromDocument(it)) }),
+                     // Editor Options
+                     split(doc.maybeAt("editor_options"),
+                           effValue<ValueError,Maybe<EditorOptions>>(Nothing()),
+                           { apply(::Just, EditorOptions.fromDocument(it)) })
                      )
             }
             else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -3632,6 +3639,9 @@ data class TableWidget(private val widgetId : WidgetId,
     fun bookReference() : Maybe<BookReference> = this.bookReference
 
 
+    fun editorOptions() : Maybe<EditorOptions> = this.editorOptions
+
+
     // -----------------------------------------------------------------------------------------
     // WIDGET
     // -----------------------------------------------------------------------------------------
@@ -3668,9 +3678,6 @@ data class TableWidget(private val widgetId : WidgetId,
 
     fun rowsInSet(values : List<Value>, valueSetId : Maybe<ValueSetId>) : List<TableWidgetRow>
     {
-
-        Log.d("***WIDGET", "rows in set: ${valueSetId}")
-
         val rows : MutableList<TableWidgetRow> = mutableListOf()
 
         val rowByValueId : MutableMap<String,TableWidgetRow> = mutableMapOf()
@@ -3678,7 +3685,6 @@ data class TableWidget(private val widgetId : WidgetId,
         // Index rows
         for (row in this.cachedRows())
         {
-            Log.d("***WIDGET", "${valueSetId} CACHED row")
             val maybePrimaryCell = this.primaryColumnIndex()
                                        .apply { maybe(row.cells().getOrNull(it.value)) }
             maybePrimaryCell.doMaybe { cell ->
@@ -3724,7 +3730,6 @@ data class TableWidget(private val widgetId : WidgetId,
 
                                 when (valueSetId) {
                                     is Just -> {
-                                        Log.d("***WIDGET", "creating dynamic cell with value reference for value set: ${valueSetId}")
                                         val valueReference = ValueReference(valueSetId.value, value.valueId())
                                         cell.value = TextCellValueValue(TextVariableValueValue(valueReference))
                                     }
@@ -3945,6 +3950,8 @@ data class TableWidget(private val widgetId : WidgetId,
         for (row in this.cachedRows()) {
             removeRowFromState(row, entityId)
         }
+
+        this.cachedRows = listOf()
     }
 
 
@@ -4001,17 +4008,73 @@ data class TableWidget(private val widgetId : WidgetId,
     private fun addNumberCellVariable(numberCell : TableWidgetNumberCell,
                                       rowIndex : Int,
                                       cellIndex : Int,
+                                      primaryVariable : Variable?,
                                       entityId : EntityId,
                                       context : Context) : Variable
     {
         val column = this.columns()[cellIndex]
         val variableId = this.cellVariableId(column.variablePrefixString(), rowIndex)
-        val variable = NumberVariable(variableId,
-                                      VariableLabel(column.nameString()),
-                                      VariableDescription(column.nameString()),
-                                      listOf(),
-                                      column.variableRelation(),
-                                      numberCell.variableValue())
+
+        val numberCellValue = numberCell.value()
+        val variable = when (numberCellValue) {
+            is NumberCellValueValue -> {
+                NumberVariable(variableId,
+                               VariableLabel(column.nameString()),
+                               VariableDescription(column.nameString()),
+                               listOf(),
+                               column.variableRelation(),
+                               numberCellValue.value)
+            }
+            is NumberCellValueRelation -> {
+
+                if (primaryVariable != null)
+                {
+                    var primaryValue : Value? = null
+
+                    primaryVariable.textVariable(entityId).apDo { textVar ->
+                        val varValue = textVar.variableValue
+                        when (varValue) {
+                            is TextVariableValueValue -> {
+                                value(varValue.valueReference, entityId).apDo {
+                                    primaryValue = it
+                                }
+                            }
+                        }
+                    }
+
+                    val _primaryValue = primaryValue
+                    if (_primaryValue != null)
+                    {
+                        val value = note<AppError,Variable>(_primaryValue.variableWithRelation(numberCellValue.relation), AppVoidError())
+                                        .apply({ it.numberVariable(entityId) })
+                                        .apply({ it.value(entityId) })
+
+                        when (value)
+                        {
+                            is Val -> {
+                                val numberValue = value.value.toNullable() ?: 1.0
+                                NumberVariable(variableId,
+                                               VariableLabel(column.nameString()),
+                                               VariableDescription(column.nameString()),
+                                               listOf(),
+                                               column.variableRelation(),
+                                               NumberVariableLiteralValue(numberValue))
+                            }
+                            is Err -> {
+                                NumberVariable(variableId)
+                            }
+                        }
+                    }
+                    else
+                    {
+                        NumberVariable(variableId)
+                    }
+                }
+                else {
+                    NumberVariable(variableId)
+                }
+            }
+        }
 
         val listener = VariableChangeListener({
             numberCell.updateView(entityId, context)
@@ -4050,31 +4113,46 @@ data class TableWidget(private val widgetId : WidgetId,
 
                 if (primaryVariable != null)
                 {
-                    Log.d("***WIDGET", "primary variable: ${primaryVariable}")
-                    val value = primaryVariable.relatedVariableIdOrError(textCellValue.relation) apply { relVarId ->
-                        Log.d("***WIDGET", "found related var id")
-                    variable(relVarId, entityId)                        apply { variable ->
-                        variable.valueString(entityId)
-                    } }
+                    var primaryValue : Value? = null
 
-                    when (value) {
-                        is Val -> {
-                            Log.d("***WIDGET", "found related value")
-                            TextVariable(variableId,
-                                 VariableLabel(column.nameString()),
-                                 VariableDescription(column.nameString()),
-                                 listOf(),
-                                 column.variableRelation(),
-                                 TextVariableLiteralValue(value.value))
+                    primaryVariable.textVariable(entityId).apDo { textVar ->
+                        val varValue = textVar.variableValue
+                        when (varValue) {
+                            is TextVariableValueValue -> {
+                                value(varValue.valueReference, entityId).apDo {
+                                    primaryValue = it
+                                }
+                            }
                         }
-                        is Err -> {
-                            Log.d("***WIDGET", "could not find related value")
-                            TextVariable(variableId)
+                    }
+
+                    val _primaryValue = primaryValue
+                    if (_primaryValue != null)
+                    {
+                        val valueString = note<AppError,Variable>(_primaryValue.variableWithRelation(textCellValue.relation), AppVoidError())
+                                            .apply({ it.valueString(entityId) })
+
+                        when (valueString)
+                        {
+                            is Val -> {
+                                TextVariable(variableId,
+                                     VariableLabel(column.nameString()),
+                                     VariableDescription(column.nameString()),
+                                     listOf(),
+                                     column.variableRelation(),
+                                     TextVariableLiteralValue(valueString.value))
+                            }
+                            is Err -> {
+                                TextVariable(variableId)
+                            }
                         }
+                    }
+                    else
+                    {
+                        TextVariable(variableId)
                     }
                 }
                 else {
-                    Log.d("***WIDGET", "could not find primary variable")
                     TextVariable(variableId)
                 }
             }
@@ -4135,6 +4213,7 @@ data class TableWidget(private val widgetId : WidgetId,
             {
                 this.columns().forEachIndexed { index, column ->
 
+                    // Primary Column
                     if (index == primaryColumnIndex.value.value)
                     {
                         if (valueReference != null)
@@ -4148,6 +4227,7 @@ data class TableWidget(private val widgetId : WidgetId,
                             cells.add(TableWidgetTextCell(TextCellValueValue(variableValue)))
                         }
                     }
+                    // Non-primary Column
                     else
                     {
                         when (column)
@@ -4156,8 +4236,10 @@ data class TableWidget(private val widgetId : WidgetId,
                                 cells.add(TableWidgetBooleanCell(column.defaultValue()))
                             is TableWidgetNumberColumn ->
                                 cells.add(TableWidgetNumberCell(column.defaultValue()))
-                            is TableWidgetTextColumn ->
-                                cells.add(TableWidgetTextCell(column.defaultValue()))
+                            is TableWidgetTextColumn -> {
+                                val textCell = TableWidgetTextCell(column.defaultValue())
+                                cells.add(textCell)
+                            }
                         }
                     }
                 }
@@ -4207,7 +4289,7 @@ data class TableWidget(private val widgetId : WidgetId,
                     is TableWidgetNumberCell ->
                     {
                         this.numberCellById[cell.id] = cell
-                        val numberVar = addNumberCellVariable(cell, rowIndex, index, entityId, context)
+                        val numberVar = addNumberCellVariable(cell, rowIndex, index, null, entityId, context)
                         rowVariables.add(numberVar)
                         primaryVariable = numberVar
                     }
@@ -4234,7 +4316,7 @@ data class TableWidget(private val widgetId : WidgetId,
                     is TableWidgetNumberCell ->
                     {
                         this.numberCellById[cell.id] = cell
-                        val numberVar = addNumberCellVariable(cell, rowIndex, cellIndex, entityId, context)
+                        val numberVar = addNumberCellVariable(cell, rowIndex, cellIndex, primaryVariable, entityId, context)
                         rowVariables.add(numberVar)
                     }
                     is TableWidgetTextCell ->

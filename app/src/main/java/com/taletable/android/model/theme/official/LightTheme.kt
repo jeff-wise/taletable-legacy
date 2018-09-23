@@ -122,18 +122,16 @@ val palette = mutableListOf(
         ThemeColor(ColorId.Theme("green_70"), "#B245BD72"),
         ThemeColor(ColorId.Theme("green_60"), "#9945BD72"),
         ThemeColor(ColorId.Theme("green_50"), "#8045BD72"),
-        ThemeColor(ColorId.Theme("red"), "#C32C39"),
-        ThemeColor(ColorId.Theme("red_90"), "#E6C32C39"),
-        ThemeColor(ColorId.Theme("red_80"), "#C4C32C39"),
-        ThemeColor(ColorId.Theme("red_70"), "#B2C32C39"),
-        ThemeColor(ColorId.Theme("red_60"), "#99C32C39"),
-        ThemeColor(ColorId.Theme("red_50"), "#80C32C39"),
-        ThemeColor(ColorId.Theme("orange"), "#C07618"),
-        ThemeColor(ColorId.Theme("orange_90"), "#E6C07618"),
-        ThemeColor(ColorId.Theme("orange_80"), "#C4C07618"),
-        ThemeColor(ColorId.Theme("orange_70"), "#B2C07618"),
-        ThemeColor(ColorId.Theme("orange_60"), "#99C07618"),
-        ThemeColor(ColorId.Theme("orange_50"), "#80C07618"),
+        ThemeColor(ColorId.Theme("red"), "#C01818"),
+        ThemeColor(ColorId.Theme("red_tint_1"), "#C62F2F"),
+        ThemeColor(ColorId.Theme("red_tint_2"), "#CD4646"),
+        ThemeColor(ColorId.Theme("red_tint_3"), "#D35D5D"),
+        ThemeColor(ColorId.Theme("red_tint_4"), "#D97474"),
+        ThemeColor(ColorId.Theme("orange"), "#C07A18"),
+        ThemeColor(ColorId.Theme("orange_tint_1"), "#C6872F"),
+        ThemeColor(ColorId.Theme("orange_tint_2"), "#CD9546"),
+        ThemeColor(ColorId.Theme("orange_tint_3"), "#D3A25D"),
+        ThemeColor(ColorId.Theme("orange_tint_4"), "#D9AF74"),
         ThemeColor(ColorId.Theme("light_blue"), "#1887C0"),
         ThemeColor(ColorId.Theme("light_blue"), "#1887C0"),
         ThemeColor(ColorId.Theme("light_blue_90"), "#E61887C0"),
@@ -148,8 +146,11 @@ val palette = mutableListOf(
         ThemeColor(ColorId.Theme("light_blue_tint_2"), "#469FCD"),
         ThemeColor(ColorId.Theme("light_blue_tint_3"), "#5DABD3"),
         ThemeColor(ColorId.Theme("light_blue_tint_4"), "#74B7D9"),
-        ThemeColor(ColorId.Theme("light_blue_tint_7"), "#A3CFE6"),
-        ThemeColor(ColorId.Theme("light_blue_tint_8"), "#BADBEC"),
+        ThemeColor(ColorId.Theme("light_blue_tint_5"), "#8CC3E0"),
+        ThemeColor(ColorId.Theme("light_blue_tint_6"), "#A3CFE6"),
+        ThemeColor(ColorId.Theme("light_blue_tint_7"), "#BADBEC"),
+        ThemeColor(ColorId.Theme("light_blue_tint_8"), "#D1E7F2"),
+        ThemeColor(ColorId.Theme("light_blue_tint_9"), "#E8F3F9"),
 //        ThemeColor(ColorId.Theme("purple"), "#9161C0"),
 //        ThemeColor(ColorId.Theme("purple_90"), "#E69161C0"),
 //        ThemeColor(ColorId.Theme("purple_80"), "#C49161C0"),
@@ -175,21 +176,38 @@ val palette = mutableListOf(
 
 val uiColors = UIColors(
         // Toolbar Background
-        ColorId.Theme("dark_grey_8"),
+        ColorId.Theme("dark_blue_grey_10"),
         // Toolbar Icons
         ColorId.Theme("white"),
         // Toolbar Title
         ColorId.Theme("white"),
         // Tab Bar Background
-        ColorId.Theme("white"),
+        ColorId.Theme("dark_blue_grey_10"),
+        // ColorId.Theme("white"),
         // Tab Text Normal
-        ColorId.Theme("dark_grey_16"),
+        ColorId.Theme("light_blue_grey_16"),
+        //ColorId.Theme("dark_blue_grey_24"),
         // Tab Text Selected
-        ColorId.Theme("light_blue"),
+        ColorId.Theme("white"),
+        //ColorId.Theme("light_blue"),
         // Tab Underline
-        ColorId.Theme("light_blue"),
+        ColorId.Theme("white"),
+        //ColorId.Theme("light_blue_tint_1"),
         ColorId.Theme("dark_grey_8"),
         ColorId.Theme("light_grey_10"))
+
+
+//val uiColors = UIColors(
+//        ColorId.Theme("white"),
+//        ColorId.Theme("dark_grey_10"),
+//        ColorId.Theme("dark_grey_10"),
+//        ColorId.Theme("white"),
+//        ColorId.Theme("dark_grey_16"),
+//        ColorId.Theme("dark_grey_10"),
+//        ColorId.Theme("dark_grey_16"),
+//        ColorId.Theme("dark_grey_8"),
+//        ColorId.Theme("light_grey_10"))
+
 
 
 val officialThemeLight = Theme(ThemeId.Light, palette, uiColors)
@@ -197,7 +215,7 @@ val officialThemeLight = Theme(ThemeId.Light, palette, uiColors)
 
 val appUIColors = UIColors(
         ColorId.Theme("white"),
-        ColorId.Theme("dark_grey_10"),
+        ColorId.Theme("dark_blue_grey_16"),
         ColorId.Theme("dark_grey_10"),
         ColorId.Theme("white"),
         ColorId.Theme("dark_grey_16"),

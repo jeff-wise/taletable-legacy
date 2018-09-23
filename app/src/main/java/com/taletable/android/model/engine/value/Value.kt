@@ -2,6 +2,7 @@
 package com.taletable.android.model.engine.value
 
 
+import android.util.Log
 import com.taletable.android.app.AppEff
 import com.taletable.android.app.AppEngineError
 import com.taletable.android.db.*
@@ -15,6 +16,7 @@ import com.taletable.android.model.engine.reference.TextReference
 import com.taletable.android.model.engine.reference.TextReferenceLiteral
 import com.taletable.android.model.engine.variable.Variable
 import com.taletable.android.model.engine.variable.VariableReference
+import com.taletable.android.model.engine.variable.VariableRelation
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.engine.ValueIsOfUnexpectedType
 import com.taletable.android.util.Util
@@ -23,6 +25,7 @@ import maybe.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import maybe.Nothing
 import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
@@ -41,8 +44,7 @@ sealed class Value(open val valueId : ValueId,
                     : ToDocument, ProdType, Serializable
 {
 
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
+    // | CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     companion object
@@ -63,6 +65,8 @@ sealed class Value(open val valueId : ValueId,
                 else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
             }
     }
+
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -127,6 +131,13 @@ sealed class Value(open val valueId : ValueId,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+
+    // | Variable
+    // -----------------------------------------------------------------------------------------
+
+    open fun variableWithRelation(relation : VariableRelation) : Maybe<Variable> = Nothing()
+
 
 }
 
@@ -269,6 +280,20 @@ data class ValueText(override val id : UUID,
                       : Value(valueId, description, bookReference, variables, valueSetId)
 {
 
+    // | INDEXES
+    // -----------------------------------------------------------------------------------------
+
+    private val variableByRelation : MutableMap<VariableRelation,Variable> = mutableMapOf()
+
+    init {
+        this.variables().forEach { variable ->
+            variable.relation().doMaybe {
+                variableByRelation[it] = variable
+            }
+        }
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
@@ -307,7 +332,7 @@ data class ValueText(override val id : UUID,
                       // Variables
                       split(doc.maybeList("variables"),
                             effValue(listOf()),
-                            { it.map{ Variable.fromDocument(it) } }),
+                            { it.map { Variable.fromDocument(it) } }),
                       // Value Set Id
                       effValue(valueSetId),
                       // Value
@@ -375,6 +400,19 @@ data class ValueText(override val id : UUID,
                   PrimValue(this.description),
                   CollValue(this.variables),
                   PrimValue(this.value))
+
+
+    // | VARIABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun variableWithRelation(relation : VariableRelation) : Maybe<Variable>
+    {
+        val variable = this.variableByRelation[relation]
+        return if (variable != null)
+            Just(variable)
+        else
+            Nothing()
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -646,6 +684,7 @@ data class NumberValue(val value : Double) : ToDocument, SQLSerializable, Serial
  */
 data class TextValue(val value : String) : ToDocument, SQLSerializable, Serializable
 {
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS

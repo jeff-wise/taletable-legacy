@@ -2640,6 +2640,12 @@ types:
         custom_type: book_reference
       presence: optional
       description: A book reference.
+    - name: editor_options
+      type:
+        type: custom_type
+        custom_type: editor_options
+      presence: optional
+      description: A book reference.
 - type: primitive_type
   primitive_type:
     name: table_sort_order
@@ -2955,7 +2961,7 @@ types:
     - name: default_value
       type:
         type: custom_type
-        custom_type: variable_number_value 
+        custom_type: number_cell_value 
       presence: required
       description: The column default value.
     - name: variable_prefix
@@ -3324,10 +3330,10 @@ types:
       Table widget number cell.
     group: 'Widget: Table'
     fields:
-    - name: variable_value
+    - name: value
       type: 
         type: custom_type
-        custom_type: variable_number_value
+        custom_type: number_cell_value
       presence: required
       description: >
         The cell variable value.
@@ -3411,6 +3417,16 @@ types:
       presence: optional
       description: >
         Action for the cells.
+- type: sum_type
+  sum_type:
+    name: number_cell_value
+    label: Number Cell Value
+    description: >
+      A table cell.
+    group: 'Widget: Table'
+    cases:
+    - type: variable_number_value
+    - type: variable_relation
 - type: sum_type
   sum_type:
     name: text_cell_value
@@ -4217,6 +4233,48 @@ types:
       prim_type: string
     constraints:
     - quote_widget_view_type_set
+- type: product_type
+  product_type:
+    name: editor_options_subset
+    label: Subset Editor Options
+    description: Editor options.
+    group: Style
+    fields:
+    - name: sort
+      type:
+        type: custom_type
+        custom_type: subset_editor_sort
+      presence: optional
+      description:
+        The space on the left.
+- type: product_type
+  product_type:
+    name: subset_editor_sort
+    label: Subset Editor Sort
+    description: Editor options.
+    group: Style
+    fields:
+    - name: sort_type
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The sort type
+    - name: order
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The sort type
+- type: sum_type
+  sum_type:
+    name: editor_options
+    label: Editor Options
+    description: Editor options
+    group: Style
+    cases:
+    - type: editor_options_subset
+      description: Subset editor options
 constraints:
 - type: constraint_string_one_of
   constraint_string_one_of:

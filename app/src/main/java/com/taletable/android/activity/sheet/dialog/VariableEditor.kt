@@ -9,6 +9,7 @@ import com.taletable.android.activity.sheet.SheetActivity
 import com.taletable.android.app.ApplicationLog
 import com.taletable.android.model.engine.value.ValueId
 import com.taletable.android.model.engine.variable.*
+import com.taletable.android.model.sheet.style.EditorOptions
 import com.taletable.android.model.sheet.style.NumericEditorType
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.sheet.UpdateTarget
@@ -18,7 +19,8 @@ import com.taletable.android.rts.entity.valueSet
 import effect.Err
 import effect.Val
 import maybe.Just
-
+import maybe.Maybe
+import maybe.Nothing
 
 
 /**
@@ -54,6 +56,7 @@ fun openVariableEditorDialog(variable : Variable,
         }
         is TextListVariable   -> openTextListVariableEditorDialog(variable,
                                                                   updateTarget,
+                                                                  Nothing(),
                                                                   entityId,
                                                                   context)
     }
@@ -229,6 +232,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
 
 fun openTextListVariableEditorDialog(textListVariable : TextListVariable,
                                      updateTarget : UpdateTarget,
+                                     editorOptions : Maybe<EditorOptions>,
                                      entityId : EntityId,
                                      context : Context)
 {
@@ -254,7 +258,8 @@ fun openTextListVariableEditorDialog(textListVariable : TextListVariable,
                                                                       textListVariable.setVariableId(),
                                                                       values.value.map { ValueId(it) },
                                                                       updateTarget,
-                                                                      entityId)
+                                                                      entityId,
+                                                                      editorOptions.toNullable()?.subsetEditorOptions())
                                 dialog.show(sheetActivity.supportFragmentManager, "")
                             }
                             // Is List
