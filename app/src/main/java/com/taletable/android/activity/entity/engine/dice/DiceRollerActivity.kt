@@ -8,18 +8,19 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import androidx.core.widget.NestedScrollView
 import com.google.android.flexbox.AlignContent
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.taletable.android.R
-import com.taletable.android.app.ApplicationLog
+import com.taletable.android.R.string.value
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.engine.dice.DiceRoll
 import com.taletable.android.model.engine.dice.DiceRollGroup
@@ -29,13 +30,10 @@ import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
+import com.taletable.android.model.theme.official.officialAppThemeLight
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
-import com.taletable.android.rts.entity.entityThemeId
-import com.taletable.android.rts.entity.theme.ThemeManager
 import com.taletable.android.util.configureToolbar
-import effect.Err
-import effect.Val
 
 
 
@@ -95,19 +93,21 @@ class DiceRollerActivity : AppCompatActivity()
         // Toolbar
         this.configureToolbar(getString(R.string.dice_roller),
                               TextFont.RobotoCondensed,
-                              TextFontStyle.Regular)
+                              TextFontStyle.Bold)
 
         // Theme
-        if (entityId != null)
-        {
-            val theme = entityThemeId(entityId) ap { ThemeManager.theme(it) }
-            when (theme)
-            {
-                is Val -> this.applyTheme(theme.value)
-                is Err -> ApplicationLog.error(theme.error)
-            }
+//        if (entityId != null)
+//        {
+//            val theme = entityThemeId(entityId) ap { ThemeManager.theme(it) }
+//            when (theme)
+//            {
+//                is Val -> this.applyTheme(theme.value)
+//                is Err -> ApplicationLog.error(theme.error)
+          //   }
 
-        }
+        // }
+
+        this.applyTheme(officialAppThemeLight)
 
         // Dice Roller UI
         this.initializeViews()
@@ -141,7 +141,7 @@ class DiceRollerActivity : AppCompatActivity()
 
     private fun initializeFABView()
     {
-        val fabView = this.findViewById<View>(R.id.roll_button)
+        val fabView = this.findViewById<View>(R.id.fab)
         fabView?.setOnClickListener {
             this.diceRollerUI?.roll()
         }
@@ -155,6 +155,7 @@ class DiceRollerActivity : AppCompatActivity()
 
         // STATUS BAR
         // -------------------------------------------------------------------------------------
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
             val window = this.window
@@ -162,7 +163,18 @@ class DiceRollerActivity : AppCompatActivity()
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
-            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
+            val statusBarColorTheme = ColorTheme(setOf(
+                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
+                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+            window.statusBarColor = theme.colorOrBlack(statusBarColorTheme)
+//            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            val flags = window.decorView.getSystemUiVisibility() or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.decorView.setSystemUiVisibility(flags)
+            this.getWindow().setStatusBarColor(Color.WHITE);
         }
 
         // TOOLBAR
@@ -192,7 +204,7 @@ class DiceRollerActivity : AppCompatActivity()
 
     private fun initializeViews()
     {
-        val layout = this.findViewById<LinearLayout>(R.id.dice_roller_layout)
+        val scrollView = this.findViewById<NestedScrollView>(R.id.roll_list)
 
         val diceRollGroup = this.diceRollGroup
         val entityId = this.entityId
@@ -201,7 +213,7 @@ class DiceRollerActivity : AppCompatActivity()
         {
             val diceRollerUI = DiceRollerUI(diceRollGroup, autoRolls, entityId, this)
             this.diceRollerUI = diceRollerUI
-            layout?.addView(diceRollerUI.view())
+            scrollView?.addView(diceRollerUI.view())
         }
     }
 
@@ -243,25 +255,15 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
 
     fun view() : View
     {
-        val layout = this.viewLayout()
-
-        layout.addView(this.headerView())
-
         // Rolls
-        val rollsScrollView = this.rollsScrollView()
         val rollListView = this.rollListView()
         this.rollListView = rollListView
-        rollsScrollView.addView(rollListView)
-        layout.addView(rollsScrollView)
-
-        // Footer
-//        layout.addView(this.footerView())
 
         for (i in 1..autoRolls) {
             this.roll()
         }
 
-        return layout
+        return rollListView
     }
 
 
@@ -285,179 +287,10 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
 
 
     // -----------------------------------------------------------------------------------------
-    // HEADER VIEW
-    // -----------------------------------------------------------------------------------------
-
-    private fun headerView() : LinearLayout
-    {
-        val layout      = this.headerViewLayout()
-
-        val buttonLayout  = this.headerButtonViewLayout()
-
-        buttonLayout.addView(this.headerButtonView(R.string.clear, R.drawable.icon_delete, 17))
-
-        buttonLayout.addView(this.headerButtonView(R.string.options, R.drawable.icon_gear, 16))
-
-        buttonLayout.addView(this.headerButtonView(R.string.stats, R.drawable.icon_chart, 16))
-
-        layout.addView(buttonLayout)
-
-        layout.addView(this.headerBottomBorderView())
-
-        return layout
-    }
-
-
-    private fun headerButtonViewLayout() : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        layout.backgroundColor  = Color.WHITE
-
-        layout.padding.topDp    = 10f
-        layout.padding.bottomDp = 10f
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun headerViewLayout() : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.VERTICAL
-
-        layout.backgroundColor  = Color.WHITE
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun headerBottomBorderView() : LinearLayout
-    {
-        val divider                 = LinearLayoutBuilder()
-
-        divider.width               = LinearLayout.LayoutParams.MATCH_PARENT
-        divider.heightDp            = 1
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_7"))))
-        divider.backgroundColor     = colorOrBlack(colorTheme, entityId)
-
-        return divider.linearLayout(context)
-    }
-
-    private fun headerButtonView(labelId : Int, iconId : Int, iconSize : Int) : LinearLayout
-    {
-
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout          = LinearLayoutBuilder()
-        val icon            = ImageViewBuilder()
-        val label           = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width                = 0
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.weight               = 1f
-
-        layout.orientation          = LinearLayout.HORIZONTAL
-
-        layout.gravity              = Gravity.CENTER
-
-        layout.margin.rightDp       = 2f
-        layout.margin.leftDp        = 2f
-
-        layout.padding.topDp        = 8f
-        layout.padding.bottomDp     = 8f
-
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_7")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
-        layout.backgroundColor      = colorOrBlack(bgColorTheme, entityId)
-
-        layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
-
-        layout.child(icon)
-              .child(label)
-
-        // (3 B) Dice
-        // -------------------------------------------------------------------------------------
-
-        icon.widthDp            = iconSize
-        icon.heightDp           = iconSize
-
-        icon.image              = iconId
-
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_26")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
-        icon.color              = colorOrBlack(iconColorTheme, entityId)
-
-        icon.margin.rightDp     = 5f
-
-        // (3 C) Description
-        // -------------------------------------------------------------------------------------
-
-        label.width           = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height          = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        label.textId          = labelId
-
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_26")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-        label.color           = colorOrBlack(labelColorTheme, entityId)
-
-        label.font            = Font.typeface(TextFont.default(),
-                                              TextFontStyle.Medium,
-                                              context)
-
-        label.sizeSp          = 17f
-
-        label.padding.bottomDp  = 1f
-
-        return layout.linearLayout(context)
-    }
-
-
-    // -----------------------------------------------------------------------------------------
     // ROLLS VIEW
     // -----------------------------------------------------------------------------------------
 
-    private fun rollsScrollView() : ScrollView
-    {
-        val scrollView              = ScrollViewBuilder()
-
-        scrollView.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        scrollView.height           = LinearLayout.LayoutParams.MATCH_PARENT
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-        scrollView.backgroundColor  = colorOrBlack(colorTheme, entityId)
-
-        scrollView.fadingEnabled    = false
-
-        return scrollView.scrollView(context)
-    }
-
-
-    private fun rollListView() : LinearLayout
+    fun rollListView() : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 
@@ -465,10 +298,10 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
-        layout.backgroundColor      = colorOrBlack(colorTheme, entityId)
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+//        layout.backgroundColor      = colorOrBlack(colorTheme, entityId)
 
         return layout.linearLayout(context)
     }
@@ -478,14 +311,51 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
     // ROLL VIEW
     // -----------------------------------------------------------------------------------------
 
-
     private fun rollView(rollSummary : RollSummary) : LinearLayout
     {
         val layout = this.rollViewLayout()
 
+        layout.addView(this.rollDescriptionView(rollSummary.name))
+
+        layout.addView(this.rollMainView(rollSummary))
+
+
+        return layout
+    }
+
+
+    private fun rollViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.orientation          = LinearLayout.VERTICAL
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.backgroundColor     = Color.WHITE
+
+        layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
+
+//        layout.elevation            = 5f
+
+        layout.margin.leftDp        = 6f
+        layout.margin.rightDp       = 6f
+        layout.margin.topDp         = 6f
+//        layout.margin.bottomDp      = 3f
+
+        return layout.linearLayout(context)
+    }
+
+
+
+    private fun rollMainView(rollSummary : RollSummary) : LinearLayout
+    {
+        val layout = this.rollMainViewLayout()
+
         layout.addView(this.rollResultView(rollSummary))
 
-        layout.addView(this.rollResultRightBorderView())
+        // layout.addView(this.rollResultRightBorderView())
 
         layout.addView(this.rollInfoView(rollSummary.name, rollSummary.parts))
 
@@ -493,7 +363,7 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
     }
 
 
-    private fun rollViewLayout() : LinearLayout
+    private fun rollMainViewLayout() : LinearLayout
     {
         val layout                  = LinearLayoutBuilder()
 
@@ -505,11 +375,13 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
 //        val bgColorTheme = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
 //                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
-        layout.backgroundColor     = Color.WHITE
+        // layout.backgroundColor     = Color.WHITE
 
-        layout.margin.leftDp        = 4f
-        layout.margin.rightDp       = 4f
-        layout.margin.topDp         = 4f
+//        layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
+//
+//        layout.margin.leftDp        = 6f
+//        layout.margin.rightDp       = 6f
+//        layout.margin.topDp         = 12f
 
         return layout.linearLayout(context)
     }
@@ -521,7 +393,7 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
 
         layout.addView(this.rollValueView(rollSummary.value))
 
-        layout.addView(this.rollIndexView())
+        // layout.addView(this.rollIndexView())
 
         return layout
     }
@@ -531,27 +403,35 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
     {
         val layout                  = RelativeLayoutBuilder()
 
-        layout.widthDp              = 55
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
         layout.orientation          = LinearLayout.VERTICAL
 
 
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_1"))))
-//        layout.backgroundColor      = SheetManager.color(sheetUIContext.sheetId, colorTheme)
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("purple_tint_2"))))
+        layout.backgroundColor      = colorOrBlack(colorTheme, entityId)
         layout.backgroundColor      = Color.WHITE
 
+        layout.corners              = Corners(3.0, 0.0, 0.0, 3.0)
 
-        layout.padding.topDp         = 8f
-        layout.padding.bottomDp      = 5f
 
-        layout.margin.leftDp        = 6f
-        layout.margin.rightDp       = 6f
+//        layout.padding.topDp         = 8f
+//        layout.padding.bottomDp      = 5f
+//
+//        layout.margin.leftDp        = 6f
+//        layout.margin.rightDp       = 6f
+//
+//        layout.padding.leftDp       = 15f
+//        layout.padding.rightDp       = 6f
 
-        layout.padding.leftDp       = 5f
-        layout.padding.rightDp       = 5f
+        layout.padding.leftDp           = 10f
+
+        // layout.corners              = Corners(26.0, 0.0, 0.0, 26.0)
+
+        layout.gravity              = Gravity.CENTER_VERTICAL
 
         return layout.relativeLayout(context)
     }
@@ -568,7 +448,7 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
         value.height                = RelativeLayout.LayoutParams.WRAP_CONTENT
 
         value.addRule(RelativeLayout.ALIGN_PARENT_TOP)
-        value.addRule(RelativeLayout.CENTER_HORIZONTAL)
+//        value.addRule(RelativeLayout.CENTER_HORIZONTAL)
 
         value.gravity               = Gravity.CENTER
 
@@ -576,17 +456,18 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_tint_1"))))
         value.color                 = colorOrBlack(colorTheme, entityId)
-//        value.color                 = Color.WHITE
 
 //        value.backgroundResource    = R.drawable.bg_roll_result
 
-        value.font                  = Font.typeface(TextFont.default(),
+        value.font                  = Font.typeface(TextFont.RobotoCondensed,
                                                     TextFontStyle.Bold,
                                                     context)
 
-        value.sizeSp                = 28f
+        value.sizeSp                = 60f
+
+        value.margin.topDp          = -10f
 
         return value.textView(context)
     }
@@ -610,7 +491,7 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_24"))))
         value.color                 = colorOrBlack(colorTheme, entityId)
 
-        value.font                  = Font.typeface(TextFont.default(),
+        value.font                  = Font.typeface(TextFont.RobotoCondensed,
                                                     TextFontStyle.Regular,
                                                     context)
 
@@ -627,7 +508,7 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
     {
         val layout = rollInfoViewLayout()
 
-        layout.addView(this.rollDescriptionView(rollName))
+    //     layout.addView(this.rollDescriptionView(rollName))
 
         layout.addView(this.rollDetailsView(partSummaries))
 
@@ -639,16 +520,24 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
     {
         val layout                  = LinearLayoutBuilder()
 
-        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
 
         layout.orientation          = LinearLayout.VERTICAL
 
-        layout.padding.topDp        = 6f
         layout.padding.bottomDp     = 6f
 
-        layout.margin.leftDp        = 10f
+        layout.padding.leftDp        = 10f
 
+        layout.corners              = Corners(0.0, 3.0, 3.0, 0.0)
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("purple_tint_3"))))
+        layout.backgroundColor      = colorOrBlack(bgColorTheme, entityId)
+        layout.backgroundColor      = Color.WHITE
+
+        layout.gravity              = Gravity.TOP
 
         return layout.linearLayout(context)
     }
@@ -665,14 +554,17 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
 
         val textColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_20")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_18"))))
         description.color              = colorOrBlack(textColorTheme, entityId)
 
-        description.font               = Font.typeface(TextFont.default(),
-                                                TextFontStyle.Medium,
+        description.font               = Font.typeface(TextFont.Roboto,
+                                                TextFontStyle.Regular,
                                                 context)
 
-        description.sizeSp             = 21f
+        description.sizeSp             = 18f
+
+        description.margin.leftDp       = 10f
+        description.margin.topDp       = 8f
 
         return description.textView(context)
     }
@@ -725,18 +617,18 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
         layout.margin.rightDp       = 5f
         layout.margin.bottomDp      = 3f
 
-        layout.padding.topDp        = 2f
-        layout.padding.bottomDp     = 2f
-        layout.padding.leftDp       = 5f
-        layout.padding.rightDp      = 5f
+        layout.padding.topDp        = 3f
+        layout.padding.bottomDp     = 3f
+        layout.padding.leftDp       = 8f
+        layout.padding.rightDp      = 8f
 
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_7")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_4"))))
         layout.backgroundColor      = colorOrBlack(bgColorTheme, entityId)
 
-        layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
+        layout.corners              = Corners(8.0, 8.0, 8.0, 8.0)
 
         layout.child(value)
 
@@ -756,13 +648,13 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
 
         val valueColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_tint_2"))))
         value.color                 = colorOrBlack(valueColorTheme, entityId)
 
-        value.sizeSp                = 17f
+        value.sizeSp                = 18f
 
-        value.font                  = Font.typeface(TextFont.default(),
-                                                    TextFontStyle.Medium,
+        value.font                  = Font.typeface(TextFont.RobotoCondensed,
+                                                    TextFontStyle.Bold,
                                                     context)
 
         value.margin.rightDp        = 4f
@@ -779,12 +671,12 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
 
         val diceColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         dice.color                  = colorOrBlack(diceColorTheme, entityId)
 
-        dice.sizeSp                 = 15f
+        dice.sizeSp                 = 18f
 
-        dice.font                   = Font.typeface(TextFont.default(),
+        dice.font                   = Font.typeface(TextFont.RobotoCondensed,
                                                     TextFontStyle.Regular,
                                                     context)
 
@@ -798,14 +690,14 @@ class DiceRollerUI(val diceRollGroup : DiceRollGroup,
 
         val descColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_26")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
         description.color           = colorOrBlack(descColorTheme, entityId)
 
-        description.font            = Font.typeface(TextFont.default(),
+        description.font            = Font.typeface(TextFont.RobotoCondensed,
                                                     TextFontStyle.Regular,
                                                     context)
 
-        description.sizeSp          = 15f
+        description.sizeSp          = 18f
 
         return layout
     }

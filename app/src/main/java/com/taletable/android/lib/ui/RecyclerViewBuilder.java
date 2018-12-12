@@ -3,9 +3,7 @@ package com.taletable.android.lib.ui;
 
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-
-import com.taletable.android.util.Util;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 /**

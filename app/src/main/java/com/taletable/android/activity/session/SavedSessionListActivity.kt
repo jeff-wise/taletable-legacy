@@ -2,30 +2,26 @@
 package com.taletable.android.activity.session
 
 
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.Toolbar
 import android.view.*
-import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import com.taletable.android.R
 import com.taletable.android.db.readSessionList
 import com.taletable.android.lib.ui.*
-import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
 import com.taletable.android.model.theme.official.officialAppThemeLight
 import com.taletable.android.rts.session.Session
-import com.taletable.android.rts.session.openSession
 import com.taletable.android.util.configureToolbar
 import java.text.SimpleDateFormat
 import java.util.*

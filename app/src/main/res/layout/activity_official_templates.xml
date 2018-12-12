@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<android.support.v4.widget.DrawerLayout
+<androidx.drawerlayout.widget.DrawerLayout
     android:id="@+id/drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -15,7 +15,7 @@
         android:orientation="vertical"
         android:background="@color/dark_theme_primary_84">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -61,7 +61,7 @@
 
             </RelativeLayout>
 
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
         <com.taletable.android.lib.ui.CustomTabLayout
             android:id="@+id/tab_layout"
@@ -74,7 +74,7 @@
             app:tabSelectedTextColor="@color/dark_theme_primary_15"
             app:tabIndicatorColor="@color/dark_theme_primary_35" />
 
-        <android.support.v4.view.ViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager"
             android:background="@color/dark_theme_primary_84"
             android:layout_width="match_parent"
@@ -85,4 +85,4 @@
     </LinearLayout>
 
 
-</android.support.v4.widget.DrawerLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

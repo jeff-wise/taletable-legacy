@@ -8,8 +8,8 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import android.view.Gravity
 import android.view.Menu
 import android.view.WindowManager
@@ -24,7 +24,6 @@ import com.taletable.android.model.theme.official.officialAppThemeLight
 import com.taletable.android.official.GameSummary
 import com.taletable.android.router.Router
 import com.taletable.android.rts.session.*
-import com.taletable.android.util.configureToolbar
 import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
@@ -33,13 +32,11 @@ import android.view.animation.DecelerateInterpolator
 import android.animation.ObjectAnimator
 import android.util.Log
 import android.view.View
-import com.taletable.android.R.string.description
-import com.taletable.android.R.string.value
-import com.taletable.android.activity.sheet.SheetActivity
 import com.taletable.android.model.entity.entityManifest
 import com.taletable.android.model.session.sessionManifest
 import com.taletable.android.official.gameManifest
 import com.taletable.android.rts.entity.EntityId
+import com.taletable.android.util.configureToolbar
 import io.reactivex.disposables.CompositeDisposable
 import java.util.*
 
@@ -354,7 +351,7 @@ class NewSessionUI(private var step : Int,
             {
                 val mainEntityId = it.mainEntityId
                 val activity = context as AppCompatActivity
-                val intent = Intent(activity, SheetActivity::class.java)
+                val intent = Intent(activity, SessionActivity::class.java)
                 intent.putExtra("sheet_id", mainEntityId)
                 activity.startActivity(intent)
             }

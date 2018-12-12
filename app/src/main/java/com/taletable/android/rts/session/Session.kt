@@ -9,6 +9,8 @@ import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
+import com.taletable.android.model.entity.PersistedEntity
+import com.taletable.android.model.entity.entityManifest
 import com.taletable.android.router.Router
 import com.taletable.android.rts.entity.*
 import effect.*
@@ -157,9 +159,28 @@ data class Session(val sessionId : SessionId,
 
 
 
+    // | Entities
     // -----------------------------------------------------------------------------------------
-    // ENTITIES
-    // -----------------------------------------------------------------------------------------
+
+    fun persistedEntities(context : Context) : List<PersistedEntity>
+    {
+        val entities : MutableList<PersistedEntity> = mutableListOf()
+
+        val mManifest = entityManifest(context)
+        when (mManifest) {
+            is Just -> {
+                val manifest = mManifest.value
+                this.entityIds.forEach { entityId ->
+                    manifest.persistedEntity(entityId).doMaybe {
+                        entities.add(it)
+                    }
+                }
+            }
+        }
+
+        return entities
+    }
+
 
     fun entities() : List<Entity>
     {

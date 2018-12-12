@@ -4,6 +4,7 @@ package com.taletable.android.lib.ui;
 
 import android.content.Context;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -32,6 +33,7 @@ public class LayoutParamsBuilder
     private TableLayout.LayoutParams    tableLayoutParams;
     private TableRow.LayoutParams       tableRowLayoutParams;
     private FlexboxLayout.LayoutParams  flexboxLayoutParams;
+    private FrameLayout.LayoutParams    frameLayoutParams;
 
     private Context                     context;
 
@@ -48,6 +50,7 @@ public class LayoutParamsBuilder
         this.tableLayoutParams    = null;
         this.tableRowLayoutParams = null;
         this.flexboxLayoutParams  = null;
+        this.frameLayoutParams    = null;
 
         this.context              = context;
 
@@ -77,6 +80,11 @@ public class LayoutParamsBuilder
                 this.flexboxLayoutParams = new FlexboxLayout.LayoutParams(
                                                 FlexboxLayout.LayoutParams.MATCH_PARENT,
                                                 FlexboxLayout.LayoutParams.MATCH_PARENT);
+                break;
+            case FRAME:
+                this.frameLayoutParams = new FrameLayout.LayoutParams(
+                                                FrameLayout.LayoutParams.MATCH_PARENT,
+                                                FrameLayout.LayoutParams.MATCH_PARENT);
                 break;
         }
     }
@@ -117,6 +125,8 @@ public class LayoutParamsBuilder
         return this.flexboxLayoutParams;
     }
 
+    public FrameLayout.LayoutParams frameLayoutParams() { return this.frameLayoutParams; }
+
 
     public ViewGroup.LayoutParams layoutParams()
     {
@@ -132,6 +142,8 @@ public class LayoutParamsBuilder
                 return this.tableRowLayoutParams;
             case FLEXBOX:
                 return this.flexboxLayoutParams;
+            case FRAME:
+                return this.frameLayoutParams;
         }
 
         return null;
@@ -169,6 +181,9 @@ public class LayoutParamsBuilder
             case FLEXBOX:
                 this.flexboxLayoutParams.width = widthValue;
                 break;
+            case FRAME:
+                this.frameLayoutParams.width = widthValue;
+                break;
         }
     }
 
@@ -200,6 +215,9 @@ public class LayoutParamsBuilder
                 break;
             case FLEXBOX:
                 this.flexboxLayoutParams.width = widthValue;
+                break;
+            case FRAME:
+                this.frameLayoutParams.width = widthValue;
                 break;
         }
     }
@@ -233,6 +251,9 @@ public class LayoutParamsBuilder
             case FLEXBOX:
                 this.flexboxLayoutParams.height = heightValue;
                 break;
+            case FRAME:
+                this.frameLayoutParams.height = heightValue;
+                break;
         }
     }
 
@@ -264,6 +285,9 @@ public class LayoutParamsBuilder
                 break;
             case FLEXBOX:
                 this.flexboxLayoutParams.height = heightValue;
+                break;
+            case FRAME:
+                this.frameLayoutParams.height = heightValue;
                 break;
         }
     }
@@ -331,6 +355,12 @@ public class LayoutParamsBuilder
                                                     margins.right(context),
                                                     margins.bottom(context));
                 break;
+            case FRAME:
+                this.frameLayoutParams.setMargins(margins.left(context),
+                                                  margins.top(context),
+                                                  margins.right(context),
+                                                  margins.bottom(context));
+                break;
         }
     }
 
@@ -368,6 +398,12 @@ public class LayoutParamsBuilder
                                                     spacing.topPx(),
                                                     spacing.rightPx(),
                                                     spacing.bottomPx());
+                break;
+            case FRAME:
+                this.frameLayoutParams.setMargins(spacing.leftPx(),
+                                                  spacing.topPx(),
+                                                  spacing.rightPx(),
+                                                  spacing.bottomPx());
                 break;
         }
     }

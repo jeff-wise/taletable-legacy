@@ -10,7 +10,7 @@ import android.os.Build
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
-import com.taletable.android.activity.sheet.SheetActivityGlobal
+import com.taletable.android.activity.session.SheetActivityGlobal
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.model.engine.constraint.Trigger

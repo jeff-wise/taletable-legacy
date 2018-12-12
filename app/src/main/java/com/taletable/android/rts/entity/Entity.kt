@@ -72,6 +72,7 @@ fun entityRecord(entityId : EntityId) : AppEff<EntityRecord> =
         effError(AppEntityError(EntityDoesNotExist(entityId)))
 
 
+
 //fun entitySheetRecord(sheetId : SheetId) : AppEff<EntitySheetRecord> =
 //    entityRecord(EntitySheetId(sheetId)) apply {
 //        when (it) {

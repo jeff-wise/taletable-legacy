@@ -34,6 +34,15 @@ sealed class BookReference(open val bookId : EntityId) : ToDocument, Serializabl
             }
     }
 
+
+    abstract fun bookReference() : BookReference
+
+    abstract fun chapterReference() : BookReference
+
+    abstract fun sectionReference() : BookReference
+
+    abstract fun subsectionReference() : BookReference
+
 }
 
 
@@ -84,6 +93,18 @@ data class BookReferenceContent(override val bookId : EntityId,
 
     fun contentId() : BookContentId = this.contentId
 
+
+    // | Book Reference
+    // -----------------------------------------------------------------------------------------
+
+    override fun bookReference() : BookReference = this
+
+    override fun chapterReference() : BookReference = this
+
+    override fun sectionReference() : BookReference = this
+
+    override fun subsectionReference() : BookReference = this
+
 }
 
 
@@ -128,6 +149,18 @@ data class BookReferenceBook(override val bookId : EntityId) : BookReference(boo
 
     fun bookId() : EntityId = this.bookId
 
+
+    // | Book Reference
+    // -----------------------------------------------------------------------------------------
+
+    override fun bookReference() : BookReference = this
+
+    override fun chapterReference() : BookReference = this
+
+    override fun sectionReference() : BookReference = this
+
+    override fun subsectionReference() : BookReference = this
+
 }
 
 
@@ -167,7 +200,7 @@ data class BookReferenceChapter(override val bookId : EntityId,
 
     override fun toDocument() = DocDict(mapOf(
         "book_id" to this.bookId.toDocument(),
-        "book_id" to this.chapterId.toDocument()
+        "chapter_id" to this.chapterId.toDocument()
     ))
 
 
@@ -179,6 +212,18 @@ data class BookReferenceChapter(override val bookId : EntityId,
 
 
     fun chapterId() : BookChapterId = this.chapterId
+
+
+    // | Book Reference
+    // -----------------------------------------------------------------------------------------
+
+    override fun bookReference() : BookReference = BookReferenceBook(bookId)
+
+    override fun chapterReference() : BookReference = this
+
+    override fun sectionReference() : BookReference = this
+
+    override fun subsectionReference() : BookReference = this
 
 }
 
@@ -237,6 +282,18 @@ data class BookReferenceSection(override val bookId : EntityId,
 
 
     fun sectionId() : BookSectionId = this.sectionId
+
+
+    // | Book Reference
+    // -----------------------------------------------------------------------------------------
+
+    override fun bookReference() : BookReference = BookReferenceBook(bookId)
+
+    override fun chapterReference() : BookReference = BookReferenceChapter(bookId, chapterId)
+
+    override fun sectionReference() : BookReference = this
+
+    override fun subsectionReference() : BookReference = this
 
 }
 
@@ -302,6 +359,18 @@ data class BookReferenceSubsection(override val bookId : EntityId,
 
 
     fun subsectionId() : BookSubsectionId = this.subsectionId
+
+
+    // | Book Reference
+    // -----------------------------------------------------------------------------------------
+
+    override fun bookReference() : BookReference = BookReferenceBook(bookId)
+
+    override fun chapterReference() : BookReference = BookReferenceChapter(bookId, chapterId)
+
+    override fun sectionReference() : BookReference = BookReferenceSection(bookId, chapterId, sectionId)
+
+    override fun subsectionReference() : BookReference = this
 
 }
 

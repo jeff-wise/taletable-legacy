@@ -118,6 +118,7 @@ data class PersistedEntity(val entityId : EntityId,
                            val path : String,
                            val name : String,
                            val category : String,
+                           val summary : String,
                            val indexes : List<PersistedEntityIndex>)
 {
 
@@ -143,6 +144,8 @@ data class PersistedEntity(val entityId : EntityId,
                           yamlValue.text("name"),
                           // Category
                           yamlValue.text("category"),
+                          // Summary
+                          yamlValue.text("summary"),
                           // Indexes
                           split(yamlValue.maybeArray("indexes"),
                                 effValue(listOf()),

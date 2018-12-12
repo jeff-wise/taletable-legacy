@@ -5,7 +5,7 @@ package com.taletable.android.activity.home
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -20,8 +20,6 @@ import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
 import com.taletable.android.model.theme.official.officialAppThemeLight
-import com.taletable.android.rts.session.Session
-
 
 
 class PlayFragment : Fragment()

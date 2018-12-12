@@ -1007,6 +1007,12 @@ types:
         prim_type: string
       presence: optional
       description: The view type.
+    - name: content_format
+      type:
+        type: custom_type
+        custom_type: element_format
+      presence: optional
+      description: Content format
     - name: header_open_format
       type:
         type: custom_type

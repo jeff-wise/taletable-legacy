@@ -113,7 +113,7 @@ package com.taletable.android.activity.sheet.dialog
 //// ---------------------------------------------------------------------------------------------
 //
 //
-//fun openWidgetOptionsDialogOnDoubleTap(sheetActivity : SheetActivity,
+//fun openWidgetOptionsDialogOnDoubleTap(sheetActivity : SessionActivity,
 //                                       widget : Widget,
 //                                       sheetContext : SheetContext) : GestureDetectorCompat
 //{
@@ -152,7 +152,7 @@ package com.taletable.android.activity.sheet.dialog
 //    // PROPERTIES
 //    // -----------------------------------------------------------------------------------------
 //
-//    val sheetActivity : SheetActivity = sheetUIContext.context as SheetActivity
+//    val sheetActivity : SessionActivity = sheetUIContext.context as SessionActivity
 //    val sheetContext : SheetContext = SheetContext(sheetUIContext)
 //
 //

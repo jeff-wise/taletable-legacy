@@ -2,20 +2,18 @@
 package com.taletable.android.activity.sheet.dialog
 
 
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.DialogFragment
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
@@ -24,7 +22,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.activity.entity.book.BookActivity
-import com.taletable.android.activity.sheet.SheetActivity
+import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.app.ApplicationLog
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.engine.value.*
@@ -40,7 +38,6 @@ import com.taletable.android.model.theme.ThemeId
 import com.taletable.android.router.Router
 import com.taletable.android.rts.entity.*
 import com.taletable.android.rts.entity.sheet.*
-import com.taletable.android.util.SimpleDividerItemDecoration
 import effect.Err
 import maybe.Just
 import effect.Val
@@ -86,6 +83,8 @@ class ValueChooserDialogFragment : DialogFragment()
             args.putSerializable("entity_id", entityId)
             dialog.arguments = args
 
+            dialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.BottomSheetDialog)
+
             return dialog
         }
     }
@@ -95,7 +94,42 @@ class ValueChooserDialogFragment : DialogFragment()
     // DIALOG FRAGMENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onCreateDialog(savedInstanceState : Bundle?) : Dialog
+//    override fun onCreateDialog(savedInstanceState : Bundle?) : Dialog
+//    {
+//
+//
+//        // (2) Initialize UI
+//        // -------------------------------------------------------------------------------------
+//
+//        val dialog = Dialog(context)
+//
+//        val dialogLayout = this.dialogLayout()
+//
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+//        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//
+//        dialog.window.attributes.windowAnimations = R.style.DialogAnimation
+//
+//        dialog.setContentView(dialogLayout)
+//
+//        val window = dialog.window
+//        val wlp = window.attributes
+//
+//        wlp.gravity = Gravity.BOTTOM
+//        window.attributes = wlp
+//
+//        val width  = LinearLayout.LayoutParams.MATCH_PARENT
+//        val height = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        dialog.window.setLayout(width, height)
+//
+//        return dialog
+//    }
+
+
+    override fun onCreateView(inflater : LayoutInflater,
+                              container : ViewGroup?,
+                              savedInstanceState : Bundle?) : View?
     {
         // (1) Read State
         // -------------------------------------------------------------------------------------
@@ -106,40 +140,6 @@ class ValueChooserDialogFragment : DialogFragment()
         this.updateTarget    = arguments?.getSerializable("update_target") as UpdateTarget
         this.entityId        = arguments?.getSerializable("entity_id") as EntityId
 
-
-        // (2) Initialize UI
-        // -------------------------------------------------------------------------------------
-
-        val dialog = Dialog(context)
-
-        val dialogLayout = this.dialogLayout()
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        dialog.window.attributes.windowAnimations = R.style.DialogAnimation
-
-        dialog.setContentView(dialogLayout)
-
-        val window = dialog.window
-        val wlp = window.attributes
-
-        wlp.gravity = Gravity.BOTTOM
-        window.attributes = wlp
-
-        val width  = LinearLayout.LayoutParams.MATCH_PARENT
-        val height = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        dialog.window.setLayout(width, height)
-
-        return dialog
-    }
-
-
-    override fun onCreateView(inflater : LayoutInflater,
-                              container : ViewGroup?,
-                              savedInstanceState : Bundle?) : View?
-    {
         val entityId     = this.entityId
         val valueSetId   = this.valueSetId
         val updateTarget = this.updateTarget
@@ -713,7 +713,7 @@ class BaseValueSetRecyclerViewAdapter(val values : List<Value>,
                     is Just -> {
                         Log.d("***VALUE CHOOSER", "setting on long click")
                         viewHolder.setOnLongClick(View.OnLongClickListener {
-                            val sheetActivity = context as SheetActivity
+                            val sheetActivity = context as SessionActivity
                             val intent = Intent(sheetActivity, BookActivity::class.java)
                             intent.putExtra("book_reference", bookReference.value)
                             sheetActivity.startActivity(intent)

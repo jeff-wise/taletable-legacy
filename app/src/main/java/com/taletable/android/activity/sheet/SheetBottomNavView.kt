@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import com.taletable.android.R
 import com.taletable.android.activity.nav.GameNavigationActivity
 import com.taletable.android.activity.nav.SheetNavigationActivity
+import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.lib.ui.Font
 import com.taletable.android.lib.ui.ImageViewBuilder
 import com.taletable.android.lib.ui.LinearLayoutBuilder
@@ -45,7 +46,7 @@ class BottomNavigationViewBuilder(val uiColors : UIColors,
 
         // Sheets Button
         val onSheetsClick = View.OnClickListener {
-            val sheetActivity = context as SheetActivity
+            val sheetActivity = context as SessionActivity
             val intent = Intent(sheetActivity, SheetNavigationActivity::class.java)
             sheetActivity.startActivity(intent)
         }
@@ -57,7 +58,7 @@ class BottomNavigationViewBuilder(val uiColors : UIColors,
 
         // Games Button
         val onGamesClick = View.OnClickListener {
-            val sheetActivity = context as SheetActivity
+            val sheetActivity = context as SessionActivity
             val intent = Intent(sheetActivity, GameNavigationActivity::class.java)
             sheetActivity.startActivity(intent)
         }

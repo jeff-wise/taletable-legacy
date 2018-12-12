@@ -3,12 +3,12 @@ package com.taletable.android.activity.sheet
 
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import com.taletable.android.R
+import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
@@ -29,7 +29,7 @@ import com.taletable.android.model.theme.official.officialThemeLight
 /**
  * Sheet Options UI (Sidebar)
  */
-class SheetOptionsUI(val sheetActivity : SheetActivity)
+class SheetOptionsUI(val sheetActivity : SessionActivity)
 {
 
     // -----------------------------------------------------------------------------------------

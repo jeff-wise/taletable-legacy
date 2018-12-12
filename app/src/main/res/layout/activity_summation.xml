@@ -1,4 +1,4 @@
-<android.support.v4.widget.DrawerLayout
+<androidx.drawerlayout.widget.DrawerLayout
     android:id="@+id/drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,7 +17,7 @@
             android:orientation="vertical"
             android:background="@color/dark_blue_5">
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,9 +83,9 @@
 
                 </LinearLayout>
 
-            </android.support.v7.widget.Toolbar>
+            </androidx.appcompat.widget.Toolbar>
 
-            <android.support.design.widget.CoordinatorLayout
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -98,7 +98,7 @@
 
                 </ScrollView>
 
-                <android.support.design.widget.FloatingActionButton
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/button_new_term"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -110,10 +110,10 @@
                     app:backgroundTint="@color/green_medium"
                     app:rippleColor="#FFF" />
 
-            </android.support.design.widget.CoordinatorLayout>
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         </LinearLayout>
 
     </RelativeLayout>
 
-</android.support.v4.widget.DrawerLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

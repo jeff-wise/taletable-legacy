@@ -5,7 +5,7 @@ package com.taletable.android.lib.ui;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import com.taletable.android.model.sheet.widget.StoryPart;
 import com.taletable.android.model.sheet.widget.StoryPartSpan;

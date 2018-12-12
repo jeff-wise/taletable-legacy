@@ -2,6 +2,8 @@
 package com.taletable.android.model.book
 
 
+import android.content.Context
+import android.util.Log
 import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.*
@@ -154,7 +156,7 @@ data class Book(val bookId : EntityId,
     // ENTITY
     // -----------------------------------------------------------------------------------------
 
-    override fun name() = this.bookInfo.title.value
+    override fun name() = this.bookInfo.shortTitle.value
 
 
     override fun summary() = this.bookInfo.summary.value
@@ -164,6 +166,30 @@ data class Book(val bookId : EntityId,
 
 
     override fun category() = "Book"
+
+
+    // | On Active
+    // -----------------------------------------------------------------------------------------
+
+    fun onActive(entityId : EntityId, context : Context)
+    {
+        // Add game variables
+//        game(this.campaignId).doMaybe {
+//            Log.d("***BOOK", "found game ${it.gameId}")
+//            it.variables().forEach {
+//                addVariable(it, entityId)
+//                Log.d("***BOOK", "add game variable ${it.label()}")
+//            }
+//        }
+
+        // Add book variables
+        this.variables().forEach {
+            addVariable(it, entityId)
+        }
+
+        // Initialize UI components
+        this.groupIndex().groups().forEach { it.onSheetComponentActive(this.entityId(), context) }
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -309,6 +335,7 @@ data class Book(val bookId : EntityId,
  */
 data class BookInfo(override val id : UUID,
                     val title : BookTitle,
+                    val shortTitle : BookShortTitle,
                     val summary : BookSummary,
                     val authors : List<Author>,
                     val abstract : BookAbstract)
@@ -320,11 +347,13 @@ data class BookInfo(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(title : BookTitle,
+                shortTitle : BookShortTitle,
                 summary : BookSummary,
                 authors : List<Author>,
                 abstract : BookAbstract)
         : this(UUID.randomUUID(),
                title,
+               shortTitle,
                summary,
                authors,
                abstract)
@@ -339,6 +368,8 @@ data class BookInfo(override val id : UUID,
                 apply(::BookInfo,
                       // Title
                       doc.at("title") apply { BookTitle.fromDocument(it) },
+                      // Short Title
+                      doc.at("short_title") apply { BookShortTitle.fromDocument(it) },
                       // Summary
                       doc.at("summary") apply { BookSummary.fromDocument(it) },
                       // Authors
@@ -453,6 +484,42 @@ data class BookTitle(val value : String) : ToDocument, SQLSerializable, Serializ
         {
             is DocText -> effValue(BookTitle(doc.text))
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ this.value })
+
+}
+
+
+/**
+ * Book Short Title
+ */
+data class BookShortTitle(val value : String) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<BookShortTitle>
+    {
+        override fun fromDocument(doc : SchemaDoc): ValueParser<BookShortTitle> = when (doc)
+        {
+            is DocText -> effValue(BookShortTitle(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 

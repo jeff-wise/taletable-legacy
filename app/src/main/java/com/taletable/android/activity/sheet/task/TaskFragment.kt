@@ -3,13 +3,13 @@ package com.taletable.android.activity.sheet.task
 
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import com.taletable.android.activity.sheet.SheetActivity
+import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.model.theme.official.officialThemeLight
 import com.taletable.android.rts.entity.EntityId
 
@@ -65,7 +65,7 @@ class TaskFragment : Fragment()
 
 
         this.sheetId?.let {
-            val sheetActivity = context as SheetActivity
+            val sheetActivity = context as SessionActivity
             val taskUI = TaskUI(it, officialThemeLight, sheetActivity)
             fragmentView.addView(taskUI.view())
         }

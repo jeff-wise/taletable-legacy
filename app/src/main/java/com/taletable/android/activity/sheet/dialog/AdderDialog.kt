@@ -2,14 +2,12 @@
 package com.taletable.android.activity.sheet.dialog
 
 
-import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AppCompatActivity
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -18,6 +16,7 @@ import android.widget.TextView
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.taletable.android.R
+import com.taletable.android.R.string.value
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.engine.dice.DiceRoll
 import com.taletable.android.model.engine.dice.RollModifier
@@ -460,7 +459,7 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
 //        layout.corners          = Corners(10.0, 10.0, 0.0, 0.0)
 
-        layout.padding.bottomDp = 4f
+//        layout.padding.bottomDp = 4f
 
         return layout.linearLayout(context)
     }
@@ -479,9 +478,13 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         layout.addView(this.dividerView())
 
-        layout.addView(this.valueRowView())
+        val mainScreenLayout = this.mainScreenLayout()
 
-        layout.addView(this.equationRowView())
+        mainScreenLayout.addView(this.valueRowView())
+
+        mainScreenLayout().addView(this.equationRowView())
+
+        layout.addView(mainScreenLayout)
 
         layout.addView(this.dividerView())
 
@@ -500,6 +503,21 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_3"))))
         layout.backgroundColor  = colorOrBlack(colorTheme, entityId)
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun mainScreenLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.backgroundColor  = Color.WHITE
 
         return layout.linearLayout(context)
     }
@@ -835,15 +853,15 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_14"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_3"))))
         layout.backgroundColor      = colorOrBlack(bgColorTheme, entityId)
 
-        layout.corners              = Corners(12.0, 12.0, 12.0, 12.0)
+//        layout.corners              = Corners(12.0, 12.0, 12.0, 12.0)
 
-        layout.padding.topDp        = 10f
-        layout.padding.bottomDp     = 10f
-        layout.padding.leftDp       = 16f
-        layout.padding.rightDp      = 16f
+        layout.padding.topDp        = 18f
+        layout.padding.bottomDp     = 18f
+        layout.padding.leftDp       = 20f
+        layout.padding.rightDp      = 20f
 
         layout.gravity              = Gravity.CENTER_VERTICAL
 
@@ -857,16 +875,16 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         // (3 A) Icon
         // -------------------------------------------------------------------------------------
 
-        iconView.widthDp          = 21
-        iconView.heightDp         = 21
+        iconView.widthDp          = 19
+        iconView.heightDp         = 19
 
         iconView.image            = R.drawable.icon_undo
 
         val undoColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_15"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_16"))))
         iconView.color            = colorOrBlack(undoColorTheme, entityId)
-        iconView.color            = Color.WHITE
+//        iconView.color            = Color.WHITE
 
         iconView.margin.rightDp     = 5f
 
@@ -878,13 +896,16 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         labelView.text              = context.getString(R.string.undo).toUpperCase()
 
-        labelView.color             = Color.WHITE
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_25")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_16"))))
+        labelView.color             = colorOrBlack(labelColorTheme, entityId)
 
-        labelView.font              = Font.typeface(TextFont.RobotoCondensed,
+        labelView.font              = Font.typeface(TextFont.Roboto,
                                                 TextFontStyle.Bold,
                                                 context)
 
-        labelView.sizeSp            = 20f
+        labelView.sizeSp            = 18f
 
 
         return layout.linearLayout(context)
@@ -931,11 +952,11 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
-        layout.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
-        layout.backgroundColor  = Color.WHITE
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_3"))))
+//        layout.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
+
 
         layout.padding.leftDp   = 10f
         layout.padding.rightDp  = 10f
@@ -984,11 +1005,18 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                                                 TextFontStyle.Regular,
                                                 context)
 
-        value.margin.rightDp    = 3f
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_3"))))
+        value.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
 
-        value.corners           = Corners(1.0, 1.0, 1.0, 1.0)
+        value.padding.leftDp    = 6f
+        value.padding.rightDp    = 6f
 
-        value.sizeSp            = 20f
+        value.padding.topDp    = 2f
+        value.padding.bottomDp    = 2f
+
+        value.sizeSp            = 18f
 
         return value.textView(context)
     }
@@ -1018,17 +1046,19 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_3"))))
         value.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
 
         value.font              = Font.typeface(TextFont.RobotoCondensed,
                                                 TextFontStyle.Regular,
                                                 context)
 
-        value.sizeSp            = 20f
+        value.sizeSp            = 18f
 
         value.padding.rightDp   = 6f
         value.padding.leftDp    = 3f
+        value.padding.topDp    = 2f
+        value.padding.bottomDp    = 2f
 
         return value.textView(context)
     }
@@ -1042,6 +1072,9 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         value.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         value.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
+        value.padding.topDp    = 2f
+        value.padding.bottomDp    = 2f
+
         value.layoutGravity     = Gravity.CENTER_VERTICAL
 
         value.text              = diceRollString
@@ -1053,14 +1086,14 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("medium_grey_2")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_2"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_3"))))
         value.backgroundColor  = colorOrBlack(bgColorTheme, entityId)
 
         value.font              = Font.typeface(TextFont.RobotoCondensed,
                                                 TextFontStyle.Regular,
                                                 context)
 
-        value.sizeSp            = 20f
+        value.sizeSp            = 18f
 
         return value.textView(context)
     }
@@ -1459,10 +1492,10 @@ class AdderEditorViewBuilder(val adderState : AdderState,
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.padding.rightDp  = 8f
+//        layout.padding.rightDp  = 8f
         layout.padding.leftDp   = 8f
-        layout.padding.bottomDp = 8f
-        layout.padding.topDp    = 12f
+//        layout.padding.bottomDp = 8f
+//        layout.padding.topDp    = 12f
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
@@ -1651,18 +1684,18 @@ class AdderEditorViewBuilder(val adderState : AdderState,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("green_tint_3"))))
         layout.backgroundColor      = colorOrBlack(bgColorTheme, entityId)
 
-        layout.corners              = Corners(12.0, 12.0, 12.0, 12.0)
+//        layout.corners              = Corners(12.0, 12.0, 12.0, 12.0)
 
         layout.onClick              = View.OnClickListener {
             this.finishWithResult()
         }
 
-        layout.margin.leftDp        = 12f
+        //layout.margin.leftDp        = 12f
 
-        layout.padding.topDp        = 10f
-        layout.padding.bottomDp     = 10f
-        layout.padding.leftDp       = 16f
-        layout.padding.rightDp      = 16f
+        layout.padding.topDp        = 18f
+        layout.padding.bottomDp     = 18f
+        layout.padding.leftDp       = 20f
+        layout.padding.rightDp      = 20f
 
         layout //.child(icon)
                 .child(label)
@@ -1697,11 +1730,11 @@ class AdderEditorViewBuilder(val adderState : AdderState,
 //                ThemeColorId(ThemeId.Light, ColorId.Theme("white"))))
         label.color         = Color.WHITE
 
-        label.font          = Font.typeface(TextFont.RobotoCondensed,
+        label.font          = Font.typeface(TextFont.Roboto,
                                             TextFontStyle.Bold,
                                             context)
 
-        label.sizeSp        = 20f
+        label.sizeSp        = 18f
 
         return layout.linearLayout(context)
     }

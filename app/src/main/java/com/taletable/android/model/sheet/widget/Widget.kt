@@ -4,8 +4,8 @@ package com.taletable.android.model.sheet.widget
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
@@ -14,8 +14,8 @@ import android.widget.TableLayout
 import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.activity.entity.book.BookActivity
-import com.taletable.android.activity.sheet.SheetActivity
-import com.taletable.android.activity.sheet.SheetActivityGlobal
+import com.taletable.android.activity.session.SessionActivity
+import com.taletable.android.activity.session.SheetActivityGlobal
 import com.taletable.android.activity.sheet.dialog.openNumberVariableEditorDialog
 import com.taletable.android.activity.sheet.dialog.openTextVariableEditorDialog
 import com.taletable.android.app.*
@@ -562,7 +562,7 @@ data class ActionWidget(val widgetId : WidgetId,
 
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        val sheetActivity = context as SheetActivity
+        val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
 
         val activeVariableId = this.activeVariableId()
@@ -808,7 +808,7 @@ data class BooleanWidget(private val widgetId : WidgetId,
 
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        val sheetActivity = context as SheetActivity
+        val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
 
         this.variables(entityId).forEach {
@@ -1928,7 +1928,7 @@ data class MechanicWidget(private val widgetId : WidgetId,
 
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        val sheetActivity = context as SheetActivity
+        val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
 
 //        val mechanics = mechanicsInCategory(this.categoryId(), entityId)
@@ -2139,7 +2139,7 @@ data class NumberWidget(val widgetId : WidgetId,
 
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        val sheetActivity = context as SheetActivity
+        val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
 
         this.valueVariable(entityId) apDo { currentValueVar ->
@@ -2646,7 +2646,7 @@ data class PointsWidget(val widgetId : WidgetId,
 
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        val sheetActivity = context as SheetActivity
+        val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
 
         this.currentValueVariable(entityId) apDo { currentValueVar ->
@@ -2948,7 +2948,7 @@ data class RollWidget(val widgetId : WidgetId,
 
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        val sheetActivity = context as SheetActivity
+        val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
 
         val deps : MutableSet<VariableReference> = mutableSetOf()
@@ -3346,7 +3346,7 @@ data class StoryWidget(val widgetId : WidgetId,
 
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        val sheetActivity = context as SheetActivity
+        val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
 
 
@@ -4196,7 +4196,8 @@ data class TableWidget(private val widgetId : WidgetId,
             }
             is Err ->
             {
-                this.rows()
+                val rows = this.rows()
+                rows
             }
         }
     }
@@ -4627,7 +4628,7 @@ data class TextWidget(val widgetId : WidgetId,
 
     override fun onSheetComponentActive(entityId : EntityId, context : Context)
     {
-        val sheetActivity = context as SheetActivity
+        val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
 
         this.valueVariable(entityId) apDo { currentValueVar ->

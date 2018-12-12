@@ -167,7 +167,7 @@ package com.taletable.android.activity.sheet.dialog
 //        iconLayout.gravity          = Gravity.CENTER
 //
 //        iconLayout.onClick          = View.OnClickListener {
-//            val sheetActivity = sheetUIContext.context as SheetActivity
+//            val sheetActivity = sheetUIContext.context as SessionActivity
 //            sheetActivity.hideActionBar()
 //        }
 //

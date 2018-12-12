@@ -3,7 +3,7 @@ package com.taletable.android.model.sheet.widget.table
 
 
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -13,11 +13,7 @@ import com.taletable.android.app.AppEff
 import com.taletable.android.app.AppError
 import com.taletable.android.app.AppSheetError
 import com.taletable.android.app.ApplicationLog
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue3
-import com.taletable.android.lib.orm.schema.*
 import com.taletable.android.lib.ui.LayoutType
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.model.book.BookReference
@@ -713,23 +709,33 @@ object TableWidgetCellView
     {
         val layout                  = LinearLayoutBuilder()
 
+        val elementFormat           = columnFormat.textFormat().elementFormat()
+
         layout.layoutType           = LayoutType.TABLE_ROW
         layout.orientation          = LinearLayout.HORIZONTAL
         layout.width                = 0
-        layout.height               = TableRow.LayoutParams.WRAP_CONTENT
+        layout.height               = TableRow.LayoutParams.MATCH_PARENT
         layout.weight               = columnFormat.widthFloat()
+
+        layout.marginSpacing        = elementFormat.margins()
+        layout.paddingSpacing       = elementFormat.padding()
 
         // > Gravity
         // TODO
         //if (cellFormat.alignment().isDefault()) {
-        layout.gravity          = columnFormat.textFormat().elementFormat().alignment().gravityConstant() or
-                                    Gravity.CENTER_VERTICAL
+        layout.gravity          = columnFormat.textFormat().elementFormat().alignment().gravityConstant() //or
+                                    //columnFormat.textFormat().elementFormat().verticalAlignment().gravityConstant()
+
+//        layout.layoutGravity     = columnFormat.textFormat().elementFormat().alignment().gravityConstant() or
+//                                      Gravity.TOP
 //        } else {
 //            layout.gravity          = cellFormat.alignment().gravityConstant() or
 //                                        Gravity.CENTER_VERTICAL
 ////            layout.layoutGravity          = cellFormat.alignment().gravityConstant() or
 ////                                                Gravity.CENTER_VERTICAL
 //        }
+
+        layout.backgroundColor      = colorOrBlack(elementFormat.backgroundColorTheme(), entityId)
 
         //if (cellFormat.backgroundColorTheme.isDefault()) {
 //        layout.backgroundColor  = colorOrBlack(columnFormat.textFormat().elementFormat().backgroundColorTheme(),

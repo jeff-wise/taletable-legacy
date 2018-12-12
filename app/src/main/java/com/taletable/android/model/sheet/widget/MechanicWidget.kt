@@ -3,19 +3,14 @@ package com.taletable.android.model.sheet.widget
 
 
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.activity.entity.engine.mechanic.MechanicOptionDialog
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue8
-import com.taletable.android.lib.orm.schema.PrimValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
@@ -39,8 +34,6 @@ import lulo.value.ValueError
 import lulo.value.ValueParser
 import maybe.Just
 import java.io.Serializable
-import java.util.*
-
 
 
 /**

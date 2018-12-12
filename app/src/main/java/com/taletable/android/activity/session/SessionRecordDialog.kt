@@ -8,8 +8,8 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AppCompatActivity
 import android.view.*
 import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
@@ -17,18 +17,13 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.taletable.android.R
-import com.taletable.android.activity.sheet.dialog.TableDialog
-import com.taletable.android.activity.sheet.dialog.TableDialogViewBuilder
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
 import com.taletable.android.model.theme.official.officialAppThemeLight
-import com.taletable.android.rts.entity.EntityId
-import com.taletable.android.rts.entity.sheet.UpdateTarget
 import com.taletable.android.rts.session.Session
-import com.taletable.android.rts.session.SessionId
 import com.taletable.android.rts.session.openSession
 import com.taletable.android.util.Util
 

@@ -10,7 +10,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "0.7.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
     buildTypes {
@@ -31,22 +31,23 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile files('libs/lulo-jvm-0.7.jar')
-    compile 'com.android.support:multidex:1.0.2'
+    compile 'androidx.multidex:multidex:2.0.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    compile 'com.android.support:appcompat-v7:28.0.0'
-    compile 'com.android.support:design:28.0.0'
-    compile 'com.android.support:support-v4:28.0.0'
+    compile 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0-beta01'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    compile 'androidx.legacy:legacy-support-v4:1.0.0'
     compile 'org.yaml:snakeyaml:1.17'
     compile 'org.apache.commons:commons-lang3:3.5'
     compile 'org.apache.commons:commons-collections4:4.1'
     compile 'io.reactivex.rxjava2:rxjava:2.1.2'
     compile 'com.google.android:flexbox:0.3.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
+    compile 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.15'
     testCompile 'junit:junit:4.12'
     compile files('libs/do-0.7.0.jar')

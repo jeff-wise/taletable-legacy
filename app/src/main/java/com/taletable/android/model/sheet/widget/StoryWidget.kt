@@ -10,8 +10,8 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.support.graphics.drawable.VectorDrawableCompat
-import android.support.v7.app.AppCompatActivity
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import androidx.appcompat.app.AppCompatActivity
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
@@ -27,7 +27,7 @@ import android.widget.TextView
 import com.google.android.flexbox.*
 import com.taletable.android.R
 import com.taletable.android.activity.entity.book.BookActivity
-import com.taletable.android.activity.sheet.SheetActivity
+import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.app.AppEff
 import com.taletable.android.app.ApplicationLog
 import com.taletable.android.lib.Factory
@@ -42,13 +42,7 @@ import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
 import java.io.Serializable
-import java.util.*
 import com.taletable.android.activity.sheet.dialog.*
-import com.taletable.android.db.*
-import com.taletable.android.lib.orm.*
-import com.taletable.android.lib.orm.schema.MaybePrimValue
-import com.taletable.android.lib.orm.schema.PrimValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.*
 import com.taletable.android.model.engine.variable.NumberVariable
 import com.taletable.android.model.theme.ColorTheme
@@ -1105,7 +1099,7 @@ fun storySpannableView(storyWidget : StoryWidget,
     story.movementMethod    = LongClickLinkMovementMethod.getInstance()
 
 //    val gestureDetector = openWidgetOptionsDialogOnDoubleTap(
-//            context as SheetActivity,
+//            context as SessionActivity,
 //            storyWidget,
 //            SheetContext(sheetUIContext))
 //    story.onTouch   = View.OnTouchListener { _, event ->
@@ -1328,7 +1322,7 @@ private fun spannableStringBuilder(storyParts : List<StoryPart>,
                 {
                     is Just ->
                     {
-                        val sheetActivity = context as SheetActivity
+                        val sheetActivity = context as SessionActivity
                         val clickSpan = object : ClickableSpan() {
                             override fun onClick(view: View?) {
 //                                val dialog = DiceRollDialog.newInstance(

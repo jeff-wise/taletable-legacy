@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v4.widget.DrawerLayout
+<androidx.drawerlayout.widget.DrawerLayout
     android:id="@+id/drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,7 +19,7 @@
             android:orientation="vertical"
             android:background="@color/dark_blue_5">
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -35,9 +35,9 @@
                     android:layout_height="wrap_content" />
 
 
-            </android.support.v7.widget.Toolbar>
+            </androidx.appcompat.widget.Toolbar>
 
-            <android.support.design.widget.CoordinatorLayout
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -46,7 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <android.support.design.widget.TabLayout
+                    <com.google.android.material.tabs.TabLayout
                         android:id="@+id/program_tab_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -59,17 +59,17 @@
                         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
 
-                    <android.support.v4.view.ViewPager
+                    <androidx.viewpager.widget.ViewPager
                         android:id="@+id/program_pager"
                         android:layout_width="match_parent"
                         android:focusableInTouchMode="true"
                         android:layout_height="0dp"
                         android:layout_weight="1">
-                    </android.support.v4.view.ViewPager>
+                    </androidx.viewpager.widget.ViewPager>
 
                 </LinearLayout>
 
-                <android.support.design.widget.FloatingActionButton
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/button_new_statement"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -81,10 +81,10 @@
                     app:backgroundTint="@color/green_light"
                     app:rippleColor="#FFF" />
 
-            </android.support.design.widget.CoordinatorLayout>
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         </LinearLayout>
 
     </RelativeLayout>
 
-</android.support.v4.widget.DrawerLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

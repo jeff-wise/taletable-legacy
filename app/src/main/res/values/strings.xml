@@ -9,6 +9,9 @@
     <string name="back_to_game_items">Back to Game Items</string>
 
     <string name="switch_session">Switch Session</string>
+    <string name="player_session">Player Session</string>
+    <string name="search_everything">Search everything\u2026</string>
+    <string name="search_in">Searching in</string>
 
     <string name="sheets">Sheets</string>
     <string name="campaigns">Campaigns</string>
@@ -330,6 +333,7 @@
 
     <string name="reroll">Reroll</string>
     <string name="show_more">Show More</string>
+    <string name="show_options">Show Options</string>
 
     <string name="open">Open</string>
     <string name="more_info">More Info</string>
@@ -436,6 +440,15 @@
     <string name="game">Game</string>
     <string name="edit_number">Edit Number</string>
 
+    <string name="campaign_basic_info">Basic Info</string>
+    <string name="campaign_basic_info_summary">General campaign data</string>
+
+    <string name="game_basic_info">Basic Info</string>
+    <string name="game_basic_info_summary">General game data</string>
+
+    <string name="game_engine">Rules Engine</string>
+    <string name="game_engine_summary">Game rules and data</string>
+
     <string name="hold_to_accept">Hold to Accept</string>
 
     <string name="sheet_options">Sheet Options</string>
@@ -452,6 +465,7 @@
 
     <string name="column">Column</string>
     <string name="none_selected">None selected</string>
+    <string name="find_groups">Find Groups</string>
 
 
     <string name="last_used">Last Used</string>
@@ -460,6 +474,7 @@
     <string name="edit_the_sheet">Edit the Sheet</string>
     <string name="you_clicked">You clicked the</string>
     <string name="edit_its">Edit its</string>
+    <string name="edit_groups">Edit Groups</string>
 
     <string name="required_fields">Required Fields</string>
 

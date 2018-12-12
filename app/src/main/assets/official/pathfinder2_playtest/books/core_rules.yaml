@@ -1,6 +1,7 @@
 book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
 book_info:
-  title: 'Rulebook'
+  title: 'Core Rulebook for Pathfinder 2 Playtest'
+  short_title: 'Core Rulebook'
   summary: 'The core rules for being a player and running a game with the Pathfinder 2 Playtest.'
   authors:
   - name: 'Paizo Publishing'
@@ -25,6 +26,161 @@ content:
   group_references:
   - type: group_id
     group_id: '877b053e-e461-48de-9778-5cff30aff242'
+- id: equipment_basic_rules
+  title: 'Weapons'
+  group_references:
+  - type: group_id
+    group_id: '5f03282d-8e8f-400a-b53d-c76b6976d146'
+- id: equipment_basic_rules_currency
+  title: 'Weapons'
+  group_references:
+  - type: group_id
+    group_id: 'dc110cd2-e7b7-4743-b2c6-5146f2655a30'
+- id: equipment_basic_rules_currency_coin_bulk
+  title: 'Weapons'
+  group_references:
+  - type: group_id
+    group_id: 'ce709e1f-ead5-4f8b-82e2-0b1d32aea651'
+- id: equipment_basic_rules_currency_coin_values
+  title: 'Weapons'
+  group_references:
+  - type: group_id
+    group_id: 'beef97fc-f3d5-451b-8905-c36ec3f29eff'
+- id: equipment_basic_rules_price
+  title: 'Weapons'
+  group_references:
+  - type: group_id
+    group_id: 'cb09ddb0-5777-443a-b42f-ce55242561f4'
+- id: equipment_basic_rules_item_level
+  title: 'Item Level'
+  group_references:
+  - type: group_id
+    group_id: '680140a1-412c-4d97-b942-b08b600c2eda'
+- id: equipment_basic_rules_carrying_using_items
+  title: 'Item Level'
+  group_references:
+  - type: group_id
+    group_id: '4b5655a4-3f30-430b-942b-fc11e7615722'
+- id: equipment_basic_rules_carrying_using_items_bulk
+  title: 'Bulk'
+  group_references:
+  - type: group_id
+    group_id: '7c185721-8c28-47ee-8170-5ff72cdc7394'
+- id: equipment_basic_rules_carrying_using_items_bulk_limit
+  title: 'Bulk Limit'
+  group_references:
+  - type: group_id
+    group_id: '0e0ba59c-8670-4f0c-9c10-148e77498a2a'
+- id: equipment_basic_rules_carrying_using_items_encumbered
+  title: 'Bulk Limit'
+  group_references:
+  - type: group_id
+    group_id: 'f068899f-5753-455c-a0f4-bae16c2e9136'
+- id: equipment_basic_rules_carrying_using_items_bulk_values
+  title: 'Bulk Limit'
+  group_references:
+  - type: group_id
+    group_id: '6b70e81b-bbc7-4978-9a65-766e748f106a'
+- id: equipment_basic_rules_carrying_using_items_estimating_bulk
+  title: 'Bulk Limit'
+  group_references:
+  - type: group_id
+    group_id: '79377910-ea72-4cf9-9319-942b0441b8ea'
+- id: equipment_basic_rules_carrying_using_items_donning_removing_armor
+  title: 'Donning and Removing Armor'
+  group_references:
+  - type: group_id
+    group_id: '80fb6cfe-03cc-4bca-bdfb-eb5e24f59f62'
+- id: equipment_basic_rules_carrying_using_items_wielding_items
+  title: 'Wielding Items'
+  group_references:
+  - type: group_id
+    group_id: '2bbbf53c-dc82-4d61-b910-57907a70b857'
+- id: equipment_basic_rules_item_damage
+  title: 'Item Damage'
+  group_references:
+  - type: group_id
+    group_id: '4ec2ed94-6e0c-45a1-a837-c8fa7ea9afb9'
+- id: equipment_basic_rules_item_damage_broken
+  title: 'Broken'
+  group_references:
+  - type: group_id
+    group_id: '112b3065-b83e-447a-a3c1-966acf620ee7'
+- id: equipment_basic_rules_item_damage_object_immunities
+  title: 'Object Immunities'
+  group_references:
+  - type: group_id
+    group_id: 'a5af14c0-b4cc-4480-acba-4e36359a350e'
+- id: equipment_armor_shields
+  title: 'Armor and Shields'
+  group_references:
+  - type: group_id
+    group_id: 'f9a6fc61-8e7c-4d16-8838-42448ccdc80c'
+- id: equipment_armor_shields_armor_class
+  title: 'Armor Class'
+  group_references:
+  - type: group_id
+    group_id: 'b8207393-1d02-4a42-ae85-89b39f570faf'
+- id: equipment_armor_shields_armor_statistics
+  title: 'Armor Statistics'
+  group_references:
+  - type: group_id
+    group_id: 'df094dcb-227b-4b47-8dec-9db9fef15b0c'
+- id: equipment_armor_shields_armor_statistics_bonuses
+  title: 'Armor Bonuses'
+  group_references:
+  - type: group_id
+    group_id: 'c6dd6f0c-29e8-4943-9903-09051e05c498'
+- id: equipment_armor_shields_armor_statistics_dex_mod_cap
+  title: 'Dexterity Modifier Cap'
+  group_references:
+  - type: group_id
+    group_id: '787c8f52-959b-4566-bb9b-2e960b7e7c20'
+- id: equipment_armor_shields_armor_statistics_check_penalty
+  title: 'Check Penalty'
+  group_references:
+  - type: group_id
+    group_id: '048c344a-f53f-43ab-8521-04b6db85670a'
+- id: equipment_armor_shields_armor_statistics_speed_penalty
+  title: 'Speed Penalty'
+  group_references:
+  - type: group_id
+    group_id: '74dc1b0e-fcad-4d29-811c-71b45f4eeaaa'
+- id: equipment_armor_shields_armor_statistics_bulk
+  title: 'Bulk'
+  group_references:
+  - type: group_id
+    group_id: '9818c3d3-a225-4d3c-8cbb-12edb4bc4a8f'
+- id: equipment_armor_shields_armor_statistics_armor_traits
+  title: 'Bulk'
+  group_references:
+  - type: group_id
+    group_id: '85c2ec70-b88c-4baa-8371-d29285238635'
+- id: equipment_armor_shields_armor_statistics_shields
+  title: 'Bulk'
+  group_references:
+  - type: group_id
+    group_id: '8e171712-2632-4dc8-83e1-b82240e5e73b'
+- id: equipment_armor_shields_armor_statistics_attacking_shield
+  title: 'Bulk'
+  group_references:
+  - type: group_id
+    group_id: 'f8c0a8a3-161f-4857-8f5c-281fe552fbcf'
+- id: equipment_armor_shields_armor_list_introduction
+  title: 'Armor List Introduction'
+  group_references:
+  - type: group_id
+    group_id: '05024374-a958-476a-bb4d-5e5a04b7f337'
+- id: equipment_armor_shields_armor_list_light_armor
+  title: 'Light Armor'
+  group_references:
+  - type: group_id
+    group_id: 'c07d32a1-dd59-4c35-a1d4-512954b0d65e'
+- id: equipment_armor_shields_armor_list_medium_armor
+  title: 'Medium Armor'
+  group_references:
+  - type: group_id
+    group_id: '3b061219-9932-4402-8f3b-9b784583fdab'
 - id: subsection_weapon_properties
   title: 'Weapon Properties'
   group_references:
@@ -74,7 +230,7 @@ content:
 chapters:
 - id: ancestries_and_backgrounds
   title: 'Ancestries and Backgrounds'
-  summary: 'The ancestries and backgrounds for player characters.'
+  summary: 'The ancestries and backgrounds available for player characters.'
   sections:
   - id: reading_ancestry_entries
     title: 'Reading Ancestry Entries'
@@ -96,6 +252,7 @@ chapters:
     title: 'Languages'
 - id: classes
   title: 'Classes'
+  summary: 'The classes available player chatacters.'
   sections:
   - id: alchemist
     title: 'Alchemist'
@@ -123,6 +280,7 @@ chapters:
     title: 'Wizard'
 - id: skills
   title: 'Skills'
+  summary: 'The skills in the game and rules for using them.'
   sections:
   - id: skill_uses
     title: 'Skill Uses'
@@ -138,32 +296,80 @@ chapters:
     title: 'Skill Descriptions'
 - id: feats
   title: 'Feats'
+  summary: 'The feats in the game and rules for using them.'
   sections:
 - id: equipment
   title: 'Equipment'
+  summary: 'Currency, weapons, tools and other gear or objects in the game.'
   sections:
-  - id: coins_and_currency
-    title: 'Coins and Currency'
-  - id: price
-    title: 'Price'
-  - id: item_level
-    title: 'Item Level'
-  - id: carrying_and_using_items
-    title: 'Carrying and Using Items'
-  - id: item_damage
-    title: 'Item Damage'
-  - id: armor_and_shields
-    title: 'Armor and Shields'
-  - id: weapons
-    title: 'Weapons'
-  - id: gear
-    title: 'Gear'
+  - id: equipment_basic_rules
+    title: 'Basic Rules'
+    introduction:
+    - equipment_basic_rules
+    subsections:
+    - id: equipment_basic_rules_currency
+      title: 'Coins and Currency'
+      body:
+      - equipment_basic_rules_currency
+      - equipment_basic_rules_currency_coin_bulk
+      - equipment_basic_rules_currency_coin_values
+    - id: equipment_basic_rules_price
+      title: 'Price'
+      body:
+      - equipment_basic_rules_price
+    - id: equipment_basic_rules_carrying_using_items
+      title: 'Carrying and Using Items'
+      body:
+      - equipment_basic_rules_carrying_using_items
+      - equipment_basic_rules_carrying_using_items_bulk
+      - equipment_basic_rules_carrying_using_items_bulk_limit
+      - equipment_basic_rules_carrying_using_items_encumbered
+      - equipment_basic_rules_carrying_using_items_bulk_values
+      - equipment_basic_rules_carrying_using_items_estimating_bulk
+      - equipment_basic_rules_carrying_using_items_donning_removing_armor
+      - equipment_basic_rules_carrying_using_items_donning_wielding_items
+    - id: equipment_basic_rules_item_damage
+      title: 'Item Damage'
+      body:
+      - equipment_basic_rules_item_damage
+      - equipment_basic_rules_item_damage_broken
+      - equipment_basic_rules_item_damage_object_immunities
   - id: item_quality
     title: 'Item Quality'
   - id: items_and_sizes
     title: 'Items and Sizes'
+  - id: armor_and_shields
+    title: 'Armor and Shields'
+    introduction:
+    - equipment_armor_shields
+    subsections:
+    - id: equipment_armor_shields_armor_class
+      title: 'Armor Class'
+      body:
+      - equipment_armor_shields_armor_class
+    - id: equipment_armor_shields_armor_statistics
+      title: 'Armor Statistics'
+      body:
+      - equipment_armor_shields_armor_statistics_bonuses
+      - equipment_armor_shields_armor_statistics_dex_mod_cap
+      - equipment_armor_shields_armor_statistics_check_penalty
+      - equipment_armor_shields_armor_statistics_speed_penalty
+      - equipment_armor_shields_armor_statistics_armor_traits
+      - equipment_armor_shields_armor_statistics_shields
+      - equipment_armor_shields_armor_statistics_attacking_shield
+    - id: equipment_armor_shields_armor_list
+      title: 'Armor List'
+      body:
+      - equipment_armor_shields_armor_list_introduction
+      - equipment_armor_shields_armor_list_light_armor
+      - equipment_armor_shields_armor_list_medium_armor
+  - id: weapons
+    title: 'Weapons'
+  - id: gear
+    title: 'Gear'
 - id: spells
   title: 'Spells'
+  summary: 'Casting spells and rules for using magic as well as a catalog of the available spells.'
   sections:
   - id: wizard_spells
     title: 'Wizard Spells'
@@ -173,14 +379,18 @@ chapters:
       groups:
 - id: advancement_and_options
   title: 'Advancement and Options'
+  summary: 'Work in progress.'
   sections:
 - id: playing_the_game
   title: 'Playing the Game'
+  summary: 'Work in progress.'
   sections:
 - id: game_mastering
   title: 'Game Mastering'
+  summary: 'Work in progress.'
   sections:
 - id: treasure
   title: 'Treasure'
+  summary: 'Work in progress.'
   sections:
 

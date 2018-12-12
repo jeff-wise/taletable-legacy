@@ -6,22 +6,13 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import com.taletable.android.R.string.group
-import com.taletable.android.activity.sheet.SheetActivityGlobal
-import com.taletable.android.db.*
+import com.taletable.android.activity.session.SheetActivityGlobal
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue2
-import com.taletable.android.lib.orm.RowValue3
-import com.taletable.android.lib.orm.schema.MaybeProdValue
-import com.taletable.android.lib.orm.schema.PrimValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.SQLInt
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLValue
@@ -43,8 +34,6 @@ import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
-import java.util.*
-
 
 
 /**

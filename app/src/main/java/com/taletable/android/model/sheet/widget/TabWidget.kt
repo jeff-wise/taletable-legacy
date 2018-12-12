@@ -3,9 +3,7 @@ package com.taletable.android.model.sheet.widget
 
 
 import android.content.Context
-import android.support.design.widget.TabLayout
-import android.util.Log
-import android.view.Gravity
+import com.google.android.material.tabs.TabLayout
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -20,10 +18,7 @@ import com.taletable.android.model.sheet.group.GroupReference
 import com.taletable.android.model.sheet.style.BorderEdge
 import com.taletable.android.model.sheet.style.ElementFormat
 import com.taletable.android.model.sheet.style.TextFormat
-import com.taletable.android.model.theme.ColorId
 import com.taletable.android.model.theme.ColorTheme
-import com.taletable.android.model.theme.ThemeColorId
-import com.taletable.android.model.theme.ThemeId
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
 import com.taletable.android.rts.entity.groups

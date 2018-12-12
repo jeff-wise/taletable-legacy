@@ -9,12 +9,12 @@
     <!--</solid>-->
 
     <size
-        android:height="24dp"
-        android:width="24dp" />
+        android:height="19dp"
+        android:width="19dp" />
 
     <stroke
-        android:width="2dp"
-        android:color="#E2E5E8">
+        android:width="1dp"
+        android:color="#C7CACD">
     </stroke>
 
     <!--<padding-->

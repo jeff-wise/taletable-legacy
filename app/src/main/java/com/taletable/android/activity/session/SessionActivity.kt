@@ -3,120 +3,352 @@ package com.taletable.android.activity.session
 
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
-import android.view.*
+import android.os.Handler
+import androidx.viewpager.widget.ViewPager
+import androidx.appcompat.app.AppCompatActivity
+import android.util.Log
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
 import com.taletable.android.R
-import com.taletable.android.activity.entity.book.BookActivity
+import com.taletable.android.activity.sheet.history.HistoryPagerAdapter
+import com.taletable.android.activity.sheet.page.PagePagerAdapter
+import com.taletable.android.activity.sheet.task.TaskPagerAdapter
 import com.taletable.android.lib.ui.*
-import com.taletable.android.model.book.Book
-import com.taletable.android.model.book.BookReferenceBook
+import com.taletable.android.model.sheet.Sheet
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
-import com.taletable.android.model.theme.official.officialAppThemeLight
 import com.taletable.android.model.theme.official.officialThemeLight
-import com.taletable.android.rts.entity.Entity
-import com.taletable.android.rts.session.Session
-import com.taletable.android.rts.session.activeSession
-import com.taletable.android.util.configureToolbar
+import com.taletable.android.router.Router
+import com.taletable.android.rts.entity.*
+import com.taletable.android.rts.entity.sheet.*
 import maybe.Just
-import android.R.anim.slide_out_right
-import android.R.anim.slide_in_left
-import com.taletable.android.R.string.name
-import com.taletable.android.R.string.session
+import io.reactivex.disposables.CompositeDisposable
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.tabs.TabLayout
+import com.taletable.android.activity.entity.book.fragment.BookFragment
+import com.taletable.android.activity.entity.book.fragment.ChapterFragment
+import com.taletable.android.activity.entity.book.fragment.SectionFragment
+import com.taletable.android.activity.entity.book.fragment.SubsectionFragment
+import com.taletable.android.activity.entity.book.navView
+import com.taletable.android.activity.session.campaign.campaignView
+import com.taletable.android.activity.session.game.gameView
+import com.taletable.android.app.AppError
+import com.taletable.android.model.book.*
+import com.taletable.android.model.campaign.Campaign
+import com.taletable.android.model.entity.PersistedEntity
+import com.taletable.android.model.game.Game
+import com.taletable.android.model.session.sessionManifest
 import com.taletable.android.model.sheet.style.Corners
+import com.taletable.android.model.theme.official.officialAppThemeLight
+import com.taletable.android.rts.session.*
+import effect.Val
+import effect.effValue
+import maybe.Maybe
+import java.util.*
+
+
+
+
+object SheetActivityGlobal
+{
+    val touchHandler = Handler()
+
+    private var longPressRunnable : Runnable? = null
+
+    fun setLongPressRunnable(r : Runnable) {
+        touchHandler.postDelayed(r, 1100)
+        longPressRunnable = r
+    }
+
+    fun cancelLongPressRunnable() {
+        touchHandler.removeCallbacks(longPressRunnable)
+    }
+}
+
+
+object SheetActivityRequest
+{
+
+    val PROCEDURE_INVOCATION = 1
+
+}
+
 
 
 /**
- * Session Activity
+ * Sheet Activity
  */
 class SessionActivity : AppCompatActivity()
 {
 
     // -----------------------------------------------------------------------------------------
-    // PROPERTIES
+    // STATE
     // -----------------------------------------------------------------------------------------
+
+    var sessionId : SessionId? = null
+
+    var entityId : EntityId? = null
+
+
+    // STATE > Views
+    // -----------------------------------------------------------------------------------------
+
+    var pagePagerAdapter : PagePagerAdapter?   = null
+    private var viewPager : ViewPager? = null
+
+    private var bottomSheet : LinearLayout? = null
+    var bottomSheetBehavior : BottomSheetBehavior<LinearLayout>? = null
+
+    private var progressBar : ProgressBar? = null
+
+    private val messageListenerDisposable : CompositeDisposable = CompositeDisposable()
 
 
     // -----------------------------------------------------------------------------------------
     // ACTIVITY API
     // -----------------------------------------------------------------------------------------
 
-    override fun onCreate(savedInstanceState : Bundle?)
+    override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
 
         // (1) Set Content View
         // -------------------------------------------------------------------------------------
 
-        setContentView(R.layout.activity_session)
+        setContentView(R.layout.activity_sheet)
 
-        // (3) Configure View
+        // (2) Read Parameters (or saved state)
         // -------------------------------------------------------------------------------------
 
-        this.configureToolbar(getString(R.string.session),
-                              TextFont.RobotoCondensed,
-                              TextFontStyle.Bold,
-                              18f)
+        if (this.intent.hasExtra("session_id"))
+            this.sessionId = this.intent.getSerializableExtra("session_id") as SessionId
+
+        if (savedInstanceState != null)
+            this.sessionId = savedInstanceState.getSerializable("session_id") as SessionId
+
+        // Test session
+        if (this.sessionId == null) {
+            this.sessionId = SessionId(UUID.fromString("56897634-288a-478e-bb59-eedf09d8aab6"))
+        }
+
+        // | Initialize Activity
+        // -------------------------------------------------------------------------------------
+
+        this.initializeListeners()
 
         this.applyTheme(officialAppThemeLight)
 
-        this.initializeView()
+        this.initializeViews()
+
+        this.initializeBottomSheetView()
+
+        this.initializeSession()
+
+
+        // (4) Configure UI
+        // -------------------------------------------------------------------------------------
+
+//        this.configureToolbar("Character Sheet", TextFont.RobotoCondensed, TextFontStyle.Regular, 18f)
+
+
+        //this.initializeBottomSheetView()
+
+
     }
 
 
-    override fun onCreateOptionsMenu(menu : Menu) : Boolean
+    override fun onDestroy()
     {
-        menuInflater.inflate(R.menu.empty, menu)
-        return true
+        super.onDestroy()
+        this.messageListenerDisposable.clear()
     }
 
 
-//    override fun onPause() {
-//        super.onPause()
-//        if (isFinishing) {
-//            overridePendingTransition(R.anim.activity_slide_out_left, R.anim.activity_slide_in_right)
-//        }
-//    }
-
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(R.anim.activity_slide_out_left, R.anim.activity_slide_in_right)
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // UI
+    // | Session
     // -----------------------------------------------------------------------------------------
 
-    private fun initializeView()
+    private fun initializeSession()
     {
-        val contentView = this.findViewById<LinearLayout>(R.id.content)
+        this.sessionId?.let { sessionId ->
 
-        val activeSession = activeSession()
-        when (activeSession)
-        {
-            is Just -> {
-                val sessionUI = ActiveSessionUI(activeSession.value, officialThemeLight, this)
-                contentView.addView(sessionUI.view())
+            val activeSession = activeSession()
+            when (activeSession) {
+                is Just -> {
+                    Log.d("***SHEET ACTVITIY", "active session found: ${activeSession.value}")
+                }
+                else -> {
+                    Log.d("***SHEET ACTVITIY", "No active session")
+                    this.sessionLoader(sessionId).doMaybe {
+                        Log.d("***SHEET ACTVITIY", "Loading session: $it")
+                        loadSession(it)
+                    }
+                }
             }
         }
     }
 
 
-    private fun applyTheme(theme : Theme)
+    private fun loadSession(sessionLoader : Session)
+    {
+        this.bottomSheetBehavior?.let {
+            Log.d("***SHEET ACTVITIY", "set bottom sheet behavior to expanded")
+            it.state = BottomSheetBehavior.STATE_EXPANDED
+            openSession(sessionLoader, this)
+        }
+    }
+
+
+    private fun sessionLoader(sessionId : SessionId) : Maybe<Session> =
+        sessionManifest(this).apply { it.session(sessionId) }
+
+
+    // UI
+    // -----------------------------------------------------------------------------------------
+
+    private fun initializeListeners()
+    {
+        // Sheet messages
+        val sheetMessageDisposable = Router.listen(MessageSheet::class.java)
+                                           .subscribe(this::onSheetMessage)
+        this.messageListenerDisposable.add(sheetMessageDisposable)
+
+        // Session load messages
+        val sessionMessageDisposable = Router.listen(MessageSessionLoad::class.java)
+                                             .subscribe(this::onSessionLoadMessage)
+        this.messageListenerDisposable.add(sessionMessageDisposable)
+    }
+
+
+    fun updateLoadProgress(sessionLoadUpdate : SessionLoadUpdate)
+    {
+        this.progressBar?.let { bar ->
+            val updateAmount = bar.progress + (72 / sessionLoadUpdate.totalEntities)
+            bar.progress = updateAmount
+        }
+    }
+
+
+    private fun onSheetMessage(message : MessageSheet) { }
+
+
+    private fun onSessionLoadMessage(message : MessageSessionLoad)
+    {
+        when (message)
+        {
+            is MessageSessionEntityLoaded ->
+            {
+                this.updateLoadProgress(message.update)
+            }
+            is MessageSessionLoaded ->
+            {
+                this.progressBar?.progress = 100
+                Log.d("***SHEET ACTVITIY", "Session loaded")
+                //this.newSessionUI?.startSession(message.sessionId)
+                session(message.sessionId).doMaybe { session ->
+                    setEntityActive(session.mainEntityId)
+                    sheet(session.mainEntityId).doMaybe {
+                        Log.d("***SHEET ACTVITIY", "Main entity is sheet")
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun initializeViews()
+    {
+        val nameView = this.findViewById(R.id.entity_name) as TextView?
+        nameView?.typeface = Font.typeface(TextFont.Roboto, TextFontStyle.Medium, this)
+
+//        val categoryView = this.findViewById(R.id.entity_category) as TextView?
+//        categoryView?.typeface = Font.typeface(TextFont.Roboto, TextFontStyle.Italic, this)
+
+        val pagePagerAdapter = PagePagerAdapter(supportFragmentManager)
+
+        this.pagePagerAdapter = pagePagerAdapter
+
+        this.viewPager = this.findViewById<ViewPager>(R.id.view_pager)
+
+        this.bottomSheet = this.findViewById<LinearLayout>(R.id.bottom_sheet)
+        this.bottomSheetBehavior = BottomSheetBehavior.from(this.bottomSheet)
+
+        if (this.bottomSheet == null)
+            Log.d("***SHEET ACTIVITY", "bottom sheet is null")
+
+        this.viewPager?.adapter = pagePagerAdapter
+
+        this.viewPager?.addOnPageChangeListener(object: ViewPager.OnPageChangeListener
+        {
+            override fun onPageScrollStateChanged(state : Int) { }
+
+            override fun onPageScrolled(position : Int,
+                                        positionOffset : Float,
+                                        positionOffsetPixels : Int) { }
+
+            override fun onPageSelected(position : Int) {
+                SheetActivityGlobal.cancelLongPressRunnable()
+            }
+        })
+
+        val tabLayout = this.findViewById<TabLayout>(R.id.tab_layout)
+        tabLayout.setupWithViewPager(viewPager)
+
+    }
+
+
+    private fun initializeBottomSheetView()
+    {
+        this.sessionId?.let { this.sessionLoader(it).toNullable() }?.let { session ->
+
+            findViewById<TextView>(R.id.session_name)?.let {
+                it.typeface = Font.typeface(TextFont.Roboto, TextFontStyle.Medium, this)
+                it.text = session.sessionName.value
+            }
+
+            findViewById<LinearLayout>(R.id.bottom_sheet_content)?.let {
+                it.addView(sessionView(session, officialAppThemeLight, this))
+            }
+
+            findViewById<TextView>(R.id.session_description)?.let { textView ->
+                activeSession().doMaybe {
+                    textView.text = it.sessionInfo.sessionSummary.value
+                    textView.typeface = Font.typeface(TextFont.RobotoCondensed, TextFontStyle.Regular, this)
+                }
+            }
+
+            findViewById<FrameLayout>(R.id.session_loader_container)?.let {
+                val progressBar = openSessionProgressBar(officialAppThemeLight, this)
+                this.progressBar = progressBar
+                it.addView(progressBar)
+            }
+
+        }
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHEET UI
+    // -----------------------------------------------------------------------------------------
+
+    fun pagePagerAdatper() : PagePagerAdapter = this.pagePagerAdapter!!
+
+
+    fun rootSheetView() : View? = this.viewPager
+
+
+    fun applyTheme(theme : Theme)
     {
         val uiColors = theme.uiColors()
 
@@ -126,105 +358,730 @@ class SessionActivity : AppCompatActivity()
         {
             val window = this.window
 
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
-//            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
-
-            val statusBarColorTheme = ColorTheme(setOf(
-                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
-                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
-            window.statusBarColor = theme.colorOrBlack(statusBarColorTheme)
+            val toolbarColorTheme = ColorTheme(setOf(
+                    ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_9"))))
+            window.statusBarColor = theme.colorOrBlack(toolbarColorTheme)
         }
 
+    }
 
-        // TOOLBAR
+
+    fun applyEntityTheme(theme : Theme)
+    {
+        val uiColors = theme.uiColors()
+
+        // STATUS BAR
         // -------------------------------------------------------------------------------------
-        val toolbar = this.findViewById<Toolbar>(R.id.toolbar)
-
-        // Toolbar > Background
-        toolbar.setBackgroundColor(theme.colorOrBlack(uiColors.toolbarBackgroundColorId()))
-
-        // Toolbar > Icons
-        var iconColor = theme.colorOrBlack(uiColors.toolbarIconsColorId())
-
-        val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_back_button)
-        menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
-
-        val menuRightButton = this.findViewById<ImageButton>(R.id.toolbar_options_button)
-        menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+//        {
+//            val window = this.window
+//
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+//
+//            window.statusBarColor = theme.colorOrBlack(uiColors.toolbarBackgroundColorId())
+//        }
 
         // TITLE
         // -------------------------------------------------------------------------------------
-        val titleView = this.findViewById<TextView>(R.id.toolbar_title)
-        titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
+//        val titleView = this.findViewById<TextView>(R.id.toolbar_title) as TextView
+//        titleView.setTextColor(theme.colorOrBlack(uiColors.toolbarTitleColorId()))
 
+        // TAB LAYOUT
+        // -------------------------------------------------------------------------------------
+        val tabLayout = this.findViewById<CustomTabLayout>(R.id.tab_layout) as CustomTabLayout
+
+        // Tab Layout > Background
+        tabLayout.setBackgroundColor(theme.colorOrBlack(uiColors.tabBarBackgroundColorId()))
+
+        // Tab Layout > Text
+        tabLayout.setTabTextColors(theme.colorOrBlack(uiColors.tabTextNormalColorId()),
+                                   theme.colorOrBlack(uiColors.tabTextSelectedColorId()))
+
+        // Tab Layout > Underline
+        tabLayout.setSelectedTabIndicatorColor(theme.colorOrBlack(uiColors.tabUnderlineColorId()))
     }
 
-}
 
+    fun context() : Context = this
 
-class ActiveSessionUI(val session : Session,
-                      val theme : Theme,
-                      val sessionActivity : SessionActivity)
-{
-
-    // -----------------------------------------------------------------------------------------
-    // PROPERTIES
-    // -----------------------------------------------------------------------------------------
-
-    val context = sessionActivity
 
 
     // -----------------------------------------------------------------------------------------
-    // | VIEWS
+    // SHEET
     // -----------------------------------------------------------------------------------------
 
-    fun view() = activeSessionRecyclerView(session, theme, context)
-
-
-
-}
-
-
-
-
-fun sessionView(theme : Theme, context : Context) :  View?
-{
-    val activeSession = activeSession()
-    return when (activeSession)
+    /**
+     * Just display sheet.
+     */
+    fun setEntityActive(entityId : EntityId)
     {
-        is Just -> {
-            activeSessionRecyclerView(activeSession.value, theme, context)
+        val entity = entityRecord(entityId) ap { effValue<AppError,Entity>(it.entity())}
+        when (entity) {
+            is Val -> {
+                this._setEntityActive(entity.value)
+            }
         }
-        else -> null
+    }
+
+
+    fun _setEntityActive(entity : Entity)
+    {
+        if (this.entityId != null && this.entityId == entity.entityId())
+            return
+
+        this.entityId = entity.entityId()
+
+        val nameView = this.findViewById(R.id.entity_name) as TextView?
+        nameView?.text = entity.name()
+
+//        val categoryView = this.findViewById(R.id.entity_category) as TextView?
+//        categoryView?.text = entity.category()
+
+        val entityButtonView = this.findViewById(R.id.entity_button) as ImageButton?
+        entityButtonView?.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.icon_open_book))
+
+        when (entity)
+        {
+            is Sheet -> {
+                entity.onActive(entity.entityId(), this)
+                this.renderSheet(entity)
+            }
+            is Campaign -> {
+                this.renderCampaign(entity)
+            }
+            is Game -> {
+                this.renderGame(entity)
+            }
+            is Book -> {
+                entity.onActive(entity.entityId(), this)
+                this.renderBook(entity)
+            }
+            else -> { }
+        }
+    }
+
+
+    fun renderSheet(sheet : Sheet)
+    {
+        this.applyEntityTheme(officialThemeLight)
+
+        val start = System.currentTimeMillis()
+
+        this.findViewById<TabLayout>(R.id.tab_layout)?.let {
+            it.visibility = View.VISIBLE
+            it.setupWithViewPager(viewPager)
+        }
+
+        this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+            it.visibility = View.GONE
+        }
+
+        this.findViewById<LinearLayout>(R.id.session_content)?.let {
+            it.visibility = View.GONE
+        }
+
+        this.findViewById<ViewPager>(R.id.view_pager)?.let {
+            it.visibility = View.VISIBLE
+        }
+
+        this.findViewById<LinearLayout>(R.id.toolbar_bottom_padding)?.let {
+            it.visibility = View.GONE
+        }
+
+        val section = sheet.sections().firstOrNull()
+        if (section != null) {
+            pagePagerAdatper().setPages(section.pages(), sheet.entityId())
+        }
+
+        val end = System.currentTimeMillis()
+
+        Log.d("***SHEET ACTIVITY", "time to render ms: " + (end - start).toString())
+    }
+
+
+    fun renderCampaign(campaign : Campaign)
+    {
+        this.findViewById<TabLayout>(R.id.tab_layout)?.let {
+            it.visibility = View.GONE
+        }
+
+        this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+            it.visibility = View.GONE
+        }
+
+        this.findViewById<ViewPager>(R.id.view_pager)?.let {
+            it.visibility = View.GONE
+        }
+
+        this.findViewById<LinearLayout>(R.id.toolbar_bottom_padding)?.let {
+            it.visibility = View.VISIBLE
+        }
+
+        this.findViewById<LinearLayout>(R.id.session_content)?.let {
+            it.visibility = View.VISIBLE
+            it.removeAllViews()
+            it.addView(campaignView(officialAppThemeLight, this))
+        }
+    }
+
+
+    fun renderGame(game : Game)
+    {
+        this.findViewById<TabLayout>(R.id.tab_layout)?.let {
+            it.visibility = View.GONE
+        }
+
+        this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+            it.visibility = View.GONE
+        }
+
+        this.findViewById<ViewPager>(R.id.view_pager)?.let {
+            it.visibility = View.GONE
+        }
+
+        this.findViewById<LinearLayout>(R.id.toolbar_bottom_padding)?.let {
+            it.visibility = View.VISIBLE
+        }
+
+        this.findViewById<LinearLayout>(R.id.session_content)?.let {
+            it.visibility = View.VISIBLE
+            it.removeAllViews()
+            it.addView(gameView(officialAppThemeLight, this))
+        }
+    }
+
+
+    fun renderBook(book : Book)
+    {
+        this.findViewById<TabLayout>(R.id.tab_layout)?.let {
+            it.visibility = View.GONE
+        }
+
+        this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+            it.visibility = View.VISIBLE
+        }
+
+        this.findViewById<ViewPager>(R.id.view_pager)?.let {
+            it.visibility = View.GONE
+        }
+
+        this.findViewById<LinearLayout>(R.id.toolbar_bottom_padding)?.let {
+            it.visibility = View.VISIBLE
+        }
+
+        this.findViewById<LinearLayout>(R.id.session_content)?.let {
+            it.visibility = View.VISIBLE
+            it.removeAllViews()
+            it.addView(gameView(officialAppThemeLight, this))
+        }
+
+        this.setCurrentBookReference(BookReferenceBook(book.bookId))
+    }
+
+
+    fun setCurrentBookReference(bookReference : BookReference)
+    {
+        this.findViewById<LinearLayout>(R.id.session_content)?.let {
+            it.visibility = View.VISIBLE
+            it.removeAllViews()
+        }
+
+        this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+            it.removeAllViews()
+        }
+
+        when (bookReference)
+        {
+            is BookReferenceBook ->
+            {
+                val newFragment = BookFragment.newInstance(bookReference.bookId())
+
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.session_content, newFragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
+            is BookReferenceChapter ->
+            {
+                val newFragment = ChapterFragment.newInstance(bookReference.chapterId(), bookReference.bookId())
+
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.session_content, newFragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
+
+                this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+                    it.addView(navView(bookReference, officialAppThemeLight, this))
+                }
+            }
+            is BookReferenceSection ->
+            {
+                val newFragment = SectionFragment.newInstance(bookReference.sectionId(),
+                                                              bookReference.chapterId(),
+                                                              bookReference.bookId())
+
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.session_content, newFragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
+
+                this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+                    it.addView(navView(bookReference, officialAppThemeLight, this))
+                }
+            }
+            is BookReferenceSubsection ->
+            {
+                val newFragment = SubsectionFragment.newInstance(bookReference.subsectionId(),
+                                                                 bookReference.sectionId(),
+                                                                 bookReference.chapterId(),
+                                                                 bookReference.bookId())
+
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.session_content, newFragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
+
+                this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+                    it.addView(navView(bookReference, officialAppThemeLight, this))
+                }
+
+            }
+            is BookReferenceContent -> { }
+        }
+    }
+
+
+
+}
+
+
+
+class MainTabBarUI(val sheetId : EntityId,
+                   val theme : Theme,
+                   val sheetActivity : SessionActivity)
+{
+
+    val context = sheetActivity
+
+    var pagesTabLayoutView   : LinearLayout? = null
+    var pagesTabTextView     : TextView? = null
+    var tasksTabLayoutView   : LinearLayout? = null
+    var tasksTabTextView     : TextView? = null
+    var historyTabLayoutView : LinearLayout? = null
+    var historyTabTextView   : TextView? = null
+
+
+    val bgNormalColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+
+
+    val bgSelectedColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+
+
+    val selectedColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+
+    val normalColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+
+
+    private fun setSelectedTab(tabIndex : Int)
+    {
+        when (tabIndex)
+        {
+            1 -> {
+//                pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgSelectedColorTheme))
+//                pagesTabLayoutView?.setBackgroundColor(Color.WHITE)
+//                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+//                historyTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+
+                pagesTabTextView?.setTextColor(theme.colorOrBlack(selectedColorTheme))
+                tasksTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
+                historyTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
+            }
+            2 -> {
+//                pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+////                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgSelectedColorTheme))
+//                tasksTabLayoutView?.setBackgroundColor(Color.WHITE)
+//                historyTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+
+                pagesTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
+                tasksTabTextView?.setTextColor(theme.colorOrBlack(selectedColorTheme))
+                historyTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
+            }
+            3 -> {
+//                pagesTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+//                tasksTabLayoutView?.setBackgroundColor(theme.colorOrBlack(bgNormalColorTheme))
+//                historyTabLayoutView?.setBackgroundColor(Color.WHITE)
+
+                pagesTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
+                tasksTabTextView?.setTextColor(theme.colorOrBlack(normalColorTheme))
+                historyTabTextView?.setTextColor(theme.colorOrBlack(selectedColorTheme))
+            }
+        }
+
+    }
+
+
+    fun view() : View
+    {
+        val layout = this.viewLayout()
+
+        // Pages
+        val pagesOnClick = View.OnClickListener {
+
+            val tabLayout = sheetActivity.findViewById<TabLayout>(R.id.tab_layout)
+            tabLayout?.visibility = View.VISIBLE
+            tabLayout?.tabMode = TabLayout.MODE_SCROLLABLE
+
+            val viewPager = sheetActivity.findViewById<View>(R.id.view_pager) as ViewPager?
+            viewPager?.adapter = sheetActivity.pagePagerAdapter
+            this.setSelectedTab(1)
+        }
+        val pagesTabView = this.buttonView(R.string.pages, 1, pagesOnClick)
+        this.pagesTabLayoutView = pagesTabView
+        layout.addView(pagesTabView)
+
+        // Tasks
+        val tasksOnClick = View.OnClickListener {
+            sheetActivity.findViewById<View>(R.id.tab_layout)?.visibility = View.GONE
+            val viewPager = sheetActivity.findViewById<View>(R.id.view_pager) as ViewPager?
+            viewPager?.adapter = TaskPagerAdapter(sheetActivity.supportFragmentManager, sheetId)
+            this.setSelectedTab(2)
+        }
+        val tasksTabView = this.buttonView(R.string.tasks, 2, tasksOnClick)
+        this.tasksTabLayoutView = tasksTabView
+        layout.addView(tasksTabView)
+
+        // History
+        val historyOnClick = View.OnClickListener {
+
+            val tabLayout = sheetActivity.findViewById<TabLayout>(R.id.tab_layout)
+            tabLayout?.visibility = View.VISIBLE
+            tabLayout?.tabMode = TabLayout.MODE_FIXED
+            val viewPager = sheetActivity.findViewById<View>(R.id.view_pager) as ViewPager?
+            viewPager?.adapter = HistoryPagerAdapter(sheetActivity.supportFragmentManager, sheetId)
+            this.setSelectedTab(3)
+        }
+        val historyTabView = this.buttonView(R.string.history, 3, historyOnClick)
+        this.historyTabLayoutView = historyTabView
+        layout.addView(historyTabView)
+
+        this.setSelectedTab(1)
+
+        return layout
+    }
+
+
+    private fun viewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+//        layout.margin.topDp     = 2f
+//        layout.margin.bottomDp  = 2f
+//        layout.margin.leftDp    = 1f
+//        layout.margin.rightDp   = 1f
+
+        return layout.linearLayout(context)
+    }
+
+
+
+    private fun buttonView(labelStringId : Int,
+                           index : Int,
+                           onClick : View.OnClickListener) : LinearLayout
+    {
+        val layout = this.buttonViewLayout()
+
+        val labelView = this.buttonLabelView(labelStringId)
+        when (index) {
+            1 -> this.pagesTabTextView = labelView
+            2 -> this.tasksTabTextView = labelView
+            3 -> this.historyTabTextView = labelView
+        }
+
+        layout.addView(labelView)
+
+        layout.setOnClickListener(onClick)
+
+        layout.addView(this.buttonBottomBorderView())
+
+        return layout
+    }
+
+
+    private fun buttonViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = 0
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.weight           = 1f
+
+        layout.gravity          = Gravity.CENTER
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+        layout.backgroundColor  = Color.WHITE
+
+        layout.padding.topDp    = 8f
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun buttonLabelView(labelId : Int) : TextView
+    {
+        val label                   = TextViewBuilder()
+
+        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.text                  = context.getString(labelId) // .toUpperCase()
+
+        label.gravity               = Gravity.CENTER
+
+        label.font                  = Font.typeface(TextFont.default(),
+                                                    TextFontStyle.Medium,
+                                                    context)
+
+        label.sizeSp                 = 16f
+
+        return label.textView(context)
+    }
+
+
+    private fun buttonBottomBorderView() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.heightDp         = 1
+
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_5"))))
+        layout.backgroundColor  = colorOrBlack(colorTheme, sheetId)
+
+        layout.margin.topDp = 8f
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun countView(countString : String) : TextView
+    {
+        val count                   = TextViewBuilder()
+
+        count.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+        count.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        count.backgroundResource    = R.drawable.bg_session_step
+
+        val indexColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+
+        count.color                 = theme.colorOrBlack(indexColorTheme)
+
+        count.font                  = Font.typeface(TextFont.default(),
+                                                    TextFontStyle.Bold,
+                                                    context)
+
+        count.text                  = countString
+
+        count.gravity               = Gravity.CENTER
+
+        count.sizeSp                = 17f
+
+        count.margin.rightDp        = 10f
+
+        return count.textView(context)
     }
 
 }
 
 
-fun activeSessionRecyclerView(session : Session, theme : Theme, context : Context) : RecyclerView
+
+
+fun sessionView(session : Session, theme : Theme, sessionActivity : SessionActivity) :  View
+{
+    return activeSessionRecyclerView(session, theme, sessionActivity)
+}
+
+
+fun activeSessionRecyclerView(session : Session,
+                              theme : Theme,
+                              sessionActivity : SessionActivity) : RecyclerView
 {
     val recyclerView                = RecyclerViewBuilder()
+    val context = sessionActivity
 
     recyclerView.width              = LinearLayout.LayoutParams.MATCH_PARENT
     recyclerView.height             = LinearLayout.LayoutParams.MATCH_PARENT
 
-//        recyclerView.layoutManager      = GridLayoutManager(context, 2)
     recyclerView.layoutManager      = LinearLayoutManager(context)
 
-    recyclerView.adapter            = ActiveSessionRecyclerViewAdapter(session.entities(),
-                                                                       theme,
-                                                                       context)
+    recyclerView.adapter            = ActiveSessionRecyclerViewAdapter(
+                                        session.persistedEntities(context),
+                                        theme,
+                                        context)
 
-    recyclerView.padding.topDp      = 6f
+//    val dividerColorTheme = ColorTheme(setOf(
+//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
+//    val dividerColor              = theme.colorOrBlack(dividerColorTheme)
+//    recyclerView.divider            = SimpleDividerItemDecoration(context, dividerColor)
 
-    recyclerView.padding.bottomDp   = 60f
+//    recyclerView.padding.topDp      = 6f
+
+//    recyclerView.padding.bottomDp   = 60f
     recyclerView.clipToPadding      = false
 
     return recyclerView.recyclerView(context)
 }
 
+
+// | VIEW > Toolbar
+// -----------------------------------------------------------------------------------------
+
+fun toolbarView(numOfComponents : Int, theme : Theme, context : Context) : RelativeLayout
+{
+    val layout = toolbarViewLayout(context)
+
+    layout.addView(toolbarTitleView("$numOfComponents Items", theme, context))
+
+    layout.addView(toolbarButtonsView(theme, context))
+
+    return layout
+}
+
+
+private fun toolbarViewLayout(context : Context) : RelativeLayout
+{
+    val layout              = RelativeLayoutBuilder()
+
+    layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+    layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layout.padding.topDp    = 12f
+    layout.padding.bottomDp = 12f
+
+    layout.padding.leftDp   = 16f
+    layout.padding.rightDp  = 16f
+
+    return layout.relativeLayout(context)
+}
+
+
+private fun toolbarTitleView(title : String, theme : Theme, context : Context) : TextView
+{
+    val name                = TextViewBuilder()
+
+    name.layoutType         = LayoutType.RELATIVE
+    name.width              = RelativeLayout.LayoutParams.WRAP_CONTENT
+    name.height             = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+    name.addRule(RelativeLayout.CENTER_VERTICAL)
+    name.addRule(RelativeLayout.ALIGN_PARENT_START)
+
+    name.text               = title
+
+    name.font               = Font.typeface(TextFont.RobotoCondensed,
+                                            TextFontStyle.Bold,
+                                            context)
+
+    val colorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
+    name.color              = theme.colorOrBlack(colorTheme)
+
+    name.sizeSp             = 18f
+
+    return name.textView(context)
+}
+
+
+private fun toolbarButtonsView(theme : Theme, context : Context) : LinearLayout
+{
+    val layout = toolbarButtonsViewLayout(context)
+
+    layout.addView(toolbarButtonView(R.drawable.icon_sort, 24, false, theme, context))
+    layout.addView(toolbarButtonView(R.drawable.icon_view_agenda, 20, true, theme, context))
+
+    return layout
+}
+
+
+
+private fun toolbarButtonsViewLayout(context : Context) : LinearLayout
+{
+    val layout                  = LinearLayoutBuilder()
+
+    layout.layoutType           = LayoutType.RELATIVE
+    layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
+    layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+    layout.addRule(RelativeLayout.CENTER_VERTICAL)
+    layout.addRule(RelativeLayout.ALIGN_PARENT_END)
+
+    layout.orientation          = LinearLayout.HORIZONTAL
+
+    return layout.linearLayout(context)
+}
+
+
+private fun toolbarButtonView(iconId : Int, iconSize : Int, addMargin : Boolean, theme : Theme, context : Context) : LinearLayout
+{
+    // 1 | Declarations
+    // -----------------------------------------------------------------------------------------
+
+    val layout                  = LinearLayoutBuilder()
+    val iconView                = ImageViewBuilder()
+
+    // 2 | Layout
+    // -----------------------------------------------------------------------------------------
+
+    layout.layoutType           = LayoutType.RELATIVE
+    layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
+    layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+    if (addMargin)
+        layout.margin.leftDp    = 22f
+
+    layout.child(iconView)
+
+    // 3 | Icon
+    // -----------------------------------------------------------------------------------------
+
+    iconView.widthDp            = iconSize
+    iconView.heightDp           = iconSize
+
+    iconView.image              = iconId
+
+    val colorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_18"))))
+    iconView.color              = theme.colorOrBlack(colorTheme)
+
+    return layout.linearLayout(context)
+}
 
 
 
@@ -327,9 +1184,9 @@ fun entityCardView(theme : Theme, context : Context) : LinearLayout
 {
     val layout = entityCardViewLayout(theme, context)
 
-    layout.addView(entityCardNameView(theme, context))
+    layout.addView(entityCardLeftView(theme, context))
 
-//    layout.addView(entityCardSummaryView(theme, context))
+    layout.addView(entityCardRightView(theme, context))
 
     return layout
 }
@@ -344,28 +1201,89 @@ private fun entityCardViewLayout(theme : Theme, context : Context) : LinearLayou
     layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
     layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    layout.orientation          = LinearLayout.VERTICAL
-
-    // layout.backgroundColor      = Color.WHITE
-
-    val bgColorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
-    layout.backgroundColor    = theme.colorOrBlack(bgColorTheme)
-
-    layout.corners            = Corners(3.0, 3.0, 3.0, 3.0)
-
-//    layout.elevation            = 2f
+//    layout.backgroundResource   = R.drawable.card_background
+    layout.backgroundColor      = Color.WHITE
 
     layout.gravity              = Gravity.CENTER_VERTICAL
 
-    layout.padding.topDp      = 16f
-    layout.padding.bottomDp   = 16f
+    layout.padding.topDp        = 12f
+    layout.padding.bottomDp     = 12f
 
-    layout.margin.leftDp       = 6f
-    layout.margin.rightDp      = 6f
+    layout.padding.leftDp       = 16f
+    layout.padding.rightDp      = 16f
 
-    layout.margin.bottomDp      = 4f
+//    layout.margin.leftDp        = 8f
+//    layout.margin.rightDp       = 8f
+
+    layout.margin.bottomDp      = 2f
+
+    return layout.linearLayout(context)
+}
+
+
+private fun entityCardLeftView(theme : Theme, context : Context) : LinearLayout
+{
+    val layout = entityCardLeftLayout(theme, context)
+
+    layout.addView(entityCardImageView(theme, context))
+
+    return layout
+}
+
+
+private fun entityCardLeftLayout(theme : Theme, context : Context) : LinearLayout
+{
+    val layout                  = LinearLayoutBuilder()
+
+    layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+    layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layout.orientation          = LinearLayout.VERTICAL
+
+    return layout.linearLayout(context)
+}
+
+
+private fun entityCardImageView(theme : Theme, context : Context) : LinearLayout
+{
+    val layout                  = LinearLayoutBuilder()
+
+    layout.widthDp              = 50
+    layout.heightDp             = 50
+
+    layout.orientation          = LinearLayout.VERTICAL
+
+    layout.corners              = Corners(3.0,3.0,3.0,3.0)
+
+    val colorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_14"))))
+    layout.backgroundColor      = theme.colorOrBlack(colorTheme)
+
+    return layout.linearLayout(context)
+}
+
+
+private fun entityCardRightView(theme : Theme, context : Context) : LinearLayout
+{
+    val layout = entityCardRightLayout(theme, context)
+
+    layout.addView(entityCardNameView(theme, context))
+
+    layout.addView(entityCardSummaryView(theme, context))
+
+    return layout
+}
+
+
+private fun entityCardRightLayout(theme : Theme, context : Context) : LinearLayout
+{
+    val layout                  = LinearLayoutBuilder()
+
+    layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+    layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layout.orientation          = LinearLayout.VERTICAL
 
     return layout.linearLayout(context)
 }
@@ -382,21 +1300,20 @@ private fun entityCardNameView(theme : Theme,
     name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
 
-    name.font               = Font.typeface(TextFont.RobotoCondensed,
-                                            TextFontStyle.Regular,
+    name.font               = Font.typeface(TextFont.Roboto,
+                                            TextFontStyle.Bold,
                                             context)
 
 
-    name.padding.leftDp     = 70f
-    name.padding.rightDp    = 12f
+    name.padding.leftDp     = 15f
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
     name.color              = theme.colorOrBlack(colorTheme)
-    name.color              = Color.WHITE
+    // name.color              = Color.WHITE
 
-    name.sizeSp             = 18f
+    name.sizeSp             = 20f
 
     return name.textView(context)
 }
@@ -413,16 +1330,18 @@ private fun entityCardSummaryView(theme : Theme,
     summary.width            = LinearLayout.LayoutParams.WRAP_CONTENT
     summary.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    summary.font             = Font.typeface(TextFont.RobotoCondensed,
+    summary.font             = Font.typeface(TextFont.Roboto,
                                              TextFontStyle.Regular,
                                              context)
 
+    summary.padding.leftDp   = 15f
+
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
     summary.color            = theme.colorOrBlack(colorTheme)
 
-    summary.sizeSp           = 17f
+    summary.sizeSp           = 19f
 
     return summary.textView(context)
 }
@@ -434,15 +1353,18 @@ private fun entityCardSummaryView(theme : Theme,
 
 class ActiveSessionRecyclerViewAdapter(val items : List<Any>,
                                        val theme : Theme,
-                                       val context : Context)
-        : RecyclerView.Adapter<RecyclerView.ViewHolder>()
+                                       val sessionActivity : SessionActivity)
+                                        : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
 
     // | Properties
     // -------------------------------------------------------------------------------------
 
-    private val HEADER = 0
-    private val ENTITY  = 1
+    val context = sessionActivity
+
+    private val TOOLBAR = 0
+    private val HEADER  = 1
+    private val ENTITY  = 2
 
 
     // -------------------------------------------------------------------------------------
@@ -451,18 +1373,27 @@ class ActiveSessionRecyclerViewAdapter(val items : List<Any>,
 
     override fun getItemViewType(position : Int) : Int
     {
-        val itemAtPosition = this.items[position]
 
-        return when (itemAtPosition) {
-            is String   -> HEADER
-            is Entity   -> ENTITY
-            else        -> ENTITY
+        return if (position == 0) {
+            TOOLBAR
+        } else {
+            val itemAtPosition = this.items[position - 1]
+            when (itemAtPosition) {
+                is String          -> HEADER
+                is PersistedEntity -> ENTITY
+                else               -> ENTITY
+            }
         }
     }
 
 
     override fun onCreateViewHolder(parent : ViewGroup, viewType : Int) : RecyclerView.ViewHolder = when (viewType)
     {
+        TOOLBAR ->
+        {
+            val toolbarView = toolbarView(items.size, theme, context)
+            ToolbarViewHolder(toolbarView)
+        }
         HEADER ->
         {
             val headerView = headerView(theme, context)
@@ -471,29 +1402,32 @@ class ActiveSessionRecyclerViewAdapter(val items : List<Any>,
         else ->
         {
             val cardView = entityCardView(theme, context)
-            EntityCardViewHolder(cardView, theme, context)
+            EntityCardViewHolder(cardView, theme, sessionActivity)
         }
     }
 
 
     override fun onBindViewHolder(viewHolder : RecyclerView.ViewHolder, position : Int)
     {
-        val item = this.items[position]
+        if (position != 0)
+        {
+            val item = this.items[position - 1]
 
-        when (item) {
-            is String -> {
-                val headerViewHolder = viewHolder as HeaderViewHolder
-                headerViewHolder.setHeader(item)
-            }
-            is Entity -> {
-                val entityViewHolder = viewHolder as EntityCardViewHolder
-                entityViewHolder.setEntity(item)
+            when (item) {
+                is String -> {
+                    val headerViewHolder = viewHolder as HeaderViewHolder
+                    headerViewHolder.setHeader(item)
+                }
+                is PersistedEntity -> {
+                    val entityViewHolder = viewHolder as EntityCardViewHolder
+                    entityViewHolder.setEntity(item)
+                }
             }
         }
     }
 
 
-    override fun getItemCount() = this.items.size
+    override fun getItemCount() = this.items.size + 1
 
 }
 
@@ -510,7 +1444,7 @@ class ActiveSessionRecyclerViewAdapter(val items : List<Any>,
  */
 class EntityCardViewHolder(itemView : View,
                            val theme : Theme,
-                           val context : Context)
+                           val sessionActivity : SessionActivity)
                            : RecyclerView.ViewHolder(itemView)
 {
 
@@ -538,22 +1472,29 @@ class EntityCardViewHolder(itemView : View,
 
 
 
-    fun setEntity(entity : Entity)
+    fun setEntity(entity : PersistedEntity)
     {
-        this.layout?.setOnClickListener {
-            when (entity) {
-                is Book -> {
+//        this.layout?.setOnClickListener {
+//            when (entity) {
+//                is Book -> {
 //                    val intent = Intent(sessionActivity, BookActivity::class.java)
 //                    val bookReference = BookReferenceBook(entity.entityId())
 //                    intent.putExtra("book_reference", bookReference)
 //                    sessionActivity.startActivity(intent)
-                }
+//                }
+//            }
+//        }
+
+        this.nameView?.text = entity.name
+        this.summaryView?.text = entity.summary
+
+        this.layout?.setOnClickListener {
+            sessionActivity.setEntityActive(entity.entityId)
+
+            sessionActivity.bottomSheetBehavior?.let {
+                it.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
-
-        this.nameView?.text = entity.name()
-
-        this.summaryView?.text = entity.summary()
     }
 
 
@@ -620,6 +1561,50 @@ class HeaderViewHolder(itemView : View,
     }
 
 
+
+}
+
+
+fun openSessionProgressBar(theme : Theme, context : Context) : ProgressBar
+{
+    val bar                 = ProgressBarBuilder()
+
+    bar.id                  = R.id.progress_bar
+
+    bar.width               = LinearLayout.LayoutParams.MATCH_PARENT
+    bar.height              = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    bar.progressDrawableId  = R.drawable.progress_bar_load_session
+
+    val bgColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_3"))))
+    bar.backgroundColor     = theme.colorOrBlack(bgColorTheme)
+
+    return bar.progressBar(context)
+}
+
+
+
+
+class ToolbarViewHolder(val toolbarView : ViewGroup) : RecyclerView.ViewHolder(toolbarView)
+{
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
 
 }
 

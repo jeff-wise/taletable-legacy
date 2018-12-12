@@ -8,16 +8,20 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.Toolbar
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.core.content.ContextCompat
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.taletable.android.R
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.engine.tag.TagQuery
+import com.taletable.android.model.engine.tag.TagQueryTag
 import com.taletable.android.model.sheet.group.Group
 import com.taletable.android.model.sheet.group.GroupId
 import com.taletable.android.model.sheet.style.Corners
@@ -28,6 +32,7 @@ import com.taletable.android.model.theme.official.officialAppThemeLight
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
 import com.taletable.android.rts.entity.groups
+import com.taletable.android.util.Util
 import com.taletable.android.util.configureToolbar
 import java.io.Serializable
 
@@ -85,11 +90,11 @@ class GroupSearchActivity : AppCompatActivity()
         // (3) Configure View
         // -------------------------------------------------------------------------------------
 
-        val title = this.title
-        if (title != null)
-            this.configureToolbar(title, TextFont.RobotoCondensed, TextFontStyle.Bold)
-        else
-            this.configureToolbar(getString(R.string.groups))
+//        val title = this.title
+//        if (title != null)
+        this.configureToolbar(getString(R.string.find_groups), TextFont.RobotoCondensed, TextFontStyle.Bold)
+//        else
+//            this.configureToolbar(getString(R.string.groups))
 
         this.applyTheme(officialAppThemeLight)
 
@@ -119,35 +124,45 @@ class GroupSearchActivity : AppCompatActivity()
 
     private fun initializeView()
     {
-        val toolbarView = findViewById<LinearLayout>(R.id.toolbar_content)
+        val toolbarView = findViewById<LinearLayout>(R.id.bottom_bar_content)
         toolbarView?.let {
-            it.addView(searchToolbarView(officialAppThemeLight, this))
+            it.addView(searchToolbarView(this.tagQuery, officialAppThemeLight, this))
+            Log.d("***GROUP SEARCH", "addding view")
         }
+
+
+        val doneButtonLayout = this.findViewById<LinearLayout>(R.id.toolbar_done_button)
+        doneButtonLayout?.let {
+            it.addView(doneButtonView(officialAppThemeLight, this))
+        }
+
 
         val contentView = this.findViewById<LinearLayout>(R.id.content)
 
-        this.entityId?.let {
-            val groupSearchUI = GroupSearchUI(this.searchMode, officialAppThemeLight, it, this)
-            contentView?.addView(groupSearchUI.view(this.tagQuery))
+        this.entityId?.let { entityId ->
+
+//            val groupSearchUI = GroupSearchUI(this.searchMode, officialAppThemeLight, it, this)
+//            contentView?.addView(groupSearchUI.view(this.tagQuery))
+
+            val recyclerView = findViewById<RecyclerView>(R.id.search_results)
+            recyclerView.layoutManager = LinearLayoutManager(this)
+
+            this.tagQuery?.let { tagQuery ->
+                val groupList = groups(tagQuery, entityId)
+                Log.d("***GROUP SEARCH", "tag query: $tagQuery")
+                Log.d("***GROUP SEARCH", "groups found: $groupList")
+                recyclerView.adapter = GroupSearchResultRecyclerViewAdapter(groupList,
+                                                                            mutableSetOf(),
+                                                                            searchMode,
+                                                                            officialAppThemeLight,
+                                                                            entityId,
+                                                                            this)
+                recyclerView.invalidate()
+            }
+
+
         }
     }
-
-
-//    private fun initializeFAB()
-//    {
-//        val fab = this.findViewById<FloatingActionButton>(R.id.fab)
-//
-//        when (this.searchMode)
-//        {
-//            is SearchMode.ChooseMultiple ->
-//            {
-//                fab.visibility = View.VISIBLE
-//                fab.setOnClickListener {
-//
-//                }
-//            }
-//        }
-//    }
 
 
     private fun applyTheme(theme : Theme)
@@ -190,8 +205,8 @@ class GroupSearchActivity : AppCompatActivity()
         val menuLeftButton = this.findViewById<ImageButton>(R.id.toolbar_close_button)
         menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
-        val menuRightButton = this.findViewById<ImageButton>(R.id.toolbar_search_button)
-        menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+//        val menuRightButton = this.findViewById<ImageView>(R.id.toolbar_search_button)
+//        menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
 
         // TITLE
         // -------------------------------------------------------------------------------------
@@ -204,17 +219,72 @@ class GroupSearchActivity : AppCompatActivity()
 
 
 
+private fun doneButtonView(theme : Theme, context : Context) : LinearLayout
+{
+    // (1) Declarations
+    // -------------------------------------------------------------------------------------
 
-private fun searchToolbarView(theme : Theme, context : Context) : RelativeLayout
+    val layout                  = LinearLayoutBuilder()
+    val labelView               = TextViewBuilder()
+
+    // (2) Layout
+    // -------------------------------------------------------------------------------------
+
+    layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+    layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
+
+    val bgColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("green_tint_3"))))
+    layout.backgroundColor      = theme.colorOrBlack(bgColorTheme)
+
+    layout.padding.leftDp       = 15f
+    layout.padding.rightDp      = 15f
+    layout.padding.topDp        = 8f
+    layout.padding.bottomDp     = 8f
+
+    layout.onClick              = View.OnClickListener {
+    }
+
+    layout.child(labelView)
+
+    // (3) Label
+    // -------------------------------------------------------------------------------------
+
+    labelView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+    labelView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    labelView.color             = Color.WHITE
+
+    labelView.text              = context.getString(R.string.done).toUpperCase()
+
+    labelView.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Bold,
+                                                context)
+
+    labelView.sizeSp            = 16f
+
+    return layout.linearLayout(context)
+}
+
+
+
+private fun searchToolbarView(query : TagQuery?, theme : Theme, context : Context) : RelativeLayout
 {
     val layout = searchToolbarViewLayout(context)
 
-    layout.addView(searchToolbarCheckAllView(context))
+    layout.addView(searchToolbarCheckAllView(theme, context))
 
-    val countView = searchToolbarCountView(theme, context)
-    val countViewLayoutParams = countView.layoutParams as RelativeLayout.LayoutParams
-    countViewLayoutParams.addRule(RelativeLayout.END_OF, R.id.checkbox)
-    countView.layoutParams = countViewLayoutParams
+    if (query != null)
+    {
+        val countView = searchToolbarQueryView(query, theme, context)
+        val countViewLayoutParams = countView.layoutParams as RelativeLayout.LayoutParams
+        countViewLayoutParams.addRule(RelativeLayout.END_OF, R.id.checkbox)
+        countView.layoutParams = countViewLayoutParams
+        layout.addView(countView)
+    }
 
     return layout
 }
@@ -228,14 +298,26 @@ private fun searchToolbarViewLayout(context : Context) : RelativeLayout
     layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
     layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
+    layout.padding.topDp        = 12f
+    layout.padding.bottomDp     = 12f
+
+    layout.backgroundColor      = Color.WHITE
+
     return layout.relativeLayout(context)
 }
 
 
 
-private fun searchToolbarCheckAllView(context : Context) : LinearLayout
+private fun searchToolbarCheckAllView(theme : Theme, context : Context) : LinearLayout
 {
+    // | Declarations
+    // -----------------------------------------------------------------------------------------
+
     val layout                  = LinearLayoutBuilder()
+    val iconView                = ImageViewBuilder()
+
+    // | Layout
+    // -----------------------------------------------------------------------------------------
 
     layout.id                   = R.id.checkbox
 
@@ -243,37 +325,61 @@ private fun searchToolbarCheckAllView(context : Context) : LinearLayout
     layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
     layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
 
+    layout.margin.leftDp        = 14f
+
     layout.addRule(RelativeLayout.CENTER_VERTICAL)
     layout.addRule(RelativeLayout.ALIGN_PARENT_START)
 
-    layout.backgroundResource   = R.drawable.bg_checkbox_unselected
+    layout.child(iconView)
+
+    // | Icon View
+    // -----------------------------------------------------------------------------------------
+
+    iconView.widthDp            = 29
+    iconView.heightDp           = 29
+
+    iconView.image              = R.drawable.icon_search
+
+    val iconColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+    iconView.color              = theme.colorOrBlack(iconColorTheme)
 
     return layout.linearLayout(context)
 }
 
 
-private fun searchToolbarCountView(theme : Theme, context : Context) : TextView
+private fun searchToolbarQueryView(query : TagQuery, theme : Theme, context : Context) : ChipGroup
 {
-    val countView               = TextViewBuilder()
+    val chipGroup = ChipGroup(context)
 
-    countView.layoutType        = LayoutType.RELATIVE
-    countView.width             = RelativeLayout.LayoutParams.WRAP_CONTENT
-    countView.height            = RelativeLayout.LayoutParams.WRAP_CONTENT
+    chipGroup.layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
 
-    countView.addRule(RelativeLayout.CENTER_VERTICAL)
+    chipGroup.setPadding(Util.dpToPixel(14f), 0, 0, 0)
 
-    countView.font              = Font.typeface(TextFont.RobotoCondensed,
-                                                TextFontStyle.Regular,
-                                                context)
+    val chipBgColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
+    val chipBgColor = theme.colorOrBlack(chipBgColorTheme)
 
-    val nameColorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
-    countView.color              = theme.colorOrBlack(nameColorTheme)
+    val chip = Chip(context, null, R.style.Widget_MaterialComponents_Chip_Entry)
 
-    countView.sizeSp             = 16f
+    when (query) {
+        is TagQueryTag -> {
+            chip.text = query.tag.value
+            chip.isChecked = true
+            chip.textSize = Util.spToPx(4.4f, context).toFloat()
+            chip.chipBackgroundColor = ContextCompat.getColorStateList(context, R.color.chip_background)
+            chip.isCloseIconEnabled = true
+            chip.closeIconTint = ContextCompat.getColorStateList(context, R.color.chip_close_background)
+            chip.setTextColor(chipBgColor)
+            Log.d("***GROUP SEARCH", "setting chip text: ${query.tag.value} ")
+        }
+    }
 
-    return countView.textView(context)
+    chipGroup.addView(chip)
+
+    return chipGroup
 }
 
 
@@ -301,19 +407,6 @@ class GroupSearchUI(val searchMode : SearchMode,
     // -----------------------------------------------------------------------------------------
 
     var selectedGroupIds : MutableSet<GroupId> = mutableSetOf()
-
-
-    val checkSelectedColorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
-    val checkSelectedColor = theme.colorOrBlack(checkSelectedColorTheme)
-
-
-    val checkUnselectedColorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_25"))))
-    val checkUnselectedColor = theme.colorOrBlack(checkUnselectedColorTheme)
-
 
     // -----------------------------------------------------------------------------------------
     // VIEWS
@@ -443,7 +536,7 @@ class GroupSearchUI(val searchMode : SearchMode,
         layout.addView(groupSearchResultNameView())
 
         // Summary
-        layout.addView(groupSearchResultSummaryView())
+        // layout.addView(groupSearchResultSummaryView())
 
         return layout
     }
@@ -462,6 +555,8 @@ class GroupSearchUI(val searchMode : SearchMode,
 
         layout.backgroundColor  = Color.WHITE
 
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
         layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
 
 //        layout.margin.leftDp    = 2f
@@ -470,8 +565,8 @@ class GroupSearchUI(val searchMode : SearchMode,
 
         layout.padding.leftDp   = 8f
         layout.padding.rightDp  = 8f
-        layout.padding.topDp    = 10f
-        layout.padding.bottomDp = 10f
+        layout.padding.topDp    = 14f
+        layout.padding.bottomDp = 14f
 
 
         return layout.linearLayout(context)
@@ -491,9 +586,16 @@ class GroupSearchUI(val searchMode : SearchMode,
 
     private fun resultCheckboxViewLayout() : LinearLayout
     {
-        val layout                  = LinearLayoutBuilder()
+        // 1 | Declarations
+        // -------------------------------------------------------------------------------------
 
-//        layout.id                   = R.id.group_search_result_selected_icon_layout
+        val layout                  = LinearLayoutBuilder()
+        val iconView                = ImageViewBuilder()
+
+        // 2 | Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.id                 = R.id.checkbox
 
         layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -501,10 +603,22 @@ class GroupSearchUI(val searchMode : SearchMode,
         layout.layoutGravity        = Gravity.CENTER
         layout.gravity              = Gravity.CENTER
 
-        layout.backgroundResource   = R.drawable.bg_checkbox_unselected
+        layout.margin.leftDp        = 11f
+        layout.margin.rightDp       = 21f
 
-        layout.margin.leftDp        = 8f
-        layout.margin.rightDp       = 22f
+        layout.backgroundResource   = R.drawable.bg_widget_expander_checkbox
+
+        layout.child(iconView)
+
+        // 3 | Icon View
+        // -------------------------------------------------------------------------------------
+
+        iconView.widthDp            = 18
+        iconView.heightDp           = 18
+
+        iconView.image              = R.drawable.icon_check_bold
+
+        iconView.color              = Color.WHITE
 
         return layout.linearLayout(context)
     }
@@ -513,20 +627,6 @@ class GroupSearchUI(val searchMode : SearchMode,
     private fun resultCheckboxIconView() : ImageView
     {
         val icon                    = ImageViewBuilder()
-
-        icon.id                     = R.id.group_search_result_selected_icon
-
-        icon.widthDp                = 18
-        icon.heightDp               = 18
-
-        icon.image                  = R.drawable.icon_check
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
-        icon.color                  = theme.colorOrBlack(colorTheme)
-
-        icon.visibility             = View.GONE
 
         return icon.imageView(context)
     }
@@ -561,10 +661,10 @@ class GroupSearchUI(val searchMode : SearchMode,
 
         val nameColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
         nameView.color              = theme.colorOrBlack(nameColorTheme)
 
-        nameView.sizeSp             = 18f
+        nameView.sizeSp             = 20f
 
         return nameView.textView(context)
     }
@@ -712,21 +812,9 @@ class GroupSearchResultViewHolder(itemView : View,
     var layout         : LinearLayout?  = null
     var nameView       : TextView?      = null
     var summaryView    : TextView?      = null
-    var iconView       : ImageView?     = null
+    var checkboxView   : LinearLayout?  = null
 
     var isSelected     : Boolean        = false
-
-
-    val checkSelectedColorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
-    val checkSelectedColor = theme.colorOrBlack(checkSelectedColorTheme)
-
-
-    val checkUnselectedColorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_25"))))
-    val checkUnselectedColor = theme.colorOrBlack(checkUnselectedColorTheme)
 
 
     val textUnselectedColorTheme = ColorTheme(setOf(
@@ -737,7 +825,7 @@ class GroupSearchResultViewHolder(itemView : View,
 
     val textSelectedColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("green"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("green_tint_2"))))
     val textSelectedColor = theme.colorOrBlack(textSelectedColorTheme)
 
 
@@ -750,7 +838,7 @@ class GroupSearchResultViewHolder(itemView : View,
         this.layout         = itemView.findViewById(R.id.group_search_result_layout)
         this.nameView       = itemView.findViewById(R.id.group_search_result_name)
         this.summaryView    = itemView.findViewById(R.id.group_search_result_summary)
-        this.iconView       = itemView.findViewById(R.id.group_search_result_selected_icon)
+        this.checkboxView   = itemView.findViewById(R.id.checkbox)
     }
 
 
@@ -777,16 +865,15 @@ class GroupSearchResultViewHolder(itemView : View,
             onClick()
 
             if (this.isSelected) {
-//                iconView?.colorFilter = PorterDuffColorFilter(checkUnselectedColor, PorterDuff.Mode.SRC_IN)
-                iconView?.visibility = View.GONE
                 nameView?.setTextColor(textUnselectedColor)
                 this.isSelected = false
 
+                checkboxView?.background = ContextCompat.getDrawable(context, R.drawable.bg_widget_expander_checkbox)
             }
             else {
-//                iconView?.colorFilter = PorterDuffColorFilter(checkSelectedColor, PorterDuff.Mode.SRC_IN)
-                iconView?.visibility = View.VISIBLE
                 nameView?.setTextColor(textSelectedColor)
+                checkboxView?.background = ContextCompat.getDrawable(context, R.drawable.bg_widget_expander_checkbox_checked)
+
                 this.isSelected = true
             }
         }

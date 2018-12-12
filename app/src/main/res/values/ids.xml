@@ -340,6 +340,7 @@
 
     <item name="layout" type="id"/>
     <item name="name_view" type="id"/>
+    <item name="description_view" type="id"/>
     <item name="icon_view" type="id"/>
     <item name="label_view" type="id"/>
 

@@ -283,9 +283,17 @@
     <color name="light_theme_light_grey_10">#D5D5D5</color>
     <color name="light_theme_light_grey_12">#CCCCCC</color>
     <color name="light_theme_light_grey_15">#A9A9A9</color>
-    <color name="light_theme_light_blue_grey_7">#E0E3E6</color>
+    <color name="light_theme_light_blue_grey_1">#F9FCFF</color>
+    <color name="light_theme_light_blue_grey_3">#F1F4F7</color>
+    <color name="light_theme_light_blue_grey_5">#E9ECEF</color>
+    <color name="light_theme_light_blue_grey_7">#E0E3EB</color>
     <color name="light_theme_light_blue_grey_8">#DCDFE2</color>
     <color name="light_theme_light_blue_grey_9">#D7DADD</color>
+    <color name="light_theme_light_blue_grey_12">#CBCED1</color>
+    <color name="light_theme_light_blue_grey_14">#C2C5CD</color>
+    <color name="light_theme_light_blue_grey_16">#A3A6A9</color>
+    <color name="light_theme_light_blue_grey_18">#9A9DA1</color>
+    <color name="light_theme_light_blue_grey_20">#919399</color>
     <color name="light_theme_dark_grey_4">#181818</color>
     <color name="light_theme_dark_grey_6">#272727</color>
     <color name="light_theme_dark_grey_7">#313131</color>
@@ -299,11 +307,14 @@
     <color name="light_theme_dark_grey_20">#7F7F7F</color>
     <color name="light_theme_dark_grey_22">#8A8A8A</color>
     <color name="light_theme_orange_80">#C4C07618</color>
-    <color name="light_theme_dark_blue_grey_10">#424548</color>
+    <color name="light_theme_dark_blue_grey_8">#313D40</color>
+    <color name="light_theme_dark_blue_grey_9">#384447</color>
+    <color name="light_theme_dark_blue_grey_10">#424C4F</color>
     <color name="light_theme_dark_blue_grey_12">#4F5255</color>
     <color name="light_theme_dark_blue_grey_14">#5A5D60</color>
+    <color name="light_theme_dark_blue_grey_15">#5F6265</color>
+    <color name="light_theme_dark_blue_grey_18">#6F7275</color>
     <color name="light_theme_dark_blue_grey_20">#7A7D80</color>
-    <color name="light_theme_light_blue_grey_20">#919396</color>
 
     <color name="light_theme_red">#C32C39</color>
     <color name="light_theme_red_90">#C3C32C39</color>
@@ -314,5 +325,6 @@
 
     <color name="light_theme_green_tint_1">#2FC671</color>
     <color name="light_theme_green_tint_2">#46CD81</color>
+    <color name="light_theme_green_tint_3">#5DD390</color>
 
 </resources>

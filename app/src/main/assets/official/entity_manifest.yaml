@@ -6,21 +6,25 @@ persisted_entities:
   entity_type: sheet
   name: 'Casmey Dalseya'
   category: 'PC'
+  summary: '1st Level Human Rogue'
   path: 'fifth_edition/sheets/pc_casmey_level_1.yaml'
 - entity_id: '41aaaa67-8277-462c-8e33-a06da8ad930f'
   entity_type: sheet
   name: 'Sanson'
   category: 'PC'
+  summary: '1st Level Human Wizard'
   path: 'fifth_edition/sheets/pc_sanson_level_1.yaml'
 - entity_id: 'cccb2da0-f6e5-4ea1-acee-6469942cfb3b'
   entity_type: campaign
   name: 'Isara'
   category: 'Campaign'
+  summary: '1st Level Human Wizard'
   path: 'fifth_edition/campaigns/isara.yaml'
 - entity_id: '85f6da8e-e497-4aa2-a3c3-c2eab32d2839'
   entity_type: game
   name: '5th Edition'
   category: 'Game'
+  summary: 'Game'
   path: 'fifth_edition/magic_of_heroes.yaml'
   indexes:
   - entity_id: '48175796-51a8-4ed4-a446-3cf5eeccee12'
@@ -33,6 +37,7 @@ persisted_entities:
   entity_type: book
   name: 'Core Rules'
   category: 'Book'
+  summary: 'Book'
   path: 'fifth_edition/books/core_rules.yaml'
 ## ---------------------------------------------------------------------------------------------
 ## | Pathfinder 2 Playtest
@@ -41,21 +46,25 @@ persisted_entities:
   entity_type: sheet
   name: 'Casmey Dalseya'
   category: 'PC'
+  summary: '1st Level Human Rogue'
   path: 'pathfinder2_playtest/sheets/pc_casmey_level_1.yaml'
 - entity_id: 'e983de7a-a729-45c7-b6fc-87c44a0fada5'
   entity_type: sheet
   name: 'Sanson'
   category: 'PC'
+  summary: '1st Level Human Wizard'
   path: 'pathfinder2_playtest/sheets/pc_sanson_level_1.yaml'
 - entity_id: '425e1222-1744-41b0-9ae0-9452d1078b4a'
   entity_type: campaign
   name: 'Isara'
   category: 'Campaign'
+  summary: 'Campaign'
   path: 'pathfinder2_playtest/campaigns/isara.yaml'
 - entity_id: 'ffae52cd-6684-42d0-b733-80e006e1c4be'
   entity_type: game
   name: 'Pathfinder 2 Playtest'
   category: 'Game'
+  summary: 'Pathfinder OGL ruleset'
   path: 'pathfinder2_playtest/pathfinder2_playtest.yaml'
   indexes:
   - entity_id: '9bf840aa-917e-4d1d-9133-62908bf5d241'
@@ -74,6 +83,7 @@ persisted_entities:
   entity_type: book
   name: 'Core Rules'
   category: 'Book'
+  summary: 'Pathfinder OGL core rulebook'
   path: 'pathfinder2_playtest/books/core_rules.yaml'
   indexes:
   - entity_id: '20418398-a725-4d2c-aff9-4974a1e6330e'
@@ -86,4 +96,5 @@ persisted_entities:
   entity_type: book
   name: 'Using Tale Table'
   category: 'Book'
+  summary: 'Getting started tutorial'
   path: 'pathfinder2_playtest/books/tutorial_using_tale_table.yaml'

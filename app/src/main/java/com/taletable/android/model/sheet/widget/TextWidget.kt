@@ -178,7 +178,7 @@ object TextWidgetView
 //        when (rulebookReference) {
 //            is Just -> {
 //                layout.setOnLongClickListener {
-//                    val sheetActivity = context as SheetActivity
+//                    val sheetActivity = context as SessionActivity
 //                    val dialog = RulebookExcerptDialog.newInstance(rulebookReference.value,
 //                                                                   entityId)
 //                    dialog.show(sheetActivity.supportFragmentManager, "")

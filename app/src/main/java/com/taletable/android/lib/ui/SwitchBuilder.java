@@ -3,7 +3,7 @@ package com.taletable.android.lib.ui;
 
 
 import android.content.Context;
-import android.support.v7.widget.SwitchCompat;
+import androidx.appcompat.widget.SwitchCompat;
 import android.view.View;
 
 import java.util.ArrayList;

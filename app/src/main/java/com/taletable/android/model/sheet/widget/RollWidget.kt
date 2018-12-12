@@ -7,7 +7,7 @@ import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -38,8 +38,6 @@ import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
-import java.util.*
-
 
 
 /**
@@ -601,7 +599,7 @@ class RollWidgetViewBuilder(val rollWidget : RollWidget,
             is RollWidgetViewType.InlineLeftButtonUseRoller ->
             {
 //                layout.setOnClickListener {
-//                    val activity = context as SheetActivity
+//                    val activity = context as SessionActivity
 //                    val dialog = DiceRollDialog.newInstance(rollWidget.rollGroup(),
 //                                                            entityId,
 //                                                            1)

@@ -10,7 +10,7 @@ import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.taletable.android.R
-import com.taletable.android.activity.sheet.SheetActivity
+import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.activity.sheet.dialog.VariableToggleEditorDialog
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.engine.task.Task
@@ -26,7 +26,7 @@ import com.taletable.android.rts.entity.entityEngineState
 
 class TaskUI(val entityId : EntityId,
              val theme : Theme,
-             val sheetActivity : SheetActivity)
+             val sheetActivity : SessionActivity)
 {
 
     // -----------------------------------------------------------------------------------------

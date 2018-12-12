@@ -5,8 +5,8 @@ package com.taletable.android.activity.sheet.dialog
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v4.app.DialogFragment
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import androidx.fragment.app.DialogFragment
 import android.util.Log
 import android.view.*
 import android.widget.EditText

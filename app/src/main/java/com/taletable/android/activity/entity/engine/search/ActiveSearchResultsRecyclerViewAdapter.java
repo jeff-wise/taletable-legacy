@@ -3,9 +3,9 @@ package com.taletable.android.activity.entity.engine.search;
 
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.util.SortedList;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.SortedList;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.View;

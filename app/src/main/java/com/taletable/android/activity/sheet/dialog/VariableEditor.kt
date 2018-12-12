@@ -3,9 +3,9 @@ package com.taletable.android.activity.sheet.dialog
 
 
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.taletable.android.activity.entity.engine.summation.SummationDialog
-import com.taletable.android.activity.sheet.SheetActivity
+import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.app.ApplicationLog
 import com.taletable.android.model.engine.value.ValueId
 import com.taletable.android.model.engine.variable.*
@@ -107,7 +107,7 @@ fun openNumberVariableEditorDialog(numberVariable : NumberVariable,
 {
     val variableValue = numberVariable.variableValue()
 
-    val sheetActivity = context as SheetActivity
+    val sheetActivity = context as SessionActivity
 
     when (variableValue)
     {
@@ -196,7 +196,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
                     {
                         is Val ->
                         {
-                            val sheetActivity = context as SheetActivity
+                            val sheetActivity = context as SessionActivity
                             val chooseDialog =
                                     ValueChooserDialogFragment.newInstance(
                                                     valueSet.value.valueSetId,
@@ -213,7 +213,7 @@ fun openTextVariableEditorDialog(textVariable : TextVariable,
             }
         }
         is TextVariableValueUnknownValue -> {
-            val sheetActivity = context as SheetActivity
+            val sheetActivity = context as SessionActivity
             val chooseDialog =
                     ValueChooserDialogFragment.newInstance(
                                     variableValue.valueSetId,
@@ -242,7 +242,7 @@ fun openTextListVariableEditorDialog(textListVariable : TextListVariable,
     {
         is TextListVariableLiteralValue ->
         {
-            val sheetActivity = context as SheetActivity
+            val sheetActivity = context as SessionActivity
 
             val valueSetId = textListVariable.valueSetId
             val values = textListVariable.value(entityId)

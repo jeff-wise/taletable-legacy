@@ -6,15 +6,12 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialogFragment
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.view.*
 import android.widget.LinearLayout
 import com.taletable.android.R
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.model.book.BookReference
-import com.taletable.android.model.book.BookReferenceChapter
-import com.taletable.android.model.engine.task.Task
-import com.taletable.android.model.engine.variable.VariableId
 import com.taletable.android.rts.entity.EntityId
 
 

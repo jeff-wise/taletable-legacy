@@ -9,14 +9,10 @@ import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TableRow
 import com.taletable.android.R
-import com.taletable.android.activity.sheet.SheetActivity
+import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.activity.sheet.dialog.TableDialog
 import com.taletable.android.app.ApplicationLog
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue1
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.ui.ImageViewBuilder
 import com.taletable.android.lib.ui.LayoutType
 import com.taletable.android.lib.ui.LinearLayoutBuilder
@@ -36,8 +32,6 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import java.io.Serializable
-import java.util.*
-
 
 
 /**
@@ -129,7 +123,7 @@ data class TableWidgetRow(val format : TableWidgetRowFormat,
                    entityId : EntityId,
                    context : Context)
     {
-        val sheetActivity = context as SheetActivity
+        val sheetActivity = context as SessionActivity
         val updateTarget = UpdateTargetInsertTableRow(tableWidget)
         tableWidget.selectedRow = rowIndex
 
@@ -144,9 +138,19 @@ data class TableWidgetRow(val format : TableWidgetRowFormat,
 
     fun view(tableWidget : TableWidget,
              entityId : EntityId,
-             context : Context) : TableRow
+             context : Context,
+             columnIndices : List<Int> = listOf()) : TableRow
     {
-        val rowUI = TableWidgetRowUI(this, tableWidget, entityId, context)
+        var colIndices : MutableList<Int> = mutableListOf()
+
+        if (columnIndices.isEmpty()) {
+            for (i in 0 until tableWidget.columns().size) { colIndices.add(i) }
+        } else {
+            colIndices = columnIndices.toMutableList()
+        }
+
+
+        val rowUI = TableWidgetRowUI(this, tableWidget, colIndices, entityId, context)
         return rowUI.view()
     }
 
@@ -203,6 +207,7 @@ data class TableWidgetRow(val format : TableWidgetRowFormat,
 
 class TableWidgetRowUI(val row : TableWidgetRow,
                        val tableWidget : TableWidget,
+                       val columnIndices : List<Int>,
                        val entityId : EntityId,
                        val context : Context)
 {
@@ -218,14 +223,17 @@ class TableWidgetRowUI(val row : TableWidgetRow,
 
         row.cells().forEachIndexed { columnIndex, cell ->
 
-            val column = tableWidget.columns().getOrNull(columnIndex)
-
-            when (cell)
+            if (columnIndices.contains(columnIndex))
             {
-                is TableWidgetBooleanCell -> this.addBooleanCell(cell, tableRow, column)
-                is TableWidgetImageCell   -> this.addImageCell(cell, tableRow, column)
-                is TableWidgetNumberCell  -> this.addNumberCell(cell, tableRow, column)
-                is TableWidgetTextCell    -> this.addTextCell(cell, tableRow, column)
+                val column = tableWidget.columns().getOrNull(columnIndex)
+
+                when (cell)
+                {
+                    is TableWidgetBooleanCell -> this.addBooleanCell(cell, tableRow, column)
+                    is TableWidgetImageCell   -> this.addImageCell(cell, tableRow, column)
+                    is TableWidgetNumberCell  -> this.addNumberCell(cell, tableRow, column)
+                    is TableWidgetTextCell    -> this.addTextCell(cell, tableRow, column)
+                }
             }
         }
 
@@ -238,7 +246,9 @@ class TableWidgetRowUI(val row : TableWidgetRow,
         val tableRow                = TableRowBuilder()
         val rowFormat               = tableWidget.format().rowFormat()
 
+        //tableRow.layoutType         = LayoutType.TABLE
         tableRow.width              = TableLayout.LayoutParams.MATCH_PARENT
+        //tableRow.width              = TableLayout.LayoutParams.WRAP_CONTENT
         tableRow.height             = TableLayout.LayoutParams.MATCH_PARENT
 
         tableRow.marginSpacing      = rowFormat.textFormat().elementFormat().margins()

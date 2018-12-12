@@ -6,8 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.*
 import com.taletable.android.R
@@ -183,8 +184,37 @@ sealed class TableWidgetViewType : ToDocument, SQLSerializable, Serializable
     }
 
 
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
+    object FixedFirstColumn : TableWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "fixed_first_column" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("fixed_first_column")
+
+    }
+
+
+    object RowsOnly : TableWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "rows_only" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("rows_only")
+
+    }
+
+
+    // | Constructors
     // -----------------------------------------------------------------------------------------
 
     companion object
@@ -193,8 +223,12 @@ sealed class TableWidgetViewType : ToDocument, SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
-                "tile_bar" -> effValue<ValueError,TableWidgetViewType>(
-                                    TableWidgetViewType.TitleBar)
+                "tile_bar"          -> effValue<ValueError,TableWidgetViewType>(
+                                                TableWidgetViewType.TitleBar)
+                "fixed_first_column" -> effValue<ValueError,TableWidgetViewType>(
+                                                TableWidgetViewType.FixedFirstColumn)
+                "rows_only"         -> effValue<ValueError,TableWidgetViewType>(
+                                            TableWidgetViewType.RowsOnly)
                 else       -> effError<ValueError,TableWidgetViewType>(
                                     UnexpectedValue("TableWidgetViewType", doc.text, doc.path))
             }
@@ -406,9 +440,18 @@ class TableWidgetUI(val tableWidget : TableWidget,
     {
         val layout = this.mainLayout()
 
-        layout.addView(this.titleBarView())
 
-        layout.addView(this.tableView())
+        when (tableWidget.format().viewType()) {
+            is TableWidgetViewType.TitleBar -> {
+                layout.addView(this.titleBarView())
+                layout.addView(this.tableView())
+            }
+            is TableWidgetViewType.FixedFirstColumn -> layout.addView(this.tableFixedColumnView())
+            is TableWidgetViewType.RowsOnly -> {
+                layout.addView(this.tableNoHeaderView())
+            }
+        }
+
 
         return layout
     }
@@ -455,6 +498,23 @@ class TableWidgetUI(val tableWidget : TableWidget,
 
         return layout
     }
+
+
+    private fun tableNoHeaderView() : TableLayout
+    {
+        val layout = this.tableLayout()
+
+        tableWidget.cachedRows().forEach { tableWidgetRow ->
+            val tableRowView = tableWidgetRow.view(tableWidget,
+                                                   entityId,
+                                                   context)
+            layout.addView(tableRowView)
+            this.tableRowViews.add(tableRowView)
+        }
+
+        return layout
+    }
+
 
 
     private fun tableLayout() : TableLayout
@@ -516,10 +576,12 @@ class TableWidgetUI(val tableWidget : TableWidget,
                               entityId : EntityId,
                               context : Context) : TableRow
     {
+        Log.d("***TABLE WIDGET", "header row view columns: ${columns.size}")
         val tableRow = TableRowBuilder()
 
         tableRow.layoutType     = LayoutType.TABLE
         tableRow.width          = TableLayout.LayoutParams.MATCH_PARENT
+        //tableRow.width          = TableLayout.LayoutParams.WRAP_CONTENT
         tableRow.height         = TableLayout.LayoutParams.WRAP_CONTENT
 
         tableRow.paddingSpacing = format.headerFormat().textFormat().elementFormat().padding()
@@ -787,5 +849,147 @@ class TableWidgetUI(val tableWidget : TableWidget,
 
         return label.textView(context)
     }
+
+
+    private fun tableFixedColumnView() : HorizontalScrollView
+    {
+        val layout = this.tableFixedColumnViewLayout()
+
+        val firstColLayout  = this.tableFirstColumnLayout()
+
+        val scrollView = this.tableOtherColumnsScrollView()
+        val otherColsLayout = this.tableOtherColumnsLayout()
+
+        //layout.addView(otherColsLayout)
+        scrollView.addView(firstColLayout)
+
+        //layout.addView(firstColLayout)
+        //layout.addView(scrollView)
+
+        if (tableWidget.cachedRows().isNotEmpty())
+        {
+            val numberOfCols = tableWidget.columns().size
+            if (numberOfCols > 0)
+            {
+                val headerRowView1 = this.headerRowView(tableWidget.columns().take(1),
+                                                        tableWidget.format(),
+                                                        entityId,
+                                                        context)
+
+                val headerRowView2 = this.headerRowView(tableWidget.columns().drop(1),
+                                                        tableWidget.format(),
+                                                        entityId,
+                                                        context)
+                firstColLayout.addView(headerRowView1)
+                otherColsLayout.addView(headerRowView2)
+            }
+        }
+//        else
+//        {
+//            layout.addView(this.dummyRowView())
+//        }
+
+        val otherColIndices = mutableListOf<Int>()
+        for (i in 1 until tableWidget.columns().size) {
+            otherColIndices.add(i)
+        }
+
+        Log.d("***TABLE WIDGET", "other indices: ${otherColIndices}")
+
+        tableWidget.cachedRows().forEach { tableWidgetRow ->
+
+
+            val tableRowView1 = tableWidgetRow.view(tableWidget,
+                                                    entityId,
+                                                    context, listOf(0))
+
+            val tableRowView2 = tableWidgetRow.view(tableWidget,
+                                                    entityId,
+                                                    context,
+                                                    otherColIndices)
+
+            firstColLayout.addView(tableRowView1)
+            otherColsLayout.addView(tableRowView2)
+        }
+
+        //return layout
+        //return otherColsLayout
+        return scrollView
+    }
+
+
+    private fun tableFixedColumnViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun tableFirstColumnLayout() : TableLayout
+    {
+        val layout = TableLayoutBuilder()
+        val format = tableWidget.format()
+
+        val tableLayoutId = Util.generateViewId()
+        layout.id = tableLayoutId
+        tableWidget.tableLayoutId = tableLayoutId
+
+        layout.layoutType           = LayoutType.FRAME
+//        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+//        layout.heightDp             = 200
+        layout.height               = FrameLayout.LayoutParams.WRAP_CONTENT
+        layout.widthDp              = 100
+        //layout.weight               = 1f
+        //layout.shrinkAllColumns     = true
+
+        layout.backgroundColor      = colorOrBlack(
+                                            format.widgetFormat().elementFormat().backgroundColorTheme(),
+                                            entityId)
+
+        return layout.tableLayout(context)
+    }
+
+
+    private fun tableOtherColumnsScrollView() : HorizontalScrollView
+    {
+        val scrollView          = HorizontalScrollView(context)
+
+        scrollView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+
+        return scrollView
+    }
+
+    private fun tableOtherColumnsLayout() : TableLayout
+    {
+        val layout                  = TableLayoutBuilder()
+        val format                  = tableWidget.format()
+
+        val tableLayoutId = Util.generateViewId()
+        layout.id = tableLayoutId
+        tableWidget.tableLayoutId   = tableLayoutId
+
+        layout.layoutType           = LayoutType.FRAME
+        layout.width                = FrameLayout.LayoutParams.MATCH_PARENT
+        layout.height               = FrameLayout.LayoutParams.WRAP_CONTENT
+
+//        layout.layoutType           = LayoutType.LINEAR
+//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+        //layout.shrinkAllColumns     = true
+
+        layout.backgroundColor      = colorOrBlack(
+                                            format.widgetFormat().elementFormat().backgroundColorTheme(),
+                                            entityId)
+
+        return layout.tableLayout(context)
+    }
+
 
 }

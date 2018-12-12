@@ -11,10 +11,6 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import com.taletable.android.app.ApplicationLog
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue3
-import com.taletable.android.lib.orm.schema.PrimValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.SQLBlob
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
@@ -33,7 +29,6 @@ import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
-import java.util.*
 
 
 

@@ -9,8 +9,8 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
@@ -18,7 +18,6 @@ import android.view.WindowManager
 import android.widget.*
 import com.taletable.android.R
 import com.taletable.android.lib.ui.*
-import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
@@ -28,7 +27,6 @@ import com.taletable.android.official.gameManifest
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.EntityKind
 import com.taletable.android.util.configureToolbar
-
 
 
 /**

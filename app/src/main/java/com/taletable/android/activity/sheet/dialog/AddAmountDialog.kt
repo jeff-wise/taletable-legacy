@@ -7,13 +7,13 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.taletable.android.R
-import com.taletable.android.activity.sheet.SheetActivity
+import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.sheet.style.*
 import com.taletable.android.model.theme.ColorId
@@ -661,7 +661,7 @@ class AddAmountEditorViewBuilder(val operation : AddOperation,
         layout.corners          = Corners(1.0, 1.0, 1.0, 1.0)
 
         layout.onClick          = View.OnClickListener {
-            val sheetActivity = context as SheetActivity
+            val sheetActivity = context as SessionActivity
             val adderDialog = AdderDialog.newInstance(this.currentAdderState(), entityId)
             adderDialog.show(sheetActivity.supportFragmentManager, "")
             dialog.dismiss()

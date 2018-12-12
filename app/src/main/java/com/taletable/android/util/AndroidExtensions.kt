@@ -2,8 +2,8 @@
 package com.taletable.android.util
 
 
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import android.widget.ImageView
 import android.widget.TextView
 import com.taletable.android.R
@@ -42,29 +42,28 @@ fun AppCompatActivity.configureToolbar(title : String,
     // (2) Configure Title
     // -------------------------------------------------------------------------------------
 
-    val titleView = this.findViewById<TextView>(R.id.toolbar_title)
+    this.findViewById<TextView>(R.id.toolbar_title)?.let { titleView ->
 
+        if (font != null && fontStyle != null)
+            titleView.typeface  = Font.typeface(font, fontStyle, this)
+        else if (font != null)
+            titleView.typeface  = Font.typeface(TextFont.default(), TextFontStyle.Regular, this)
+        else
+            titleView.typeface  = Font.typeface(TextFont.default(), TextFontStyle.Regular, this)
 
-    if (font != null && fontStyle != null)
-        titleView.typeface  = Font.typeface(font, fontStyle, this)
-    else if (font != null)
-        titleView.typeface  = Font.typeface(TextFont.default(), TextFontStyle.Regular, this)
-    else
-        titleView.typeface  = Font.typeface(TextFont.default(), TextFontStyle.Regular, this)
+        val trimmedTitle = if (title.length >= 25) {
+            title.substring(0, 25).plus("\u2026")
+        }
+        else {
+            title
+        }
 
-    val trimmedTitle = if (title.length >= 25) {
-        title.substring(0, 25).plus("\u2026")
+        titleView.text      = trimmedTitle
+
+        if (textSize != null)
+            titleView.textSize      = textSize
+
     }
-    else {
-        title
-    }
-
-    titleView.text      = trimmedTitle
-
-    if (textSize != null)
-        titleView.textSize      = textSize
-
-    //titleView.setTextColor(SheetManager)
 
     // (3) Configure Back Button
     // -------------------------------------------------------------------------------------

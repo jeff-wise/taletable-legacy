@@ -4,21 +4,16 @@ package com.taletable.android.model.sheet.widget
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.taletable.android.R
-import com.taletable.android.activity.sheet.SheetActivityRequest
+import com.taletable.android.activity.session.SheetActivityRequest
 import com.taletable.android.activity.sheet.procedure.RunProcedureActivity
 import com.taletable.android.activity.entity.engine.procedure.ProcedureDialog
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue5
-import com.taletable.android.lib.orm.schema.MaybePrimValue
-import com.taletable.android.lib.orm.schema.PrimValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
@@ -42,8 +37,6 @@ import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
-import java.util.*
-
 
 
 /**

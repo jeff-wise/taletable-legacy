@@ -4,14 +4,15 @@ package com.taletable.android.model.sheet.widget
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.taletable.android.R
+import com.taletable.android.R.string.group
 import com.taletable.android.activity.entity.book.BookActivity
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.sql.SQLSerializable
@@ -19,10 +20,7 @@ import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.entity.ExpanderWidgetUpdateToggle
-import com.taletable.android.model.sheet.style.Corners
-import com.taletable.android.model.sheet.style.Icon
-import com.taletable.android.model.sheet.style.IconType
-import com.taletable.android.model.sheet.style.TextFormat
+import com.taletable.android.model.sheet.style.*
 import com.taletable.android.model.theme.ColorId
 import com.taletable.android.model.theme.ColorTheme
 import com.taletable.android.model.theme.ThemeColorId
@@ -42,7 +40,7 @@ import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
-
+import kotlin.math.exp
 
 
 /**
@@ -50,6 +48,7 @@ import java.io.Serializable
  */
 data class ExpanderWidgetFormat(val widgetFormat : WidgetFormat,
                                 val viewType : ExpanderWidgetViewType,
+                                val contentFormat : ElementFormat,
                                 val headerOpenFormat : TextFormat,
                                 val headerClosedFormat : TextFormat,
                                 val headerLabelOpenFormat : TextFormat,
@@ -70,6 +69,7 @@ data class ExpanderWidgetFormat(val widgetFormat : WidgetFormat,
 
         private fun defaultWidgetFormat()             = WidgetFormat.default()
         private fun defaultViewType()                 = ExpanderWidgetViewType.Plain
+        private fun defaultContentFormat()            = ElementFormat.default()
         private fun defaultHeaderOpenFormat()         = TextFormat.default()
         private fun defaultHeaderClosedFormat()       = TextFormat.default()
         private fun defaultHeaderLabelOpenFormat()    = TextFormat.default()
@@ -91,6 +91,10 @@ data class ExpanderWidgetFormat(val widgetFormat : WidgetFormat,
                       split(doc.maybeAt("view_type"),
                             effValue<ValueError,ExpanderWidgetViewType>(defaultViewType()),
                             { ExpanderWidgetViewType.fromDocument(it) }),
+                      // Content Format
+                     split(doc.maybeAt("content_format"),
+                           effValue(defaultContentFormat()),
+                           { ElementFormat.fromDocument(it) }),
                       // Header Open
                       split(doc.maybeAt("header_open_format"),
                             effValue(defaultHeaderOpenFormat()),
@@ -131,6 +135,7 @@ data class ExpanderWidgetFormat(val widgetFormat : WidgetFormat,
 
         fun default() = ExpanderWidgetFormat(defaultWidgetFormat(),
                                              defaultViewType(),
+                                             defaultContentFormat(),
                                              defaultHeaderOpenFormat(),
                                              defaultHeaderClosedFormat(),
                                              defaultHeaderLabelOpenFormat(),
@@ -149,6 +154,7 @@ data class ExpanderWidgetFormat(val widgetFormat : WidgetFormat,
     override fun toDocument() = DocDict(mapOf(
         "widget_format" to this.widgetFormat().toDocument(),
         "view_type" to this.viewType.toDocument(),
+        "content_format" to this.contentFormat().toDocument(),
         "header_open_format" to this.headerOpenFormat().toDocument(),
         "header_closed_format" to this.headerClosedFormat().toDocument(),
         "header_label_open_format" to this.headerLabelOpenFormat().toDocument(),
@@ -166,6 +172,9 @@ data class ExpanderWidgetFormat(val widgetFormat : WidgetFormat,
 
 
     fun viewType() : ExpanderWidgetViewType = this.viewType
+
+
+    fun contentFormat() : ElementFormat = this.contentFormat
 
 
     fun headerOpenFormat() : TextFormat = this.headerOpenFormat
@@ -240,6 +249,21 @@ sealed class ExpanderWidgetViewType : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object IconRightLink : ExpanderWidgetViewType()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({ "icon_right_link" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("icon_right_link")
+
+    }
+
+
     object ButtonBottom : ExpanderWidgetViewType()
     {
         // SQL SERIALIZABLE
@@ -299,6 +323,8 @@ sealed class ExpanderWidgetViewType : ToDocument, SQLSerializable, Serializable
                                             ExpanderWidgetViewType.IconLeft)
                 "icon_right"         -> effValue<ValueError,ExpanderWidgetViewType>(
                                             ExpanderWidgetViewType.IconRight)
+                "icon_right_link"    -> effValue<ValueError,ExpanderWidgetViewType>(
+                                                ExpanderWidgetViewType.IconRightLink)
                 "plain"              -> effValue<ValueError,ExpanderWidgetViewType>(
                                             ExpanderWidgetViewType.Plain)
                 "button_bottom"      -> effValue<ValueError,ExpanderWidgetViewType>(
@@ -401,6 +427,7 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
     {
         val layout = WidgetView.layout(expanderWidget.widgetFormat(), entityId, context)
 
+
         val layoutId = Util.generateViewId()
         layout.id = layoutId
         expanderWidget.layoutId = layoutId
@@ -438,10 +465,33 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
             val headerView = this.headerView()
             headerView.setOnClickListener { onClick(contentLayout) }
             contentLayout.addView(headerView)
+
+            val groupsLayout = groupsLayout()
+            contentLayout.addView(groupsLayout)
+
             expanderWidget.contentGroups(entityId).forEach {
-                contentLayout.addView(it.view(entityId, context, expanderWidget.groupContext))
+                groupsLayout.addView(it.view(entityId, context, expanderWidget.groupContext))
             }
         }
+    }
+
+
+    private fun groupsLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        val contentFormat           = expanderWidget.format().contentFormat()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.VERTICAL
+
+        layout.backgroundColor      = colorOrBlack(contentFormat.backgroundColorTheme(), entityId)
+
+        layout.paddingSpacing       = contentFormat.padding()
+
+        return layout.linearLayout(context)
     }
 
 
@@ -454,6 +504,7 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
         is ExpanderWidgetViewType.Plain             -> plainHeaderView()
         is ExpanderWidgetViewType.IconLeft          -> iconLeftHeaderView()
         is ExpanderWidgetViewType.IconRight         -> iconRightHeaderView()
+        is ExpanderWidgetViewType.IconRightLink     -> iconRightLinkHeaderView()
         is ExpanderWidgetViewType.ButtonBottom      -> this.buttonBottomHeaderView()
         is ExpanderWidgetViewType.CircleAvatarLeft  -> this.circleAvatarLeftView()
         is ExpanderWidgetViewType.CheckboxLeft      -> this.checkboxLeftHeaderView()
@@ -605,7 +656,7 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
     }
 
 
-    private fun headerIconView() : ImageView
+    private fun headerIconView(iconId : Int? = null) : ImageView
     {
         val icon = ImageViewBuilder()
 
@@ -617,13 +668,22 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
         icon.widthDp        = format.size().width
         icon.heightDp       = format.size().height
 
-        if (this.isOpen)
-            icon.image      = expanderWidget.format().headerOpenIcon().iconType().drawableResId()
-        else
-            icon.image      = expanderWidget.format().headerClosedIcon().iconType().drawableResId()
+        if (this.isOpen) {
+            if (iconId != null) {
+                icon.image = iconId
+            } else {
+                icon.image      = expanderWidget.format().headerOpenIcon().iconType().drawableResId()
+            }
+        }
+        else {
+            if (iconId != null) {
+                icon.image  = iconId
+            } else {
+                icon.image      = expanderWidget.format().headerClosedIcon().iconType().drawableResId()
+            }
+        }
 
         icon.color          = colorOrBlack(format.colorTheme(), entityId)
-
 
         return icon.imageView(context)
     }
@@ -656,6 +716,36 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
 
         return layout
     }
+
+
+    // HEADER > Right Icon Link
+    // -----------------------------------------------------------------------------------------
+
+    private fun iconRightLinkHeaderView() : LinearLayout
+    {
+        val layout          = this.headerViewLayout()
+
+        // Label
+        val labelView = this.headerLabelView()
+        val labelLayoutParams = labelView.layoutParams as LinearLayout.LayoutParams
+        labelLayoutParams.width = 0
+        labelLayoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+        labelLayoutParams.weight  = 1f
+        labelView.layoutParams = labelLayoutParams
+
+        layout.addView(labelView)
+
+        // Icon
+        val iconLayout = this.headerIconLayoutView()
+
+        val iconView = this.headerIconView(R.drawable.icon_open_in_window)
+        this.iconView = iconView
+        iconLayout.addView(iconView)
+        layout.addView(iconLayout)
+
+        return layout
+    }
+
 
 
     // HEADER > Button Bottom

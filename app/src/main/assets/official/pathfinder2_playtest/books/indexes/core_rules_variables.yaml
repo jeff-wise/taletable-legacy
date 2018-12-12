@@ -31,76 +31,2632 @@ variables:
         including the races, creatuers, weapons, spells, and more.
 - type: variable_text
   variable_text:
-    id: section_weapons_introduction
-    label: Section Weapons Summary
-    description: Section Weapons summary
+    id: section_equipment_basic_rules_introduction
+    label: Section Equipment Basic rules introduction
+    description: Section Equipment Basic rules introduction
     value:
       type: text_literal
       text_literal: >-
-        Your class grants proficiency in certain weapons, reflecting both the class’s focus and the tools you are most likely to use. Whether you favor a longsword or a longbow, your weapon and your ability to wield it effectively can mean the difference between life and death while adventuring.
+        Your character starts out with 150 silver pieces (sp) to spend on any common items from this chapter. Items with an uncommon rarity can only be bought with special access or GM permission. If you’re playing a spellcaster and want to buy magic items (like potions, scrolls, or holy water) or an alchemist and want to buy alchemical items, your GM can give you permission to buy those, and she will tell you which items you can choose from and how much they cost.
 
 
-        The Weapons table shows the most common weapons used in the fantasy gaming worlds, their price and weight, the damage they deal when they hit, and any special properties they possess. Every weapon is classified as either melee or ranged. A melee weapon is used to attack a target within 5 feet of you, whereas a ranged weapon is used to attack a target at a distance.
+        Once you’ve purchased your starting items, there are three main ways to gain new items and equipment: you can find them during an adventure, make them with the Crafting skill, or purchase them from a merchant.
 - type: variable_text
   variable_text:
-    id: subsection_weapon_proficiency_text
-    label: Section Weapons Proficiency Text
-    description: Section Weapons Proficiency Text
+    id: section_equipment_basic_rules_currency_header
+    label: Section Equipment Basic rules currency header
+    description: Section Equipment Basic rules currency header
+    value:
+      type: text_literal
+      text_literal: 'Coins and Currency'
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_currency_content
+    label: Section Equipment Basic rules currency content
+    description: Section Equipment Basic rules currency content
     value:
       type: text_literal
       text_literal: >-
-        Your race, class, and feats can grant you proficiency with certain weapons or categories of weapons. The two categories are simple and martial. Most people can use simple weapons with proficiency. These weapons include clubs, maces, and other weapons often found in the hands of commoners. Martial weapons, including swords, axes, and polearms, require more specialized training to use effectively. Most warriors use martial weapons because these weapons put their fighting style and training to best use.
-
-
-        Proficiency with a weapon allows you to add your proficiency bonus to the attack roll for any attack you make with that weapon. If you make an attack roll using a weapon with which you lack proficiency, you do not add your proficiency bonus to the attack roll.
+        Though you might be able to barter valuable items in some areas, currency is the most versatile way to make transactions when you head to market. The most common currency is coin. For most commoners and beginning adventurers, the standard unit is the silver piece (sp). Each silver piece is of a standard weight of silver and is typically accepted by any merchant or kingdom no matter where it was minted. There are three other types of common coins, each likewise standardized in weight and value. The first is the copper piece (cp). Each copper piece is worth one-tenth of a silver piece. The gold piece (gp) is often used for purchasing magic items and other expensive items, as 1 gold piece is worth 10 silver pieces or 100 copper pieces. The platinum piece (pp) is used by nobles to demonstrate their wealth, for the purchase of very expensive items, or simply as a way to easily transport large sums of currency. A platinum piece is worth 10 gold pieces, 100 silver pieces, or 1,000 copper pieces. See Table 6–1: Coin Values for the exchange rates of common types of coins.
 - type: variable_text
   variable_text:
-    id: subsection_weapon_properties_header_all_properties
-    label: Section Weapons Properties Header All Properties
-    description: Section Weapons Properties Header All Properties
+    id: section_equipment_basic_rules_currency_coin_bulk_header
+    label: Section Equipment Basic rules currency coin bulk header
+    description: Section Equipment Basic rules currency coin bulk header
     value:
       type: text_literal
-      text_literal: 'All Properties'
+      text_literal: 'Coin Bulk'
 - type: variable_text
   variable_text:
-    id: subsection_weapon_properties_header_improvised_weapons
-    label: Section Weapons Properties Header Improvised Weapons
-    description: Section Weapons Properties Header improvised weapons.
+    id: section_equipment_basic_rules_currency_coin_bulk_content
+    label: Section Equipment Basic rules currency coin bulk content
+    description: Section Equipment Basic rules currency coin bulk content
+    value:
+      type: text_literal
+      text_literal: >-
+        Coins are popular due to their portability. A thousand coins of any denomination or combination of denominations count as 1 Bulk (see below). It’s not usually necessary to determine the Bulk of coins in fractions of 1,000. In other words, 100 coins don’t count as a light item, and 1,999 coins count as 1 Bulk, not 2.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_price_content
+    label: Section Equipment Basic rules price content
+    description: Section Equipment Basic rules price content
+    value:
+      type: text_literal
+      text_literal: >-
+        Most items in the following tables have a Price, which is the amount of currency it typically takes to purchase that item. However, some of the items listed have an inherent or otherwise meaningless cost, indicated with “—”. This typically indicates that an entry can’t be purchased. An item with a “0” Price indicates that it is normally free, but its value could be higher based on its quality or the composition of its materials. Most items can be sold for half their Price, but coins and raw materials (such as crafting components) can be exchanged for their full Price.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_item_level_content
+    label: Section Equipment Basic rules item level content
+    description: Section Equipment Basic rules item level content
+    value:
+      type: text_literal
+      text_literal: >-
+        Each item has an item level, which represents the complexity of the item and any magic used in its construction. Simpler items with a lower level are easier to construct, and you can’t Craft items that have a higher level than your own (see page 148). If an item’s level isn’t listed, its level is 0. While characters can use items of any level, Game Masters should keep in mind that allowing characters access to items far above their current level may imbalance the game.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_content
+    label: Section Equipment Basic rules using items content
+    description: Section Equipment Basic rules using items content
+    value:
+      type: text_literal
+      text_literal: >-
+        A character typically has two hands, allowing her to hold an item in each hand or a single two-handed item using both hands. Drawing or changing how you’re carrying an item usually requires an Interact action (dropping items instead uses the Drop action). Table 6–2: Changing Equipment lists some ways that you might change the items you’re holding or carrying, and the number of hands you need to do so. Many ways to use items cost multiple actions. For example, drinking a potion stowed in your belt pouch requires drawing it with an Interact action and drinking it with an Operate Activation action.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_bulk_header
+    label: Section Equipment Basic rules using items bulk header
+    description: Section Equipment Basic rules using items bulk header
+    value:
+      type: text_literal
+      text_literal: 'Bulk'
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_bulk_content
+    label: Section Equipment Basic rules using items bulk content
+    description: Section Equipment Basic rules using items bulk content
+    value:
+      type: text_literal
+      text_literal: >-
+        Especially heavy or unwieldy items can make it more difficult for you to move swiftly, as can overloading yourself with too much gear. The Bulk value of an item reflects how difficult an item is to handle, representing both weight and the size of the item. In most cases, you don’t need to worry about Bulk unless you’re carrying numerous substantial items or you have a low Strength score.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_bulk_limit_header
+    label: Section Equipment Basic rules using items bulk limit header
+    description: Section Equipment Basic rules using items bulk limit header
+    value:
+      type: text_literal
+      text_literal: 'Bulk Limit'
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_bulk_limit_content
+    label: Section Equipment Basic rules using items bulk limit content
+    description: Section Equipment Basic rules using items bulk limit content
+    value:
+      type: text_literal
+      text_literal: >-
+        You can carry an amount of Bulk equal to 5 plus your Strength modifier without penalty; if you carry more, you gain the encumbered condition. You can’t hold or carry more Bulk than 10 plus your Strength modifier.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_encumbered_header
+    label: Section Equipment Basic rules using items encumbered header
+    description: Section Equipment Basic rules using items encumbered header
+    value:
+      type: text_literal
+      text_literal: 'Encumbered'
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_encumbered_content
+    label: Section Equipment Basic rules using items encumbered content
+    description: Section Equipment Basic rules using items encumbered content
+    value:
+      type: text_literal
+      text_literal: >-
+        If you’re encumbered, decrease your Speed by 10 feet, to a minimum of 5 feet. This applies to every movement type you have. You also increase your armor’s check penalty by 2, or take a –2 check penalty if you’re unarmored.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_bulk_values_header
+    label: Section Equipment Basic rules using items bulk values header
+    description: Section Equipment Basic rules using items bulk values header
+    value:
+      type: text_literal
+      text_literal: 'Bulk Values'
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_bulk_values_content
+    label: Section Equipment Basic rules using items bulk values content
+    description: Section Equipment Basic rules using items bulk values content
+    value:
+      type: text_literal
+      text_literal: >-
+        Items may have a number to indicate their Bulk value, or may be light (indicated by an L) or negligible for the purpose of determining Bulk (indicated by a —). For instance, full plate armor is 4 Bulk, a longsword is 1 Bulk, a dagger or scroll is light, and a piece of chalk is negligible. Ten light items count as 1 Bulk, and you don’t count fractions (so 9 light items count as 0, and 11 items count as 1). Items of negligible Bulk don’t count toward Bulk unless you try to carry vast numbers of them, as determined by the GM.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_estimating_bulk_header
+    label: Section Equipment Basic rules using items estimating bulk header
+    description: Section Equipment Basic rules using items estimating bulk header
+    value:
+      type: text_literal
+      text_literal: 'Estimating an Item''s Bulk'
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_estimating_bulk_content
+    label: Section Equipment Basic rules using items bulk values content
+    description: Section Equipment Basic rules using items bulk values content
+    value:
+      type: text_literal
+      text_literal: >-
+        As a general rule, an item that weighs 5 to 10 pounds is 1 Bulk, an item weighing less than a few ounces is negligible, and anything in between is light. Particularly awkward or unwieldy items might have different Bulk values. A 10-foot pole isn’t heavy, but its length makes it difficult for you to move while you have one on your person. Items made for larger or smaller creatures have greater or lesser Bulk, as described on page 191.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_donning_armor_header
+    label: Section Equipment Basic rules using items donning armor header
+    description: Section Equipment Basic rules using items donning armor header
+    value:
+      type: text_literal
+      text_literal: 'Donning and Removing Armor'
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_donning_armor_content
+    label: Section Equipment Basic rules using items donning armor content
+    description: Section Equipment Basic rules using items donning armor content
+    value:
+      type: text_literal
+      text_literal: >-
+        Donning and removing armor are both activities involving many Interact actions. It takes 1 minute to don light armor, 5 minutes to don medium or heavy armor, and 1 minute to remove any armor.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_wielding_header
+    label: Section Equipment Basic rules using items wielding header
+    description: Section Equipment Basic rules using items wielding header
+    value:
+      type: text_literal
+      text_literal: 'Wielding Items'
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_using_items_wielding_content
+    label: Section Equipment Basic rules using items wielding content
+    description: Section Equipment Basic rules using items wielding content
+    value:
+      type: text_literal
+      text_literal: >-
+        Some abilities require you to wield an item, typically a weapon. You’re wielding an item any time you’re holding it in the number of hands needed to use it effectively. You’re not just carrying the weapon around—you’re ready to use it. Other abilities might require you to merely carry or have an item. These apply as long as you have the item on your person; you don’t have to be wielding it.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_item_damage_content
+    label: Section Equipment Basic rules item damage content
+    description: Section Equipment Basic rules item damage content
+    value:
+      type: text_literal
+      text_literal: >-
+        An item can be destroyed if it takes damage enough times. An item reduces any damage dealt to it by its Hardness. The Hardness of various materials is explained in the Materials section on page 354. If an item takes damage equal to or exceeding the item’s Hardness, the item takes a Dent. If the item takes damage equal to or greater than twice its Hardness in one hit, it takes 2 Dents. For instance, a wooden shield (Hardness 3) that takes 10 damage would take 2 Dents. A typical item can take only 1 Dent without becoming broken. A second Dent causes it to become broken, though it can still be repaired. An item that would take a Dent or become broken while already broken is destroyed beyond salvage. Some magical or especially sturdy items can take more than 1 Dent before becoming broken, as noted in their descriptions.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_item_damage_broken_header
+    label: Section Equipment Basic rules item damage broken header
+    description: Section Equipment Basic rules item damage broken header
+    value:
+      type: text_literal
+      text_literal: 'Broken'
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_item_damage_broken_content
+    label: Section Equipment Basic rules item damage broken content
+    description: Section Equipment Basic rules item damage broken content
+    value:
+      type: text_literal
+      text_literal: >-
+        Broken is a condition that affects objects. A broken object can’t be used for its normal function, nor does it grant bonuses. It still imposes all penalties normally incurred by carrying, holding, or wearing it. For example, a suit of armor would still impose its Dexterity modifier cap, check penalty, and so forth. Broken armor is an exception. It still grants its item bonuses, but also gives you a conditional penalty to AC depending on its category: –1 for broken light armor, –2 for broken medium armor, or –3 for broken heavy armor.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_item_damage_object_immunities_header
+    label: Section Equipment Basic rules item damage object immunities header
+    description: Section Equipment Basic rules item damage object immunities header
+    value:
+      type: text_literal
+      text_literal: 'Object Immunities'
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_item_damage_object_immunities_content
+    label: Section Equipment Basic rules item damage object immunities content
+    description: Section Equipment Basic rules item damage object immunities content
+    value:
+      type: text_literal
+      text_literal: >-
+        Inanimate objects and traps with object immunities are always immune to bleed, disease, death effects, healing, mental effects, necromancy, nonlethal attacks, and poison, as well as the asleep, enervated, enfeebled, paralyzed, and stunned conditions. Many objects are immune to most other conditions, at the GM’s discretion. For instance, a sword can’t be hampered, but some effects that cause the hampered condition might work on a moving blade trap. Intelligent items are not immune to mental effects.
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_coin_values_header
+    label: Section Equipment Basic rules coin values header
+    description: Section Equipment Basic rules coin values header
+    value:
+      type: text_literal
+      text_literal: 'COIN VALUES'
+- type: variable_text
+  variable_text:
+    id: section_equipment_basic_rules_coin_values_table_title
+    label: Section Equipment Basic rules coin values table title
+    description: Section Equipment Basic rules coin values table title
+    value:
+      type: text_literal
+      text_literal: 'Exchange Rates'
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_content
+    label: Equipment > Armor and Shields
+    description: Equipment > Armor and Shields
+    value:
+      type: text_literal
+      text_literal: >-
+        Armor increases your defenses, but some medium or heavy armor can hamper your movement. If you want to increase your defense beyond the protection your armor provides, you can use a shield. Armor always protects you while you’re wearing it, but you have to spend an action to Raise a Shield in order for it to improve your AC for that round.
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_armor_class_header
+    label: Equipment > Armor and Shields > Armor Class header
+    description: Equipment > Armor and Shields > Armor Class header
+    value:
+      type: text_literal
+      text_literal: 'Armor Class'
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_armor_class_content
+    label: Equipment > Armor and Shields > Armor Class content
+    description: Equipment > Armor and Shields > Armor Class content
+    value:
+      type: text_literal
+      text_literal: >-
+        Your Armor Class (AC) measures how well you can defend against attacks. Your Touch Armor Class (TAC) protects against attacks that need only to touch you. Your Armor Class equals 10 plus your Dexterity modifier (up to your armor’s Dexterity modifier cap) plus your proficiency modifier for any armor or shield you are using plus the armor’s item bonus to AC. If you’re using both armor and a shield, apply the lower of the two proficiency modifiers. If you’re not wearing armor, substitute your proficiency in unarmored defense. Your Touch Armor Class uses the same calculation, except you add your armor’s item bonus to TAC instead of its bonus to AC. Some spells, magic item, and abilities give your character a bonus or penalty to AC. These also apply to TAC unless stated otherwise.
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_header
+    label: Equipment > Armor and Shields > Armor Statistics header
+    description: Equipment > Armor and Shields > Armor Statistics header
+    value:
+      type: text_literal
+      text_literal: 'Armor Statistics'
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_armor_statistics_content
+    label: Equipment > Armor and Shields > Armor Statistics content
+    description: Equipment > Armor and Shields > Armor Statistics content
+    value:
+      type: text_literal
+      text_literal: >-
+        Table 6–3: Armor lists all suits of armor that can be purchased (as well as the statistics for wearing no armor), organized by armor type. The columns in the table provide the following statistics.
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_bonuses_header
+    label: Equipment > Armor and Shields > AC / TAC Bonus  header
+    description: Equipment > Armor and Shields > AC / TAC Bonus  header
+    value:
+      type: text_literal
+      text_literal: 'AC Bonus and TAC Bonus'
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_bonuses_content
+    label: Equipment > Armor and Shields > AC / TAC Bonus content
+    description: Equipment > Armor and Shields > AC / TAC Bonus content
+    value:
+      type: text_literal
+      text_literal: >-
+        These numbers are the item bonuses you add to your Armor Class and Touch Armor Class, respectively.
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_dex_mod_cap_header
+    label: Equipment > Armor and Shields > Dexterity Modifier Cap header
+    description: Equipment > Armor and Shields > Dexterity Modifier Cap header
+    value:
+      type: text_literal
+      text_literal: 'Dexterity Modifier Cap'
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_dex_mod_cap_content
+    label: Equipment > Armor and Shields > Dexterity Modifier Cap content
+    description: Equipment > Armor and Shields > Dexterity Modifier Cap content
+    value:
+      type: text_literal
+      text_literal: >-
+        This number is the maximum amount of your Dexterity modifier that can apply to your AC and TAC while you are wearing a given suit of armor. For example, if you have a Dexterity modifier of +4 and you are wearing a suit of half plate, the amount of your Dexterity modifier you apply to your AC and TAC while wearing that armor is capped at +2.
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_check_penalty_header
+    label: Equipment > Armor and Shields > Check penalty header
+    description: Equipment > Armor and Shields > Check penalty header
+    value:
+      type: text_literal
+      text_literal: 'Check Penalty'
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_check_penalty_content
+    label: Equipment > Armor and Shields > Check penalty content
+    description: Equipment > Armor and Shields > Check penalty content
+    value:
+      type: text_literal
+      text_literal: >-
+        You take this untyped penalty to Strength-, Dexterity-, and Constitution-based skill checks, except for those that have the attack trait. Armor that is better than standard quality has a lower check penalty, as described on page 190.
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_speed_penalty_header
+    label: Equipment > Armor and Shields > Speed penalty header
+    description: Equipment > Armor and Shields > Speed penalty header
+    value:
+      type: text_literal
+      text_literal: 'Speed Penalty'
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_speed_penalty_content
+    label: Equipment > Armor and Shields > Speed penalty content
+    description: Equipment > Armor and Shields > Speed penalty content
+    value:
+      type: text_literal
+      text_literal: >-
+        While wearing a suit of armor, your Speed is reduced by the listed amount, to a minimum of 5 feet. This applies to all your Speeds in any movement types you have, such as a climb Speed or swim Speed, as well as your land Speed.
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_bulk_header
+    label: Equipment > Armor and Shields > Bulk header
+    description: Equipment > Armor and Shields > Bulk header
+    value:
+      type: text_literal
+      text_literal: 'Bulk'
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_bulk_content
+    label: Equipment > Armor and Shields > Bulk content
+    description: Equipment > Armor and Shields > Bulk content
+    value:
+      type: text_literal
+      text_literal: >-
+        This entry assumes you’re wearing the armor and distributing its weight across your body. A carried suit of armor usually has 1 more Bulk (or 1 Bulk total for armor of light Bulk). This adjusted Bulk is increased or decreased for armor of nonstandard sizes following the normal rules (see page 191).
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_armor_traits_header
+    label: Equipment > Armor and Shields > Armor traits header
+    description: Equipment > Armor and Shields > Armor traits header
+    value:
+      type: text_literal
+      text_literal: 'Armor traits'
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_armor_traits_content
+    label: Equipment > Armor and Shields > Armor traits content
+    description: Equipment > Armor and Shields > Armor traits content
+    value:
+      type: text_literal
+      text_literal: >-
+        The traits for each suit of armor appear in this entry. Armor can have the following traits:
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_shields_header
+    label: Equipment > Armor and Shields > Shields header
+    description: Equipment > Armor and Shields > Shields header
+    value:
+      type: text_literal
+      text_literal: 'Shields'
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_shields_content
+    label: Equipment > Armor and Shields > Shields content
+    description: Equipment > Armor and Shields > Shields content
+    value:
+      type: text_literal
+      text_literal: >-
+        A shield requires the use of one of your hands. It grants its bonuses to AC and TAC only if you use an action to Raise a Shield. This grants the shield’s bonuses to AC and TAC as a circumstance bonus until your next turn starts. The shield’s check penalty applies whenever you’re wielding the shield, regardless of whether the shield is raised.
+
+
+        While you have a shield raised, you can use the Shield Block reaction to reduce damage you take by the shield’s Hardness (3 for wooden shields or 5 for steel).
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_attacking_shield_header
+    label: Equipment > Armor and Shields > Attacking with a Shield Header
+    description: Equipment > Armor and Shields > Attacking with a Shield Header
+    value:
+      type: text_literal
+      text_literal: 'Attacking with a Shield'
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_statistics_attacking_shield_content
+    label: Equipment > Armor and Shields > Attacking with a Shield Content
+    description: Equipment > Armor and Shields > Attacking with a Shield Content
+    value:
+      type: text_literal
+      text_literal: >-
+        If you attack with a shield, treat it like an attack with an improvised weapon (see page 178). This deals the heavy shield bash damage or light shield bash damage (as appropriate to the shield’s type) listed on Table 6–5: Martial Melee Weapons on page 180.
+
+
+        If you want to reliably use your shield to attack, you need to buy and attach a shield boss or shield spikes to the shield. These work like other weapons, and can even be etched with runes (see page 370).
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_list_introduction
+    label: Equipment > Armor and Shields > Armor List > Introduction
+    description: Equipment > Armor and Shields > Armor List > Introduction
+    value:
+      type: text_literal
+      text_literal: 'The armor available to player characters. Lighter armor is cheaper and permits more flexibility while heavier armor costs more, makes a lot of noise, but grants impressive AC bonuses.'
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_data_tac_bonus_label
+    label: Equipment > Armor and Shields > Data > TAC Bonus Label
+    description: Equipment > Armor and Shields > Data > TAC Bonus Label
+    value:
+      type: text_literal
+      text_literal: 'TAC Bonus'
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_data_ac_bonus_label
+    label: Equipment > Armor and Shields > Data > AC Bonus Label
+    description: Equipment > Armor and Shields > Data > AC Bonus Label
+    value:
+      type: text_literal
+      text_literal: 'AC Bonus'
+- type: variable_number
+  variable_number:
+    id: equipment_armor_shields_data_padded_armor_ac_bonus
+    label: Equipment > Armor and Shields > Data > Padded Armor > AC Bonus
+    description: Equipment > Armor and Shields > Data > Padded Armor > AC Bonus
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_number
+  variable_number:
+    id: equipment_armor_shields_data_padded_armor_tac_bonus
+    label: Equipment > Armor and Shields > Data > Padded Armor > TAC Bonus
+    description: Equipment > Armor and Shields > Data > Padded Armor > TAC Bonus
+    value:
+      type: number_literal
+      number_literal: 0
+- type: variable_text
+  variable_text:
+    id: equipment_armor_shields_list_padded_price
+    label: Equipment > Armor and Shields > Armor List > Padded Armor > Price
+    description: Equipment > Armor and Shields > Armor List > Padded Armor > Price
+    value:
+      type: text_literal
+      text_literal: '2 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_introduction
+    label: Equipment > Weapons > Introduction
+    description: Equipment > Weapons > Introduction
+    value:
+      type: text_literal
+      text_literal: >-
+        Most characters in Pathfinder likely carry some kind of weapon, whether a keen-edged dagger, a mighty warhammer, a graceful bow, or even a simple club. Full details on how you calculate your bonuses, penalties, and modifiers for attack rolls and damage rolls are given in Chapter 1 on page 17, but they are summarized here.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_attack_rolls_header
+    label: Equipment > Weapons > Attack Rolls > Header
+    description: Equipment > Weapons > Attack Rolls > Header
+    value:
+      type: text_literal
+      text_literal: 'Attack Rolls'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_attack_rolls_content
+    label: Equipment > Weapons > Attack Rolls > Content
+    description: Equipment > Weapons > Attack Rolls > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        When making an attack, determine the result of your attack roll by rolling a d20 and adding your attack modifier with the weapon or unarmed attack you’re using. Your melee attack modifier is the sum of your proficiency modifier with a weapon plus your Strength modifier (or optionally, your Dexterity modifier for weapons with the finesse trait). Your ranged attack modifier is the sum of your proficiency modifier with a weapon plus your Dexterity modifier. Bonuses and penalties apply to these rolls just like with other types of checks. Magic weapons and weapons of expert quality or better add an item bonus to your attack rolls.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_mult_attack_penalty_header
+    label: Equipment > Weapons > Multiple Attack Penalty > Header
+    description: Equipment > Weapons > Multiple Attack Penalty > Header
+    value:
+      type: text_literal
+      text_literal: 'Multiple Attack Penalty'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_mult_attack_penalty_content
+    label: Equipment > Weapons > Multiple Attack Penalty > Content
+    description: Equipment > Weapons > Multiple Attack Penalty > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        If you attack more than once on the same turn, your attacks after the first take a penalty called a multiple attack penalty. Your second attack takes a –5 penalty, and any subsequent attacks take a –10 penalty. This penalty is untyped and is cumulative with all other penalties. The penalty doesn’t apply to attacks you take when it isn’t your turn (such as attacks made as part of a reaction), though these attacks often have their own penalty. You can choose a weapon with the agile trait to reduce your multiple attack penalty (see page 182).
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_unarmed_attacks_header
+    label: Equipment > Weapons > Unarmed Attacks > Header
+    description: Equipment > Weapons > Unarmed Attacks > Header
+    value:
+      type: text_literal
+      text_literal: 'Unarmed Attakcs'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_unarmed_attacks_content
+    label: Equipment > Weapons > Unarmed Attacks > Content
+    description: Equipment > Weapons > Unarmed Attacks > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        You can Strike with your fist or another body part, calculating your attack and damage rolls in the same way you would with a weapon. This counts as a simple weapon, so almost all characters start out trained in unarmed attacks. Use the statistics for a fist even if you’re kicking, kneeing, or attacking with another part of your body. Some ancestry feats, class features, class feats, and spells give access to special, more powerful unarmed attacks.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_damage_rolls_header
+    label: Equipment > Weapons > Damage Rolls > Header
+    description: Equipment > Weapons > Damage Rolls > Header
+    value:
+      type: text_literal
+      text_literal: 'Damage Rolls'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_damage_rolls_content
+    label: Equipment > Weapons > Damage Rolls > Content
+    description: Equipment > Weapons > Damage Rolls > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        When the result of your attack roll with a weapon or unarmed attack is equal to or exceeds your target’s AC, roll the weapon or unarmed attack’s damage die to determine the damage you deal. If you’re making a melee attack, you add your Strength modifier to the damage. Ranged weapons usually use only the weapon’s damage die, though weapons with the propulsive trait sometimes add half your Strength modifier, and thrown weapons add your full Strength modifier.
+
+
+        Magic weapons add one or more weapon damage dice to your damage roll. These extra dice are the same die size as the weapon’s damage die.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_critical_hits_header
+    label: Equipment > Weapons > Critical Hits > Header
+    description: Equipment > Weapons > Critical Hits > Header
+    value:
+      type: text_literal
+      text_literal: 'Critical Hits'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_critical_hits_content
+    label: Equipment > Weapons > Critical Hits > Content
+    description: Equipment > Weapons > Critical Hits > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        When you make an attack and roll a natural 20 (the number on the die is 20), or if the result of your attack exceeds the target’s AC by 10, this is called a critical success (also known as a critical hit).
+
+
+        If you critically succeed at a Strike, your attack deals double damage (see page 293). This damage doubling applies only on Strikes. Other attacks, such as spells or some uses of the Athletics skill, describe the specific effects that occur when their outcomes are critical successes.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_improvised_weapons_header
+    label: Equipment > Weapons > Improvised Weapons > Header
+    description: Equipment > Weapons > Improvised Weapons > Header
     value:
       type: text_literal
       text_literal: 'Improvised Weapons'
 - type: variable_text
   variable_text:
-    id: subsection_weapon_properties_improvised_weapons_text
-    label: Section Weapons Properties Improvised Weapons Text
-    description: Section Weapons Properties improvised weapons text.
+    id: equipment_weapons_improvised_weapons_content
+    label: Equipment > Weapons > Improvised Weapons > Content
+    description: Equipment > Weapons > Improvised Weapons > Content
     value:
       type: text_literal
       text_literal: >-
-        Sometimes characters don’t have their weapons and have to attack with whatever is at hand. An improvised weapon includes any object you can wield in one or two hands, such as broken glass, a table leg, a frying pan, a wagon wheel, or a dead goblin.
-
-
-        Often, an improvised weapon is similar to an actual weapon and can be treated as such. For example, a table leg is akin to a club. At the GM’s option, a character proficient with a weapon can use a similar object as if it were that weapon and use his or her proficiency bonus.
-
-
-        An object that bears no resemblance to a weapon deals 1d4 damage (the GM assigns a damage type appropriate to the object). If a character uses a ranged weapon to make a melee attack, or throws a melee weapon that does not have the thrown property, it also deals 1d4 damage. An improvised thrown weapon has a normal range of 20 feet and a long range of 60 feet.
+        If you attack with something that wasn’t built to be a weapon, such as a chair or a vase, you’re making an attack with an improvised weapon. Treat it as a simple weapon of poor quality (regardless of its actual quality). The GM determines the amount and type of damage the attack deals, if any, as well as any weapon traits the improvised weapon should have. Many improvised weapons have the nonlethal trait.
 - type: variable_text
   variable_text:
-    id: subsection_weapon_properties_silvered_weapons_header
-    label: Section Weapons Properties Silvered Weapons Header
-    description: Section Weapons Properties silvered weapons header.
+    id: equipment_weapons_selecting_weapons_header
+    label: Equipment > Weapons > Selecting Weapons > Header
+    description: Equipment > Weapons > Selecting Weapons > Header
     value:
       type: text_literal
-      text_literal: 'Silvered Weapons'
+      text_literal: 'Selecting Weapons'
 - type: variable_text
   variable_text:
-    id: subsection_weapon_properties_silvered_weapons_text
-    label: Section Weapons Properties Silvered Weapons Text
-    description: Section Weapons Properties silvered weapons text.
+    id: equipment_weapons_selecting_weapons_content
+    label: Equipment > Weapons > Selecting Weapons > Content
+    description: Equipment > Weapons > Selecting Weapons > Content
     value:
       type: text_literal
       text_literal: >-
-        Some monsters that have immunity or resistance to nonmagical weapons are susceptible to silver weapons, so cautious adventurers invest extra coin to plate their weapons with silver. You can silver a single weapon or ten pieces of ammunition for 100 gp. This cost represents not only the price of the silver, but the time and expertise needed to add silver to the weapon without making it less effective.
+        Characters who focus on combat need to carefully consider their choice of weapons, evaluating whether they want to fight in melee or at range, damage potential, and the special features of various weapons. Characters who are primarily spellcasters usually just need to pick a backup weapon in the best category they’re proficient with.
+
+        When selecting weapons, you should start by identifying the weapon types that you have proficiency in. You should then compare weapons within these types to determine which ones you will have the highest melee or ranged attack modifier with. It’s usually considered best practice to select both a melee and ranged weapon during character creation so you can contend with a broader variety of foes.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_header
+    label: Equipment > Weapons > Statistics > Header
+    description: Equipment > Weapons > Statistics > Header
+    value:
+      type: text_literal
+      text_literal: 'Weapon Statistics'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_content
+    label: Equipment > Weapons > Statistics > Content
+    description: Equipment > Weapons > Statistics > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        The tables on pages 180–182 list the statistics for various melee and ranged weapons that you can purchase, as well as the statistics for striking with a fist. The tables include the following weapon statistics. All weapons listed in this chapter are considered to have an item level of 0.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_damage_header
+    label: Equipment > Weapons > Statistics > Damage > Header
+    description: Equipment > Weapons > Statistics > Damage > Header
+    value:
+      type: text_literal
+      text_literal: 'Damage'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_damage_content
+    label: Equipment > Weapons > Statistics > Damage > Content
+    description: Equipment > Weapons > Statistics > Damage > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        This entry lists the weapon’s damage die and the type of damage it deals: B for bludgeoning, P for piercing, or S for slashing.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_range_header
+    label: Equipment > Weapons > Statistics > Range > Header
+    description: Equipment > Weapons > Statistics > Range > Header
+    value:
+      type: text_literal
+      text_literal: 'Range'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_range_content
+    label: Equipment > Weapons > Statistics > Range > Content
+    description: Equipment > Weapons > Statistics > Range > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        Ranged and thrown weapons have a range increment, indicated here in feet. Attacks with the weapon work normally up to that distance. Attacks beyond the weapon’s range increment take a –2 penalty for each additional multiple beyond. For example, a shortbow takes no penalty against a target up to 60 feet away, a –2 penalty against a target beyond 60 feet but up to 120 feet away, and a –4 penalty against a target beyond 120 feet but up to 180 feet away, and so on. Attacks that would take a penalty greater than –10 due to range are impossible.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_reload_header
+    label: Equipment > Weapons > Statistics > Reload > Header
+    description: Equipment > Weapons > Statistics > Reload > Header
+    value:
+      type: text_literal
+      text_literal: 'Reload'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_reload_content
+    label: Equipment > Weapons > Statistics > Reload > Content
+    description: Equipment > Weapons > Statistics > Reload > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        Ranged weapons indicate how many Interact actions it takes to reload them. This can be 0 if drawing ammunition and firing the weapon are part of the same action. If an item takes 2 or more actions to reload, the GM determines whether you can spend those actions out of sequence or if they must be performed together as an activity.
+
+
+        An item with an entry of “—” must be drawn to be thrown, which usually takes an Interact action just like drawing any other weapon. Reloading and drawing a thrown weapon both require a free hand. When you spend the last action required to reload a weapon you’re holding, as part of that action, you can place your hands in the grip necessary to wield the weapon normally.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_ammunition_header
+    label: Equipment > Weapons > Statistics > Ammunition > Header
+    description: Equipment > Weapons > Statistics > Ammunition > Header
+    value:
+      type: text_literal
+      text_literal: 'Ammunition'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_ammunition_content
+    label: Equipment > Weapons > Statistics > Ammunition > Content
+    description: Equipment > Weapons > Statistics > Ammunition > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        Some entries in the ranged weapons tables are followed by an entry indicating the type of ammunition that weapon shoots. Because other relevant statistics vary by weapon, ammunition entries list only the name, quantity, Price, and Bulk.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_hands_header
+    label: Equipment > Weapons > Statistics > Hands > Header
+    description: Equipment > Weapons > Statistics > Hands > HEader
+    value:
+      type: text_literal
+      text_literal: 'Hands'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_hands_content
+    label: Equipment > Weapons > Statistics > Hands > Content
+    description: Equipment > Weapons > Statistics > Hands > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        Some weapons require one hand to use, and others require two. A few items, such as a bow, list 1+ for its hands entry. You can hold such a weapon in one hand, but the process of shooting it requires using another hand to retrieve, prepare, and shoot a piece of ammunition. This means you can do other things with your other hand while holding the bow in one hand without spending an action to change your grip, but you must free up your other hand in order to shoot. For example, you could shoot an arrow with your first action, use an Interact action to open a door with your second action, then shoot another arrow ^with your third action. You’re considered to be wielding a 1+ weapon as long as you’re holding it in one hand and also have a hand free.
+
+
+        Weapons that require two hands typically deal more damage. Some weapons that use one hand have the two-hand trait, causing them to deal a different weapon damage die when used in two hands.
+
+
+        In addition, some abilities require you to be wielding a weapon in two hands. You meet this requirement as long as you hold the weapon in two hands, even if it doesn’t actually require two hands or have the two-hand trait.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_group_header
+    label: Equipment > Weapons > Statistics > Group > Header
+    description: Equipment > Weapons > Statistics > Group > HEader
+    value:
+      type: text_literal
+      text_literal: 'Group'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_group_content
+    label: Equipment > Weapons > Statistics > Group > Content
+    description: Equipment > Weapons > Statistics > Group > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        A weapon’s group classifies it with similar types of weapons. This affects what the weapon does on a critical hit if you have the ability to use critical specialization effects, and some abilities reference weapon groups.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Header
+    value:
+      type: text_literal
+      text_literal: 'Weapon Traits'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        The traits a weapon has appear in this entry. Weapons can have the following traits.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_agile_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Agile > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Agile > Header
+    value:
+      type: text_literal
+      text_literal: 'Agile'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_agile_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Agile > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Agile > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        The multiple attack penalty you take on the second attack each turn with this weapon is –4 instead of –5, and –8 instead of –10 on the third and subsequent attacks in the turn.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_attached_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Attached > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Attached > Header
+    value:
+      type: text_literal
+      text_literal: 'Attached'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_attached_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Attached > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Attached > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        An attached weapon must be combined with another piece of gear in order to be used. The trait lists what type of item the weapon must be attached to. You must be wielding or wearing the item the weapon is attached to in order to attack with it. For example, shield spikes are attached to a shield, allowing you to attack with the spikes instead of a shield bash, but only if you’re wielding the shield. An attached weapon is usually bolted onto or built into the item it’s attached to, and typically an item can have only one weapon attached to it. An attached weapon can be removed from one item and attached to another with successful use of the Crafting skill. If an item is destroyed, its attached weapon can usually be salvaged.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_backstabber_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Backstabber > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Backstabber > Header
+    value:
+      type: text_literal
+      text_literal: 'Backstabber'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_backstabber_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Backstabber > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Backstabber > Header
+    value:
+      type: text_literal
+      text_literal: >-
+        When you hit a flat-footed creature, this weapon deals 1 precision damage. The damage increases to 2 if the weapon is master quality or to 3 if it’s legendary.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_backswing_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Backswing > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Backswing > Header
+    value:
+      type: text_literal
+      text_literal: 'Backswing'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_backswing_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Backswing > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Backswing > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        You can use this weapon’s momentum from a miss to lead into your next attack. After missing with this weapon on your turn, you gain a +1 circumstance bonus to your next attack with this weapon before the end of your turn.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_charge_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Charge > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Charge > Header
+    value:
+      type: text_literal
+      text_literal: 'Charge'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_charge_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Charge > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Charge > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        If you moved at least 10 feet on the action before your attack, add a circumstance bonus to damage for that attack equal to the number of damage dice for the weapon.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_deadly_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Deadly > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Deadly > Header
+    value:
+      type: text_literal
+      text_literal: 'Deadly'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_deadly_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Deadly > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Deadly > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        On a critical hit, the weapon adds a weapon damage die of the listed size. This damage increases to two dice if the weapon is master quality and three dice if the weapon is legendary.
+
+
+        For instance, a master-quality rapier deals 2d6 additional piercing damage on a critical hit.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_disarm_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Disarm > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Disarm > Header
+    value:
+      type: text_literal
+      text_literal: 'Disarm'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_disarm_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Disarm > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Disarm > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        You can use this weapon to Disarm with the Athletics skill even if you don’t have a free hand. This uses the weapon’s reach (if different from your own) and adds the weapon’s item bonus to attack rolls (if any) as a bonus to the Athletics check. If you critically fail a check to Disarm using the weapon, you can drop the weapon to treat it as a normal failure. On a critical success, you still need a free hand if you want to take the item.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_dwarf_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Dwarf > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Dwarf > Header
+    value:
+      type: text_literal
+      text_literal: 'Dwarf'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_dwarf_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Dwarf > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Dwarf > Content
+    value:
+      type: text_literal
+      text_literal: 'People of the dwarf ancestry craft and use these weapons.'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_elf_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Elf > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Elf > Header
+    value:
+      type: text_literal
+      text_literal: 'Elf'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_elf_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Elf > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Elf > Content
+    value:
+      type: text_literal
+      text_literal: 'People of the elf ancestry craft and use these weapons.'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_fatal_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Fatal > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Fatal > Header
+    value:
+      type: text_literal
+      text_literal: 'Fatal'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_fatal_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Fatal > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Fatal > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        The fatal trait includes a die size. On a critical hit, all the weapon’s damage dice increase to that die size instead of the normal dice, plus the weapon adds another die of damage of the listed size.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_finesse_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Finesse > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Finesse > Header
+    value:
+      type: text_literal
+      text_literal: 'Finesse'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_finesse_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Finesse > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Finesse > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        You can use your Dexterity modifier instead of your Strength modifier when making attack rolls with this melee weapon. You still use Strength when calculating damage.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_forceful_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Forceful > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Forceful > Header
+    value:
+      type: text_literal
+      text_literal: 'Forceful'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_forceful_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Forceful > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Forceful > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        This weapon becomes more dangerous when you build up momentum. When you attack with it more than once on your turn, the second attack adds a circumstance bonus to damage equal to the number of weapon damage dice, and each subsequent attack adds a circumstance bonus to damage equal to double the number of weapon damage dice.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_freehand_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Free-Hand > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Free-Hand > Header
+    value:
+      type: text_literal
+      text_literal: 'Free-Hand'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_freehand_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Free-Hand > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Free-Hand > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        This weapon doesn’t take up your hand, usually because it is built into your armor. A free-hand weapon can’t be Disarmed. You can use the hand covered by your free-hand weapon to wield other items, perform manipulate actions, and so forth. You can’t attack with a free-hand weapon if you’re wielding anything in that hand or using the hand for something else. When you’re not wielding anything and not using the hand, you can use abilities that require you to have a hand free as well as those that require you to be wielding a weapon in that hand. Each of your hands can have only one free-hand weapon on it.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_gnome_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Gnome > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Gnome > Header
+    value:
+      type: text_literal
+      text_literal: 'Gnome'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_gnome_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Gnome > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Gnome > Content
+    value:
+      type: text_literal
+      text_literal: 'People of the gnome ancestry craft and use these weapons.'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_goblin_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Goblin > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Goblin > Header
+    value:
+      type: text_literal
+      text_literal: 'Goblin'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_goblin_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Goblin > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Goblin > Content
+    value:
+      type: text_literal
+      text_literal: 'People of the goblin ancestry craft and use these weapons.'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_halfling_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Halfling > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Halfling > Header
+    value:
+      type: text_literal
+      text_literal: 'Halfling'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_halfling_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Halfling > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Halfling > Content
+    value:
+      type: text_literal
+      text_literal: 'People of the halfling ancestry craft and use these weapons.'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_monk_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Monk > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Monk > Header
+    value:
+      type: text_literal
+      text_literal: 'Monk'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_monk_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Monk > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Monk > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        Monks can use these weapons with their abilities that normally require unarmed attacks.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_nonlethal_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Nonlethal > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Nonlethal > Header
+    value:
+      type: text_literal
+      text_literal: 'Nonlethal'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_nonlethal_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Nonlethal > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Nonlethal > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        All attacks with this weapon are nonlethal (see page 294), and are used to knock creatures unconscious instead of kill them.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_orc_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Orc > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Orc > Header
+    value:
+      type: text_literal
+      text_literal: 'Orc'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_orc_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Orc > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Orc > Content
+    value:
+      type: text_literal
+      text_literal: 'People of the orc ancestry craft and use these weapons.'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_parry_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Parry > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Parry > Header
+    value:
+      type: text_literal
+      text_literal: 'Parry'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_parry_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Parry > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Parry > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        This weapon can be used defensively to block attacks. While wielding this weapon, you can spend an action to position your weapon defensively, gaining a +1 circumstance bonus to AC until the start of your next turn.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_propulsive_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Propulsive > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Propulsive > Header
+    value:
+      type: text_literal
+      text_literal: 'Propulsive'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_propulsive_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Propulsive > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Propulsive > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        You add half your Strength modifier to damage rolls with a propulsive ranged weapon so long as your Strength modifier is not negative. If you have a negative Strength modifier, you add your full Strength modifier instead.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_reach_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Reach > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Reach > Header
+    value:
+      type: text_literal
+      text_literal: 'Reach'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_reach_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Reach > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Reach > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        This weapon is long and can be used to attack creatures up to 10 feet away instead of only adjacent creatures. For creatures that already have reach with the limb or limbs that wield the weapon, the weapon increases their reach by 5 feet.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_shove_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Shove > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Shove > Header
+    value:
+      type: text_literal
+      text_literal: 'Shove'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_shove_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Shove > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Shove > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        You can use this weapon to Shove with the Athletics skill even if you don’t have a free hand. This uses the weapon’s reach (if different from your own) and adds the weapon’s item bonus to attack rolls (if any) as a bonus to the Athletics check. If you critically fail a check to Shove using the weapon, you can drop the weapon to treat the outcome as a normal failure.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_sweep_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Sweep > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Sweep > Header
+    value:
+      type: text_literal
+      text_literal: 'Sweep'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_sweep_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Sweep > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Sweep > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        This weapon makes wide sweeping or spinning attacks, making it easier to attack multiple enemies. When you attack with this weapon, you gain a +1 circumstance bonus to your attack roll if you already attempted an attack this turn against a creature other than the target of this attack.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_thrown_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Thrown > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Thrown > Header
+    value:
+      type: text_literal
+      text_literal: 'Thrown'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_thrown_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Thrown > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Thrown > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        You can throw this weapon as a ranged attack. A thrown weapon adds your Strength modifier to damage just like a melee weapon does. When this trait appears on a melee weapon, it also includes the range increment in feet. Ranged weapons with this trait use the range increment specified in the weapon’s range entry.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_trip_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Trip > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Trip > Header
+    value:
+      type: text_literal
+      text_literal: 'Trip'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_trip_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Trip > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Trip > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        You can use this weapon to Trip with the Athletics skill even if you don’t have a free hand. This uses the weapon’s reach (if different from your own) and adds the weapon’s item bonus to attack rolls (if any) as a bonus to the Athletics check. If you critically fail a check to Trip using the weapon, you can drop the weapon to treat the outcome as a normal failure.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_twin_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Twin > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Twin > Header
+    value:
+      type: text_literal
+      text_literal: 'Twin'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_twin_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Twin > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Twin > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        These weapons are used as a pair, each complementing the other. When you are wielding two of the same weapon with this trait and attack with one of them, if you already attacked with the other weapon this turn, you add a circumstance bonus to the damage roll equal to the weapon’s number of damage dice. For instance, if you attacked with a twin weapon in your right hand with your first action, you would gain this bonus to damage when you attack with a matching twin weapon in your left hand for your second action. On your third action, an attack with either weapon would receive this bonus, since you’d already attacked with both. The weapons must be of the same type to benefit from this trait, but they don’t need to be the same quality or have the same runes.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_twohand_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Two-Hand > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Two-Hand > Header
+    value:
+      type: text_literal
+      text_literal: 'Two-Hand'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_twohand_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Two-Hand > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Two-Hand > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        This weapon can be wielded with two hands. Doing so changes its weapon damage die to the indicated value. If this trait applies to a magic weapon, the extra weapon damage dice from it being a magic weapon also increase in size while it’s being wielded with two hands.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_unarmed_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Unarmed > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Unarmed > Header
+    value:
+      type: text_literal
+      text_literal: 'Unarmed'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_unarmed_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Unarmed > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Unarmed > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        An unarmed attack uses your body rather than a manufactured weapon. An unarmed attack isn’t a weapon, though it’s categorized with weapons for weapon tables and weapon groups, and it might have weapon traits. Because it’s a part of your body, an unarmed attack can’t be Disarmed. It also doesn’t take up a hand, though a fist or other grasping appendage follows the same rules as a free-hand weapon.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_versatile_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Versatile > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Versatile > Header
+    value:
+      type: text_literal
+      text_literal: 'Versatile'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_versatile_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Versatile > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Versatile > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        A versatile weapon can be used to deal a different type of damage than the type listed in the damage entry. This trait indicates the alternate damage type. For instance, a piercing weapon that has versatile S can be used to deal piercing or slashing damage. You choose the damage type each time you make an attack.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_volley_header
+    label: Equipment > Weapons > Statistics > Weapon Traits > Volley > Header
+    description: Equipment > Weapons > Statistics > Weapon Traits > Volley > Header
+    value:
+      type: text_literal
+      text_literal: 'Volley'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_statistics_weapon_traits_volley_content
+    label: Equipment > Weapons > Statistics > Weapon Traits > Volley > Content
+    description: Equipment > Weapons > Statistics > Weapon Traits > Volley > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        This ranged weapon is less effective at close distances. Your attacks against targets that are at a distance within the number of feet listed take a –2 penalty.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_header
+    label: Equipment > Weapons > Critical Specialization Effects > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Header
+    value:
+      type: text_literal
+      text_literal: 'Critical Specialization Effects'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_content
+    label: Equipment > Weapons > Critical Specialization Effects > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        Certain ancestry feats, class features, feats, weapon runes, and other abilities can grant you additional benefits when you achieve a critical success on an attack roll with certain weapons. This is called a critical specialization effect. The exact effect depends on which weapon group your weapon belongs to, as listed below. You can always decide not to add the critical specialization effect of your weapon. If an effect requires a saving throw or check, use your class DC.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_axe_header
+    label: Equipment > Weapons > Critical Specialization Effects > Axe > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Axe > Header
+    value:
+      type: text_literal
+      text_literal: 'Axe'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_axe_content
+    label: Equipment > Weapons > Critical Specialization Effects > Axe > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Axe > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        Choose one creature adjacent to the initial target and within reach. If its AC is lower than your attack roll for the critical hit, you deal damage to that creature equal to a roll of your weapon’s damage die (including extra dice for its potency rune, if any). No bonuses or other additional dice apply to this damage.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_bow_header
+    label: Equipment > Weapons > Critical Specialization Effects > Bow > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Bow > Header
+    value:
+      type: text_literal
+      text_literal: 'Bow'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_bow_content
+    label: Equipment > Weapons > Critical Specialization Effects > Bow > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Bow > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        If the target of the critical hit is adjacent to a surface, it gets stuck to that surface by the missile. The target is immobile and must spend an Interact action to attempt a DC 10 Athletics check to pull the missile free before it can move from its space. The creature doesn’t become stuck if it’s incorporeal, liquid (like a water elemental or some oozes), or could otherwise escape without effort.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_brawling_header
+    label: Equipment > Weapons > Critical Specialization Effects > Brawling > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Brawling > Header
+    value:
+      type: text_literal
+      text_literal: 'Brawling'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_brawling_content
+    label: Equipment > Weapons > Critical Specialization Effects > Brawling > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Brawling > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        The target must succeed at a Fortitude save or be slowed 1 until the end of your next turn.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_club_header
+    label: Equipment > Weapons > Critical Specialization Effects > Club > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Club > Header
+    value:
+      type: text_literal
+      text_literal: 'Club'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_club_content
+    label: Equipment > Weapons > Critical Specialization Effects > Club > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Club > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        You knock the target back from you 5 or 10 feet (you choose the distance).
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_dart_header
+    label: Equipment > Weapons > Critical Specialization Effects > Dart > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Dart > Header
+    value:
+      type: text_literal
+      text_literal: 'Dart'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_dart_content
+    label: Equipment > Weapons > Critical Specialization Effects > Dart > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Dart > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        The target takes 1d4 persistent bleed damage. You gain an item bonus to this bleed damage equal to the weapon’s item bonus to attack rolls.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_flail_header
+    label: Equipment > Weapons > Critical Specialization Effects > Flail > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Flail > Header
+    value:
+      type: text_literal
+      text_literal: 'Flail'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_flail_content
+    label: Equipment > Weapons > Critical Specialization Effects > Flail > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Flail > Content
+    value:
+      type: text_literal
+      text_literal: 'The target is knocke prone.'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_hammer_header
+    label: Equipment > Weapons > Critical Specialization Effects > Hammer > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Hammer > Header
+    value:
+      type: text_literal
+      text_literal: 'Hammer'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_hammer_content
+    label: Equipment > Weapons > Critical Specialization Effects > Hammer > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Hammer > Content
+    value:
+      type: text_literal
+      text_literal: 'The target is knocked prone.'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_knife_header
+    label: Equipment > Weapons > Critical Specialization Effects > Knife > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Knife > Header
+    value:
+      type: text_literal
+      text_literal: 'Knife'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_knife_content
+    label: Equipment > Weapons > Critical Specialization Effects > Knife > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Knife > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        The target takes 1d4 persistent bleed damage. You gain an item bonus to this bleed damage equal to the weapon’s item bonus to attack rolls.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_pick_header
+    label: Equipment > Weapons > Critical Specialization Effects > Pick > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Pick > Header
+    value:
+      type: text_literal
+      text_literal: 'Pick'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_pick_content
+    label: Equipment > Weapons > Critical Specialization Effects > Pick > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Pick > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        The weapon viciously pierces the target. The target takes 1 additional damage per weapon damage die (including the extra dice from a critical hit).
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_polearm_header
+    label: Equipment > Weapons > Critical Specialization Effects > Polearm > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Polearm > Header
+    value:
+      type: text_literal
+      text_literal: 'Polearm'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_polearm_content
+    label: Equipment > Weapons > Critical Specialization Effects > Polearm > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Polearm > Content
+    value:
+      type: text_literal
+      text_literal: 'The target is moved 5 feet in a direction of your choice.'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_shield_header
+    label: Equipment > Weapons > Critical Specialization Effects > Shield > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Shield > Header
+    value:
+      type: text_literal
+      text_literal: 'Shield'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_shield_content
+    label: Equipment > Weapons > Critical Specialization Effects > Shield > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Shield > Content
+    value:
+      type: text_literal
+      text_literal: 'You knock the target back from you 5 feet.'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_sling_header
+    label: Equipment > Weapons > Critical Specialization Effects > Sling > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Sling > Header
+    value:
+      type: text_literal
+      text_literal: 'Sling'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_sling_content
+    label: Equipment > Weapons > Critical Specialization Effects > Sling > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Sling > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        The target must succeed at a Fortitude save or become slowed 1 for 1 round.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_spear_header
+    label: Equipment > Weapons > Critical Specialization Effects > Spear > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Spear > Header
+    value:
+      type: text_literal
+      text_literal: 'Spear'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_spear_content
+    label: Equipment > Weapons > Critical Specialization Effects > Spear > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Spear > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        The weapon pierces the target, weakening its attacks. The target is enfeebled 1 for 1 round.
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_sword_header
+    label: Equipment > Weapons > Critical Specialization Effects > Sword > Header
+    description: Equipment > Weapons > Critical Specialization Effects > Sword > Header
+    value:
+      type: text_literal
+      text_literal: 'Sword'
+- type: variable_text
+  variable_text:
+    id: equipment_weapons_crit_spec_effects_sword_content
+    label: Equipment > Weapons > Critical Specialization Effects > Sword > Content
+    description: Equipment > Weapons > Critical Specialization Effects > Sword > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        The target is made off-balance by your attack, becoming flat-footed for 1 round.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_header
+    label: Equipment > Gear > Header
+    description: Equipment > Gear > Header
+    value:
+      type: text_literal
+      text_literal: 'Gear'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_content
+    label: Equipment > Gear > Content
+    description: Equipment > Gear > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        You need all sorts of items both while exploring and in downtime, from rations to climbing gear to fancy clothing.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_statistics_header
+    label: Equipment > Gear > Statistics > Header
+    description: Equipment > Gear > Statistics > Header
+    value:
+      type: text_literal
+      text_literal: 'Gear Statistics'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_statistics_content
+    label: Equipment > Gear > Statistics > Content
+    description: Equipment > Gear > Statistics > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        Entries for gear use the following categories. Any name with a number after it in parentheses indicates that the item’s Price is for the indicated quantity. All items listed in this chapter are level 0 unless the item name is followed by a higher item level in parentheses.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_statistics_price_header
+    label: Equipment > Gear > Statistics > Price > Header
+    description: Equipment > Gear > Statistics > Price > Header
+    value:
+      type: text_literal
+      text_literal: 'Price'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_statistics_price_content
+    label: Equipment > Gear > Statistics > Price > Content
+    description: Equipment > Gear > Statistics > Price > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        This is the Price to buy this item from a merchant.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_statistics_bulk_header
+    label: Equipment > Gear > Statistics > Bulk > Header
+    description: Equipment > Gear > Statistics > Bulk > Header
+    value:
+      type: text_literal
+      text_literal: 'Bulk'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_statistics_bulk_content
+    label: Equipment > Gear > Statistics > Bulk > Content
+    description: Equipment > Gear > Statistics > Bulk > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        This measures how heavy and cumbersome the item is to carry. Containers can hold the listed amount of bulk, but some items might not fit due to their dimensions. See page 174 for more information regarding Bulk.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_statistics_hands_header
+    label: Equipment > Gear > Statistics > Hands > Header
+    description: Equipment > Gear > Statistics > Hands > Header
+    value:
+      type: text_literal
+      text_literal: 'Hands'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_statistics_hands_content
+    label: Equipment > Gear > Statistics > Hands > Content
+    description: Equipment > Gear > Statistics > Hands > Content
+    value:
+      type: text_literal
+      text_literal: >-
+        This lists how many hands it takes to wield the item effectively. Most items that require two hands can be carried in only one hand, but you must spend an Interact action to change your grip in order to use the item. The GM may determine that an item is too big to carry in one hand (or even two hands, for particularly large items).
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_header
+    label: Equipment > Gear > Descriptions > Header
+    description: Equipment > Gear > Descriptions > Header
+    value:
+      type: text_literal
+      text_literal: 'Adventuring Gear Descriptions'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_content
+    label: Equipment > Gear > Descriptions > Content
+    description: Equipment > Gear > Descriptions > Content
+    value:
+      type: text_literal
+      text_literal: 'These items follow special rules or require more detail.'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_alchemists_tools_header
+    label: 'Equipment > Gear > Descriptions > Alchemist''s Tools > Header'
+    description: 'Equipment > Gear > Descriptions > Alchemist''s Tools > Header'
+    value:
+      type: text_literal
+      text_literal: 'Alchemist''s Tools'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_alchemists_tools_content
+    label: 'Equipment > Gear > Descriptions > Alchemist''s Tools > Content'
+    description: 'Equipment > Gear > Descriptions > Alchemist''s Tools > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        These beakers and chemicals can be used to set up a mobile alchemical laboratory. Expert-quality alchemist’s tools give a +1 item bonus to Crafting checks to create alchemical items, and master-quality ones give a +2 item bonus.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_artisans_tools_header
+    label: 'Equipment > Gear > Descriptions > Artisan''s Tools > Header'
+    description: 'Equipment > Gear > Descriptions > Artisan''s Tools > Header'
+    value:
+      type: text_literal
+      text_literal: 'Artisan''s Tools'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_artisans_tools_content
+    label: 'Equipment > Gear > Descriptions > Artisan''s Tools > Content'
+    description: 'Equipment > Gear > Descriptions > Artisan''s Tools > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can create items from raw materials using artisan’s tools. This involves using the Crafting skill to Craft the items. Expert artisan’s tools give you a +1 item bonus to the check, and master tools give you a +2 item bonus. Different sets might be needed for different kinds of work, as determined by the GM; for example, blacksmith’s tools differ from woodworker’s tools.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_backpack_header
+    label: 'Equipment > Gear > Descriptions > Backpack > Header'
+    description: 'Equipment > Gear > Descriptions > Backpack > Header'
+    value:
+      type: text_literal
+      text_literal: 'Backpack'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_backpack_content
+    label: 'Equipment > Gear > Descriptions > Backpack > Content'
+    description: 'Equipment > Gear > Descriptions > Backpack > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        A backpack can hold up to 4 Bulk worth of items. If you are carrying or stowing a backpack rather than wearing it on your back, it has light Bulk instead of negligible.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_basic_crafters_book_header
+    label: 'Equipment > Gear > Descriptions > Basic Crafter''s Book > Header'
+    description: 'Equipment > Gear > Descriptions > Basic Crafter''s Book > Header'
+    value:
+      type: text_literal
+      text_literal: 'Basic Crafter''s Book'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_basic_crafters_book_content
+    label: 'Equipment > Gear > Descriptions > Basic Crafter''s Book > Content'
+    description: 'Equipment > Gear > Descriptions > Basic Crafter''s Book > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This book contains the formulas (see page 188) for all the common items in this chapter.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_beltpouch_header
+    label: 'Equipment > Gear > Descriptions > Belt Pouch > Header'
+    description: 'Equipment > Gear > Descriptions > Belt Pouch > Header'
+    value:
+      type: text_literal
+      text_literal: 'Belt Pouch'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_beltpouch_content
+    label: 'Equipment > Gear > Descriptions > Belt Pouch > Content'
+    description: 'Equipment > Gear > Descriptions > Belt Pouch > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        A belt pouch can hold up to 4 items of light Bulk.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_caltrops_header
+    label: 'Equipment > Gear > Descriptions > Caltrops > Header'
+    description: 'Equipment > Gear > Descriptions > Caltrops > Header'
+    value:
+      type: text_literal
+      text_literal: 'Caltrops'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_caltrops_content
+    label: 'Equipment > Gear > Descriptions > Caltrops > Content'
+    description: 'Equipment > Gear > Descriptions > Caltrops > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        These four-pronged metal spikes can cause damage to a creature’s feet. You can scatter caltrops in an empty square adjacent to you with an Interact action. The first creature that moves into that square must succeed at a DC 14 Acrobatics check or take 1d4 piercing damage and 1 persistent bleed damage. A creature taking bleed damage from caltrops is hampered 5. Spending an Interact action to pluck the caltrops free reduces the DC to stop the bleeding. Once a creature takes damage from caltrops, enough caltrops are ruined that other creatures moving into the square are safe.
+
+
+        Deployed caltrops can be salvaged to be used again if no creatures took damage from them. Otherwise, enough caltrops are ruined that they can’t be salvaged.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_candle_header
+    label: 'Equipment > Gear > Descriptions > Candle > Header'
+    description: 'Equipment > Gear > Descriptions > Candle > Header'
+    value:
+      type: text_literal
+      text_literal: 'Candle'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_candle_content
+    label: 'Equipment > Gear > Descriptions > Candle > Content'
+    description: 'Equipment > Gear > Descriptions > Candle > Content'
+    value:
+      type: text_literal
+      text_literal: 'A lit candle sheds dim light in a 5-foot radius.'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_chest_header
+    label: 'Equipment > Gear > Descriptions > Chest > Header'
+    description: 'Equipment > Gear > Descriptions > Chest > Header'
+    value:
+      type: text_literal
+      text_literal: 'Chest'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_chest_content
+    label: 'Equipment > Gear > Descriptions > Chest > Content'
+    description: 'Equipment > Gear > Descriptions > Chest > Content'
+    value:
+      type: text_literal
+      text_literal: 'A wooden chest can hold up to 8 Bulk worth of items.'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_climbing_kit_header
+    label: 'Equipment > Gear > Descriptions > Climbing Kit > Header'
+    description: 'Equipment > Gear > Descriptions > Climbing Kit > Header'
+    value:
+      type: text_literal
+      text_literal: 'Climbing Kit'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_climbing_kit_content
+    label: 'Equipment > Gear > Descriptions > Climbing Kit > Content'
+    description: 'Equipment > Gear > Descriptions > Climbing Kit > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This satchel includes 50 feet of hemp rope, some pulleys, a dozen pitons, a hammer, a grappling hook, and one set of crampons. Climbing kits allow you to attach yourself to the wall you’re climbing, moving half as quickly as usual (minimum 5 feet) but letting you attempt a DC 5 flat check whenever you critically fail to prevent a fall. You gain a +1 item bonus to Athletics checks to Climb while utilizing an expert climbing kit. A single kit has only enough materials for one climber; each climber needs their own kit.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_clothing_header
+    label: 'Equipment > Gear > Descriptions > Clothing > Header'
+    description: 'Equipment > Gear > Descriptions > Clothing > Header'
+    value:
+      type: text_literal
+      text_literal: 'Clothing'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_clothing_content
+    label: 'Equipment > Gear > Descriptions > Clothing > Content'
+    description: 'Equipment > Gear > Descriptions > Clothing > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Ordinary clothing is functional and decently tailored, such as peasant garb, monk’s robes, traveler’s attire, or work clothes. Fine clothing suits a noble or royal, made with expensive fabrics, precious metals, and intricate patterns. Winter clothing grants a +1 item bonus to Survival checks to Survive in the Wild when enduring cold.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_compass_header
+    label: 'Equipment > Gear > Descriptions > Compass > Header'
+    description: 'Equipment > Gear > Descriptions > Compass > Header'
+    value:
+      type: text_literal
+      text_literal: 'Compass'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_compass_content
+    label: 'Equipment > Gear > Descriptions > Compass > Content'
+    description: 'Equipment > Gear > Descriptions > Compass > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        A compass gives you a +1 item bonus to Survival checks to navigate, provided you’re in a location with uniform magnetic fields.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_crowbar_expert_header
+    label: 'Equipment > Gear > Descriptions > Crowbar, Expert > Header'
+    description: 'Equipment > Gear > Descriptions > Crowbar, Expert > Header'
+    value:
+      type: text_literal
+      text_literal: 'Crowbar, Expert'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_crowbar_expert_content
+    label: 'Equipment > Gear > Descriptions > Crowbar, Expert > Content'
+    description: 'Equipment > Gear > Descriptions > Crowbar, Expert > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This item grants you a +1 item bonus to Athletics checks to Break Open anything that can be pried open.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_disguise_kit_header
+    label: 'Equipment > Gear > Descriptions > Disguise Kit > Header'
+    description: 'Equipment > Gear > Descriptions > Disguise Kit > Header'
+    value:
+      type: text_literal
+      text_literal: 'Disguise Kit'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_disguise_kit_content
+    label: 'Equipment > Gear > Descriptions > Disguise Kit > Content'
+    description: 'Equipment > Gear > Descriptions > Disguise Kit > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This small wooden box contains cosmetics, false facial hair, spirit gum, and a few simple wigs. You usually need a disguise kit to set up a disguise in order to Impersonate someone using the Deception skill. A disguise kit of expert quality adds a +1 item bonus to relevant checks, and a master disguise kit adds a +2 item bonus. If you’ve crafted a large number of disguises, you can replenish your cosmetics supply with replacement cosmetics of a level of quality that matches that of your disguise kit.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_fishing_tackle_header
+    label: 'Equipment > Gear > Descriptions > Fishing Tackle > Header'
+    description: 'Equipment > Gear > Descriptions > Fishing Tackle > Header'
+    value:
+      type: text_literal
+      text_literal: 'Fishing Tackle'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_fishing_tackle_content
+    label: 'Equipment > Gear > Descriptions > Fishing Tackle > Content'
+    description: 'Equipment > Gear > Descriptions > Fishing Tackle > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This kit include a collapsible fishing pole, fishhooks, line, lures, and a fishing net. Expert-quality fishing tackle grants a +1 item bonus to checks to fish.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_flint_steel_header
+    label: 'Equipment > Gear > Descriptions > Flint and Steel > Header'
+    description: 'Equipment > Gear > Descriptions > Flint and Steel > Header'
+    value:
+      type: text_literal
+      text_literal: 'Flint and Steel'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_flint_steel_content
+    label: 'Equipment > Gear > Descriptions > Flint and Steel > Content'
+    description: 'Equipment > Gear > Descriptions > Flint and Steel > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Flint and steel are useful in creating a fire if you have the time to catch a spark, though using them is typically too time-consuming to be possible during an encounter. Even in ideal conditions, using flint and steel to light a flame requires at least 3 actions, and often significantly longer.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_formula_book_header
+    label: 'Equipment > Gear > Descriptions > Formula Book > Header'
+    description: 'Equipment > Gear > Descriptions > Formula Book > Header'
+    value:
+      type: text_literal
+      text_literal: 'Formula Book'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_formula_book_content
+    label: 'Equipment > Gear > Descriptions > Formula Book > Content'
+    description: 'Equipment > Gear > Descriptions > Formula Book > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        A formula book holds formulas necessary to make items other than the common equipment from this chapter. Each formula book can hold the formulas for up to 100 different items. Formulas can also appear on parchment sheets, tablets, and almost any other medium, and there’s no need for you to copy them into a specific book as long as you can reference them.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_healers_tools_header
+    label: 'Equipment > Gear > Descriptions > Healer''s Tools > Header'
+    description: 'Equipment > Gear > Descriptions > Healer''s Tools > Header'
+    value:
+      type: text_literal
+      text_literal: 'Healer''s Tools'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_healers_tools_content
+    label: 'Equipment > Gear > Descriptions > Healer''s Tools > Content'
+    description: 'Equipment > Gear > Descriptions > Healer''s Tools > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This kit of bandages, herbs, and suturing tools is necessary for Medicine checks to Administer First Aid, Treat a Disease, or Treat a Poison. Expert-quality healer’s tools provide a +1 item bonus to such checks.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_holly_mistletoe_header
+    label: 'Equipment > Gear > Descriptions > Holly and Mistletoe > Header'
+    description: 'Equipment > Gear > Descriptions > Holly and Mistletoe > Header'
+    value:
+      type: text_literal
+      text_literal: 'Holly and Mistletoe'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_holly_mistletoe_content
+    label: 'Equipment > Gear > Descriptions > Holly and Mistletoe > Content'
+    description: 'Equipment > Gear > Descriptions > Holly and Mistletoe > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Plants of supernatural significance provide a divine focus for some primal spellcasters, such as druids, to use certain abilities and cast some spells. A bundle of holly and mistletoe must be held in one hand to use it.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_lantern_header
+    label: 'Equipment > Gear > Descriptions > Lantern > Header'
+    description: 'Equipment > Gear > Descriptions > Lantern > Header'
+    value:
+      type: text_literal
+      text_literal: 'Lantern'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_lantern_content
+    label: 'Equipment > Gear > Descriptions > Lantern > Content'
+    description: 'Equipment > Gear > Descriptions > Lantern > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        A lantern sheds bright light and requires 1 pint of oil to function for 6 hours. A bull’s-eye lantern emits its light in a 60-foot cone. A hooded lantern sheds light in a 30-foot radius and is equipped with shutters, which you can close to block the light. Closing or opening the shutters takes an Interact action and requires you to have one hand free.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_lock_header
+    label: 'Equipment > Gear > Descriptions > Lock > Header'
+    description: 'Equipment > Gear > Descriptions > Lock > Header'
+    value:
+      type: text_literal
+      text_literal: 'Lock'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_lock_content
+    label: 'Equipment > Gear > Descriptions > Lock > Content'
+    description: 'Equipment > Gear > Descriptions > Lock > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Picking a standard lock requires three successful DC 20 Thievery checks. An expert-quality lock requires four successes at DC 25, and a master lock requires five successes at DC 30.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_magnifying_glass_expert_header
+    label: 'Equipment > Gear > Descriptions > Magnifying Glass, Expert > Header'
+    description: 'Equipment > Gear > Descriptions > Magnifying Glass, Expert > Header'
+    value:
+      type: text_literal
+      text_literal: 'Magnifyin Glass, Expert'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_magnifying_glass_expert_content
+    label: 'Equipment > Gear > Descriptions > Magnifying Glass, Expert > Content'
+    description: 'Equipment > Gear > Descriptions > Magnifying Glass, Expert > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This handheld lens gives you a +1 item bonus to Perception checks to notice minute details of documents, fabric, and the like.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_manacles_header
+    label: 'Equipment > Gear > Descriptions > Manacles > Header'
+    description: 'Equipment > Gear > Descriptions > Manacles > Header'
+    value:
+      type: text_literal
+      text_literal: 'Manacles'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_manacles_content
+    label: 'Equipment > Gear > Descriptions > Manacles > Content'
+    description: 'Equipment > Gear > Descriptions > Manacles > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Binding a creature in manacles requires one successful touch attack to bind each wrist or ankle. A creature is normally untrained with manacle touch attacks. A two- legged creature with its legs bound is hampered 15, and a two-handed creature with its wrists bound has to succeed at a DC 5 flat check any time it uses a manipulate action or else that action fails. A creature bound to a stationary object is immobile. For creatures with more or fewer limbs, the GM determines what effect manacles have, if any. Freeing a creature from manacles requires three successful DC 22 Thievery checks to Pick the Lock. Expert-quality manacles require four successes at DC 27, and master- quality manacles require five successes at DC 32.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_material_component_pouch_header
+    label: 'Equipment > Gear > Descriptions > Material Component Pouch > Header'
+    description: 'Equipment > Gear > Descriptions > Material Component Pouch > Header'
+    value:
+      type: text_literal
+      text_literal: 'Material Component Pouch'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_material_component_pouch_content
+    label: 'Equipment > Gear > Descriptions > Material Component Pouch > Content'
+    description: 'Equipment > Gear > Descriptions > Material Component Pouch > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This pouch contains material components for those spells that require them. Though the components are used up over time, you can refill spent components during your daily preparations.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_musical_instrument_header
+    label: 'Equipment > Gear > Descriptions > Musical Instrument > Header'
+    description: 'Equipment > Gear > Descriptions > Musical Instrument > Header'
+    value:
+      type: text_literal
+      text_literal: 'Musical Instrument'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_musical_instrument_content
+    label: 'Equipment > Gear > Descriptions > Musical Instrument > Content'
+    description: 'Equipment > Gear > Descriptions > Musical Instrument > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Handheld instruments include bagpipes, a small set of chimes, small drums, fiddles and viols, flutes and recorders, small harps, lutes, trumpets, and similar-sized instruments. The GM might rule that an especially large handheld instrument (like a tuba) has greater Bulk. Heavy instruments such as large drums, a full set of chimes, and keyboard instruments are less portable, and generally need to be stationary while played. An expert instrument gives a +1 item bonus to Performance checks using that instrument, and a master instrument gives a +2 item bonus.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_oil_header
+    label: 'Equipment > Gear > Descriptions > Oil > Header'
+    description: 'Equipment > Gear > Descriptions > Oil > Header'
+    value:
+      type: text_literal
+      text_literal: 'Oil'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_oil_content
+    label: 'Equipment > Gear > Descriptions > Oil > Content'
+    description: 'Equipment > Gear > Descriptions > Oil > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can use oil to fuel lanterns, but you can also set a pint of oil aflame and throw it. You must first spend an Interact action preparing the oil, then throw it with another action as a ranged touch attack. If you hit, it splatters on the creature or in a single 5-foot square you target. You must succeed at a DC 10 flat check for the oil to ignite successfully when it hits. If the oil ignites, the target takes 1d6 fire damage.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_piton_header
+    label: 'Equipment > Gear > Descriptions > Piton > Header'
+    description: 'Equipment > Gear > Descriptions > Piton > Header'
+    value:
+      type: text_literal
+      text_literal: 'Piton'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_piton_content
+    label: 'Equipment > Gear > Descriptions > Piton > Content'
+    description: 'Equipment > Gear > Descriptions > Piton > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        These small spikes can be used as anchors to make climbing easier. To affix a piton, you must hold it in one hand and use a hammer to drive it in with your other hand.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_religious_symbol_header
+    label: 'Equipment > Gear > Descriptions > Religious Symbol > Header'
+    description: 'Equipment > Gear > Descriptions > Religious Symbol > Header'
+    value:
+      type: text_literal
+      text_literal: 'Religious Symbol'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_religious_symbol_content
+    label: 'Equipment > Gear > Descriptions > Religious Symbol > Content'
+    description: 'Equipment > Gear > Descriptions > Religious Symbol > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This piece of wood or silver is emblazoned with an image representing a deity. Some divine spellcasters, such as clerics, can use a religious symbol of their deity as a divine focus to use certain abilities and cast some spells. A religious symbol must be held in one hand to use it.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_religious_text_header
+    label: 'Equipment > Gear > Descriptions > Religious Text > Header'
+    description: 'Equipment > Gear > Descriptions > Religious Text > Header'
+    value:
+      type: text_literal
+      text_literal: 'Religious Text'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_religious_text_content
+    label: 'Equipment > Gear > Descriptions > Religious Text > Content'
+    description: 'Equipment > Gear > Descriptions > Religious Text > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This manuscript contains scripture of a particular religion. Some divine spellcasters, such as clerics, can use a religious text as a divine focus to use certain abilities and cast some spells. A religious text must be held in one hand to use it.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_repair_kit_header
+    label: 'Equipment > Gear > Descriptions > Repair Kit > Header'
+    description: 'Equipment > Gear > Descriptions > Repair Kit > Header'
+    value:
+      type: text_literal
+      text_literal: 'Repair Kit'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_repair_kit_content
+    label: 'Equipment > Gear > Descriptions > Repair Kit > Content'
+    description: 'Equipment > Gear > Descriptions > Repair Kit > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        A repair kit allows you to perform simple repairs while traveling. It contains a portable anvil, tongs, woodworking tools, a whetstone, and oils for conditioning leather and wood. You can use a repair kit to Repair items using the Crafting skill. An expert repair kit gives you a +1 item bonus to the check.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_sack_header
+    label: 'Equipment > Gear > Descriptions > Sack > Header'
+    description: 'Equipment > Gear > Descriptions > Sack > Header'
+    value:
+      type: text_literal
+      text_literal: 'Sack'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_sack_content
+    label: 'Equipment > Gear > Descriptions > Sack > Content'
+    description: 'Equipment > Gear > Descriptions > Sack > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        A sack can hold up to 8 Bulk worth of items. A sack containing 2 Bulk or less can be worn on the body, usually tucked into a belt. You can carry a sack with one hand, but you must use two hands to transfer items in and out.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_saddlebags_header
+    label: 'Equipment > Gear > Descriptions > Saddlebags > Header'
+    description: 'Equipment > Gear > Descriptions > Saddlebags > Header'
+    value:
+      type: text_literal
+      text_literal: 'Saddlebags'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_saddlebags_content
+    label: 'Equipment > Gear > Descriptions > Saddlebags > Content'
+    description: 'Equipment > Gear > Descriptions > Saddlebags > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Saddlebags come in a pair. Each can hold up to 3 Bulk worth of items. The Bulk value given is for saddlebags worn by a mount. If you are carrying or stowing saddlebags, they counts as 1 Bulk instead of light Bulk.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_satchel_header
+    label: 'Equipment > Gear > Descriptions > Satchel > Header'
+    description: 'Equipment > Gear > Descriptions > Satchel > Header'
+    value:
+      type: text_literal
+      text_literal: 'Satchel'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_satchel_content
+    label: 'Equipment > Gear > Descriptions > Satchel > Content'
+    description: 'Equipment > Gear > Descriptions > Satchel > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        A satchel can hold up to 2 Bulk worth of items. If you are carrying or stowing a satchel rather than wearing it over your shoulder, it counts as light Bulk instead of negligible.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_scroll_case_header
+    label: 'Equipment > Gear > Descriptions > Scroll Case > Header'
+    description: 'Equipment > Gear > Descriptions > Scroll Case > Header'
+    value:
+      type: text_literal
+      text_literal: 'Scroll Case'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_scroll_case_content
+    label: 'Equipment > Gear > Descriptions > Scroll Case > Content'
+    description: 'Equipment > Gear > Descriptions > Scroll Case > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Scrolls, maps, and other rolled documents are stored in scroll cases for safe transport.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_sheath_header
+    label: 'Equipment > Gear > Descriptions > Sheath > Header'
+    description: 'Equipment > Gear > Descriptions > Sheath > Header'
+    value:
+      type: text_literal
+      text_literal: 'Sheath'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_sheath_content
+    label: 'Equipment > Gear > Descriptions > Sheath > Content'
+    description: 'Equipment > Gear > Descriptions > Sheath > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        A sheath or scabbard lets you easily carry a weapon on your person.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_signal_whistle_header
+    label: 'Equipment > Gear > Descriptions > Signal Whistle > Header'
+    description: 'Equipment > Gear > Descriptions > Signal Whistle > Header'
+    value:
+      type: text_literal
+      text_literal: 'Signal Whistle'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_signal_whistle_content
+    label: 'Equipment > Gear > Descriptions > Signal Whistle > Content'
+    description: 'Equipment > Gear > Descriptions > Signal Whistle > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        When sounded, a signal whistle can be heard clearly up to half a mile away in open country.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_snare_kit_header
+    label: 'Equipment > Gear > Descriptions > Snare Kit > Header'
+    description: 'Equipment > Gear > Descriptions > Snare Kit > Header'
+    value:
+      type: text_literal
+      text_literal: 'Snare Kit'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_snare_kit_content
+    label: 'Equipment > Gear > Descriptions > Snare Kit > Content'
+    description: 'Equipment > Gear > Descriptions > Snare Kit > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This kit contains tools and ingredients for creating snares. A snare kit allows you to Craft snares using the Crafting skill. An expert snare kit gives you a +1 item bonus to the check and a master kit gives you a +2 item bonus.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_spellbook_header
+    label: 'Equipment > Gear > Descriptions > Spellbook > Header'
+    description: 'Equipment > Gear > Descriptions > Spellbook > Header'
+    value:
+      type: text_literal
+      text_literal: 'Spellbook'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_spellbook_content
+    label: 'Equipment > Gear > Descriptions > Spellbook > Content'
+    description: 'Equipment > Gear > Descriptions > Spellbook > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        A spellbook holds the written knowledge necessary to learn and prepare various spells, a necessity for wizards and a useful luxury for other spellcasters looking to discover additional spells. Each spellbook can hold up to 100 spells. The Price listed is for a blank spellbook.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_spyglass_header
+    label: 'Equipment > Gear > Descriptions > Spyglass > Header'
+    description: 'Equipment > Gear > Descriptions > Spyglass > Header'
+    value:
+      type: text_literal
+      text_literal: 'Spyglass'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_spyglass_content
+    label: 'Equipment > Gear > Descriptions > Spyglass > Content'
+    description: 'Equipment > Gear > Descriptions > Spyglass > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        A typical spyglass lets you see things eight times farther than normal. A spyglass of expert quality adds a +1 item bonus to Perception checks to notice details at a distance.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_tack_header
+    label: 'Equipment > Gear > Descriptions > Tack > Header'
+    description: 'Equipment > Gear > Descriptions > Tack > Header'
+    value:
+      type: text_literal
+      text_literal: 'Tack'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_tack_content
+    label: 'Equipment > Gear > Descriptions > Tack > Content'
+    description: 'Equipment > Gear > Descriptions > Tack > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Tack includes all the gear required to outfit a riding animal, including a saddle, bit and bridle, and stirrups if necessary. Especially large or oddly shaped animals might require specialty saddles. These can be more expensive or hard to find, as determined by the GM. The Bulk value given is for worn tack. If carried, the Bulk increases to 2.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_ten_foot_pole_header
+    label: 'Equipment > Gear > Descriptions > Ten-Foot Pole > Header'
+    description: 'Equipment > Gear > Descriptions > Ten-Foot Pole > Header'
+    value:
+      type: text_literal
+      text_literal: 'Ten-Foot Pole'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_ten_foot_pole_content
+    label: 'Equipment > Gear > Descriptions > Ten-Foot Pole > Content'
+    description: 'Equipment > Gear > Descriptions > Ten-Foot Pole > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        When wielding this long pole, you can use Seek to search a square up to 10 feet away. The pole is not sturdy enough to use as a weapon.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_thieves_tools_header
+    label: 'Equipment > Gear > Descriptions > Thieves'' Tools > Header'
+    description: 'Equipment > Gear > Descriptions > Thieves'' Tools > Header'
+    value:
+      type: text_literal
+      text_literal: 'Thieves'' Tools'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_thieves_tools_content
+    label: 'Equipment > Gear > Descriptions > Thieves'' Tools > Content'
+    description: 'Equipment > Gear > Descriptions > Thieves'' Tools > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        You need thieves’ tools to Pick Locks or Disable Devices (of some types) using the Thievery skill. Thieves’ tools of expert quality add a +1 item bonus to checks to Pick Locks and Disable Devices, and master thieves’ tools add a +2 item bonus. Replacement picks are necessary when your tools break as a result of a critical failure on a Thievery check.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_tool_header
+    label: 'Equipment > Gear > Descriptions > Tool > Header'
+    description: 'Equipment > Gear > Descriptions > Tool > Header'
+    value:
+      type: text_literal
+      text_literal: 'Tool'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_tool_content
+    label: 'Equipment > Gear > Descriptions > Tool > Content'
+    description: 'Equipment > Gear > Descriptions > Tool > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This entry is a catchall for basic hand tools that don’t have a specific adventuring purpose. A hoe, shovel, or sledgehammer is a long tool, and a hand drill, ice hook, or trowel is a short tool. A tool can usually be used as an improvised weapon, dealing 1d4 damage for a short tool or 1d6 for a long tool. The GM determines the damage type that’s appropriate or adjusts the damage if needed.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_torch_header
+    label: 'Equipment > Gear > Descriptions > Torch > Header'
+    description: 'Equipment > Gear > Descriptions > Torch > Header'
+    value:
+      type: text_literal
+      text_literal: 'Torch'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_torch_content
+    label: 'Equipment > Gear > Descriptions > Torch > Content'
+    description: 'Equipment > Gear > Descriptions > Torch > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        A torch sheds bright light in a 20-foot radius. It can be used as an improvised weapon that deals 1d4 bludgeoning damage plus 1 fire damage.
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_vial_header
+    label: 'Equipment > Gear > Descriptions > Vial > Header'
+    description: 'Equipment > Gear > Descriptions > Vial > Header'
+    value:
+      type: text_literal
+      text_literal: 'Vial'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_vial_content
+    label: 'Equipment > Gear > Descriptions > Vial > Content'
+    description: 'Equipment > Gear > Descriptions > Vial > Content'
+    value:
+      type: text_literal
+      text_literal: 'A simple glass vial holds up to 1 ounce of liquid.'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_writing_set_header
+    label: 'Equipment > Gear > Descriptions > Writing Set > Header'
+    description: 'Equipment > Gear > Descriptions > Writing Set > Header'
+    value:
+      type: text_literal
+      text_literal: 'Writing Set'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_descriptions_writing_set_content
+    label: 'Equipment > Gear > Descriptions > Writing Set > Content'
+    description: 'Equipment > Gear > Descriptions > Writing Set > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Using a writing set, you can draft correspondence and scribe scrolls. A set includes stationery, including a variety of paper and parchment, as well as ink, a quill or inkpen, sealing wax, and a simple seal. If you’ve written a large amount, you can refill your kit with extra ink and paper.
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_header
+    label: 'Equipment > Item Quality > Header'
+    description: 'Equipment > Item Quality > Header'
+    value:
+      type: text_literal
+      text_literal: 'Item Quality'
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_content
+    label: 'Equipment > Item Quality > Content'
+    description: 'Equipment > Item Quality > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        The armor, weapons, and gear listed in this chapter are considered to be of standard quality unless otherwise noted, created by a crafter who is trained in the appropriate skill. Standard items do not impose a bonus or penalty on any attacks or checks using the item. You might encounter items of poor quality from time to time, and as you adventure you may find, craft, or purchase items crafted at a significantly higher quality.
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_poor_quality_header
+    label: 'Equipment > Item Quality > Poor Quality > Header'
+    description: 'Equipment > Item Quality > Poor Quality > Header'
+    value:
+      type: text_literal
+      text_literal: 'Poor-Quality Items'
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_poor_quality_content
+    label: 'Equipment > Item Quality > Poor Quality > Content'
+    description: 'Equipment > Item Quality > Poor Quality > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Improvised or of dubious make, poor-quality items are never available for purchase except for in the most desperate of communities, usually for half the Price of a standard item, though you can never sell them in any case. Attacks and checks using a poor-quality item take a –2 item penalty. This penalty also applies to the DCs of all checks that a poor-quality item applies to (such as AC with poor- quality armor). A poor-quality suit of armor also worsens the armor’s check penalty by 2. If a poor-quality item takes enough damage to gain a Dent, it is broken instead.
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_header
+    label: 'Equipment > Item Quality > Expert Items > Header'
+    description: 'Equipment > Item Quality > Expert Items > Header'
+    value:
+      type: text_literal
+      text_literal: 'Expert, Master, and Legendary Items'
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_content
+    label: 'Equipment > Item Quality > Expert Items > Content'
+    description: 'Equipment > Item Quality > Expert Items > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Expert, master, and legendary items are of a superior quality and can be crafted only by characters with the respective proficiency rank in the Crafting skill. Expert- quality armor and weapons are 2nd-level items, except expert heavy armor, which is 3rd level. Master-quality armor and weapons are 7th-level items, and legendary- quality armor and weapons are 15th-level items.
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_bonus_header
+    label: 'Equipment > Item Quality > Expert Items > Item Bonus > Header'
+    description: 'Equipment > Item Quality > Expert Items > Item Bonus > Header'
+    value:
+      type: text_literal
+      text_literal: 'Item Bonus'
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_bonus_content
+    label: 'Equipment > Item Quality > Expert Items > Item Bonus > Content'
+    description: 'Equipment > Item Quality > Expert Items > Item Bonus > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Weapons and skill-boosting items of expert, master, and legendary quality add the listed item bonus to attack rolls with the weapon or skill checks using the item (see Table 6–19). Higher-quality armor reduces its check penalty by an amount equal to the item bonus (so master-quality hide would have a –1 check penalty instead of the standard –3 check penalty). As with other item bonuses, you apply only the higher item bonus from the item’s quality or its magic.
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_ammunition_header
+    label: 'Equipment > Item Quality > Expert Items > Ammunition > Header'
+    description: 'Equipment > Item Quality > Expert Items > Ammunition > Header'
+    value:
+      type: text_literal
+      text_literal: 'Ammunition Quality'
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_ammunition_content
+    label: 'Equipment > Item Quality > Expert Items > Ammunition > Content'
+    description: 'Equipment > Item Quality > Expert Items > Ammunition > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Weapons that shoot ammunition convey their bonuses and abilities onto their ammunition, so an attack roll using standard-quality ammunition and an expert-quality bow still gains a +1 item bonus. You can also purchase high- quality ammunition—10 pieces of ammunition cost as much as a single weapon. Magic ammunition has special benefits, but attacking with high-quality nonmagical ammunition doesn’t confer any special bonus or benefit, so using expert-quality ammunition with a standard bow does not provide any bonus to the attack roll.
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_other_items_header
+    label: 'Equipment > Item Quality > Expert Items > Other Items > Header'
+    description: 'Equipment > Item Quality > Expert Items > Other Items > Header'
+    value:
+      type: text_literal
+      text_literal: 'Other Items'
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_other_items_content
+    label: 'Equipment > Item Quality > Expert Items > Other Items > Content'
+    description: 'Equipment > Item Quality > Expert Items > Other Items > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        While most items can be purchased at a better quality level for an increased Price, few actually grant any benefit from this improvement. Those that offer a benefit for improved quality list their Price and bonuses in their description. A finely crafted jeweled lantern, for example, is no better at providing light than an ordinary lantern, even if it is worth 100 sp.
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_improving_header
+    label: 'Equipment > Item Quality > Expert Items > Improving > Header'
+    description: 'Equipment > Item Quality > Expert Items > Improving > Header'
+    value:
+      type: text_literal
+      text_literal: 'Improving Quality'
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_improving_content
+    label: 'Equipment > Item Quality > Expert Items > Improving > Content'
+    description: 'Equipment > Item Quality > Expert Items > Improving > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can use the Craft downtime activity (see page 148) to improve the quality of an item up to your proficiency rank in the Crafting skill. For this purpose, the Price equals the difference in Price between the two qualities. Upgrading an expert-quality chain shirt to master quality, for example, uses a Price of 3,250 sp. This requires you to have master Crafting and to provide 1,625 sp worth of raw materials to start the process.
+
+
+        Nonmagical items might decrease in quality over a long period of neglect or after extended use, but they can be restored in the same way as improving an item.
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_magic_items_header
+    label: 'Equipment > Item Quality > Expert Items > Magic Items > Header'
+    description: 'Equipment > Item Quality > Expert Items > Magic Items > Header'
+    value:
+      type: text_literal
+      text_literal: 'Magic Items and Quality'
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_magic_items_content
+    label: 'Equipment > Item Quality > Expert Items > Magic Items > Content'
+    description: 'Equipment > Item Quality > Expert Items > Magic Items > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Weapons and armor must be expert quality or better to be made into a magic item. Quality determines the maximum bonus and number of properties the weapon or armor can have. The full rules for magic items begin on page 376.
+
+
+        Magic items are always assumed to be the minimum level of quality for their bonus unless noted otherwise, and the quality cost is included in the item’s Price. Rarely, an item will be of a higher quality than the bonus would indicate, with its Price increased by the difference in quality. A +1 legendary longsword, for example, would cost 64,650 sp more than an ordinary +1 longsword (which would normally be crafted at an expert level).
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_hardness_header
+    label: 'Equipment > Item Quality > Expert Items > Hardness > Header'
+    description: 'Equipment > Item Quality > Expert Items > Hardness > Header'
+    value:
+      type: text_literal
+      text_literal: 'Quality and Hardness'
+- type: variable_text
+  variable_text:
+    id: equipment_item_quality_expert_items_hardness_content
+    label: 'Equipment > Item Quality > Expert Items > Hardness > Content'
+    description: 'Equipment > Item Quality > Expert Items > Hardness > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Structures and items made at a quality above the minimum for their material gain additional Hardness. Table 6–19 lists the increased Hardness of an item of higher quality compared to a standard item. Structures, such as walls and doors, gain twice as much Hardness for higher quality, as shown on the table.
+- type: variable_text
+  variable_text:
+    id: equipment_items_sizes_header
+    label: 'Equipment > Items and Sizes > Header'
+    description: 'Equipment > Items and Sizes > Header'
+    value:
+      type: text_literal
+      text_literal: 'Items and Sizes'
+- type: variable_text
+  variable_text:
+    id: equipment_items_sizes_content
+    label: 'Equipment > Items and Sizes > Conent'
+    description: 'Equipment > Items and Sizes > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        The Bulk rules in this chapter are made for Small and Medium creatures, and similarly the items are sized for creatures of those sizes. Large or larger creatures can carry more, and Tiny creatures can carry less. Their Bulk limits are multiplied, as noted on the table below.
+
+
+        In most cases, the only creatures of sizes other than Small or Medium are monsters under the GM control, in which case you probably won’t need to track Bulk carefully. These rules for Bulk limits mainly come up when a group tries to load up a mount or animal companion, and the rules for items of different sizes apply when the characters defeat a big creature that has gear, like a fire giant.
+- type: variable_text
+  variable_text:
+    id: equipment_items_sizes_bulk_conversions_header
+    label: 'Equipment > Items and Sizes > Bulk Conversions > Header'
+    description: 'Equipment > Items and Sizes > Bulk Conversions > Header'
+    value:
+      type: text_literal
+      text_literal: 'Bulk Conversions for Different Sizes'
+- type: variable_text
+  variable_text:
+    id: equipment_items_sizes_bulk_conversions_content
+    label: 'Equipment > Items and Sizes > Bulk Conversions > Content'
+    description: 'Equipment > Items and Sizes > Bulk Conversions > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Creatures of different sizes count items of lower or higher Bulk in a similar way to how Small and Medium creatures count light items, as shown in the table. For example, a Large creature counts 10 items of 1 Bulk as 1 Bulk and a Huge creature counts 10 items of 2 Bulk as 1 Bulk. A Tiny creature counts 10 items of negligible Bulk as 1 Bulk. Negligible items work in a similar way—a Huge creature can carry any number of 1-Bulk items. A Tiny creature doesn’t count any items as negligible Bulk.
+- type: variable_text
+  variable_text:
+    id: equipment_items_sizes_items_header
+    label: 'Equipment > Items and Sizes > Items > Header'
+    description: 'Equipment > Items and Sizes > Items > Header'
+    value:
+      type: text_literal
+      text_literal: 'Items of Different Sizes'
+- type: variable_text
+  variable_text:
+    id: equipment_items_sizes_items_content
+    label: 'Equipment > Items and Sizes > Items > Content'
+    description: 'Equipment > Items and Sizes > Items > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Creatures of sizes other than Small or Medium need items appropriate to their size. These items have different Bulk, and possibly a different Price. The table below provides the differences. Items that are always built for creatures of a certain size (such as the barding on page 189) already include any necessary adjustments.
+
+
+        For example, a morningstar has a Price of 10 sp and 1 Bulk, so one made for a Huge creature has a Price of 40 sp and 4 Bulk. One made for a Tiny creature still costs 10 sp (due to its intricacy) and has 1/2 Bulk, which converts to light Bulk. A torch costs 1 cp and has light Bulk, so a torch made for a Huge creature costs 4 cp and has 2 Bulk, and one made for a Tiny creature costs 1 cp and has negligible Bulk.
+
+
+        A Tiny creature or one that’s Large or larger counts items of different Bulk in a special way, as described on above. This means these creatures can usually wear and carry about the same amount of gear as a Medium creature if the equipment is appropriately sized.
+
+
+        The Price adjustment applies only to the Price of the item itself. Prices for magic items and alchemical items mostly come from their magic or alchemical properties. The Price of an item made from special materials is calculated based on the item’s Bulk, after adjusting the Bulk for the item’s size. See Chapter 11 for more  information.
 - type: variable_text
   variable_text:
     id: subsection_weapon_list_simple_melee_weapons_table_header

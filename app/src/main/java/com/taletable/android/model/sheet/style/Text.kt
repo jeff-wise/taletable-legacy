@@ -393,6 +393,36 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object FiraSansExtraCondensed : TextFont()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() = SQLText({ "fira_sans_extra_condensed "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("fira_sans_extra_condensed")
+
+    }
+
+
+    object Roboto : TextFont()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() = SQLText({ "roboto" })
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("roboto")
+
+    }
+
+
     object RobotoCondensed : TextFont()
     {
         // SQL SERIALIZABLE
@@ -423,17 +453,17 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
     }
 
 
-    object Kaushan : TextFont()
+    object Garamond : TextFont()
     {
         // SQL SERIALIZABLE
         // -------------------------------------------------------------------------------------
 
-        override fun asSQLValue() = SQLText({ "kaushan "})
+        override fun asSQLValue() = SQLText({ "garamond "})
 
         // TO DOCUMENT
         // -------------------------------------------------------------------------------------
 
-        override fun toDocument() = DocText("kaushan")
+        override fun toDocument() = DocText("garamond")
 
     }
 
@@ -449,9 +479,11 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
             is DocText -> when (doc.text)
             {
                 "cabin"             -> effValue<ValueError,TextFont>(TextFont.Cabin)
+                "roboto"            -> effValue<ValueError,TextFont>(TextFont.Roboto)
                 "roboto_condensed"  -> effValue<ValueError,TextFont>(TextFont.RobotoCondensed)
+                "fira_sans_extra_condensed"  -> effValue<ValueError,TextFont>(TextFont.FiraSansExtraCondensed)
                 "merriweather"      -> effValue<ValueError,TextFont>(TextFont.Merriweather)
-                "kaushan"           -> effValue<ValueError,TextFont>(TextFont.Kaushan)
+                "garamond"          -> effValue<ValueError,TextFont>(TextFont.Garamond)
                 else                -> effError<ValueError,TextFont>(
                                       UnexpectedValue("TextFont", doc.text, doc.path))
             }
@@ -533,6 +565,21 @@ sealed class TextFontStyle : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object ExtraBold : TextFontStyle()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() = SQLText({ "extra_bold "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("extra_bold")
+
+    }
+
+
     object Italic : TextFontStyle()
     {
         // SQL SERIALIZABLE
@@ -588,13 +635,14 @@ sealed class TextFontStyle : ToDocument, SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
+                "light"       -> effValue<ValueError,TextFontStyle>(TextFontStyle.Light)
                 "regular"     -> effValue<ValueError,TextFontStyle>(TextFontStyle.Regular)
+                "italic"      -> effValue<ValueError,TextFontStyle>(TextFontStyle.Italic)
                 "medium"      -> effValue<ValueError,TextFontStyle>(TextFontStyle.Medium)
                 "semi_bold"   -> effValue<ValueError,TextFontStyle>(TextFontStyle.SemiBold)
                 "bold"        -> effValue<ValueError,TextFontStyle>(TextFontStyle.Bold)
-                "italic"      -> effValue<ValueError,TextFontStyle>(TextFontStyle.Italic)
                 "bold_italic" -> effValue<ValueError,TextFontStyle>(TextFontStyle.BoldItalic)
-                "light"       -> effValue<ValueError,TextFontStyle>(TextFontStyle.Light)
+                "extra_bold"  -> effValue<ValueError,TextFontStyle>(TextFontStyle.ExtraBold)
                 else          -> effError<ValueError,TextFontStyle>(
                                     UnexpectedValue("TextFontStyle", doc.text, doc.path))
             }

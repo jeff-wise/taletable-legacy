@@ -7,15 +7,16 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AppCompatActivity
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.taletable.android.R
+import com.taletable.android.R.string.name
 import com.taletable.android.activity.sheet.dialog.NumberEditorDialog
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.engine.reference.NumberReferenceVariable
@@ -71,6 +72,8 @@ class SummationDialog : BottomSheetDialogFragment()
             args.putSerializable("entity_id", entityId)
             dialog.arguments = args
 
+            dialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.BottomSheetDialog)
+
             return dialog
         }
     }
@@ -79,8 +82,49 @@ class SummationDialog : BottomSheetDialogFragment()
     // -----------------------------------------------------------------------------------------
     // DIALOG FRAGMENT
     // -----------------------------------------------------------------------------------------
+//
+//    override fun onCreateDialog(savedInstanceState : Bundle?) : Dialog
+//    {
+//        // (1) Read State
+//        // -------------------------------------------------------------------------------------
+//
+//        this.summation       = arguments?.getSerializable("summationWithId") as Summation
+//        this.summmationLabel = arguments?.getString("summation_label")
+//        this.entityId        = arguments?.getSerializable("entity_id") as EntityId
+//
+//
+//        // (2) Initialize UI
+//        // -------------------------------------------------------------------------------------
+//
+//        val dialog = Dialog(context)
+//
+//        val dialogLayout = this.dialogLayout()
+//
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+//        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//
+//        dialog.window.attributes.windowAnimations = R.style.DialogAnimation
+//
+//        dialog.setContentView(dialogLayout)
+//
+//        val window = dialog.window
+//        val wlp = window.attributes
+//
+//        wlp.gravity = Gravity.BOTTOM
+//        window.attributes = wlp
+//
+//        val width  = LinearLayout.LayoutParams.MATCH_PARENT
+//        val height = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        dialog.window.setLayout(width, height)
+//
+//        return dialog
+//    }
 
-    override fun onCreateDialog(savedInstanceState : Bundle?) : Dialog
+
+    override fun onCreateView(inflater : LayoutInflater,
+                              container : ViewGroup?,
+                              savedInstanceState : Bundle?) : View?
     {
         // (1) Read State
         // -------------------------------------------------------------------------------------
@@ -90,39 +134,6 @@ class SummationDialog : BottomSheetDialogFragment()
         this.entityId        = arguments?.getSerializable("entity_id") as EntityId
 
 
-        // (2) Initialize UI
-        // -------------------------------------------------------------------------------------
-
-        val dialog = Dialog(context)
-
-        val dialogLayout = this.dialogLayout()
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        dialog.window.attributes.windowAnimations = R.style.DialogAnimation
-
-        dialog.setContentView(dialogLayout)
-
-        val window = dialog.window
-        val wlp = window.attributes
-
-        wlp.gravity = Gravity.BOTTOM
-        window.attributes = wlp
-
-        val width  = LinearLayout.LayoutParams.MATCH_PARENT
-        val height = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        dialog.window.setLayout(width, height)
-
-        return dialog
-    }
-
-
-    override fun onCreateView(inflater : LayoutInflater,
-                              container : ViewGroup?,
-                              savedInstanceState : Bundle?) : View?
-    {
         val summation      = this.summation
         val summationLabel = this.summmationLabel
         val entityId       = this.entityId
@@ -230,8 +241,17 @@ class SummationViewBuilder(val summation : Summation,
 
         val mainLayout = this.headerMainViewLayout()
 
+        // Icon
+        val iconView = this.iconView()
+
         // Name
-        mainLayout.addView(this.nameView())
+        val nameView = this.nameView()
+        val nameViewLayoutParams = nameView.layoutParams as RelativeLayout.LayoutParams
+        nameViewLayoutParams.addRule(RelativeLayout.END_OF, R.id.icon)
+        nameView.layoutParams = nameViewLayoutParams
+
+        mainLayout.addView(iconView)
+        mainLayout.addView(nameView)
 
         // Total
         val total = summation.value(entityId)
@@ -312,7 +332,6 @@ class SummationViewBuilder(val summation : Summation,
         name.width          = LinearLayout.LayoutParams.WRAP_CONTENT
         name.height         = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        name.addRule(RelativeLayout.ALIGN_PARENT_START)
         name.addRule(RelativeLayout.CENTER_VERTICAL)
 
         name.text           = summationLabel
@@ -323,13 +342,55 @@ class SummationViewBuilder(val summation : Summation,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_5")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
         name.color          = colorOrBlack(colorTheme, entityId)
 
-        name.sizeSp         = 22f
+        name.sizeSp         = 20f
 
         return name.textView(context)
     }
+
+
+    private fun iconView() : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout                  = LinearLayoutBuilder()
+        val iconView                = ImageViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.id                   = R.id.icon
+
+        layout.layoutType           = LayoutType.RELATIVE
+        layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+        layout.addRule(RelativeLayout.ALIGN_PARENT_START)
+        layout.addRule(RelativeLayout.CENTER_VERTICAL)
+
+        layout.margin.rightDp       = 6f
+
+        layout.child(iconView)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        iconView.widthDp            = 27
+        iconView.heightDp           = 27
+
+        iconView.image              = R.drawable.icon_list_add
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_28")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+        iconView.color              = colorOrBlack(iconColorTheme, entityId)
+
+        return layout.linearLayout(context)
+    }
+
 
 
     // Footer

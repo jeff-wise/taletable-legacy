@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 
 import com.taletable.android.R;
+import com.taletable.android.util.Util;
 
 
 /**
@@ -27,7 +28,12 @@ public class TableLayoutBuilder
     public Integer                  id;
 
     public Integer                  height;
+    public Integer                  heightDp;
+
     public Integer                  width;
+    public Integer                  widthDp;
+
+    public Float                    weight;
 
     public LayoutType               layoutType;
 
@@ -57,7 +63,12 @@ public class TableLayoutBuilder
         this.id                 = null;
 
         this.height             = null;
+        this.heightDp           = null;
+
         this.width              = null;
+        this.widthDp            = null;
+
+        this.weight             = null;
 
         this.layoutType         = LayoutType.TABLE;
 
@@ -181,13 +192,26 @@ public class TableLayoutBuilder
 
         if (this.width != null)
             layoutParamsBuilder.setWidth(this.width);
+        else if (this.widthDp != null)
+            layoutParamsBuilder.setWidthDp(this.widthDp);
 
 
         // > Height
         // --------------------------------------------------------------------------------------
 
-        if (this.height != null)
+        if (this.height != null) {
             layoutParamsBuilder.setHeight(this.height);
+        }
+        else if (this.heightDp != null) {
+            layoutParamsBuilder.setHeightDp(this.heightDp);
+            //bgDrawable.setIntrinsicHeight(Util.dpToPixel(this.heightDp));
+        }
+
+        // > Weight
+        // --------------------------------------------------------------------------------------
+
+        if (this.weight != null)
+            layoutParamsBuilder.setWeight(this.weight);
 
         // > Gravity
         // --------------------------------------------------------------------------------------

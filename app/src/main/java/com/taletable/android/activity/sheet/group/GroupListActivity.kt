@@ -10,11 +10,11 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.Toolbar
 import android.view.*
 import android.widget.*
 import com.taletable.android.R
@@ -27,12 +27,11 @@ import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
 import com.taletable.android.model.theme.official.officialAppThemeLight
 import com.taletable.android.rts.entity.EntityId
-import com.taletable.android.rts.entity.colorOrBlack
 import com.taletable.android.rts.entity.groups
-import com.taletable.android.util.configureToolbar
-import android.support.v7.widget.helper.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.taletable.android.model.sheet.group.GroupId
 import com.taletable.android.rts.entity.sheet.UpdateTarget
+import com.taletable.android.util.configureToolbar
 
 
 
@@ -89,11 +88,11 @@ class GroupListActivity : AppCompatActivity()
         // (3) Configure View
         // -------------------------------------------------------------------------------------
 
-        val title = this.title
-        if (title != null)
-            this.configureToolbar(title, TextFont.RobotoCondensed, TextFontStyle.Bold)
-        else
-            this.configureToolbar(getString(R.string.groups))
+//        val title = this.title
+//        if (title != null)
+//        else
+//            this.configureToolbar(getString(R.string.groups))
+        this.configureToolbar(getString(R.string.edit_groups), TextFont.RobotoCondensed, TextFontStyle.Bold)
 
         this.applyTheme(officialAppThemeLight)
 
@@ -133,12 +132,22 @@ class GroupListActivity : AppCompatActivity()
 
             val swipeAndDragHelper = SwipeAndDragHelper(adapter)
             val touchHelper = ItemTouchHelper(swipeAndDragHelper)
+//
+//            val recyclerView = groupListRecyclerView(this.groupRefs,
+//                                                     adapter,
+//                                                     theme,
+//                                                     entityId,
+//                                                     this)
 
-            val recyclerView = groupListRecyclerView(this.groupRefs,
-                                                     adapter,
-                                                     theme,
-                                                     entityId,
-                                                     this)
+            val recyclerView = findViewById<RecyclerView>(R.id.group_list)
+            val layoutManager = LinearLayoutManager(this)
+            recyclerView.layoutManager = layoutManager
+            recyclerView.adapter = adapter
+
+//            val dividerItemDecoration = DividerItemDecoration(this, layoutManager.orientation)
+//            recyclerView.addItemDecoration(dividerItemDecoration)
+
+            recyclerView.invalidate()
 
             touchHelper.attachToRecyclerView(recyclerView)
 
@@ -213,72 +222,6 @@ class GroupListActivity : AppCompatActivity()
     }
 
 
-
-//    private fun doneButtonView(theme : Theme) : LinearLayout
-//    {
-//        // (1) Declarations
-//        // -------------------------------------------------------------------------------------
-//
-//        val layout                  = LinearLayoutBuilder()
-//        val labelView               = TextViewBuilder()
-//
-//        // (2) Layout
-//        // -------------------------------------------------------------------------------------
-//
-//        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
-//
-//        layout.corners              = Corners(3.0, 3.0, 3.0, 3.0)
-//
-//        val bgColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("green_tint_1"))))
-//        layout.backgroundColor      = theme.colorOrBlack(bgColorTheme)
-//
-//        layout.padding.leftDp       = 10f
-//        layout.padding.rightDp      = 10f
-//        layout.padding.topDp        = 6f
-//        layout.padding.bottomDp     = 6f
-//
-//        layout.onClick              = View.OnClickListener {
-//            this.newGroupReferenceList?.let { refList ->
-//                val updateTarget = this.updateTarget
-//                when (updateTarget)
-//                {
-//                    is UpdateTargetGroupWidget ->
-//                    {
-//                        val update = GroupWidgetUpdateSetReferences(updateTarget.groupWidgetId, refList)
-//                        Router.send(MessageSheetUpdate(update))
-//                    }
-//                }
-//            }
-//
-//            finish()
-//        }
-//
-//        layout.child(labelView)
-//
-//        // (3) Label
-//        // -------------------------------------------------------------------------------------
-//
-//        labelView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-//        labelView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-//
-//        labelView.color             = Color.WHITE
-//
-//        labelView.text              = getString(R.string.done).toUpperCase()
-//
-//        labelView.font              = Font.typeface(TextFont.RobotoCondensed,
-//                                                    TextFontStyle.Regular,
-//                                                    this)
-//
-//        labelView.sizeSp            = 16f
-//
-//        return layout.linearLayout(this)
-//    }
-
-
-
     fun updateGroupReferenceList(updatedGroupIds : List<GroupId>)
     {
         val originalGroupIdList = this.groupRefs.map { it.groupId() }
@@ -309,30 +252,6 @@ class GroupListActivity : AppCompatActivity()
 
 }
 
-
-
-fun groupListRecyclerView(groupRefs : List<GroupReference>,
-                          adapter : GroupListItemRecyclerViewAdapter,
-                          theme : Theme,
-                          entityId : EntityId,
-                          context : Context) : RecyclerView
-{
-    val recyclerView                = RecyclerViewBuilder()
-
-    recyclerView.width              = LinearLayout.LayoutParams.MATCH_PARENT
-    recyclerView.height             = LinearLayout.LayoutParams.MATCH_PARENT
-
-    recyclerView.layoutManager      = LinearLayoutManager(context)
-
-    val colorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_8")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_9"))))
-    recyclerView.backgroundColor    = colorOrBlack(colorTheme, entityId)
-
-    recyclerView.adapter            = adapter
-
-    return recyclerView.recyclerView(context)
-}
 
 
 
@@ -373,7 +292,7 @@ private fun groupItemViewLayout(context : Context) : RelativeLayout
 
     layout.padding.topDp    = 18f
     layout.padding.bottomDp = 18f
-    layout.padding.leftDp   = 15f
+    layout.padding.leftDp   = 17f
     layout.padding.rightDp  = 15.5f
 
 //    layout.margin.leftDp    = 2f
@@ -404,7 +323,7 @@ private fun groupItemContentView(theme : Theme, context : Context) : LinearLayou
 
     layout.orientation          = LinearLayout.VERTICAL
 
-    layout.padding.leftDp        = 21f
+    layout.padding.leftDp       = 19f
 
     layout.child(nameView)
 //          .child(summaryView)
@@ -548,7 +467,7 @@ private fun listHeaderView(count : Int,
     layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
     layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
 
-    layout.padding.leftDp       = 15f
+    layout.padding.leftDp       = 17f
     layout.padding.topDp        = 12f
     layout.padding.bottomDp     = 12f
 
@@ -752,12 +671,12 @@ class SwipeAndDragHelper(private val contract : ActionCompletionContract) : Item
     }
 
     override fun onChildDraw(c: Canvas,
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    dX: Float,
-                    dY: Float,
-                    actionState: Int,
-                    isCurrentlyActive: Boolean) {
+                             recyclerView: RecyclerView,
+                             viewHolder: RecyclerView.ViewHolder,
+                             dX: Float,
+                             dY: Float,
+                             actionState: Int,
+                             isCurrentlyActive: Boolean) {
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
             val alpha = 1 - Math.abs(dX) / recyclerView.width
             viewHolder.itemView.alpha = alpha

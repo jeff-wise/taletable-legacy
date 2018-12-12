@@ -12,5 +12,6 @@ public enum LayoutType
     RELATIVE,
     TABLE,
     TABLE_ROW,
-    FLEXBOX
+    FLEXBOX,
+    FRAME
 }

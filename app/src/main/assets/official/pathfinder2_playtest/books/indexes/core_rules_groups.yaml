@@ -68,6 +68,2585 @@ groups:
             font: roboto_condensed
         value_variable_id: introduction_subtitle
 ## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules
+## ---------------------------------------------------------------------------------------------
+- id: '5f03282d-8e8f-400a-b53d-c76b6976d146'
+  name: 'Equipment > Basic Rules'
+  summary: 'Equipment > Basic Rules'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 12
+        bottom: 12
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_introduction
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Currency
+## ---------------------------------------------------------------------------------------------
+- id: 'dc110cd2-e7b7-4743-b2c6-5146f2655a30'
+  name: 'Equipment > Basic Rules > Currency'
+  summary: 'Equipment > Basic Rules > Currency'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_currency_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Currency > Coin Bulk
+## ---------------------------------------------------------------------------------------------
+- id: 'ce709e1f-ead5-4f8b-82e2-0b1d32aea651'
+  name: 'Equipment > Basic Rules > Currency > Coin Bulk'
+  summary: 'Equipment > Basic Rules > Currency > Coin Bulk'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 12
+        bottom: 12
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 10
+          bottom: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: section_equipment_basic_rules_currency_coin_bulk_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_currency_coin_bulk_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Currency > Coin Values
+## ---------------------------------------------------------------------------------------------
+- id: 'beef97fc-f3d5-451b-8905-c36ec3f29eff'
+  name: 'Equipment > Basic Rules > Currency > Coin Values'
+  summary: 'Equipment > Basic Rules > Currency > Coin Values'
+  format:
+    border:
+      bottom:
+        color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: light_blue_grey_5
+        thickness: 1
+      top:
+        color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: light_blue_grey_5
+        thickness: 1
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      margins:
+        top: 12
+        bottom: 12
+      padding:
+        left: 16
+        right: 16
+        top: 10
+        bottom: 10
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 10
+          bottom: 4
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_16
+            size: 19
+            font: roboto_condensed
+            font_style: bold
+        value_variable_id: section_equipment_basic_rules_coin_values_header
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 10
+    widgets:
+    - type: widget_table
+      widget_table:
+        title_variable_id: section_equipment_basic_rules_coin_values_table_title
+        format:
+          widget_format:
+            element_format:
+              padding:
+                top: 5
+              width:
+                type: width_justify
+                width_justify: justify
+          title_bar_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: white
+            corners:
+              top_left_radius: 2
+              top_right_radius: 2
+            padding:
+              right: 12
+              top: 16
+              bottom: 4
+          title_format:
+            size: 17
+            font: roboto
+            font_style: medium
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+          edit_button_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_grey_20
+            size: 16
+            font: roboto_condensed
+            font_style: regular
+          divider:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: white
+            thickness: 2
+          header_format:
+            text_format:
+              element_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_blue_grey_18
+                padding:
+                  left: 10
+                  top: 10
+                  bottom: 10
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_22
+                - theme_id: light
+                  color_id: light_blue_grey_3
+              font: roboto_condensed
+              font_style: bold
+              size: 14
+          row_format:
+            text_format:
+              element_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_blue_grey_4
+                margin:
+                  top: 2
+                padding:
+                  left: 8
+                  top: 8
+                  bottom: 10
+        columns:
+        - type: table_widget_text_column
+          table_widget_text_column:
+            name: Coin
+            variable_prefix: equipment_basic_rules_coin_values_name
+            default_value:
+              type: variable_text_value
+              variable_text_value:
+                type: text_literal
+                text_literal: row_name
+            format:
+              column_format:
+                text_format:
+                  element_format:
+                    horizontal_alignment: left
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_5
+                    - theme_id: light
+                      color_id: dark_blue_grey_12
+                  font: roboto_condensed
+                  font_style: bold
+                  size: 17
+                width: 1
+        - type: table_widget_text_column
+          table_widget_text_column:
+            name: CP
+            variable_prefix: equipment_basic_rules_coin_values_copper_value
+            column_variable_id: conditions
+            default_value:
+              type: variable_text_value
+              variable_text_value:
+                type: text_literal
+                text_literal: "Silver Value"
+            format:
+              column_format:
+                text_format:
+                  element_format:
+                    horizontal_alignment: left
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_5
+                    - theme_id: light
+                      color_id: dark_grey_12
+                  font: roboto_condensed
+                  font_style: regular
+                  size: 17
+                width: 1
+        - type: table_widget_text_column
+          table_widget_text_column:
+            name: SP
+            variable_prefix: equipment_basic_rules_coin_values_silver_value
+            default_value:
+              type: variable_text_value
+              variable_text_value:
+                type: text_literal
+                text_literal: "Silver Value"
+            format:
+              column_format:
+                text_format:
+                  element_format:
+                    horizontal_alignment: left
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_5
+                    - theme_id: light
+                      color_id: dark_grey_12
+                  font: roboto_condensed
+                  font_style: regular
+                  size: 17
+                width: 1
+        - type: table_widget_text_column
+          table_widget_text_column:
+            name: GP
+            variable_prefix: equipment_basic_rules_coin_values_gold_value
+            defines_namespace: true
+            column_variable_id: conditions
+            default_value:
+              type: variable_text_value
+              variable_text_value:
+                type: text_literal
+                text_literal: "Gold Value"
+            format:
+              column_format:
+                text_format:
+                  element_format:
+                    horizontal_alignment: left
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_5
+                    - theme_id: light
+                      color_id: dark_grey_12
+                  font: roboto_condensed
+                  font_style: regular
+                  size: 17
+                width: 1
+        - type: table_widget_text_column
+          table_widget_text_column:
+            name: PP
+            variable_prefix: equipment_basic_rules_coin_values_platinum_value
+            defines_namespace: true
+            column_variable_id: conditions
+            default_value:
+              type: variable_text_value
+              variable_text_value:
+                type: text_literal
+                text_literal: "Platinum Value"
+            format:
+              column_format:
+                text_format:
+                  element_format:
+                    horizontal_alignment: left
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_5
+                    - theme_id: light
+                      color_id: dark_grey_12
+                  font: roboto_condensed
+                  font_style: regular
+                  size: 17
+                width: 1
+        rows:
+        - cells:
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'CP'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1/10'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1/100'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1/1000'
+        - cells:
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'SP'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '10'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1/10'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1/100'
+        - cells:
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'GP'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '100'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '10'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1/10'
+        - cells:
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'PP'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1000'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '100'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '10'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: '1'
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Price
+## ---------------------------------------------------------------------------------------------
+- id: 'cb09ddb0-5777-443a-b42f-ce55242561f4'
+  name: 'Equipment > Basic Rules > Price'
+  summary: 'Equipment > Basic Rules > Price'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 12
+        bottom: 12
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_price_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Item Level
+## ---------------------------------------------------------------------------------------------
+- id: '680140a1-412c-4d97-b942-b08b600c2eda'
+  name: 'Equipment > Basic Rules > Item Level'
+  summary: 'Equipment > Basic Rules > Item Level'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_item_level_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Carrying and Using Items
+## ---------------------------------------------------------------------------------------------
+- id: '4b5655a4-3f30-430b-942b-fc11e7615722'
+  name: 'Equipment > Basic Rules > Carrying and Using Items'
+  summary: 'Equipment > Basic Rules > Carrying and Using Items'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_using_items_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Carrying and Using Items > Bulk
+## ---------------------------------------------------------------------------------------------
+- id: '7c185721-8c28-47ee-8170-5ff72cdc7394'
+  name: 'Equipment > Basic Rules > Carrying and Using Items > Bulk'
+  summary: 'Equipment > Basic Rules > Carrying and Using Items > Bulk'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 10
+          bottom: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: section_equipment_basic_rules_using_items_bulk_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_using_items_bulk_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Carrying and Using Items > Bulk Limit
+## ---------------------------------------------------------------------------------------------
+- id: '0e0ba59c-8670-4f0c-9c10-148e77498a2a'
+  name: 'Equipment > Basic Rules > Carrying and Using Items > Bulk Limit'
+  summary: 'Equipment > Basic Rules > Carrying and Using Items > Bulk Limit'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 10
+          bottom: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: section_equipment_basic_rules_using_items_bulk_limit_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_using_items_bulk_limit_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Carrying and Using Items > Encumbered
+## ---------------------------------------------------------------------------------------------
+- id: 'f068899f-5753-455c-a0f4-bae16c2e9136'
+  name: 'Equipment > Basic Rules > Carrying and Using Items > Encumbered'
+  summary: 'Equipment > Basic Rules > Carrying and Using Items > Encumbered'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 10
+          bottom: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: section_equipment_basic_rules_using_items_encumbered_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_using_items_encumbered_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Carrying and Using Items > Bulk Values
+## ---------------------------------------------------------------------------------------------
+- id: '6b70e81b-bbc7-4978-9a65-766e748f106a'
+  name: 'Equipment > Basic Rules > Carrying and Using Items > Bulk Values'
+  summary: 'Equipment > Basic Rules > Carrying and Using Items > Bulk Values'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 10
+          bottom: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: section_equipment_basic_rules_using_items_bulk_values_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_using_items_bulk_values_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Carrying and Using Items > Estimating Bulk
+## ---------------------------------------------------------------------------------------------
+- id: '79377910-ea72-4cf9-9319-942b0441b8ea'
+  name: 'Equipment > Basic Rules > Carrying and Using Items > Estimating Bulk'
+  summary: 'Equipment > Basic Rules > Carrying and Using Items > Estimating Bulk'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 10
+          bottom: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: section_equipment_basic_rules_using_items_estimating_bulk_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_using_items_estimating_bulk_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Carrying and Using Items > Donning and Removing Armor
+## ---------------------------------------------------------------------------------------------
+- id: '80fb6cfe-03cc-4bca-bdfb-eb5e24f59f62'
+  name: 'Equipment > Basic Rules > Carrying and Using Items > Donning and Removing Armor'
+  summary: 'Equipment > Basic Rules > Carrying and Using Items > Donning and Removing Armor'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 10
+          bottom: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: section_equipment_basic_rules_using_items_donning_armor_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_using_items_donning_armor_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Carrying and Using Items > Wielding Items
+## ---------------------------------------------------------------------------------------------
+- id: '2bbbf53c-dc82-4d61-b910-57907a70b857'
+  name: 'Equipment > Basic Rules > Carrying and Using Items > Wielding Items'
+  summary: 'Equipment > Basic Rules > Carrying and Using Items > Wielding Items'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 10
+          bottom: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: section_equipment_basic_rules_using_items_wielding_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_using_items_wielding_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Item Damage
+## ---------------------------------------------------------------------------------------------
+- id: '4ec2ed94-6e0c-45a1-a837-c8fa7ea9afb9'
+  name: 'Equipment > Basic Rules > Item Damage'
+  summary: 'Equipment > Basic Rules > Item Damage'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_item_damage_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Item Damage > Broken
+## ---------------------------------------------------------------------------------------------
+- id: '112b3065-b83e-447a-a3c1-966acf620ee7'
+  name: 'Equipment > Basic Rules > Item Damage > Broken'
+  summary: 'Equipment > Basic Rules > Item Damage > Broken'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 10
+          bottom: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: section_equipment_basic_rules_item_damage_broken_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_item_damage_broken_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Basic Rules > Item Damage > Object Immunities
+## ---------------------------------------------------------------------------------------------
+- id: 'a5af14c0-b4cc-4480-acba-4e36359a350e'
+  name: 'Equipment > Basic Rules > Item Damage > Object Immunities'
+  summary: 'Equipment > Basic Rules > Item Damage > Object Immunities'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 10
+          bottom: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: section_equipment_basic_rules_item_damage_object_immunities_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: section_equipment_basic_rules_item_damage_object_immunities_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields
+## ---------------------------------------------------------------------------------------------
+- id: 'f9a6fc61-8e7c-4d16-8838-42448ccdc80c'
+  name: 'Equipment > Armor and Shields'
+  summary: 'Equipment > Armor and Shields'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: equipment_armor_shields_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor Class
+## ---------------------------------------------------------------------------------------------
+- id: 'b8207393-1d02-4a42-ae85-89b39f570faf'
+  name: 'Equipment > Armor and Shields > Armor Class'
+  summary: 'Equipment > Armor and Shields > Armor Class'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 8
+          bottom: 8
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: equipment_armor_shields_armor_class_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: equipment_armor_shields_armor_class_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor Statistics
+## ---------------------------------------------------------------------------------------------
+- id: 'df094dcb-227b-4b47-8dec-9db9fef15b0c'
+  name: 'Equipment > Armor and Shields > Armor Statistics'
+  summary: 'Equipment > Armor and Shields > Armor Statistics'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 8
+          bottom: 4
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: equipment_armor_shields_statistics_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: equipment_armor_shields_statistics_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor Statistics > Bonuses
+## ---------------------------------------------------------------------------------------------
+- id: 'c6dd6f0c-29e8-4943-9903-09051e05c498'
+  name: 'Equipment > Armor and Shields > Armor Statistics > Bonuses'
+  summary: 'Equipment > Armor and Shields > Armor Statistics > Bonuses'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 8
+          bottom: 4
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: equipment_armor_shields_statistics_bonuses_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: equipment_armor_shields_statistics_bonuses_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor Statistics > Dexterity Modifier Cap
+## ---------------------------------------------------------------------------------------------
+- id: '787c8f52-959b-4566-bb9b-2e960b7e7c20'
+  name: 'Equipment > Armor and Shields > Armor Statistics > Dexterity Modifier Cap'
+  summary: 'Equipment > Armor and Shields > Armor Statistics > Dexterity Modifier Cap'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 8
+          bottom: 4
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: equipment_armor_shields_statistics_dex_mod_cap_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: equipment_armor_shields_statistics_dex_mod_cap_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor Statistics > Check Penalty
+## ---------------------------------------------------------------------------------------------
+- id: '048c344a-f53f-43ab-8521-04b6db85670a'
+  name: 'Equipment > Armor and Shields > Armor Statistics > Check Penalty'
+  summary: 'Equipment > Armor and Shields > Armor Statistics > Check Penalty'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 8
+          bottom: 4
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: equipment_armor_shields_statistics_check_penalty_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: equipment_armor_shields_statistics_check_penalty_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor Statistics > Speed Penalty
+## ---------------------------------------------------------------------------------------------
+- id: '74dc1b0e-fcad-4d29-811c-71b45f4eeaaa'
+  name: 'Equipment > Armor and Shields > Armor Statistics > Speed Penalty'
+  summary: 'Equipment > Armor and Shields > Armor Statistics > Speed Penalty'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 8
+          bottom: 4
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: equipment_armor_shields_statistics_speed_penalty_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: equipment_armor_shields_statistics_speed_penalty_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor Statistics > Bulk
+## ---------------------------------------------------------------------------------------------
+- id: '9818c3d3-a225-4d3c-8cbb-12edb4bc4a8f'
+  name: 'Equipment > Armor and Shields > Armor Statistics > Bulk'
+  summary: 'Equipment > Armor and Shields > Armor Statistics > Bulk'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 8
+          bottom: 4
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: equipment_armor_shields_statistics_bulk_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: equipment_armor_shields_statistics_bulk_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor Statistics > Armor Traits
+## ---------------------------------------------------------------------------------------------
+- id: '85c2ec70-b88c-4baa-8371-d29285238635'
+  name: 'Equipment > Armor and Shields > Armor Statistics > Armor Traits'
+  summary: 'Equipment > Armor and Shields > Armor Statistics > Armor Traits'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 8
+          bottom: 4
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: equipment_armor_shields_statistics_armor_traits_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: equipment_armor_shields_statistics_armor_traits_content
+  - widgets:
+    - type: widget_table
+      widget_table:
+        title_variable_id: subsection_weapon_list_simple_melee_weapons_table_header
+        format:
+          view_type: rows_only
+          row_format:
+            text_format:
+              element_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: white
+                margins:
+                  top: 12
+        columns:
+        - type: table_widget_text_column
+          table_widget_text_column:
+            name: Name
+            variable_prefix: armor_trait_name
+            default_value:
+              type: variable_text_value
+              variable_text_value:
+                type: text_literal
+                text_literal: 'Trait Name'
+            format:
+              column_format:
+                text_format:
+                  element_format:
+                    background_color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_blue_grey_2
+                    horizontal_alignment: left
+                    vertical_alignment: top
+                    margins:
+                      right: 1
+                    padding:
+                      left: 4
+                      right: 4
+                      top: 4
+                      bottom: 4
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_5
+                    - theme_id: light
+                      color_id: dark_grey_12
+                  font: roboto_condensed
+                  font_style: bold
+                  size: 17
+                width: 1.3
+        - type: table_widget_text_column
+          table_widget_text_column:
+            name: Name
+            default_value:
+              type: variable_text_value
+              variable_text_value:
+                type: text_literal
+                text_literal: 'Trait Description'
+            variable_prefix: armor_trait_desc
+            format:
+              column_format:
+                text_format:
+                  element_format:
+                    background_color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_blue_grey_2
+                    horizontal_alignment: left
+                    vertical_alignment: top
+                    padding:
+                      left: 4
+                      right: 4
+                      top: 4
+                      bottom: 4
+                    margins:
+                      left: 1
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_5
+                    - theme_id: light
+                      color_id: dark_grey_12
+                  font: roboto_condensed
+                  font_style: regular
+                  size: 16
+                width: 3
+        rows:
+        - cells:
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Clumsy'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: >-
+                    This armor's Dexterity modifier cap also applies to Reflex saves and to all
+                    Dexterity-based skill and ability checks that don't have the attack trait.
+        - cells:
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Fragile'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: >-
+                    If fragile armor takes a dent, it's automatically broken.
+        - cells:
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: 'Noisy'
+          - type: table_widget_text_cell
+            table_widget_text_cell:
+              value:
+                type: variable_text_value
+                variable_text_value:
+                  type: text_literal
+                  text_literal: >-
+                    This armor's check penalty increases by 1 on Stealth checks.
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor Statistics > Shields
+## ---------------------------------------------------------------------------------------------
+- id: '8e171712-2632-4dc8-83e1-b82240e5e73b'
+  name: 'Equipment > Armor and Shields > Armor Statistics > Shields'
+  summary: 'Equipment > Armor and Shields > Armor Statistics > Shields'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 8
+          bottom: 4
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: equipment_armor_shields_statistics_shields_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: equipment_armor_shields_statistics_shields_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor Statistics > Attacking with a Shield
+## ---------------------------------------------------------------------------------------------
+- id: 'f8c0a8a3-161f-4857-8f5c-281fe552fbcf'
+  name: 'Equipment > Armor and Shields > Armor Statistics > Attacking with a Shield'
+  summary: 'Equipment > Armor and Shields > Armor Statistics > Attacking with a Shield'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 8
+          bottom: 4
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 25
+            font: garamond
+            font_style: bold
+        value_variable_id: equipment_armor_shields_statistics_attacking_shield_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: equipment_armor_shields_statistics_attacking_shield_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor List > Introduction
+## ---------------------------------------------------------------------------------------------
+- id: '05024374-a958-476a-bb4d-5e5a04b7f337'
+  name: 'Equipment > Armor and Shields > Armor List > Introduction'
+  summary: 'Equipment > Armor and Shields > Armor List > Introduction'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 12
+        bottom: 12
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 20.5
+            font: garamond
+            font_style: regular
+        value_variable_id: equipment_armor_shields_list_introduction
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor List > Light Armor
+## ---------------------------------------------------------------------------------------------
+- id: 'c07d32a1-dd59-4c35-a1d4-512954b0d65e'
+  name: 'Equipment > Armor and Shields > Armor List > Light Armor'
+  summary: 'Equipment > Armor and Shields > Armor List > Light Armor'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 16
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: 'Light Armor'
+        format:
+          widget_format:
+            element_format:
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          content_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_4
+            padding:
+              bottom: 8
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_4
+              padding:
+                top: 12
+                bottom: 12
+                right: 16
+                left: 16
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_4
+              padding:
+                top: 12
+                bottom: 12
+                right: 16
+                left: 16
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_blue_grey_12
+            font: roboto
+            font_style: medium
+            size: 18
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_blue_grey_12
+            font: roboto
+            font_style: medium
+            size: 18
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_12
+              size:
+                width: 32
+                height: 32
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_12
+              size:
+                width: 32
+                height: 32
+        group_references:
+        - type: group_id
+          group_id: '021fce99-417b-4b24-86fb-30f6cc0f19e3'
+        - type: group_id
+          group_id: 'd4728b46-50c5-4147-b09d-84e53f408322'
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor List > Light Armor > Padded Armor Link
+## ---------------------------------------------------------------------------------------------
+- id: '021fce99-417b-4b24-86fb-30f6cc0f19e3'
+  name: 'Equipment > Armor and Shields > Armor List > Light Armor > Padded Armor Link'
+  summary: 'Equipment > Armor and Shields > Armor List > Light Armor > Padded Armor Link'
+  format:
+    element_format:
+      padding:
+        left: 8
+        right: 8
+        top: 4
+        bottom: 4
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: 'Padded Armor'
+        format:
+          widget_format:
+            element_format:
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right_link
+          content_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_4
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_left_radius: 3
+                top_right_radius: 3
+              padding:
+                top: 12
+                bottom: 12
+                right: 12
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_left_radius: 3
+                top_right_radius: 3
+                bottom_right_radius: 3
+                bottom_left_radius: 3
+              padding:
+                top: 12
+                bottom: 12
+                right: 12
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_blue
+            font: roboto
+            font_style: medium
+            size: 18
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_blue
+            font: roboto
+            font_style: medium
+            size: 18
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue
+              size:
+                width: 26
+                height: 26
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue
+              size:
+                width: 26
+                height: 26
+        group_references:
+        - type: group_id
+          group_id: '2a269719-2551-48f3-8e5e-764ad22fdbd1'
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor List > Light Armor > Padded Armor
+## ---------------------------------------------------------------------------------------------
+- id: '2a269719-2551-48f3-8e5e-764ad22fdbd1'
+  name: 'Equipment > Armor and Shields > Armor List > Light Armor > Padded Armor'
+  summary: 'Equipment > Armor and Shields > Armor List > Light Armor > Padded Armor'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 8
+        right: 8
+        top: 8
+        bottom: 8
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            width: 2
+            element_format:
+              width:
+                type: width_justify
+                width_justify: justify
+              horizontal_alignment: right
+              height: 44
+              padding:
+                left: 10
+                right: 10
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_12
+            font: roboto
+            font_style: medium
+            size: 18
+        value_variable_id: equipment_armor_shields_data_ac_bonus_label
+    - type: widget_number
+      widget_number:
+        format:
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: light_grey_1
+            font: roboto
+            font_style: bold
+            size: 19
+            number_format: modifier
+          widget_format:
+            width: 1
+            element_format:
+              height: 44
+              horizontal_alignment: left
+              padding:
+                left: 12
+                right: 12
+              width:
+                type: width_justify
+                width_justify: justify
+        value_variable_id: equipment_armor_shields_data_padded_armor_ac_bonus
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            width: 2
+            element_format:
+              width:
+                type: width_justify
+                width_justify: justify
+              height: 44
+              horizontal_alignment: right
+              padding:
+                left: 10
+                right: 10
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_16
+            font: roboto
+            font_style: medium
+            size: 18
+        value_variable_id: equipment_armor_shields_data_tac_bonus_label
+    - type: widget_number
+      widget_number:
+        format:
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: light_grey_1
+            font: roboto
+            font_style: bold
+            size: 19
+          widget_format:
+            width: 1
+            element_format:
+              height: 44
+              horizontal_alignment: left
+              margins:
+                left: 12
+              padding:
+                left: 10
+                right: 10
+              width:
+                type: width_justify
+                width_justify: justify
+        value_variable_id: equipment_armor_shields_data_padded_armor_tac_bonus
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor List > Light Armor > Leather Link
+## ---------------------------------------------------------------------------------------------
+- id: 'd4728b46-50c5-4147-b09d-84e53f408322'
+  name: 'Equipment > Armor and Shields > Armor List > Light Armor > Leather Link'
+  summary: 'Equipment > Armor and Shields > Armor List > Light Armor > Leather Link'
+  format:
+    element_format:
+      padding:
+        left: 8
+        right: 8
+        top: 4
+        bottom: 4
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: 'Leather'
+        format:
+          widget_format:
+            element_format:
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right_link
+          content_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_4
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_left_radius: 3
+                top_right_radius: 3
+              padding:
+                top: 12
+                bottom: 12
+                right: 12
+                left: 8
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              corners:
+                top_left_radius: 3
+                top_right_radius: 3
+                bottom_right_radius: 3
+                bottom_left_radius: 3
+              padding:
+                top: 12
+                bottom: 12
+                right: 12
+                left: 8
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_blue
+            font: roboto
+            font_style: medium
+            size: 18
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_blue
+            font: roboto
+            font_style: medium
+            size: 18
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue
+              size:
+                width: 26
+                height: 26
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue
+              size:
+                width: 26
+                height: 26
+        group_references:
+        - type: group_id
+          group_id: '2a269719-2551-48f3-8e5e-764ad22fdbd1'
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Armor and Shields > Armor List > Medium Armor
+## ---------------------------------------------------------------------------------------------
+- id: '3b061219-9932-4402-8f3b-9b784583fdab'
+  name: 'Equipment > Armor and Shields > Armor List > Medium Armor'
+  summary: 'Equipment > Armor and Shields > Armor List > Medium Armor'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 16
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label: 'Medium Armor'
+        format:
+          widget_format:
+            element_format:
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          content_format:
+            background_color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_5
+          header_open_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_4
+              padding:
+                top: 12
+                bottom: 12
+                right: 16
+                left: 16
+          header_closed_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_4
+              padding:
+                top: 12
+                bottom: 12
+                right: 16
+                left: 16
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font: roboto
+            font_style: medium
+            size: 18
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_12
+            font: roboto
+            font_style: medium
+            size: 18
+          header_open_icon:
+            icon_type: chevron_down
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_12
+              size:
+                width: 30
+                height: 30
+          header_closed_icon:
+            icon_type: chevron_up
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_12
+              size:
+                width: 30
+                height: 30
+        group_references:
+        - type: group_id
+          group_id: '021fce99-417b-4b24-86fb-30f6cc0f19e3'
+## ---------------------------------------------------------------------------------------------
 ## | Equipment > Weapons
 ## ---------------------------------------------------------------------------------------------
 - id: '877b053e-e461-48de-9778-5cff30aff242'
@@ -222,16 +2801,16 @@ groups:
         story:
         - type: story_part_span
           story_part_span:
-            text: 'Finesse.'
-            text_format:
-              color_theme:
-                theme_color_ids:
-                - theme_id: dark
-                  color_id: light_grey_14
-                - theme_id: light
-                  color_id: dark_grey_10
-              font_style: bold
-              size: 16
+              text: 'Finesse.'
+              text_format:
+                color_theme:
+                  theme_color_ids:
+                  - theme_id: dark
+                    color_id: light_grey_14
+                  - theme_id: light
+                    color_id: dark_grey_10
+                font_style: bold
+                size: 16
         - type: story_part_span
           story_part_span:
             text: >-

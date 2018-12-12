@@ -2,17 +2,15 @@
 package com.taletable.android.activity.sheet.dialog
 
 
-import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v4.app.DialogFragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.TypedValue
 import android.view.*
 import android.widget.*
@@ -1006,7 +1004,7 @@ object ListEditor
         icon.widthDp            = 20
         icon.heightDp           = 20
 
-        icon.image              = R.drawable.icon_open_book
+        icon.image              = R.drawable.icon_open_book_detailed
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
@@ -1074,12 +1072,12 @@ object ListEditor
 
 
 class ListEditorBaseValueSetRecyclerViewAdapter(
-                    val values : List<Value>,
-                    val currentValues : List<ValueId>,
-                    val updateTarget : UpdateTarget,
-                    val dialog : DialogFragment,
-                    val entityId : EntityId,
-                    val context : Context)
+        val values : List<Value>,
+        val currentValues : List<ValueId>,
+        val updateTarget : UpdateTarget,
+        val dialog : DialogFragment,
+        val entityId : EntityId,
+        val context : Context)
                      : RecyclerView.Adapter<ListEditorValueViewHolder>()
 {
 
@@ -1150,12 +1148,12 @@ class ListEditorBaseValueSetRecyclerViewAdapter(
 // -----------------------------------------------------------------------------------------
 
 class ListEditorCompoundValueSetRecyclerViewAdapter(
-                    val items : List<Any>,
-                    val currentValues : List<ValueId>,
-                    val updateTarget : UpdateTarget,
-                    val dialog : DialogFragment,
-                    val entityId : EntityId,
-                    val context : Context)
+        val items : List<Any>,
+        val currentValues : List<ValueId>,
+        val updateTarget : UpdateTarget,
+        val dialog : DialogFragment,
+        val entityId : EntityId,
+        val context : Context)
                      : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
 
