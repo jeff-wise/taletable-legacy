@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -106,9 +107,9 @@ data class GroupRow(private val format : GroupRowFormat,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>)
     {
-        this.widgets.forEach { it.onSheetComponentActive(entityId, context) }
+        this.widgets.forEach { it.onSheetComponentActive(entityId, context, groupContext) }
     }
 
 
@@ -123,17 +124,16 @@ data class GroupRow(private val format : GroupRowFormat,
         val layout = this.viewLayout(entityId, context)
 
         // Top Border
-        val topBorder = this.format().border().apply { it.top() }
-        when (topBorder) {
-            is Just -> layout.addView(this.dividerView(topBorder.value, entityId, context))
+        this.format().elementFormat().border().top().doMaybe {
+            layout.addView(this.dividerView(it, entityId, context))
         }
 
         // > Widgets
         layout.addView(widgetsView(groupContext, entityId, context))
 
-        val bottomBorder = this.format().border().apply { it.bottom() }
-        when (bottomBorder) {
-            is Just -> layout.addView(dividerView(bottomBorder.value, entityId, context))
+
+        this.format().elementFormat().border().bottom().doMaybe {
+            layout.addView(dividerView(it, entityId, context))
         }
 
         return layout
@@ -147,7 +147,7 @@ data class GroupRow(private val format : GroupRowFormat,
 
         val elementFormat = this.format().elementFormat()
 
-        // layout.orientation = LinearLayout.VERTICAL
+        layout.orientation = LinearLayout.VERTICAL
 
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                                      LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -283,12 +283,15 @@ data class GroupRow(private val format : GroupRowFormat,
                             entityId : EntityId,
                             context : Context) : LinearLayout
     {
-        val divider = LinearLayoutBuilder()
+        val divider                 = LinearLayoutBuilder()
 
         divider.width               = LinearLayout.LayoutParams.MATCH_PARENT
         divider.heightDp            = format.thickness().value
 
         divider.backgroundColor     = colorOrBlack(format.colorTheme(), entityId)
+
+        divider.margin.leftDp      = 1.5f
+        divider.margin.rightDp     = 1.5f
 
         return divider.linearLayout(context)
     }

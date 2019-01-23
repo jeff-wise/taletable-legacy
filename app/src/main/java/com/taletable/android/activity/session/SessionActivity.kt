@@ -36,10 +36,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
-import com.taletable.android.activity.entity.book.fragment.BookFragment
-import com.taletable.android.activity.entity.book.fragment.ChapterFragment
-import com.taletable.android.activity.entity.book.fragment.SectionFragment
-import com.taletable.android.activity.entity.book.fragment.SubsectionFragment
+import com.taletable.android.activity.entity.book.fragment.*
 import com.taletable.android.activity.entity.book.navView
 import com.taletable.android.activity.session.campaign.campaignView
 import com.taletable.android.activity.session.game.gameView
@@ -114,6 +111,8 @@ class SessionActivity : AppCompatActivity()
 
     private val messageListenerDisposable : CompositeDisposable = CompositeDisposable()
 
+    private var bookNavHistory : List<BookReference> = mutableListOf()
+
 
     // -----------------------------------------------------------------------------------------
     // ACTIVITY API
@@ -139,7 +138,8 @@ class SessionActivity : AppCompatActivity()
 
         // Test session
         if (this.sessionId == null) {
-            this.sessionId = SessionId(UUID.fromString("56897634-288a-478e-bb59-eedf09d8aab6"))
+            //this.sessionId = SessionId(UUID.fromString("56897634-288a-478e-bb59-eedf09d8aab6"))
+            this.sessionId = SessionId(UUID.fromString("2c383a1b-b695-4553-bcf3-22eb4ed16b1c"))
         }
 
         // | Initialize Activity
@@ -239,7 +239,27 @@ class SessionActivity : AppCompatActivity()
     }
 
 
-    private fun onSheetMessage(message : MessageSheet) { }
+    private fun onSheetMessage(message : MessageSheet)
+    {
+        when (message)
+        {
+            is MessageSheetUpdate -> {
+                this.sessionId?.let { sessionId ->
+                    session(sessionId).doMaybe { session ->
+                        // Temporry fix. need to add sheet id to message update
+                        sheet(session.mainEntityId).doMaybe {
+                            this.rootSheetView()?.let { rootView ->
+                                it.update(message.update, rootView, this)
+                            }
+                        }
+                    }
+                }
+            }
+            is MessageSheetAction -> { }
+        }
+
+    }
+
 
 
     private fun onSessionLoadMessage(message : MessageSessionLoad)
@@ -260,6 +280,15 @@ class SessionActivity : AppCompatActivity()
                     sheet(session.mainEntityId).doMaybe {
                         Log.d("***SHEET ACTVITIY", "Main entity is sheet")
                     }
+                }
+
+                findViewById<FrameLayout>(R.id.session_loader_container)?.let {
+                    it.visibility = View.GONE
+                }
+
+                findViewById<FrameLayout>(R.id.bottom_sheet_toolbar)?.let {
+                    it.visibility = View.VISIBLE
+                    it.addView(bottomSheetToolbarView(officialAppThemeLight, this))
                 }
             }
         }
@@ -312,20 +341,25 @@ class SessionActivity : AppCompatActivity()
         this.sessionId?.let { this.sessionLoader(it).toNullable() }?.let { session ->
 
             findViewById<TextView>(R.id.session_name)?.let {
-                it.typeface = Font.typeface(TextFont.Roboto, TextFontStyle.Medium, this)
+                it.typeface = Font.typeface(TextFont.RobotoCondensed, TextFontStyle.Bold, this)
                 it.text = session.sessionName.value
+            }
+
+            findViewById<TextView>(R.id.session_count_view)?.let {
+                it.typeface = Font.typeface(TextFont.RobotoCondensed, TextFontStyle.Bold, this)
+                it.text = session.entityIds.size.toString()
             }
 
             findViewById<LinearLayout>(R.id.bottom_sheet_content)?.let {
                 it.addView(sessionView(session, officialAppThemeLight, this))
             }
 
-            findViewById<TextView>(R.id.session_description)?.let { textView ->
-                activeSession().doMaybe {
-                    textView.text = it.sessionInfo.sessionSummary.value
-                    textView.typeface = Font.typeface(TextFont.RobotoCondensed, TextFontStyle.Regular, this)
-                }
-            }
+//            findViewById<TextView>(R.id.session_description)?.let { textView ->
+//                activeSession().doMaybe {
+//                    textView.text = it.sessionInfo.sessionSummary.value
+//                    textView.typeface = Font.typeface(TextFont.RobotoCondensed, TextFontStyle.Regular, this)
+//                }
+//            }
 
             findViewById<FrameLayout>(R.id.session_loader_container)?.let {
                 val progressBar = openSessionProgressBar(officialAppThemeLight, this)
@@ -584,6 +618,28 @@ class SessionActivity : AppCompatActivity()
     }
 
 
+    fun previousBookReference()
+    {
+        val history = this.bookNavHistory
+        if (history.size > 1) {
+            val setToRef = history[history.size - 2]
+            this.bookNavHistory = bookNavHistory.dropLast(1)
+            this.setCurrentBookReference(setToRef)
+        }
+    }
+
+
+    fun setSearchView(bookId : EntityId)
+    {
+        val newFragment = BookSearchFragment.newInstance(bookId)
+
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.session_content, newFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
+
     fun setCurrentBookReference(bookReference : BookReference)
     {
         this.findViewById<LinearLayout>(R.id.session_content)?.let {
@@ -594,6 +650,8 @@ class SessionActivity : AppCompatActivity()
         this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
             it.removeAllViews()
         }
+
+        this.bookNavHistory = this.bookNavHistory.plus(bookReference)
 
         when (bookReference)
         {
@@ -652,6 +710,19 @@ class SessionActivity : AppCompatActivity()
 
             }
             is BookReferenceContent -> { }
+            is BookReferenceCard -> {
+                val newFragment = BookCardFragment.newInstance(bookReference.bookId(), bookReference.cardId())
+
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.session_content, newFragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
+
+                this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+                    it.addView(navView(bookReference, officialAppThemeLight, this))
+                }
+                Log.d("***SESSION ACTIVITY", "going to book card")
+            }
         }
     }
 
@@ -958,22 +1029,254 @@ fun activeSessionRecyclerView(session : Session,
 }
 
 
-// | VIEW > Toolbar
+// | Bottom Sheet > Toolbar View
 // -----------------------------------------------------------------------------------------
 
-fun toolbarView(numOfComponents : Int, theme : Theme, context : Context) : RelativeLayout
+fun bottomSheetToolbarView(theme : Theme, context : Context) : LinearLayout
 {
-    val layout = toolbarViewLayout(context)
+    val layout              = bottomSheetToolbarViewLayout(context)
 
-    layout.addView(toolbarTitleView("$numOfComponents Items", theme, context))
+    layout.addView(bottomSheetToolbarHomeButtonView(theme, context))
 
-    layout.addView(toolbarButtonsView(theme, context))
+    layout.addView(bottomSheetToolbarAddButtonView(theme, context))
+
+    layout.addView(bottomSheetToolbarEditButtonView(theme, context))
+
 
     return layout
 }
 
 
-private fun toolbarViewLayout(context : Context) : RelativeLayout
+fun bottomSheetToolbarViewLayout(context : Context) : LinearLayout
+{
+    val layoutBuilder               = LinearLayoutBuilder()
+
+    layoutBuilder.width             = LinearLayout.LayoutParams.MATCH_PARENT
+    layoutBuilder.height            = LinearLayout.LayoutParams.MATCH_PARENT
+
+    layoutBuilder.orientation       = LinearLayout.HORIZONTAL
+
+    layoutBuilder.gravity           = Gravity.CENTER_VERTICAL
+
+    return layoutBuilder.linearLayout(context)
+}
+
+
+private fun bottomSheetToolbarHomeButtonView(theme : Theme, context : Context) : LinearLayout
+{
+    // 1 | Declarations
+    // -----------------------------------------------------------------------------------------
+
+    val layoutBuilder                   = LinearLayoutBuilder()
+    val iconViewBuilder                 = ImageViewBuilder()
+    val labelViewBuilder                = TextViewBuilder()
+
+    // 2 | Layout
+    // -----------------------------------------------------------------------------------------
+
+    layoutBuilder.width                 = 0
+    layoutBuilder.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+    layoutBuilder.weight                = 1f
+
+    layoutBuilder.orientation           = LinearLayout.HORIZONTAL
+
+    layoutBuilder.gravity               = Gravity.CENTER
+
+    layoutBuilder.child(iconViewBuilder)
+                 .child(labelViewBuilder)
+
+    // 3 | Icon
+    // -----------------------------------------------------------------------------------------
+
+    iconViewBuilder.width               = LinearLayout.LayoutParams.WRAP_CONTENT
+    iconViewBuilder.height              = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    iconViewBuilder.image               = R.drawable.icon_home
+
+    val iconColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
+    iconViewBuilder.color               = theme.colorOrBlack(iconColorTheme)
+
+    iconViewBuilder.margin.rightDp      = 6f
+
+    // 3 | Label
+    // -----------------------------------------------------------------------------------------
+
+    labelViewBuilder.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+    labelViewBuilder.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    labelViewBuilder.textId             = R.string.home
+
+    labelViewBuilder.font               = Font.typeface(TextFont.RobotoCondensed,
+                                                        TextFontStyle.Bold,
+                                                        context)
+
+    val labelColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
+    labelViewBuilder.color              = theme.colorOrBlack(labelColorTheme)
+
+    labelViewBuilder.sizeSp             = 19f
+
+    return layoutBuilder.linearLayout(context)
+}
+
+
+private fun bottomSheetToolbarEditButtonView(theme : Theme, context : Context) : LinearLayout
+{
+    // 1 | Declarations
+    // -----------------------------------------------------------------------------------------
+
+    val layoutBuilder                   = LinearLayoutBuilder()
+    val iconViewBuilder                 = ImageViewBuilder()
+    val labelViewBuilder                = TextViewBuilder()
+
+    // 2 | Layout
+    // -----------------------------------------------------------------------------------------
+
+    layoutBuilder.width                 = 0
+    layoutBuilder.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+    layoutBuilder.weight                = 1f
+
+    layoutBuilder.orientation           = LinearLayout.HORIZONTAL
+
+    layoutBuilder.gravity               = Gravity.CENTER
+
+    layoutBuilder.child(iconViewBuilder)
+                 .child(labelViewBuilder)
+
+    // 3 | Icon
+    // -----------------------------------------------------------------------------------------
+
+    iconViewBuilder.width               = LinearLayout.LayoutParams.WRAP_CONTENT
+    iconViewBuilder.height              = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    iconViewBuilder.image               = R.drawable.icon_simple_gear
+
+    val iconColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
+    iconViewBuilder.color               = theme.colorOrBlack(iconColorTheme)
+
+    iconViewBuilder.margin.rightDp      = 6f
+
+    // 3 | Label
+    // -----------------------------------------------------------------------------------------
+
+    labelViewBuilder.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+    labelViewBuilder.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    labelViewBuilder.textId             = R.string.edit
+
+    labelViewBuilder.font               = Font.typeface(TextFont.RobotoCondensed,
+                                                        TextFontStyle.Bold,
+                                                        context)
+
+    val labelColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
+    labelViewBuilder.color              = theme.colorOrBlack(labelColorTheme)
+
+    labelViewBuilder.sizeSp             = 19f
+
+    return layoutBuilder.linearLayout(context)
+}
+
+
+private fun bottomSheetToolbarAddButtonView(theme : Theme, context : Context) : LinearLayout
+{
+    // 1 | Declarations
+    // -----------------------------------------------------------------------------------------
+
+    val layoutBuilder                   = LinearLayoutBuilder()
+    val iconViewBuilder                 = ImageViewBuilder()
+    val labelViewBuilder                = TextViewBuilder()
+
+    // 2 | Layout
+    // -----------------------------------------------------------------------------------------
+
+    layoutBuilder.width                 = 0
+    layoutBuilder.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+    layoutBuilder.weight                = 1f
+
+    layoutBuilder.gravity               = Gravity.CENTER
+
+    layoutBuilder.orientation           = LinearLayout.HORIZONTAL
+
+    layoutBuilder.corners               = Corners(7.0, 7.0, 7.0, 7.0)
+
+    layoutBuilder.margin.leftDp         = 12f
+    layoutBuilder.margin.rightDp        = 12f
+
+    layoutBuilder.padding.topDp         = 8f
+    layoutBuilder.padding.bottomDp      = 8f
+
+    val bgColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_green"))))
+    layoutBuilder.backgroundColor       = theme.colorOrBlack(bgColorTheme)
+
+    layoutBuilder.child(iconViewBuilder)
+                 .child(labelViewBuilder)
+
+    // 3 | Icon
+    // -----------------------------------------------------------------------------------------
+
+    iconViewBuilder.widthDp             = 20
+    iconViewBuilder.heightDp            = 20
+
+    iconViewBuilder.image               = R.drawable.icon_simple_plus
+
+//    val iconColorTheme = ColorTheme(setOf(
+//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
+//    iconViewBuilder.color               = theme.colorOrBlack(iconColorTheme)
+    iconViewBuilder.color               = Color.WHITE
+
+    iconViewBuilder.margin.rightDp      = 4f
+
+    // 3 | Label
+    // -----------------------------------------------------------------------------------------
+
+    labelViewBuilder.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+    labelViewBuilder.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    labelViewBuilder.textId             = R.string.item
+
+    labelViewBuilder.font               = Font.typeface(TextFont.Roboto,
+                                                        TextFontStyle.Regular,
+                                                        context)
+
+//    val labelColorTheme = ColorTheme(setOf(
+//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
+//    labelViewBuilder.color              = theme.colorOrBlack(labelColorTheme)
+    labelViewBuilder.color              = Color.WHITE
+
+    labelViewBuilder.sizeSp             = 18f
+
+    return layoutBuilder.linearLayout(context)
+}
+
+
+
+// | VIEW > Toolbar
+// -----------------------------------------------------------------------------------------
+
+fun entityToolbarView(numOfComponents : Int, theme : Theme, context : Context) : RelativeLayout
+{
+    val layout = entityToolbarViewLayout(context)
+
+    layout.addView(entityToolbarTitleView("$numOfComponents Items", theme, context))
+
+    layout.addView(entityToolbarButtonsView(theme, context))
+
+    return layout
+}
+
+
+private fun entityToolbarViewLayout(context : Context) : RelativeLayout
 {
     val layout              = RelativeLayoutBuilder()
 
@@ -990,7 +1293,7 @@ private fun toolbarViewLayout(context : Context) : RelativeLayout
 }
 
 
-private fun toolbarTitleView(title : String, theme : Theme, context : Context) : TextView
+private fun entityToolbarTitleView(title : String, theme : Theme, context : Context) : TextView
 {
     val name                = TextViewBuilder()
 
@@ -1018,19 +1321,19 @@ private fun toolbarTitleView(title : String, theme : Theme, context : Context) :
 }
 
 
-private fun toolbarButtonsView(theme : Theme, context : Context) : LinearLayout
+private fun entityToolbarButtonsView(theme : Theme, context : Context) : LinearLayout
 {
-    val layout = toolbarButtonsViewLayout(context)
+    val layout = entityToolbarButtonsViewLayout(context)
 
-    layout.addView(toolbarButtonView(R.drawable.icon_sort, 24, false, theme, context))
-    layout.addView(toolbarButtonView(R.drawable.icon_view_agenda, 20, true, theme, context))
+    layout.addView(entityToolbarButtonView(R.drawable.icon_sort, 24, false, theme, context))
+    layout.addView(entityToolbarButtonView(R.drawable.icon_view_agenda, 20, true, theme, context))
 
     return layout
 }
 
 
 
-private fun toolbarButtonsViewLayout(context : Context) : LinearLayout
+private fun entityToolbarButtonsViewLayout(context : Context) : LinearLayout
 {
     val layout                  = LinearLayoutBuilder()
 
@@ -1047,7 +1350,7 @@ private fun toolbarButtonsViewLayout(context : Context) : LinearLayout
 }
 
 
-private fun toolbarButtonView(iconId : Int, iconSize : Int, addMargin : Boolean, theme : Theme, context : Context) : LinearLayout
+private fun entityToolbarButtonView(iconId : Int, iconSize : Int, addMargin : Boolean, theme : Theme, context : Context) : LinearLayout
 {
     // 1 | Declarations
     // -----------------------------------------------------------------------------------------
@@ -1248,17 +1551,20 @@ private fun entityCardImageView(theme : Theme, context : Context) : LinearLayout
 {
     val layout                  = LinearLayoutBuilder()
 
-    layout.widthDp              = 50
-    layout.heightDp             = 50
+//    layout.widthDp              = 50
+//    layout.heightDp             = 50
 
-    layout.orientation          = LinearLayout.VERTICAL
+    layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+    layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    layout.corners              = Corners(3.0,3.0,3.0,3.0)
+    //layout.corners              = Corners(3.0,3.0,3.0,3.0)
 
-    val colorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_14"))))
-    layout.backgroundColor      = theme.colorOrBlack(colorTheme)
+    layout.backgroundResource   = R.drawable.avatar_game
+
+//    val colorTheme = ColorTheme(setOf(
+//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_14"))))
+//    layout.backgroundColor      = theme.colorOrBlack(colorTheme)
 
     return layout.linearLayout(context)
 }
@@ -1391,7 +1697,7 @@ class ActiveSessionRecyclerViewAdapter(val items : List<Any>,
     {
         TOOLBAR ->
         {
-            val toolbarView = toolbarView(items.size, theme, context)
+            val toolbarView = entityToolbarView(items.size, theme, context)
             ToolbarViewHolder(toolbarView)
         }
         HEADER ->

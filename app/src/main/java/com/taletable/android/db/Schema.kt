@@ -2030,6 +2030,26 @@ typealias DB_VariableBooleanValue =
               SumValue<BooleanVariableValue>>
 
 
+// VARIABLE: Content Refernece
+// ---------------------------------------------------------------------------------------------
+
+val variableContentReferenceTable =
+    Table5("variable_boolean",
+           "variable_id",
+           "label",
+           "description",
+           "tags",
+           "variable_value")
+
+typealias DB_VariableContentReferenceValue =
+    RowValue5<PrimValue<VariableId>,
+              PrimValue<VariableLabel>,
+              PrimValue<VariableDescription>,
+              PrimValue<VariableTagSet>,
+              SumValue<ContentReferenceVariableValue>>
+
+
+
 // VARIABLE: DICE ROLL
 // ---------------------------------------------------------------------------------------------
 

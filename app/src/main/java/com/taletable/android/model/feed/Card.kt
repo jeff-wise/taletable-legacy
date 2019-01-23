@@ -99,7 +99,7 @@ data class Card(private val title : CardTitle,
     // GROUPS
     // -----------------------------------------------------------------------------------------
 
-    fun groups(entityId : EntityId) : List<Group> = groups(this.groupReferences, entityId)
+    fun groups(entityId : EntityId) : List<Group> = groups(this.groupReferences, entityId).map { it.group }
 
 }
 

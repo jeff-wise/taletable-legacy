@@ -273,11 +273,11 @@ class SubsectionUI(val subsection : BookSubsection,
         subsection.bodyContent(book).forEach { content ->
 
             // TODO is this right??
-            groups(content.groupReferences(), book.entityId()).forEach {
+            groups(content.groupReferences(), book.entityId()).map { it.group }.forEach {
                 it.onSheetComponentActive(book.entityId(), context)
             }
 
-            groups(content.groupReferences(), book.entityId()).forEach {
+            groups(content.groupReferences(), book.entityId()).map { it.group }.forEach {
                 layout.addView(it.view(book.entityId(), context))
             }
         }

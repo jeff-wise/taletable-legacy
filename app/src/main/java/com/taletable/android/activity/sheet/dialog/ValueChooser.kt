@@ -20,6 +20,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.taletable.android.R
 import com.taletable.android.activity.entity.book.BookActivity
 import com.taletable.android.activity.session.SessionActivity
@@ -44,10 +45,11 @@ import effect.Val
 import java.io.Serializable
 
 
+
 /**
  * Value Choose Dialog Fragment
  */
-class ValueChooserDialogFragment : DialogFragment()
+class ValueChooserDialogFragment : BottomSheetDialogFragment()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -925,7 +927,7 @@ class ValueViewHolder(itemView : View, val entityId : EntityId, val context : Co
 
     val selectedBgColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("green_30"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("green_tint_1"))))
     val selectedBgColor      = colorOrBlack(selectedBgColorTheme, entityId)
 
     // -----------------------------------------------------------------------------------------

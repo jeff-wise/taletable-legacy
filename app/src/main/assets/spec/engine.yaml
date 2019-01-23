@@ -1603,6 +1603,8 @@ types:
     - type: variable_number 
       description: >
         A variable with a numerical value.
+    - type: variable_content_reference
+      description: Content reference variable.
     - type: variable_text 
       description: >
         A variable with a text value.
@@ -1628,6 +1630,8 @@ types:
       description: A related variable.
     - type: related_variable_set
       description: A related variable set.
+    - type: variable_template
+      description: A template variable.
 - type: product_type
   product_type:
     name: variable_boolean
@@ -1719,6 +1723,84 @@ types:
     base_type:
       type: prim_type
       prim_type: boolean
+- type: product_type
+  product_type:
+    name: variable_content_reference
+    label: Content Reference Variable
+    description: >
+      A boolean variable represents a piece of data that is either True of False. More generally, 
+      it can represent any data with two unique states.
+    group: 'Variable: Content Reference'
+    fields:
+    - name: id
+      type: 
+        type: custom_type
+        custom_type: variable_id
+      presence: required
+      description: >
+        The name of the Boolean Variable. The name must be unique and may only contain letters, 
+        numbers, and underscores. It is used to uniquely identify the variable when customizing 
+        the sheet or programming.
+    - name: label
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        The Boolean Variable's name in a format that is pleasant to read. The label does not need 
+        to be unique and may contain any characters.
+    - name: description
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: >
+        A description of what the variable represents.
+    - name: value
+      type:
+        type: custom_type
+        custom_type: variable_content_reference_value
+      presence: required
+      description: >
+        The value of the variable.
+    - name: is_namespaced
+      type:
+        type: prim_type
+        prim_type: boolean
+      presence: optional
+      default_value: 'false'
+      description: >
+        If true this variable may be assigned a namespace depending on its context.
+    - name: tags
+      type: 
+        type: prim_coll_type
+        prim_coll_type: string
+      presence: optional
+      description: >
+        Tags that can be used to place the variable in a group.
+    - name: relation
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: Relation name
+    - name: is_contextual
+      type: 
+        type: prim_type
+        prim_type: boolean
+      presence: optional
+      description: Relation name
+- type: sum_type
+  sum_type:
+    name: variable_content_reference_value
+    label: Content Reference Variable Value
+    description: >
+      The content reference variable value is the source of a Boolean Variable's value.
+    group: 'Variable: Content Reference'
+    cases:
+    - type: content_reference
+      description: >
+        A literal content reference value.
 - type: product_type
   product_type:
     name: variable_dice_roll
@@ -1985,6 +2067,41 @@ types:
         prim_type: string
       presence: required
       description: Variable relation.
+- type: product_type
+  product_type:
+    name: variable_template
+    label: Template Variable
+    description: >
+      A template variable.
+    group: 'Variable'
+    fields:
+    - name: entries
+      type: 
+        type: custom_coll_type
+        custom_coll_type: variable_template_entry
+      presence: required
+      description: >
+        Variable template entries.
+- type: product_type
+  product_type:
+    name: variable_template_entry
+    label: Template Variable Entry
+    description: >
+      A template variable entry.
+    group: 'Variable'
+    fields:
+    - name: context
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Variable context 
+    - name: variable_id
+      type: 
+        type: custom_type
+        custom_type: variable_id
+      presence: required
+      description: Variable id. 
 - type: product_type
   product_type:
     name: related_variable_set
@@ -3062,6 +3179,16 @@ types:
       presence: optional
       description: >
         Variables that will be active when this value is used.
+- type: sum_type
+  sum_type:
+    name: content_reference
+    label: Content Reference
+    description: >
+      A refernece to some entity content.
+    group: Value
+    cases:
+    - type: book_reference
+      description: Book reference.
 constraints:
 - type: constraint_string_one_of
   constraint_string_one_of:

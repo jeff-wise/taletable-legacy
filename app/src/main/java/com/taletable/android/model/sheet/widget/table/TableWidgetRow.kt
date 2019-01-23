@@ -18,6 +18,7 @@ import com.taletable.android.lib.ui.LayoutType
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.lib.ui.TableRowBuilder
 import com.taletable.android.model.engine.variable.VariableNamespace
+import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.style.TextFormat
 import com.taletable.android.model.sheet.widget.TableWidget
 import com.taletable.android.model.theme.ColorId
@@ -31,6 +32,7 @@ import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import maybe.Maybe
 import java.io.Serializable
 
 
@@ -109,7 +111,7 @@ data class TableWidgetRow(val format : TableWidgetRowFormat,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context) {
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>) {
         TODO("not implemented")
     }
 

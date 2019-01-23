@@ -2,6 +2,7 @@
 package com.taletable.android.model.engine.variable
 
 
+import android.util.Log
 import com.taletable.android.app.*
 import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
@@ -22,6 +23,8 @@ import com.taletable.android.model.engine.value.Value
 import com.taletable.android.model.engine.value.ValueId
 import com.taletable.android.model.engine.value.ValueReference
 import com.taletable.android.model.engine.value.ValueSetId
+import com.taletable.android.model.entity.ContentReference
+import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.rts.entity.*
 import com.taletable.android.rts.entity.sheet.*
 import com.taletable.android.util.Util
@@ -71,9 +74,13 @@ sealed class Variable : ProdType, ToDocument, Serializable
                 "variable_boolean"   -> BooleanVariable.fromDocument(doc) as ValueParser<Variable>
                 "variable_dice_roll" -> DiceRollVariable.fromDocument(doc) as ValueParser<Variable>
                 "variable_number"    -> NumberVariable.fromDocument(doc) as ValueParser<Variable>
+                "variable_content_reference" -> ContentReferenceVariable.fromDocument(doc) as ValueParser<Variable>
                 "variable_text"      -> TextVariable.fromDocument(doc) as ValueParser<Variable>
                 "variable_text_list" -> TextListVariable.fromDocument(doc) as ValueParser<Variable>
-                else                 -> effError(UnknownCase(doc.case(), doc.path))
+                else                 -> {
+                    Log.d("***VARIABLE", "doc is: $doc")
+                    effError(UnknownCase(doc.case(), doc.path))
+                }
             }
     }
 
@@ -149,6 +156,17 @@ sealed class Variable : ProdType, ToDocument, Serializable
                                     VariableIsOfUnexpectedType(entityId,
                                                                this.variableId(),
                                                                VariableType.BOOLEAN,
+                                                               this.type())))
+    }
+
+
+    fun contentReferenceVariable(entityId : EntityId) : AppEff<ContentReferenceVariable> = when (this)
+    {
+        is ContentReferenceVariable -> effValue(this)
+        else               -> effError(AppStateError(
+                                    VariableIsOfUnexpectedType(entityId,
+                                                               this.variableId(),
+                                                               VariableType.CONTENT_REFERENCE,
                                                                this.type())))
     }
 
@@ -457,6 +475,217 @@ data class BooleanVariable(override val id : UUID,
 //                this.onUpdate()
             }
         }
+    }
+
+}
+
+
+
+/**
+ * Content Reference Variable
+ */
+data class ContentReferenceVariable(override val id : UUID,
+                                    private var variableId : VariableId,
+                                    private var label : VariableLabel,
+                                    private var description : VariableDescription,
+                                    private val tags : MutableList<VariableTag>,
+                                    private val relation : Maybe<VariableRelation>,
+                                    private var variableValue : ContentReferenceVariableValue,
+                                    private val isContextual : VariableIsContextual)
+                                     : Variable()
+{
+
+    // | Constructors
+    // -----------------------------------------------------------------------------------------
+
+    constructor(variableId : VariableId,
+                label : VariableLabel,
+                description : VariableDescription,
+                tags : List<VariableTag>,
+                relation : Maybe<VariableRelation>,
+                value : ContentReferenceVariableValue,
+                isContextual : VariableIsContextual)
+        : this(UUID.randomUUID(),
+               variableId,
+               label,
+               description,
+               tags.toMutableList(),
+               relation,
+               value,
+               isContextual)
+
+
+    companion object : Factory<ContentReferenceVariable>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<ContentReferenceVariable> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::ContentReferenceVariable,
+                      // Variable Id
+                      doc.at("id") ap { VariableId.fromDocument(it) },
+                      // Label
+                      doc.at("label") ap { VariableLabel.fromDocument(it) },
+                      // Description
+                      doc.at("description") ap { VariableDescription.fromDocument(it) },
+                      // Tags
+                      split(doc.maybeList("tags"),
+                            effValue(listOf()),
+                            { it.map { VariableTag.fromDocument(it) } }),
+                      // Variable Relation
+                      split(doc.maybeAt("relation"),
+                            effValue<ValueError,Maybe<VariableRelation>>(Nothing()),
+                            { apply(::Just, VariableRelation.fromDocument(it)) }),
+                      // Value
+                      doc.at("value") ap { ContentReferenceVariableValue.fromDocument(it) },
+                      // Is Contextual?
+                      split(doc.maybeAt("is_contextual"),
+                            effValue(VariableIsContextual(false)),
+                            { VariableIsContextual.fromDocument(it) })
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // | To Document
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "id" to this.variableId.toDocument(),
+        "label" to this.label.toDocument(),
+        "description" to this.description.toDocument(),
+        "tags" to DocList(this.tags.map { it.toDocument() }),
+        "value" to this.variableValue().toDocument()
+    ))
+
+
+    // | Variable
+    // -----------------------------------------------------------------------------------------
+
+    override fun variableId() : VariableId = this.variableId
+
+
+    override fun setVariableId(variableId : VariableId) {
+        this.variableId = variableId
+    }
+
+
+    override fun description() : VariableDescription = this.description
+
+
+    override fun label() : VariableLabel = this.label
+
+
+    override fun tags(): List<VariableTag> = this.tags
+
+
+    override fun addTags(tags : Set<VariableTag>) {
+    }
+
+
+    fun variableValue() : ContentReferenceVariableValue = this.variableValue
+
+
+    override fun relation() = this.relation
+
+
+    override fun bookReference(entityId : EntityId) : Maybe<BookReference> = Nothing()
+
+
+    // -----------------------------------------------------------------------------------------
+    // HISTORY
+    // -----------------------------------------------------------------------------------------
+
+    override fun historyVariable() =
+            NumberVariable(this.historyVariableId(),
+                           this.historyVariableLabel(),
+                           this.historyVariableDescription(),
+                           listOf(),
+                           Nothing(),
+                           NumberVariableLiteralValue(0.0))
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override val prodTypeObject: ProdType = this
+
+
+    override fun onLoad() {}
+
+
+    override fun rowValue() : DB_VariableContentReferenceValue =
+        RowValue5(variableBooleanTable,
+                  PrimValue(this.variableId),
+                  PrimValue(this.label),
+                  PrimValue(this.description),
+                  PrimValue(VariableTagSet(this.tags)),
+                  SumValue(this.variableValue))
+
+
+    // -----------------------------------------------------------------------------------------
+    // VARIABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun type(): VariableType = VariableType.BOOLEAN
+
+
+    override fun dependencies(entityId : EntityId) = this.variableValue().dependencies(entityId)
+
+
+    override fun companionVariables(entityId : EntityId) : AppEff<Set<Variable>> =
+            this.variableValue().companionVariables(entityId)
+
+
+    override fun onAddToState(entityId : EntityId, parentVariable : Variable?)
+    {
+        this.relation().doMaybe {
+            parentVariable?.setRelation(it, this.variableId(), entityId)
+        }
+    }
+
+
+    override fun valueString(entityId : EntityId) : AppEff<String> =
+        this.value().apply { effValue<AppError,String>(it.toString()) }
+
+
+    override fun engineValue(entityId : EntityId) : AppEff<EngineValue> =
+        apply(::EngineValueContentReference, this.value())
+
+
+    override fun isContextual() = this.isContextual.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun value() : AppEff<ContentReference> = this.variableValue().value()
+
+
+//    fun toggleValue(entityId : EntityId) {
+//        this.value() apDo {
+//            if (it)
+//                this.updateValue(false, entityId)
+//            else
+//                this.updateValue(true, entityId)
+//        }
+//    }
+
+
+    fun updateValue(value : ContentReference, entityId : EntityId)
+    {
+//        when (this.variableValue())
+//        {
+//            is BooleanVariableLiteralValue -> {
+//                this.variableValue = BooleanVariableLiteralValue(value)
+//                onVariableUpdate(this, entityId)
+////                this.onUpdate()
+//            }
+//        }
     }
 
 }
@@ -1784,6 +2013,7 @@ data class TextListVariable(override val id : UUID,
 enum class VariableType
 {
     BOOLEAN,
+    CONTENT_REFERENCE,
     DICE_ROLL,
     NUMBER,
     TEXT,
@@ -1876,6 +2106,7 @@ sealed class VariableReference : ToDocument, SQLSerializable, Serializable
                 "related_variable"              -> RelatedVariable.fromDocument(doc) as ValueParser<VariableReference>
                 "variable_reference_contextual" -> VariableReferenceContextual.fromDocument(doc) as ValueParser<VariableReference>
                 "related_variable_set"          -> RelatedVariableSet.fromDocument(doc) as ValueParser<VariableReference>
+                "variable_template"             -> VariableTemplate.fromDocument(doc) as ValueParser<VariableReference>
                 else                            -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
@@ -2402,6 +2633,114 @@ data class VariableDescription(val value : String) : ToDocument, SQLSerializable
 //    override fun asSQLValue() : SQLValue = SQLInt({ if (this.value) 1 else 0 })
 //
 //}
+
+
+
+/**
+ * Variable Template
+ */
+data class VariableTemplate(val entries : List<VariableTemplateEntry>) : VariableReference(), Serializable
+{
+
+    // | Properties
+    // -----------------------------------------------------------------------------------------
+
+    private val variableIdByContext : MutableMap<String,VariableId> = mutableMapOf()
+
+
+    // | Constructors
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<VariableTemplate>
+    {
+
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<VariableTemplate> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::VariableTemplate,
+                      // Entries
+                      doc.list("entries") ap { docList ->
+                          docList.map { VariableTemplateEntry.fromDocument(it) }
+                      })
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+
+        fun empty() : VariableTagSet = VariableTagSet(listOf())
+    }
+
+
+    // | Init
+    // -----------------------------------------------------------------------------------------
+
+    init {
+        entries.forEach {
+            this.variableIdByContext[it.context] = it.variableId
+        }
+    }
+
+
+    // | To Document
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "entries" to DocList(this.entries.map { it.toDocument() })
+    ))
+
+
+    // | Lookup
+    // -----------------------------------------------------------------------------------------
+
+    fun variableId(context : String) : Maybe<VariableId> =
+            maybe(this.variableIdByContext[context])
+
+
+    override fun asSQLValue() : SQLValue = SQLInt({0})
+
+
+}
+
+
+/**
+ * Variable Template Entry
+ */
+data class VariableTemplateEntry(val context : String,
+                                 val variableId : VariableId) : ToDocument, Serializable
+{
+
+    // | Constructors
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<VariableTemplateEntry>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<VariableTemplateEntry> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::VariableTemplateEntry,
+                      // Context
+                      doc.text("context"),
+                      // Variable Id
+                      doc.at("variable_id") ap { VariableId.fromDocument(it) }
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // | To Document
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "context" to DocText(this.context),
+        "variable_id" to this.variableId.toDocument()
+    ))
+
+}
+
 
 
 /**

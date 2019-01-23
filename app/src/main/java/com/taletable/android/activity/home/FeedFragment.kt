@@ -216,7 +216,7 @@ class FeedFragment : Fragment()
                         CardReason("Recommended"),
                         Just(AppActionOpenSession(SessionId(UUID.randomUUID()))),
                         Just(CardActionLabel("Read the Pathfinder Playtest Rulebook")),
-                        groups.map { GroupReferenceLiteral(it) })
+                        groups.map { GroupReference(GroupReferenceLiteral(it), Nothing()) })
 
 
         val title = "5E SRD Rulebook"
@@ -293,7 +293,7 @@ class FeedFragment : Fragment()
                         CardReason("Recommended"),
                         Just(AppActionOpenSession(SessionId(UUID.randomUUID()))),
                         Just(CardActionLabel("Play as Casmey, a Level 1 Human Rogue")),
-                        groups.map { GroupReferenceLiteral(it) })
+                        groups.map { GroupReference(GroupReferenceLiteral(it), Nothing()) })
 
 
         val title = "Casmey, Level 1 Human Rogue"

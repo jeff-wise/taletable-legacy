@@ -186,6 +186,11 @@ object WidgetView
         layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height       = LinearLayout.LayoutParams.MATCH_PARENT
 
+        widgetFormat.elementFormat().border().right().doMaybe {
+            layout.width     = 0
+            layout.weight    = 1f
+        }
+
         layout.gravity      = widgetFormat.elementFormat().alignment().gravityConstant() or
                                     widgetFormat.elementFormat().verticalAlignment().gravityConstant()
 
@@ -199,7 +204,7 @@ object WidgetView
                              entityId : EntityId,
                              context : Context) : LinearLayout
     {
-        val layout = LinearLayoutBuilder()
+        val layout              = LinearLayoutBuilder()
 
         layout.orientation      = LinearLayout.VERTICAL
 
@@ -325,7 +330,7 @@ object WidgetView
                                    entityId : EntityId,
                                    context : Context) : LinearLayout
     {
-        val divider = LinearLayoutBuilder()
+        val divider                 = LinearLayoutBuilder()
 
         divider.widthDp             = format.thickness().value
         divider.height              = LinearLayout.LayoutParams.MATCH_PARENT
@@ -560,7 +565,9 @@ data class ActionWidget(val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId,
+                                        context : Context,
+                                        groupContext: Maybe<GroupContext>)
     {
         val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
@@ -806,7 +813,9 @@ data class BooleanWidget(private val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId,
+                                        context : Context,
+                                        groupContext: Maybe<GroupContext>)
     {
         val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
@@ -927,7 +936,7 @@ data class BooleanWidget(private val widgetId : WidgetId,
  */
 data class ExpanderWidget(val widgetId : WidgetId,
                           val format : ExpanderWidgetFormat,
-                          val header : ExpanderWidgetLabel,
+                          val labelVariableReference : Maybe<VariableReference>,
                           val headerGroupReferences : List<GroupReference>,
                           val groupReferences : List<GroupReference>,
                           val bookReference : Maybe<BookReference>,
@@ -945,7 +954,7 @@ data class ExpanderWidget(val widgetId : WidgetId,
 
     private var headerGroupsCache : Maybe<List<Group>> = Nothing()
 
-    private var contentGroupsCache : Maybe<List<Group>> = Nothing()
+    private var contentGroupsCache : Maybe<List<GroupInvocation>> = Nothing()
 
 
     // | Constructors
@@ -966,8 +975,10 @@ data class ExpanderWidget(val widgetId : WidgetId,
                       split(doc.maybeAt("format"),
                            effValue(ExpanderWidgetFormat.default()),
                            { ExpanderWidgetFormat.fromDocument(it) }),
-                      // Label
-                      doc.at("label") ap { ExpanderWidgetLabel.fromDocument(it) },
+                      // Label Variable Reference
+                      split(doc.maybeAt("label_variable_reference"),
+                            effValue<ValueError,Maybe<VariableReference>>(Nothing()),
+                            { apply(::Just, VariableReference.fromDocument(it)) }),
                       // Header Groups
                       split(doc.maybeList("header_group_references"),
                             effValue(listOf()),
@@ -997,8 +1008,7 @@ data class ExpanderWidget(val widgetId : WidgetId,
 
     override fun toDocument() = DocDict(mapOf(
         "id" to this.widgetId().toDocument(),
-        "format" to this.format().toDocument(),
-        "label" to this.label().toDocument()
+        "format" to this.format().toDocument()
     ))
 
 
@@ -1009,7 +1019,7 @@ data class ExpanderWidget(val widgetId : WidgetId,
     fun format() : ExpanderWidgetFormat = this.format
 
 
-    fun label() : ExpanderWidgetLabel = this.header
+    fun labelVariableReference() : Maybe<VariableReference> = this.labelVariableReference
 
 
     fun headerGroupReferences() : List<GroupReference> = this.headerGroupReferences
@@ -1034,7 +1044,7 @@ data class ExpanderWidget(val widgetId : WidgetId,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context) : View {
-        val viewBuilder = ExpanderWidgetUI(this, entityId, context)
+        val viewBuilder = ExpanderWidgetUI(this, entityId, context, groupContext)
 
         this.groupContext = groupContext
 
@@ -1048,10 +1058,12 @@ data class ExpanderWidget(val widgetId : WidgetId,
     // | Sheet Component
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId,
+                                        context : Context,
+                                        groupContext: Maybe<GroupContext>)
     {
         this.contentGroups(entityId).forEach {
-            it.onSheetComponentActive(entityId, context)
+            it.group.onSheetComponentActive(entityId, context)
         }
 
         sheet(entityId).doMaybe {
@@ -1071,26 +1083,26 @@ data class ExpanderWidget(val widgetId : WidgetId,
             is Nothing -> {
                 val _groups = groups(this.headerGroupReferences, entityId)
                 _groups.forEach {
-                    it.rows().forEach {
+                    it.group.rows().forEach {
                         it.widgets().forEach { widget ->
                             sheetOrError(entityId) apDo { it.indexWidget(widget)  }
                         }
                     }
                 }
-                _groups
+                _groups.map { it.group }
             }
         }
     }
 
 
-    fun contentGroups(entityId : EntityId) : List<Group>
+    fun contentGroups(entityId : EntityId) : List<GroupInvocation>
     {
         val contentGroupsCache = this.contentGroupsCache
         return when (contentGroupsCache) {
             is Just    -> contentGroupsCache.value
             is Nothing -> {
-                val _groups = groups(this.groupReferences, entityId)
-                _groups.forEach {
+                val _groups = groups(this.groupReferences, entityId, this.groupContext)
+                _groups.map { it.group }.forEach {
                     it.rows().forEach {
                         it.widgets().forEach { widget ->
                             sheetOrError(entityId) apDo { it.indexWidget(widget)  }
@@ -1159,6 +1171,27 @@ data class ExpanderWidget(val widgetId : WidgetId,
             val layout = rootView.findViewById<LinearLayout>(viewId)
             if (layout != null) {
                 ExpanderWidgetUI(this, entityId, context).updateCheckboxView(layout)
+            }
+        }
+    }
+
+
+    fun labelValue(entityId : EntityId, groupContext : Maybe<GroupContext>) : String
+    {
+        val labelVarRef = this.labelVariableReference
+        return when (labelVarRef) {
+            is Just -> {
+                val labelString = textVariable(labelVarRef.value,
+                                               entityId,
+                                               groupContext.apply { Just(VariableNamespace(it.value)) })
+                                    .apply { it.valueString(entityId) }
+                when (labelString) {
+                    is Val -> labelString.value
+                    is Err -> ""
+                }
+            }
+            is Nothing -> {
+                ""
             }
         }
     }
@@ -1283,7 +1316,7 @@ data class WidgetGroup(val widgetId : WidgetId,
         val groupsCache = this.groupsCache
         return when (groupsCache) {
             is Just    -> groupsCache.value
-            is Nothing -> groups(this.groupReferences, entityId)
+            is Nothing -> groups(this.groupReferences, entityId).map { it.group }
         }
     }
 
@@ -1314,7 +1347,9 @@ data class WidgetGroup(val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId,
+                                        context : Context,
+                                        groupContext: Maybe<GroupContext>)
     {
         this.groups(entityId).forEach {
             it.onSheetComponentActive(entityId, context)
@@ -1461,7 +1496,8 @@ data class ImageWidget(val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context) {
+    override fun onSheetComponentActive(entityId : EntityId, context : Context,
+                                            groupContext: Maybe<GroupContext>) {
     }
 
 }
@@ -1579,7 +1615,7 @@ data class ListWidget(val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context) {
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>) {
     }
 
 
@@ -1805,7 +1841,7 @@ data class LogWidget(private val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context) {
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>) {
     }
 
 }
@@ -1926,7 +1962,7 @@ data class MechanicWidget(private val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>)
     {
         val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
@@ -1979,8 +2015,8 @@ data class MechanicWidget(private val widgetId : WidgetId,
  */
 data class NumberWidget(val widgetId : WidgetId,
                         val format : NumberWidgetFormat,
-                        val valueVariableId : VariableId,
-                        val insideLabel : Maybe<NumberWidgetLabel>,
+                        val valueVariableReference : VariableReference,
+                        val insideLabelVariableReference : Maybe<VariableReference>,
                         val bookReference : Maybe<BookReference>)
                          : Widget()
 {
@@ -2024,12 +2060,12 @@ data class NumberWidget(val widgetId : WidgetId,
                       split(doc.maybeAt("format"),
                             effValue(NumberWidgetFormat.default()),
                             { NumberWidgetFormat.fromDocument(it) }),
-                      // Value Variable Id
-                      doc.at("value_variable_id") ap { VariableId.fromDocument(it) },
+                      // Value Variable Reference
+                      doc.at("value_variable_reference") ap { VariableReference.fromDocument(it) },
                       // Inside Label
-                      split(doc.maybeAt("inside_label"),
-                            effValue<ValueError,Maybe<NumberWidgetLabel>>(Nothing()),
-                            { apply(::Just, NumberWidgetLabel.fromDocument(it)) }),
+                      split(doc.maybeAt("inside_label_variable_reference"),
+                            effValue<ValueError,Maybe<VariableReference>>(Nothing()),
+                            { apply(::Just, VariableReference.fromDocument(it)) }),
                       // Rulebook Referenece
                       split(doc.maybeAt("book_reference"),
                             effValue<ValueError,Maybe<BookReference>>(Nothing()),
@@ -2048,7 +2084,7 @@ data class NumberWidget(val widgetId : WidgetId,
     override fun toDocument() = DocDict(mapOf(
         "id" to this.widgetId().toDocument(),
         "format" to this.format().toDocument(),
-        "value_variable_id" to this.valueVariableId().toDocument()))
+        "value_variable_reference" to this.valueVariableReference.toDocument()))
 
 
     // -----------------------------------------------------------------------------------------
@@ -2058,10 +2094,10 @@ data class NumberWidget(val widgetId : WidgetId,
     fun format() : NumberWidgetFormat = this.format
 
 
-    fun valueVariableId() : VariableId = this.valueVariableId
+    fun valueVariableReference() : VariableReference = this.valueVariableReference
 
 
-    fun insideLabel() : Maybe<NumberWidgetLabel> = this.insideLabel
+    fun insideLabelVariableReference() : Maybe<VariableReference> = this.insideLabelVariableReference
 
 
     fun bookReference() : Maybe<BookReference> = this.bookReference
@@ -2078,7 +2114,7 @@ data class NumberWidget(val widgetId : WidgetId,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
                       context : Context): View =
-            NumberWidgetView.view(this, entityId, context)
+            NumberWidgetView.view(this, entityId, context, groupContext)
 
 
     override fun widgetId() = this.widgetId
@@ -2137,7 +2173,7 @@ data class NumberWidget(val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>)
     {
         val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
@@ -2158,8 +2194,21 @@ data class NumberWidget(val widgetId : WidgetId,
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    fun valueVariable(entityId : EntityId) : AppEff<NumberVariable> =
-        numberVariable(this.valueVariableId(), entityId)
+
+    fun insideLabelValueVariable(entityId : EntityId) : AppEff<TextVariable> =
+            note<AppError,VariableReference>(this.insideLabelVariableReference, AppVoidError())
+                .apply { textVariable(it, entityId) }
+
+
+
+    fun insideLabelValue(entityId : EntityId) : AppEff<String> =
+            insideLabelValueVariable(entityId).apply { it.valueString(entityId) }
+
+
+    fun valueVariable(entityId : EntityId, groupContext : Maybe<GroupContext> = Nothing()) : AppEff<NumberVariable> =
+        numberVariable(this.valueVariableReference(),
+                       entityId,
+                       groupContext.apply { Just(VariableNamespace(it.value)) })
 
 
     /**
@@ -2193,9 +2242,9 @@ data class NumberWidget(val widgetId : WidgetId,
      * The string representation of the widget's current value. This method returns 0 when the
      * value is null for some reason.
      */
-    fun value(entityId : EntityId) : Double
+    fun value(entityId : EntityId, groupContext : Maybe<GroupContext>) : Double
     {
-        val num  = this.valueVariable(entityId)
+        val num  = this.valueVariable(entityId, groupContext)
                        .apply { it.value(entityId) }
 
         when (num)
@@ -2225,8 +2274,12 @@ data class NumberWidget(val widgetId : WidgetId,
         {
             is NumberWidgetUpdateValue ->
             {
-                val newValue = EngineValueNumber(update.newValue)
-                updateVariable(this.valueVariableId(), newValue, entityId)
+                val variable = numberVariable(this.valueVariableReference, entityId)
+                when (variable) {
+                    is Val -> variable.value.updateValue(update.newValue, entityId)
+
+                }
+                // updateVariable(this.valueVariableReference(), newValue, entityId)
 
                 rootView?.let { this.updateView(rootView, entityId, context) }
             }
@@ -2237,7 +2290,7 @@ data class NumberWidget(val widgetId : WidgetId,
     {
         this.layoutId?.let { layoutId ->
             rootView.findViewById<LinearLayout>(layoutId)?.let { layout ->
-                NumberWidgetView.updateView(this, entityId, layout, context)
+                NumberWidgetView.updateView(this, entityId, layout, context, Nothing())
             }
         }
     }
@@ -2644,7 +2697,7 @@ data class PointsWidget(val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>)
     {
         val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
@@ -2838,7 +2891,7 @@ data class QuoteWidget(val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context) { }
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>) { }
 
 }
 
@@ -2946,7 +2999,7 @@ data class RollWidget(val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>)
     {
         val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
@@ -3092,7 +3145,7 @@ data class WidgetSlider(val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>)
     {
         this.groups().forEach {
             it.onSheetComponentActive(entityId, context)
@@ -3344,7 +3397,7 @@ data class StoryWidget(val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>)
     {
         val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
@@ -3477,7 +3530,7 @@ data class WidgetTab(val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>)
     {
         this.tabs().forEach {
             it.groups(entityId).forEach {
@@ -3924,7 +3977,7 @@ data class TableWidget(private val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>)
     {
         this.addTableToState(entityId, context)
     }
@@ -4404,7 +4457,7 @@ data class TableWidget(private val widgetId : WidgetId,
  */
 data class TextWidget(val widgetId : WidgetId,
                       val format : TextWidgetFormat,
-                      val valueVariableId : VariableId,
+                      val valueVariableReference : VariableReference,
                       val bookReference : Maybe<BookReference>,
                       val primaryActionWidgetId : Maybe<WidgetId>,
                       val secondaryActionWigdetId : Maybe<WidgetId>)
@@ -4416,6 +4469,8 @@ data class TextWidget(val widgetId : WidgetId,
     // -----------------------------------------------------------------------------------------
 
     var layoutId : Int? = null
+
+    var groupContext : Maybe<GroupContext> = Nothing()
 
 
     // -----------------------------------------------------------------------------------------
@@ -4447,8 +4502,8 @@ data class TextWidget(val widgetId : WidgetId,
                       split(doc.maybeAt("format"),
                             effValue(TextWidgetFormat.default()),
                             { TextWidgetFormat.fromDocument(it) }),
-                      // Value
-                      doc.at("value_variable_id") ap { VariableId.fromDocument(it) },
+                      // Value Variable Reference
+                      doc.at("value_variable_reference") ap { VariableReference.fromDocument(it) },
                       // Book Reference
                       split(doc.maybeAt("book_reference"),
                             effValue<ValueError,Maybe<BookReference>>(Nothing()),
@@ -4475,7 +4530,7 @@ data class TextWidget(val widgetId : WidgetId,
     override fun toDocument() = DocDict(mapOf(
         "id" to this.widgetId().toDocument(),
         "format" to this.format().toDocument(),
-        "value_variable_id" to this.valueVariableId().toDocument()
+        "value_variable_reference" to this.valueVariableReference().toDocument()
     ))
 
 
@@ -4486,7 +4541,7 @@ data class TextWidget(val widgetId : WidgetId,
     fun format() : TextWidgetFormat = this.format
 
 
-    fun valueVariableId() : VariableId = this.valueVariableId
+    fun valueVariableReference() : VariableReference = this.valueVariableReference
 
 
     fun rulebookReference() : Maybe<BookReference> = this.bookReference
@@ -4508,8 +4563,12 @@ data class TextWidget(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View =
-        TextWidgetView.view(this, this.format(), rowLayoutType, entityId, context)
+                      context : Context) : View
+    {
+        Log.d("***WIDGET", "text widget group context is: $groupContext")
+        return TextWidgetView.view(this, this.format(), rowLayoutType, entityId, context, groupContext)
+    }
+
 
 
     override fun widgetId() : WidgetId = this.widgetId
@@ -4570,7 +4629,7 @@ data class TextWidget(val widgetId : WidgetId,
         }
 
 
-    fun updateValue(newText : String, entityId : EntityId)
+    fun updateValue(newText : String, entityId : EntityId, context : Maybe<GroupContext> = Nothing())
     {
         val textVariable = this.valueVariable(entityId)
         when (textVariable) {
@@ -4587,7 +4646,7 @@ data class TextWidget(val widgetId : WidgetId,
         {
             try {
                 val layout = rootView.findViewById<LinearLayout>(layoutId)
-                TextWidgetView.updateView(this, entityId, layout, context)
+                TextWidgetView.updateView(this, entityId, layout, context, Nothing())
             }
             catch (e: TypeCastException) {
             }
@@ -4600,8 +4659,17 @@ data class TextWidget(val widgetId : WidgetId,
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun valueVariable(entityId : EntityId) : AppEff<TextVariable> =
-        textVariable(this.valueVariableId(), entityId)
+    fun valueVariable(entityId : EntityId, _groupContext : Maybe<GroupContext> = Nothing()) : AppEff<TextVariable>
+    {
+        val scopeGroupContext = when (this.groupContext) {
+            is Just -> this.groupContext
+            else    -> _groupContext
+        }
+        return textVariable(this.valueVariableReference(),
+                entityId,
+                scopeGroupContext.apply { Just(VariableNamespace(it.value)) })
+    }
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -4626,8 +4694,12 @@ data class TextWidget(val widgetId : WidgetId,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId,
+                                        context : Context,
+                                        groupContext : Maybe<GroupContext>)
     {
+        this.groupContext = groupContext
+
         val sheetActivity = context as SessionActivity
         val rootView = sheetActivity.rootSheetView()
 
@@ -4651,9 +4723,9 @@ data class TextWidget(val widgetId : WidgetId,
     /**
      * The string representation of the widget's current value.
      */
-    fun valueString(entityId : EntityId) : String
+    fun valueString(entityId : EntityId, groupContext : Maybe<GroupContext> = Nothing()) : String
     {
-        val str = this.valueVariable(entityId)
+        val str = this.valueVariable(entityId, groupContext)
                       .apply { it.valueString(entityId) }
 
         when (str)

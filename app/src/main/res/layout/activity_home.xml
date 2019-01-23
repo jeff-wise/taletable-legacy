@@ -57,37 +57,42 @@
                             android:background="@drawable/bg_search_box">
 
                             <ImageButton
-                                android:id="@+id/toolbar_back_button"
+                                android:id="@+id/searchbar_left_button_view"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
                                 android:layout_centerVertical="true"
-                                android:layout_marginStart="10dp"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:paddingTop="10dp"
+                                android:paddingBottom="10dp"
                                 android:background="#00000000"
                                 android:src="@drawable/ic_searchbar_search"
                                 android:tint="@color/light_theme_dark_blue_grey_14" />
 
                             <EditText
-                                android:id="@+id/search_text"
+                                android:id="@+id/searchbar_text_view"
                                 android:textSize="18sp"
                                 android:textColor="@color/light_theme_dark_blue_grey_12"
                                 android:hint="@string/search_everything"
                                 android:layout_centerVertical="true"
                                 android:background="@color/transparent"
                                 android:textColorHint="#959595"
-                                android:layout_marginStart="27dp"
-                                android:layout_toEndOf="@id/toolbar_back_button"
+                                android:layout_marginStart="17dp"
+                                android:layout_toEndOf="@id/searchbar_left_button_view"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" />
 
                             <ImageView
-                                android:id="@+id/toolbar_options_button"
+                                android:id="@+id/searchbar_right_button_view"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
-                                android:layout_marginEnd="10dp"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:paddingTop="12dp"
+                                android:paddingBottom="10dp"
                                 android:layout_centerVertical="true"
-                                android:paddingTop="2dp"
                                 android:background="#00000000"
                                 android:tint="@color/light_theme_dark_blue_grey_14"
                                 android:src="@drawable/ic_toolbar_options" />
@@ -119,6 +124,7 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="54dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:paddingBottom="60dp"
             android:background="@color/white">
         </androidx.recyclerview.widget.RecyclerView>
 

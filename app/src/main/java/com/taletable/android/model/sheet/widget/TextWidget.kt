@@ -15,9 +15,12 @@ import com.taletable.android.lib.orm.RowValue4
 import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.lib.ui.TextViewBuilder
+import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.group.RowLayoutType
 import com.taletable.android.model.sheet.style.TextFormat
 import com.taletable.android.rts.entity.EntityId
+import com.taletable.android.rts.entity.EntityTypeSheet
+import com.taletable.android.rts.entity.entityType
 import com.taletable.android.rts.entity.sheetOrError
 import com.taletable.android.util.Util
 import effect.*
@@ -25,6 +28,8 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -133,7 +138,8 @@ object TextWidgetView
              format : TextWidgetFormat,
              rowLayoutType : RowLayoutType,
              entityId : EntityId,
-             context : Context) : View
+             context : Context,
+             groupContext : Maybe<GroupContext> = Nothing()) : View
     {
         val layout = WidgetView.layout(format.widgetFormat(), entityId, context, rowLayoutType)
 
@@ -141,36 +147,43 @@ object TextWidgetView
         textWidget.layoutId = layoutId
         layout.id  = layoutId
 
-        this.updateView(textWidget, entityId, layout, context)
+        this.updateView(textWidget, entityId, layout, context, groupContext)
 
         // On Click
         // -------------------------------------------------------------------------------------
 
-        layout.setOnClickListener {
-            val primaryActionWidgetId = textWidget.primaryActionWidgetId
-            when (primaryActionWidgetId) {
-                is Just -> {
-                    sheetOrError(entityId)                 apDo {
-                    it.widget(primaryActionWidgetId.value) apDo {
-                    it.primaryAction(entityId, context)
-                    } }
-                }
-                else -> textWidget.primaryAction(entityId, context)
-            }
-        }
+        entityType(entityId).apDo { entityType ->
+            when (entityType) {
+                is EntityTypeSheet -> {
+                    layout.setOnClickListener {
+                        val primaryActionWidgetId = textWidget.primaryActionWidgetId
+                        when (primaryActionWidgetId) {
+                            is Just -> {
+                                sheetOrError(entityId)                 apDo {
+                                it.widget(primaryActionWidgetId.value) apDo {
+                                it.primaryAction(entityId, context)
+                                } }
+                            }
+                            else -> textWidget.primaryAction(entityId, context)
+                        }
+                    }
 
-        layout.setOnLongClickListener {
-            val secondaryActionWidgetId = textWidget.secondaryActionWidgetId()
-            when (secondaryActionWidgetId) {
-                is Just -> {
-                    sheetOrError(entityId)                 apDo {
-                    it.widget(secondaryActionWidgetId.value) apDo {
-                        it.secondaryAction(entityId, context)
-                    } }
+                    layout.setOnLongClickListener {
+                        val secondaryActionWidgetId = textWidget.secondaryActionWidgetId()
+                        when (secondaryActionWidgetId) {
+                            is Just -> {
+                                sheetOrError(entityId)                 apDo {
+                                it.widget(secondaryActionWidgetId.value) apDo {
+                                    it.secondaryAction(entityId, context)
+                                } }
+                            }
+                            else -> textWidget.secondaryAction(entityId, context)
+                        }
+                        true
+                    }
                 }
-                else -> textWidget.secondaryAction(entityId, context)
             }
-            true
+
         }
 
 
@@ -195,12 +208,13 @@ object TextWidgetView
     fun updateView(textWidget : TextWidget,
                    entityId : EntityId,
                    layout : LinearLayout,
-                   context : Context)
+                   context : Context,
+                   groupContext : Maybe<GroupContext>)
     {
 
         val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
         contentLayout.removeAllViews()
-        contentLayout.addView(this.mainView(textWidget, entityId, context))
+        contentLayout.addView(this.mainView(textWidget, entityId, context, groupContext))
     }
 
 
@@ -220,7 +234,8 @@ object TextWidgetView
      */
     private fun mainView(textWidget : TextWidget,
                          entityId : EntityId,
-                         context : Context) : LinearLayout
+                         context : Context,
+                         groupContext : Maybe<GroupContext>) : LinearLayout
     {
         val layout = this.mainLayout(textWidget, context)
 
@@ -235,7 +250,7 @@ object TextWidgetView
 //        }
 
         // > Value
-        layout.addView(this.valueMainView(textWidget, format, entityId, context))
+        layout.addView(this.valueMainView(textWidget, format, entityId, context, groupContext))
 
         // > Outside Bottom/Right Label View
 //        if (format.outsideLabel() != null) {
@@ -277,7 +292,8 @@ object TextWidgetView
     private fun valueMainView(textWidget : TextWidget,
                               format : TextWidgetFormat,
                               entityId : EntityId,
-                              context : Context) : LinearLayout
+                              context : Context,
+                              groupContext : Maybe<GroupContext>) : LinearLayout
     {
         val layout = this.valueMainViewLayout(format, entityId, context)
 
@@ -289,7 +305,7 @@ object TextWidgetView
 //            }
 //        }
 
-        layout.addView(valueTextView(textWidget, format, entityId, context))
+        layout.addView(valueTextView(textWidget, format, entityId, context, groupContext))
 
         // > Inside Bottom/Right Label View
 //        if (format.insideLabel() != null && textWidget.description() == null) {
@@ -359,7 +375,8 @@ object TextWidgetView
     private fun valueTextView(textWidget : TextWidget,
                               format : TextWidgetFormat,
                               entityId : EntityId,
-                              context : Context) : TextView
+                              context : Context,
+                              groupContext : Maybe<GroupContext>) : TextView
     {
         val value = TextViewBuilder()
 
@@ -373,7 +390,7 @@ object TextWidgetView
                                 Gravity.CENTER_VERTICAL
         value.gravity       = format.valueFormat().elementFormat().alignment().gravityConstant()
 
-        value.text          = textWidget.valueString(entityId)
+        value.text          = textWidget.valueString(entityId, groupContext)
 
         format.valueFormat().styleTextViewBuilder(value, entityId, context)
 

@@ -9,15 +9,15 @@
     </solid>
 
     <stroke
-        android:width="1.5dp"
-        android:color="@color/light_theme_light_blue_grey_14">
+        android:width="1dp"
+        android:color="@color/light_theme_light_blue_grey_12">
     </stroke>
 
     <corners
-        android:topLeftRadius="2dp"
-        android:topRightRadius="2dp"
-        android:bottomLeftRadius="2dp"
-        android:bottomRightRadius="2dp"
+        android:topLeftRadius="1dp"
+        android:topRightRadius="1dp"
+        android:bottomLeftRadius="1dp"
+        android:bottomRightRadius="1dp"
         >
     </corners>
 

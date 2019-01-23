@@ -26,7 +26,8 @@ import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.book
 import com.taletable.android.rts.entity.colorOrBlack
 import com.taletable.android.rts.entity.groups
-
+import maybe.Just
+import maybe.Nothing
 
 
 /**
@@ -193,8 +194,8 @@ class SectionUI(val section : BookSection,
 
         //layout.margin.topDp     = 10f
 
-        layout.padding.leftDp   = 7f
-        layout.padding.rightDp  = 7f
+        layout.padding.leftDp   = 15f
+        layout.padding.rightDp  = 15f
         layout.padding.topDp    = 14f
         layout.padding.bottomDp = 14f
 
@@ -214,13 +215,13 @@ class SectionUI(val section : BookSection,
 
         title.text               = section.title().value
 
-        title.font               = Font.typeface(TextFont.Garamond,
+        title.font               = Font.typeface(TextFont.Merriweather,
                                                  TextFontStyle.ExtraBold,
                                                  context)
 
         title.color              = Color.WHITE
 
-        title.sizeSp             = 42f
+        title.sizeSp             = 36f
 
         title.lineSpacingAdd     = 10f
         title.lineSpacingMult    = 0.8f
@@ -392,7 +393,7 @@ class SectionUI(val section : BookSection,
 
         contentList.forEach { content ->
             groups(content.groupReferences(), book.entityId()).forEach {
-                layout.addView(it.view(book.entityId(), context))
+                layout.addView(it.group.view(book.entityId(), context))
             }
         }
 
@@ -413,8 +414,8 @@ class SectionUI(val section : BookSection,
 
         //layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
 
-        layout.padding.topDp        = 16f
-        layout.padding.bottomDp     = 16f
+//        layout.padding.topDp        = 16f
+//        layout.padding.bottomDp     = 16f
 //        layout.padding.leftDp       = 8f
 //        layout.padding.rightDp      = 8f
 
@@ -429,8 +430,34 @@ class SectionUI(val section : BookSection,
     {
         val layout = this.subsectionListViewLayout()
 
+        val noGroup : MutableList<BookSubsection> = mutableListOf()
+        val byGroup : MutableMap<BookSubsectionGroup,MutableList<BookSubsection>> = mutableMapOf()
+
         section.subsections().forEach {
+            val group = it.group()
+            when (group) {
+                is Just    -> {
+                    if (!byGroup.containsKey(group.value)) {
+                        byGroup[group.value] = mutableListOf()
+                    }
+                    byGroup[group.value]?.add(it)
+                }
+                is Nothing -> noGroup.add(it)
+            }
+
+        }
+
+        noGroup.forEach {
             layout.addView(this.subsectionSummaryView(it))
+        }
+
+        byGroup.keys.forEach { group ->
+
+            layout.addView(this.subsectionGroupHeaderView(group.value))
+
+            byGroup[group]?.forEach {
+                layout.addView(this.subsectionSummaryView(it))
+            }
         }
 
         return layout
@@ -536,10 +563,10 @@ class SectionUI(val section : BookSection,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_10"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
-        summary.sizeSp              = 19f
+        summary.sizeSp              = 18.5f
 
         summary.backgroundColor     = Color.WHITE
 
@@ -605,10 +632,55 @@ class SectionUI(val section : BookSection,
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_16"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         icon.color               = theme.colorOrBlack(iconColorTheme)
 
         return layout.linearLayout(context)
     }
 
+
+    private fun subsectionGroupHeaderView(header : String) : LinearLayout
+    {
+        // | Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layoutBuilder               = LinearLayoutBuilder()
+        val headerViewBuilder           = TextViewBuilder()
+
+        // | Layout Builder
+        // -------------------------------------------------------------------------------------
+
+        layoutBuilder.width             = LinearLayout.LayoutParams.MATCH_PARENT
+        layoutBuilder.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layoutBuilder.padding.topDp     = 12f
+        layoutBuilder.padding.bottomDp  = 8f
+        layoutBuilder.padding.leftDp    = 16f
+        layoutBuilder.padding.rightDp   = 16f
+
+        layoutBuilder.backgroundColor   = Color.WHITE
+
+        layoutBuilder.child(headerViewBuilder)
+
+        // | Header View Builder
+        // -------------------------------------------------------------------------------------
+
+        headerViewBuilder.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        headerViewBuilder.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        headerViewBuilder.text          = header
+
+        headerViewBuilder.font          = Font.typeface(TextFont.RobotoCondensed,
+                                                        TextFontStyle.Bold,
+                                                        context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_18"))))
+        headerViewBuilder.color         = theme.colorOrBlack(colorTheme)
+
+        headerViewBuilder.sizeSp        = 16f
+
+        return layoutBuilder.linearLayout(context)
+    }
 }

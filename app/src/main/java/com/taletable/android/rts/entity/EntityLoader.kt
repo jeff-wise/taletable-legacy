@@ -41,7 +41,6 @@ fun loadEntity(entityId : EntityId, context : Context) : Maybe<EntityLoadResult>
 fun loadEntityFromDatabase(entityId : EntityId, context : Context) : Maybe<EntityLoadResult> =
     readEntity(entityId, context).apply {
         addEntity(it)
-        Log.d("***ENTITY LOADER", "loaded entity from database: ${it.name()}")
         Just(EntityLoadResult(entityId, false))
     }
 
@@ -194,12 +193,10 @@ fun loadPersistedGame(persistedEntity : PersistedEntity, context : Context)
             persistedEntity.indexes.forEach {
                 when (it.indexType) {
                     is EntityIndexTypeGroup -> {
-                        Log.d("***ENTITY LOADER", "loading group index")
                         val groupIndex = loadGroupIndex(it.path, context)
                         game.groupIndex.merge(groupIndex)
                     }
                     is EntityIndexTypeVariable -> {
-                        Log.d("***ENTITY LOADER", "loading variable index")
                         val variables = loadVariableIndex(it.path, context)
                         game.addVariables(variables)
                     }
@@ -271,7 +268,6 @@ fun loadPersistedBook(persistedEntity : PersistedEntity, context : Context)
                 when (it.indexType) {
                     is EntityIndexTypeGroup -> {
                         val groupIndex = loadGroupIndex(it.path, context)
-                        Log.d("***ENTITY LOADER", "adding group index to book")
                         book.groupIndex.merge(groupIndex)
                     }
                     is EntityIndexTypeVariable -> {

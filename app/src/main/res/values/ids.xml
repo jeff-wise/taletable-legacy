@@ -291,6 +291,8 @@
     <item name="tab_label" type="id"/>
     <item name="tab_icon" type="id"/>
 
+    <item name="searchbar_icon_left" type="id"/>
+
     <item name="search_view" type="id"/>
     <item name="search_field" type="id"/>
     <item name="search_exit" type="id"/>

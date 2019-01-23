@@ -149,7 +149,6 @@ public class ImageViewBuilder implements ViewBuilder
         if (this.bitmap != null)
             imageView.setImageBitmap(this.bitmap);
 
-
         // > Image
         // --------------------------------------------------------------------------------------
 

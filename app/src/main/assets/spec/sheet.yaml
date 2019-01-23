@@ -469,6 +469,12 @@ types:
         custom_type: trigger
       presence: optional
       description: An optional trigger.
+    - name: content_reference_variable
+      type: 
+        type: custom_type
+        custom_type: variable_reference
+      presence: optional
+      description: A reference to some other part of the application.
     - name: rows
       type: 
         type: custom_coll_type
@@ -521,11 +527,31 @@ types:
         custom_type: border
       presence: optional
       description: A border.
-- type: sum_type
-  sum_type:
+- type: product_type
+  product_type:
     name: group_reference
     label: Group Reference
-    description: A group reference.
+    description: |+
+      Group reference.
+    group: 'Group Reference'
+    fields:
+    - name: value
+      type:
+        type: custom_type
+        custom_type: group_reference_value
+      presence: required
+      description: A border.
+    - name: group_context
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: A group context.
+- type: sum_type
+  sum_type:
+    name: group_reference_value
+    label: 'Group Reference Value'
+    description: A group reference value.
     group: Group
     cases:
     - type: group_set_id
@@ -954,10 +980,10 @@ types:
       presence: optional
       description: >
         The expander widget formatting options.
-    - name: label
+    - name: label_variable_reference
       type:
-        type: prim_type
-        prim_type: string
+        type: custom_type
+        custom_type: variable_reference
       presence: optional
       description: >
         The expander widget formatting options.
@@ -1625,18 +1651,18 @@ types:
       presence: optional
       description: >
         The number widget formatting options.
-    - name: value_variable_id
+    - name: value_variable_reference
       type:
         type: custom_type
-        custom_type: variable_id
+        custom_type: variable_reference
       presence: required
-      description: The number variable value id.
-    - name: inside_label
+      description: The value variable reference.
+    - name: inside_label_variable_reference
       type:
-        type: prim_type
-        prim_type: string
+        type: custom_type
+        custom_type: variable_reference
       presence: optional
-      description: The inside label.
+      description: The inside label variable reference.
     - name: book_reference
       type:
         type: custom_type
@@ -3614,13 +3640,12 @@ types:
       presence: optional
       description: >
         The text widget formatting options.
-    - name: value_variable_id
+    - name: value_variable_reference
       type:
         type: custom_type
-        custom_type: variable_id
+        custom_type: variable_reference
       presence: required
-      description: >
-        The text value variable id.
+      description: The value variable reference.
     - name: book_reference
       type: 
         type: custom_type
@@ -3734,6 +3759,12 @@ types:
       presence: optional
       description: >
         The text position.
+    - name: style
+      type: 
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The element standard style.
     - name: height
       type:
         type: custom_type
@@ -3822,6 +3853,12 @@ types:
       presence: optional
       description: >
         The text size.
+    - name: line_spacing
+      type:
+        type: prim_type
+        prim_type: number
+      presence: optional
+      description: The line spacing multiplier.
     - name: font
       type:
         type: custom_type
@@ -4281,6 +4318,68 @@ types:
     cases:
     - type: editor_options_subset
       description: Subset editor options
+- type: product_type
+  product_type:
+    name: search_data
+    label: Search Data
+    description: Search attributes
+    group: Style
+    fields:
+    - name: attributes
+      type:
+        type: custom_coll_type
+        custom_coll_type: search_data_attribute
+      presence: optional
+      description: Header group refs.
+- type: sum_type
+  sum_type:
+    name: search_data_attribute
+    label: Search Data Attribute
+    description: Search data attribute.
+    group: 'Search'
+    cases:
+    - type: search_data_attribute_keyword
+      description: Keyword.
+    - type: search_data_attribute_group
+      description: Group.
+- type: product_type
+  product_type:
+    name: search_data_attribute_keyword
+    label: Search Data Attribute Keyword
+    description: Search data attribute keyword
+    group: Style
+    fields:
+    - name: keyword
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Keyword
+    - name: weight
+      type:
+        type: prim_type
+        prim_type: number
+      presence: required
+      description: Weight
+- type: product_type
+  product_type:
+    name: search_data_attribute_group
+    label: Search Data Attribute Group
+    description: Search data attribute group
+    group: Style
+    fields:
+    - name: keyword
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: Group
+    - name: weight
+      type:
+        type: prim_type
+        prim_type: number
+      presence: required
+      description: Weight
 constraints:
 - type: constraint_string_one_of
   constraint_string_one_of:

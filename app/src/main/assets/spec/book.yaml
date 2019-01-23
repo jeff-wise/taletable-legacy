@@ -73,6 +73,12 @@ types:
         custom_coll_type: book_chapter
       presence: required
       description: The chapters
+    - name: cards
+      type: 
+        type: custom_coll_type
+        custom_coll_type: book_card
+      presence: optional
+      description: The cards
     - name: content
       type: 
         type: custom_coll_type
@@ -169,6 +175,12 @@ types:
         prim_type: string
       presence: required
       description: The content id.
+    - name: context
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The context.
     - name: group_references
       type:
         type: custom_coll_type
@@ -372,6 +384,12 @@ types:
         prim_type: string
       presence: required
       description: The subsection title.
+    - name: group
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: A group.
     - name: subtitle
       type:
         type: prim_type
@@ -384,6 +402,38 @@ types:
         custom_coll_type: book_content_id 
       presence: optional
       description: A brief description of the game rules.
+- type: product_type
+  product_type:
+    name: book_card
+    label: Book Card
+    description: Book Card
+    group: 'book'
+    type: product
+    fields:
+    - name: id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The subsection id.
+    - name: name
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The card name.
+    - name: content_ids
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_content_id 
+      presence: required
+      description: The content ids.
+    - name: search_data
+      type:
+        type: custom_type
+        custom_type: search_data
+      presence: optional
+      description: The serach data.
 - type: sum_type
   sum_type:
     name: book_reference
@@ -401,6 +451,8 @@ types:
       description: Book reference subsection.
     - type: book_reference_content
       description: Book reference content.
+    - type: book_reference_card
+      description: Book reference card.
 - type: product_type
   product_type:
     name: book_reference_content
@@ -513,4 +565,24 @@ types:
         prim_type: string
       presence: required
       description: The subsection id.
+- type: product_type
+  product_type:
+    name: book_reference_card
+    label: Book Reference Card
+    description: Book Reference Card
+    group: 'book'
+    type: product
+    fields:
+    - name: book_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The book uuid.
+    - name: card_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The card uuid.
 constraints:

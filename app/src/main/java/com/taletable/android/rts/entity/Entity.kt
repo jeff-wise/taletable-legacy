@@ -72,6 +72,9 @@ fun entityRecord(entityId : EntityId) : AppEff<EntityRecord> =
         effError(AppEntityError(EntityDoesNotExist(entityId)))
 
 
+fun entityType(entityId : EntityId) : AppEff<EntityType> =
+        apply({it.entityType}, entityRecord(entityId))
+
 
 //fun entitySheetRecord(sheetId : SheetId) : AppEff<EntitySheetRecord> =
 //    entityRecord(EntitySheetId(sheetId)) apply {
@@ -296,6 +299,10 @@ fun initialize(entityId : EntityId)
                 Log.d("***ENTITY", "initialize game")
                 initializeGame(record.game)
             }
+            is EntityBookRecord -> {
+                Log.d("***ENTITY", "initialize book")
+                initializeBook(record.book)
+            }
         }
     }
 }
@@ -333,6 +340,21 @@ fun initializeGame(game : Game)
         else {
             addVariable(variable, game.entityId())
         }
+    }
+}
+
+
+fun initializeBook(book : Book)
+{
+    book.variables().forEach { variable ->
+        addVariable(variable, book.entityId())
+//        if (variable.isContextual()) {
+//            entityEngineState(game.entityId()).apDo {
+//                it.addContextualVariable(variable)
+//            }
+//        }
+        //else {
+        //}
     }
 }
 
@@ -519,21 +541,29 @@ fun groups(tagQuery : TagQuery, entityId : EntityId) : List<Group>
 
 
 
-fun groups(groupReferences : List<GroupReference>, entityId : EntityId) : List<Group>
+fun groups(groupReferences : List<GroupReference>,
+           entityId : EntityId,
+           groupContext : Maybe<GroupContext> = Nothing()) : List<GroupInvocation>
 {
-    val groups : MutableList<Group> = mutableListOf()
+    val groups : MutableList<GroupInvocation> = mutableListOf()
 
-    groupReferences.forEach {
-        when (it) {
-            is GroupReferenceLiteral -> groups.add(it.group)
+    groupReferences.forEach { groupRef ->
+
+        val groupRefValue = groupRef.value
+        when (groupRefValue) {
+            is GroupReferenceLiteral -> groups.add(GroupInvocation(groupRefValue.group, groupContext))
             is GroupReferenceId -> {
-                groupWithId(it.groupId, entityId).doMaybe {
-                    groups.add(it)
+                groupWithId(groupRefValue.groupId, entityId).doMaybe { group ->
+                    val mGroupContext = groupRef.groupContext
+                    when (mGroupContext) {
+                        is Just -> groups.add(GroupInvocation(group, mGroupContext))
+                        is Nothing -> groups.add(GroupInvocation(group))
+                    }
                 }
             }
             is GroupReferenceSetId -> {
-                val setGroups = groupSetWithId(it.groupSetId, entityId)
-                Log.d("***ENTITY", "set group count: ${setGroups.size}")
+                val setGroups = groupSetWithId(groupRefValue.groupSetId, entityId)
+                                 .map { GroupInvocation(it) }
                 groups.addAll(setGroups)
             }
         }
@@ -849,11 +879,28 @@ fun entityEngineState(entityId : EntityId) : AppEff<EntityState> =
 // STATE > Variable
 // ---------------------------------------------------------------------------------------------
 
+//fun variable(variableReference : VariableReference,
+//             entityId : EntityId) : AppEff<Variable>
+//{
+//    entityStates(entityId).forEachIndexed { i, v ->
+//        val _variable = v.variable(variableReference)
+//        when (_variable) {
+//            is Val -> {
+//                return _variable
+//            }
+//        }
+//    }
+//
+//    return effError(AppEntityError(EntityDoesNotHaveVariable(entityId, variableReference)))
+//}
+
+
 fun variable(variableReference : VariableReference,
-             entityId : EntityId) : AppEff<Variable>
+             entityId : EntityId,
+             context : Maybe<VariableNamespace> = Nothing()) : AppEff<Variable>
 {
     entityStates(entityId).forEachIndexed { i, v ->
-        val _variable = v.variable(variableReference)
+        val _variable = v.variable(variableReference, context)
         when (_variable) {
             is Val -> {
                 return _variable
@@ -863,6 +910,7 @@ fun variable(variableReference : VariableReference,
 
     return effError(AppEntityError(EntityDoesNotHaveVariable(entityId, variableReference)))
 }
+
 
 
 fun variables(variableReference : VariableReference,
@@ -945,6 +993,15 @@ fun booleanVariable(variableReference : VariableReference,
         variable(variableReference, entityId).apply { it.booleanVariable(entityId)  }
 
 
+// | STATE > Variable > Boolean
+// ---------------------------------------------------------------------------------------------
+
+fun contentReferenceVariable(variableReference : VariableReference,
+                             entityId : EntityId,
+                             context : Maybe<VariableNamespace> = Nothing()) : AppEff<ContentReferenceVariable> =
+        variable(variableReference, entityId, context).apply { it.contentReferenceVariable(entityId)  }
+
+
 // Engine State > Variable > Dice Roll
 // ---------------------------------------------------------------------------------------------
 
@@ -957,8 +1014,9 @@ fun diceRollVariable(variableReference : VariableReference,
 // ---------------------------------------------------------------------------------------------
 
 fun numberVariable(variableReference : VariableReference,
-                   entityId : EntityId) : AppEff<NumberVariable> =
-        variable(variableReference, entityId).apply { it.numberVariable(entityId)  }
+                   entityId : EntityId,
+                   context : Maybe<VariableNamespace> = Nothing()) : AppEff<NumberVariable> =
+        variable(variableReference, entityId, context).apply { it.numberVariable(entityId)  }
 
 
 fun numberVariables(variableReference : VariableReference,
@@ -970,8 +1028,9 @@ fun numberVariables(variableReference : VariableReference,
 // ---------------------------------------------------------------------------------------------
 
 fun textVariable(variableReference : VariableReference,
-                 entityId : EntityId) : AppEff<TextVariable> =
-       variable(variableReference, entityId).apply { it.textVariable(entityId)  }
+                 entityId : EntityId,
+                 context : Maybe<VariableNamespace> = Nothing()) : AppEff<TextVariable> =
+       variable(variableReference, entityId, context).apply { it.textVariable(entityId)  }
 
 //        entityEngineState(entityId).apply { it.textVariable(variableReference)  }
 

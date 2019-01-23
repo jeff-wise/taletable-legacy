@@ -20,6 +20,7 @@ import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.entity.ExpanderWidgetUpdateToggle
+import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.style.*
 import com.taletable.android.model.theme.ColorId
 import com.taletable.android.model.theme.ColorTheme
@@ -29,6 +30,7 @@ import com.taletable.android.router.Router
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
 import com.taletable.android.rts.entity.sheet.MessageSheetUpdate
+import com.taletable.android.rts.entity.textVariable
 import com.taletable.android.util.Util
 import effect.*
 import lulo.document.*
@@ -381,7 +383,8 @@ data class ExpanderWidgetLabel(val value : String) : ToDocument, SQLSerializable
 
 class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
                        val entityId : EntityId,
-                       val context : Context)
+                       val context : Context,
+                       val groupContext : Maybe<GroupContext> = Nothing())
 {
 
     // -----------------------------------------------------------------------------------------
@@ -427,7 +430,6 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
     {
         val layout = WidgetView.layout(expanderWidget.widgetFormat(), entityId, context)
 
-
         val layoutId = Util.generateViewId()
         layout.id = layoutId
         expanderWidget.layoutId = layoutId
@@ -470,7 +472,8 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
             contentLayout.addView(groupsLayout)
 
             expanderWidget.contentGroups(entityId).forEach {
-                groupsLayout.addView(it.view(entityId, context, expanderWidget.groupContext))
+                Log.d("***EXPANDER WIDGET", "context is : ${it.groupContext}")
+                groupsLayout.addView(it.group.view(entityId, context, it.groupContext))
             }
         }
     }
@@ -526,7 +529,7 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
         title.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         title.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        title.text          = expanderWidget.label().value
+        title.text          = expanderWidget.labelValue(entityId, groupContext)
 
         format.styleTextViewBuilder(title, entityId, context)
 
@@ -811,7 +814,8 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
 
         val groups = expanderWidget.headerGroups(entityId)
         groups.forEach {
-            val view = it.view(entityId, context, expanderWidget.groupContext)
+            //val view = it.view(entityId, context, expanderWidget.groupContext)
+            val view = it.view(entityId, context, groupContext)
             groupsLayout.addView(view)
         }
 
@@ -906,7 +910,7 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
 
         val groups = expanderWidget.headerGroups(entityId)
         groups.forEach {
-            val view = it.view(entityId, context, expanderWidget.groupContext)
+            val view = it.view(entityId, context, groupContext)
             headerLayout.addView(view)
         }
 

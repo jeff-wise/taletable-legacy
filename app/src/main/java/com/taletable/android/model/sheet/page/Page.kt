@@ -14,6 +14,7 @@ import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.*
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.model.sheet.group.Group
+import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.style.ElementFormat
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
@@ -24,6 +25,7 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import maybe.Just
+import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
 
@@ -106,9 +108,9 @@ data class Page(val pageName : PageName,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>)
     {
-        this.groups.forEach { it.onSheetComponentActive(entityId, context) }
+        this.groups.forEach { it.onSheetComponentActive(entityId, context, groupContext) }
     }
 
 

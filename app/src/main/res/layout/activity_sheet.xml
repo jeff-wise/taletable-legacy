@@ -43,7 +43,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:layout_marginStart="7.5dp"
+                        android:layout_marginStart="16dp"
                         android:layout_centerVertical="true"
                         android:background="#00000000"
                         android:src="@drawable/ic_toolbar_back"
@@ -58,7 +58,7 @@
                         android:text="@string/player_session"
                         android:layout_centerVertical="true"
                         android:layout_toEndOf="@id/entity_button"
-                        android:layout_marginStart="15dp"
+                        android:layout_marginStart="24dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -158,69 +158,77 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:background="@drawable/bg_session_sheet_header"
             android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="52dp">
+                android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/session_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="15dp"
-                    android:layout_centerVertical="true"
-                    android:background="#00000000"
-                    android:src="@drawable/ic_bottom_sheet_session" />
+                <!--<ImageView-->
+                    <!--android:id="@+id/session_icon"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentStart="true"-->
+                    <!--android:layout_marginStart="15dp"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:background="#00000000"-->
+                    <!--android:src="@drawable/ic_bottom_sheet_session" />-->
 
                 <TextView
                     android:id="@+id/session_name"
                     android:layout_gravity="start"
                     android:textSize="20sp"
-                    android:textColor="@color/light_theme_dark_grey_10"
-                    android:text="@string/player_session"
+                    android:textColor="@color/light_theme_dark_blue_grey_14"
+                    android:text="@string/untitled_session"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="22dp"
-                    android:layout_toEndOf="@id/session_icon"
+                    android:layout_marginStart="15dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <ImageView
-                    android:id="@+id/session_options_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="15dp"
+
+                <TextView
+                    android:id="@+id/session_count_view"
+                    android:layout_gravity="start"
+                    android:textSize="17sp"
+                    android:textColor="@color/white"
+                    android:text="@string/plus_one"
+                    android:background="@drawable/bg_session_count"
+                    android:gravity="center"
+                    android:layout_marginEnd="18dp"
                     android:layout_centerVertical="true"
-                    android:paddingTop="2dp"
-                    android:background="#00000000"
-                    android:src="@drawable/ic_bottom_sheet_session_options" />
+                    android:layout_alignParentEnd="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/session_options_button"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentEnd="true"-->
+                    <!--android:layout_marginEnd="15dp"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:paddingTop="2dp"-->
+                    <!--android:background="#00000000"-->
+                    <!--android:src="@drawable/ic_bottom_sheet_session_options" />-->
 
             </RelativeLayout>
 
+            <!--<TextView-->
+                <!--android:id="@+id/session_description"-->
+                <!--android:layout_gravity="start"-->
+                <!--android:textSize="16.5sp"-->
+                <!--android:textColor="@color/light_theme_dark_grey_20"-->
+                <!--android:text="@string/player_session"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginStart="17dp"-->
+                <!--android:layout_marginEnd="17dp"-->
+                <!--android:paddingBottom="12dp"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content" />-->
 
-            <TextView
-                android:id="@+id/session_description"
-                android:layout_gravity="start"
-                android:textSize="16.5sp"
-                android:textColor="@color/light_theme_dark_grey_20"
-                android:text="@string/player_session"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="17dp"
-                android:layout_marginEnd="17dp"
-                android:paddingBottom="12dp"
-                android:layout_toEndOf="@id/session_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <FrameLayout
-                android:id="@+id/session_loader_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </FrameLayout>
 
         </LinearLayout>
 
@@ -238,8 +246,40 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/light_theme_light_blue_grey_5"
+            android:background="@color/white"
             android:orientation="vertical">
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/bottom_sheet_footer"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/light_theme_light_blue_grey_9"
+                android:orientation="horizontal"
+                android:layout_marginEnd="0dp"
+                android:layout_marginStart="0dp">
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/bottom_sheet_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
+
+            <FrameLayout
+                android:id="@+id/session_loader_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom">
+            </FrameLayout>
         </LinearLayout>
 
     </LinearLayout>

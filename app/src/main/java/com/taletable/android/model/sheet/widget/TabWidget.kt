@@ -106,14 +106,14 @@ data class Tab(val tabName : TabName,
             is Just    -> groupsCache.value
             is Nothing -> {
                 val _groups = groups(this.groupReferences, entityId)
-                _groups.forEach {
+                _groups.map { it.group }.forEach {
                     it.rows().forEach {
                         it.widgets().forEach { widget ->
                             sheetOrError(entityId) apDo { it.indexWidget(widget)  }
                         }
                     }
                 }
-                _groups
+                _groups.map { it.group }
             }
         }
     }

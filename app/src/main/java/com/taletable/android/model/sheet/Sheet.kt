@@ -187,7 +187,7 @@ data class Sheet(private var sheetId : EntityId,
                                             it.widgets().forEach { f(it) }
                                         }
                                     }
-                                    it.contentGroups(this.entityId()).forEach {
+                                    it.contentGroups(this.entityId()).map { it.group }.forEach {
                                         it.rows().forEach {
                                             it.widgets().forEach { f(it) }
                                         }

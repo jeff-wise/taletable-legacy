@@ -16,6 +16,7 @@ import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -43,6 +44,7 @@ data class WidgetFormat(val width : WidgetWidth,
         private fun defaultWidth()         = WidgetWidth.default()
         private fun defaultColumn()        = RowColumn.default()
         private fun defaultElementFormat() = ElementFormat(Position.Top,
+                                                           Nothing(),
                                                            Height.Wrap,
                                                            Width.Justify,
                                                            Spacing.default(),

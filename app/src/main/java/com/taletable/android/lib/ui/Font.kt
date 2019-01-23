@@ -51,7 +51,7 @@ object Font
     private val merriweatherBoldItalicFilePath      = "fonts/Merriweather-BoldItalic.ttf"
     private val merriweatherLightFilePath           = "fonts/Merriweather-Light.ttf"
 
-    private val kaushanRegularFilePath              = "fonts/KaushanScript-Regular.ttf"
+    private val vollkornRegularFilePath             = "fonts/Vollkorn-Regular.ttf"
 
     private val garamondRegularFilePath             = "fonts/EBGaramond-Regular.ttf"
     private val garamondRegularItalicFilePath       = "fonts/EBGaramond-Italic.ttf"

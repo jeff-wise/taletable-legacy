@@ -5,7 +5,10 @@ package com.taletable.android.rts.entity.sheet
 import android.content.Context
 import android.view.View
 import com.taletable.android.activity.sheet.page.PagePagerAdapter
+import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.rts.entity.EntityId
+import maybe.Maybe
+import maybe.Nothing
 
 
 /**
@@ -373,7 +376,9 @@ import com.taletable.android.rts.entity.EntityId
 
 interface SheetComponent
 {
-    fun onSheetComponentActive(entityId : EntityId, context : Context)
+    fun onSheetComponentActive(entityId : EntityId,
+                               context : Context,
+                               groupContext : Maybe<GroupContext> = Nothing())
 
 }
 

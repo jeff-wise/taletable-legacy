@@ -655,6 +655,7 @@ class ListWidgetUI(val listWidget : ListWidget,
     {
         val paragraph           = TextViewBuilder()
         val format              = listWidget.format().descriptionFormat()
+        val itemFormat          = listWidget.format().itemFormat()
 
         paragraph.width         = LinearLayout.LayoutParams.MATCH_PARENT
         paragraph.height        = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -683,6 +684,18 @@ class ListWidgetUI(val listWidget : ListWidget,
                             is Err -> ApplicationLog.error(values.error)
                         }
                     }
+                }
+            }
+            is Nothing -> {
+                listWidget.value(entityId).apDo { valueStrings ->
+                    val joinedStrings = valueStrings.joinToString()
+                    paragraph.text = joinedStrings
+
+                    paragraph.sizeSp    = itemFormat.sizeSp()
+                    paragraph.font      = Font.typeface(itemFormat.font(),
+                                                        itemFormat.fontStyle(),
+                                                        context)
+                    paragraph.color     = colorOrBlack(itemFormat.colorTheme(), entityId)
                 }
             }
         }
@@ -1309,8 +1322,6 @@ class ListWidgetUI(val listWidget : ListWidget,
                     SheetData.number(it.maxSize, entityId).apDo {
                         it.doMaybe {
                             val values = variable.values(entityId)
-
-                            Log.d("***LIST WIDGET", "values: $values ")
 
                             values.forEach {
                                 layout.addView(this.poolItemActiveView(it))

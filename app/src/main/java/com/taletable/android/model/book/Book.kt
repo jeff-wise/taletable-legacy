@@ -3,19 +3,18 @@ package com.taletable.android.model.book
 
 
 import android.content.Context
-import android.util.Log
 import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.*
 import com.taletable.android.lib.orm.schema.CollValue
 import com.taletable.android.lib.orm.schema.PrimValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
 import com.taletable.android.model.game.Author
 import com.taletable.android.model.engine.Engine
 import com.taletable.android.model.engine.variable.Variable
+import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.group.GroupIndex
 import com.taletable.android.model.sheet.group.GroupReference
 import com.taletable.android.model.sheet.style.ElementFormat
@@ -27,10 +26,8 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import maybe.Just
-import maybe.Maybe
+import maybe.*
 import maybe.Nothing
-import maybe.filterJust
 import java.io.Serializable
 import java.util.*
 
@@ -48,7 +45,8 @@ data class Book(val bookId : EntityId,
                 val content : List<BookContent>,
                 val introduction : List<BookContentId>,
                 val conclusion : List<BookContentId>,
-                val chapters : MutableList<BookChapter>)
+                val chapters : MutableList<BookChapter>,
+                val cards : List<BookCard>)
                  : ToDocument, Entity, Serializable
 {
 
@@ -64,6 +62,10 @@ data class Book(val bookId : EntityId,
     private val contentById : MutableMap<BookContentId,BookContent> =
                                         content.associateBy { it.id() }
                                                 as MutableMap<BookContentId,BookContent>
+
+    private val cardById : MutableMap<BookCardId,BookCard> =
+                                        cards.associateBy { it.cardId }
+                                                as MutableMap<BookCardId,BookCard>
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -109,8 +111,12 @@ data class Book(val bookId : EntityId,
                             { it.map { BookContentId.fromDocument(it) } }),
                       // Chapters
                       doc.list("chapters") apply {
-                          it.mapMut { BookChapter.fromDocument(it) }
-                      })
+                          it.mapMut { BookChapter.fromDocument(it) } },
+                      // Cards
+                      split(doc.maybeList("cards"),
+                            effValue(listOf()),
+                            { it.map { BookCard.fromDocument(it) } })
+                )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -150,6 +156,9 @@ data class Book(val bookId : EntityId,
 
 
     fun chapters() : List<BookChapter> = this.chapters
+
+
+    fun cards() : List<BookCard> = this.cards
 
 
     // -----------------------------------------------------------------------------------------
@@ -261,6 +270,13 @@ data class Book(val bookId : EntityId,
 
     fun conclusionContent() : List<BookContent> =
             this.conclusion.map { this.content(it) }.filterJust()
+
+
+    // | Cards
+    // -----------------------------------------------------------------------------------------
+
+    fun card(cardId : BookCardId) : Maybe<BookCard> = maybe(this.cardById[cardId])
+
 
     // -----------------------------------------------------------------------------------------
     // | Group Index
@@ -689,6 +705,7 @@ data class BookSettings(override val id : UUID,
  */
 data class BookContent(private val id : BookContentId,
                        private val title : BookContentTitle,
+                       private val context : Maybe<GroupContext>,
                        private val groupReferences : List<GroupReference>)
                         : ToDocument, Serializable
 {
@@ -708,6 +725,10 @@ data class BookContent(private val id : BookContentId,
                       doc.at("id") apply { BookContentId.fromDocument(it) },
                       // Title
                       doc.at("title") apply { BookContentTitle.fromDocument(it) },
+                      // Context
+                      split(doc.maybeAt("context"),
+                            effValue<ValueError,Maybe<GroupContext>>(Nothing()),
+                            { apply(::Just, GroupContext.fromDocument(it)) }),
                       // Group References
                       doc.list("group_references") apply {
                           it.map { doc -> GroupReference.fromDocument(doc) } }
@@ -735,6 +756,9 @@ data class BookContent(private val id : BookContentId,
 
 
     fun title() : BookContentTitle = this.title
+
+
+    fun context() : Maybe<GroupContext> = this.context
 
 
     fun groupReferences() : List<GroupReference> = this.groupReferences

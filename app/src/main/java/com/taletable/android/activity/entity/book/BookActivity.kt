@@ -211,6 +211,7 @@ class BookActivity : AppCompatActivity()
 //                        this.referenceHistory.add(bookReference)
 //                    }
                 }
+                is BookReferenceCard -> { }
 
             }
         }

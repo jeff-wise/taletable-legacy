@@ -28,6 +28,7 @@ import com.taletable.android.model.engine.summation.Summation
 import com.taletable.android.model.engine.summation.SummationId
 import com.taletable.android.model.engine.task.Task
 import com.taletable.android.model.engine.value.*
+import com.taletable.android.model.entity.ContentReference
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.engine.*
 import com.taletable.android.rts.entity.sheet.SheetData
@@ -465,6 +466,8 @@ sealed class EngineValue : ToDocument, SumType, Serializable
                                             as ValueParser<EngineValue>
                 "engine_value_boolean" -> EngineValueBoolean.fromDocument(doc)
                                             as ValueParser<EngineValue>
+                "engine_value_content_reference" -> EngineValueContentReference.fromDocument(doc)
+                        as ValueParser<EngineValue>
                 "dice_roll"            -> EngineValueDiceRoll.fromDocument(doc)
                                             as ValueParser<EngineValue>
                 "list_text"            -> EngineTextListValue.fromDocument(doc)
@@ -579,6 +582,66 @@ data class EngineValueText(val value : String) : EngineValue(), SQLSerializable
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun columnValue() = PrimValue(this)
+
+
+    override fun case() = "text"
+
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
+
+    override fun toString() = this.value.toString()
+
+}
+
+
+/**
+ * Engine Value: Content Reference
+ */
+data class EngineValueContentReference(val value : ContentReference) : EngineValue(), SQLSerializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<EngineValueContentReference>
+    {
+        override fun fromDocument(doc: SchemaDoc): ValueParser<EngineValueContentReference> =
+                apply(::EngineValueContentReference, ContentReference.fromDocument(doc))
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = this.value.toDocument().withCase("engine_value_text")
+
+
+    // -----------------------------------------------------------------------------------------
+    // ENGINE VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() = EngineValueType.Text
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value.toString()})
 
 
     // -----------------------------------------------------------------------------------------

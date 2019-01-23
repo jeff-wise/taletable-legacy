@@ -6,12 +6,18 @@
     <string name="action_settings">Settings</string>
     <string name="back_to_home">Back to Home</string>
     <string name="back_to_games">Back to Games</string>
+    <string name="back">Back</string>
     <string name="back_to_game_items">Back to Game Items</string>
 
     <string name="switch_session">Switch Session</string>
     <string name="player_session">Player Session</string>
+    <string name="untitled_session">Untitled Session</string>
     <string name="search_everything">Search everything\u2026</string>
     <string name="search_in">Searching in</string>
+    <string name="search_book">Search Book</string>
+    <string name="item">ITEM</string>
+
+    <string name="close_card">Close Card</string>
 
     <string name="sheets">Sheets</string>
     <string name="campaigns">Campaigns</string>

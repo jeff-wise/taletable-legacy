@@ -11,10 +11,7 @@ import android.widget.TextView
 import com.taletable.android.R
 import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.lib.ui.*
-import com.taletable.android.model.book.BookReference
-import com.taletable.android.model.book.BookReferenceChapter
-import com.taletable.android.model.book.BookReferenceSection
-import com.taletable.android.model.book.BookReferenceSubsection
+import com.taletable.android.model.book.*
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
@@ -33,7 +30,7 @@ fun navView(bookReference : BookReference,
     {
         is BookReferenceChapter ->
         {
-            layout.addView(navLinkView("Cover", true, bookReference.bookReference(), theme, sessionActivity))
+            layout.addView(navLinkView("Cover", false, bookReference.bookReference(), theme, sessionActivity))
             layout.addView(navSeparatorView(theme, sessionActivity) )
             val chapter = book(bookReference.bookId()).apply { it.chapter(bookReference.chapterId()) }
 
@@ -52,7 +49,7 @@ fun navView(bookReference : BookReference,
         }
         is BookReferenceSection ->
         {
-            layout.addView(navLinkView("Cover", true, bookReference.bookReference(), theme, sessionActivity))
+            layout.addView(navLinkView("Cover", false, bookReference.bookReference(), theme, sessionActivity))
             layout.addView(navSeparatorView(theme, sessionActivity) )
 
             val chapter    = book(bookReference.bookId()).apply { it.chapter(bookReference.chapterId()) }
@@ -60,7 +57,7 @@ fun navView(bookReference : BookReference,
 
             when (chapter) {
                 is Just -> layout.addView(navLinkView(chapter.value.title.value,
-                                                      true,
+                                                      false,
                                                       bookReference.chapterReference(),
                                                       theme,
                                                       sessionActivity))
@@ -89,7 +86,7 @@ fun navView(bookReference : BookReference,
         }
         is BookReferenceSubsection ->
         {
-            layout.addView(navLinkView("Cover", true, bookReference.bookReference(), theme, sessionActivity))
+            layout.addView(navLinkView("Cover", false, bookReference.bookReference(), theme, sessionActivity))
             layout.addView(navSeparatorView(theme, sessionActivity) )
 
             val chapter    = book(bookReference.bookId()).apply { it.chapter(bookReference.chapterId()) }
@@ -99,7 +96,7 @@ fun navView(bookReference : BookReference,
 
             when (chapter) {
                 is Just -> layout.addView(navLinkView(chapter.value.title.value,
-                                                      true,
+                                                      false,
                                                       bookReference.chapterReference(),
                                                       theme,
                                                       sessionActivity))
@@ -114,7 +111,7 @@ fun navView(bookReference : BookReference,
 
             when (section) {
                 is Just -> layout.addView(navLinkView(section.value.title.value,
-                                                      true,
+                                                      false,
                                                       bookReference.sectionReference(),
                                                       theme,
                                                       sessionActivity))
@@ -140,6 +137,11 @@ fun navView(bookReference : BookReference,
                                                          sessionActivity))
             }
         }
+        is BookReferenceCard ->
+        {
+            layout.addView(cardNavView(theme, sessionActivity))
+            //layout.setPadding(Util.dpToPixel(8f), layout.paddingTop, layout.paddingRight, layout.paddingBottom)
+        }
     }
 
 
@@ -158,10 +160,10 @@ private fun navViewLayout(context : Context) : LinearLayout
 
     layout.gravity              = Gravity.CENTER_VERTICAL
 
-    layout.padding.leftDp       = 7f
+    layout.padding.leftDp       = 15f
     layout.padding.topDp        = 9f
     layout.padding.bottomDp     = 2f
-    layout.padding.rightDp      = 12f
+    layout.padding.rightDp      = 15f
 
     return layout.linearLayout(context)
 }
@@ -222,4 +224,74 @@ private fun navSeparatorView(theme : Theme, context : Context) : ImageView
     iconBuilder.margin.topDp    = 2f
 
     return iconBuilder.imageView(context)
+}
+
+
+private fun cardNavView(theme : Theme, sessionActivity : SessionActivity) : LinearLayout
+{
+    // 1 | Declarations
+    // -----------------------------------------------------------------------------------------
+
+    val layoutBuilder                   = LinearLayoutBuilder()
+    val iconViewBuilder                 = ImageViewBuilder()
+    val labelViewBuilder                = TextViewBuilder()
+
+    // 2 | Layout
+    // -----------------------------------------------------------------------------------------
+
+    layoutBuilder.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+    layoutBuilder.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layoutBuilder.orientation           = LinearLayout.HORIZONTAL
+
+    layoutBuilder.gravity               = Gravity.CENTER_VERTICAL
+
+    //layoutBuilder.padding.topDp         = 8f
+
+    layoutBuilder.margin.leftDp         = -6f
+
+    layoutBuilder.onClick               = View.OnClickListener {
+        sessionActivity.previousBookReference()
+    }
+
+    layoutBuilder.child(iconViewBuilder)
+                 .child(labelViewBuilder)
+
+    // 3 | Icon
+    // -----------------------------------------------------------------------------------------
+
+    iconViewBuilder.widthDp             = 26
+    iconViewBuilder.heightDp            = 26
+
+    iconViewBuilder.image               = R.drawable.icon_chevron_left
+
+    val iconColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_20"))))
+    iconViewBuilder.color               = theme.colorOrBlack(iconColorTheme)
+
+    iconViewBuilder.margin.rightDp      = 4f
+
+    // 4 | Label
+    // -----------------------------------------------------------------------------------------
+
+    labelViewBuilder.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+    labelViewBuilder.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    labelViewBuilder.textId             = R.string.back
+
+    val labelColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_20"))))
+    labelViewBuilder.color              = theme.colorOrBlack(labelColorTheme)
+
+    labelViewBuilder.font               = Font.typeface(TextFont.RobotoCondensed,
+                                                        TextFontStyle.Regular,
+                                                        sessionActivity)
+
+    labelViewBuilder.sizeSp             = 18f
+
+    labelViewBuilder.margin.bottomDp    = 1f
+
+    return layoutBuilder.linearLayout(sessionActivity)
 }

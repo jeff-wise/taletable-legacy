@@ -989,6 +989,21 @@ class EntityState(val entityId : EntityId,
                 effValue(relatedVariables(this.variablesWithTag(variableTag)))
 //                     .apply { effValue<AppError,Set<Variable>>(relatedVariables(it)) }
             }
+            is VariableTemplate -> {
+                when (context) {
+                    is Just    -> {
+                        val mVariableId = variableReference.variableId(context.value.value)
+                        when (mVariableId) {
+                            is Just    -> variables(mVariableId.value, context)
+                            is Nothing -> effValue(setOf())
+                        }
+                    }
+                    is Nothing -> {
+                        effValue(setOf())
+                    }
+                }
+
+            }
 
         }
 

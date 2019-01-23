@@ -7,9 +7,12 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.PaintDrawable
 import android.os.Build
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
+import com.taletable.android.R
+import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.activity.session.SheetActivityGlobal
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.ui.LinearLayoutBuilder
@@ -17,10 +20,10 @@ import com.taletable.android.model.engine.constraint.Trigger
 import com.taletable.android.model.engine.tag.Tag
 import com.taletable.android.model.engine.tag.TagQuery
 import com.taletable.android.model.engine.tag.TagQueryTag
+import com.taletable.android.model.engine.variable.VariableNamespace
+import com.taletable.android.model.engine.variable.VariableReference
 import com.taletable.android.model.sheet.style.*
-import com.taletable.android.rts.entity.EntityId
-import com.taletable.android.rts.entity.colorOrBlack
-import com.taletable.android.rts.entity.groupWithId
+import com.taletable.android.rts.entity.*
 import com.taletable.android.rts.entity.sheet.SheetComponent
 import com.taletable.android.util.Util
 import effect.*
@@ -47,6 +50,7 @@ data class Group(val id : GroupId,
                  private val rows : MutableList<GroupRow>,
                  private val tags : List<Tag>,
                  private var context : Maybe<GroupContext>,
+                 private var contentReferenceVariable : Maybe<VariableReference>,
                  private val trigger : Maybe<Trigger>)
                   : ToDocument, SheetComponent, Comparable<Group>, Serializable
 {
@@ -62,6 +66,7 @@ data class Group(val id : GroupId,
                 rows : List<GroupRow>,
                 tags : List<Tag>,
                 context : Maybe<GroupContext>,
+                contentReference : Maybe<VariableReference>,
                 trigger : Maybe<Trigger>)
         : this(GroupId(UUID.randomUUID()),
                name,
@@ -71,6 +76,7 @@ data class Group(val id : GroupId,
                rows.toMutableList(),
                tags,
                context,
+               contentReference,
                trigger)
 
 
@@ -83,6 +89,7 @@ data class Group(val id : GroupId,
                0,
                rows.toMutableList(),
                listOf(),
+               Nothing(),
                Nothing(),
                Nothing())
 
@@ -125,6 +132,10 @@ data class Group(val id : GroupId,
                       split(doc.maybeAt("context"),
                             effValue<ValueError,Maybe<GroupContext>>(Nothing()),
                             { apply(::Just, GroupContext.fromDocument(it)) }),
+                      // Content Reference
+                      split(doc.maybeAt("content_reference_variable"),
+                            effValue<ValueError,Maybe<VariableReference>>(Nothing()),
+                            { apply(::Just, VariableReference.fromDocument(it)) }),
                       // Trigger
                       split(doc.maybeList("trigger"),
                             effValue<ValueError,Maybe<Trigger>>(Nothing()),
@@ -171,15 +182,24 @@ data class Group(val id : GroupId,
     fun context() : Maybe<GroupContext> = this.context
 
 
+    fun contentReferenceVariable() : Maybe<VariableReference> = this.contentReferenceVariable
+
+
     fun trigger() : Maybe<Trigger> = this.trigger
+
+
+    fun setContext(groupContext : GroupContext)
+    {
+        this.context = Just(groupContext)
+    }
 
 
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(entityId : EntityId, context : Context)
+    override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>)
     {
-        this.rows.forEach { it.onSheetComponentActive(entityId, context) }
+        this.rows.forEach { it.onSheetComponentActive(entityId, context, this.context) }
     }
 
 
@@ -200,9 +220,10 @@ data class Group(val id : GroupId,
     {
         when (groupContext) {
             is Just -> {
-                when (this.context) {
-                    is Nothing -> this.context = groupContext
-                }
+                this.context = groupContext
+//                when (this.context) {
+//                    is Nothing -> this.context = groupContext
+//                }
             }
         }
 
@@ -325,21 +346,67 @@ data class GroupId(val value : UUID) : Serializable
 }
 
 
-sealed class GroupReference : ToDocument, Serializable
+/**
+ * Group Reference
+ */
+data class GroupReference(val value : GroupReferenceValue,
+                          val groupContext : Maybe<GroupContext>)
+                           : ToDocument, Serializable
+{
+
+    // | Constructors
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun fromDocument(doc : SchemaDoc) : ValueParser<GroupReference> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::GroupReference,
+                      // Value
+                      doc.at("value").apply { GroupReferenceValue.fromDocument(it) },
+                      // Group Context
+                      split(doc.maybeAt("group_context"),
+                            effValue<ValueError,Maybe<GroupContext>>(Nothing()),
+                            { apply(::Just, GroupContext.fromDocument(it)) })
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "value" to this.value.toDocument()
+    ))
+
+
+}
+
+
+
+
+
+sealed class GroupReferenceValue : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<GroupReference>
+    companion object : Factory<GroupReferenceValue>
     {
-        override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupReference> =
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<GroupReferenceValue> =
             when (doc.case())
             {
-                "group_id"     -> GroupReferenceId.fromDocument(doc) as ValueParser<GroupReference>
-                "group_set_id" -> GroupReferenceSetId.fromDocument(doc) as ValueParser<GroupReference>
-                "group"        -> GroupReferenceLiteral.fromDocument(doc) as ValueParser<GroupReference>
+                "group_id"     -> GroupReferenceId.fromDocument(doc) as ValueParser<GroupReferenceValue>
+                "group_set_id" -> GroupReferenceSetId.fromDocument(doc) as ValueParser<GroupReferenceValue>
+                "group"        -> GroupReferenceLiteral.fromDocument(doc) as ValueParser<GroupReferenceValue>
                 else           -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
@@ -353,7 +420,7 @@ sealed class GroupReference : ToDocument, Serializable
 }
 
 
-data class GroupReferenceId(val groupId : GroupId) : GroupReference()
+data class GroupReferenceId(val groupId : GroupId) : GroupReferenceValue()
 {
     companion object : Factory<GroupReferenceId>
     {
@@ -381,7 +448,7 @@ data class GroupReferenceId(val groupId : GroupId) : GroupReference()
 }
 
 
-data class GroupReferenceSetId(val groupSetId : GroupSetId) : GroupReference()
+data class GroupReferenceSetId(val groupSetId : GroupSetId) : GroupReferenceValue()
 {
     companion object : Factory<GroupReferenceSetId>
     {
@@ -399,7 +466,7 @@ data class GroupReferenceSetId(val groupSetId : GroupSetId) : GroupReference()
 }
 
 
-data class GroupReferenceLiteral(val group : Group) : GroupReference()
+data class GroupReferenceLiteral(val group : Group) : GroupReferenceValue()
 {
 
     companion object : Factory<GroupReferenceLiteral>
@@ -568,7 +635,7 @@ data class GroupIndex(val groups : MutableList<Group>,
 
 
 data class GroupSet(val id : GroupSetId,
-                    val groupIds : List<GroupId>) : GroupReference()
+                    val groupIds : List<GroupId>) : GroupReferenceValue()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -646,6 +713,9 @@ data class GroupSetId(val value : UUID) : Serializable
 
 
 
+data class GroupInvocation(val group : Group, val groupContext : Maybe<GroupContext> = Nothing())
+
+
 /**
  * Group Format
  */
@@ -719,17 +789,40 @@ fun groupView(group : Group, entityId : EntityId, context : Context) : View
     val layout = viewLayout(group.format(), entityId, context)
 
     // Top Border
-    val topBorder = group.format().border().apply { it.top() }
-    when (topBorder) {
-        is Just -> layout.addView(dividerView(topBorder.value, entityId, context))
+    group.format().elementFormat().border().top().doMaybe {
+        layout.addView(dividerView(it, entityId, context))
     }
 
     // Rows
     layout.addView(rowsView(group, entityId, context))
 
-    val bottomBorder = group.format().border().apply { it.bottom() }
-    when (bottomBorder) {
-        is Just -> layout.addView(dividerView(bottomBorder.value, entityId, context))
+    // Bottom Border
+    group.format().elementFormat().border().bottom().doMaybe {
+        layout.addView(dividerView(it, entityId, context))
+    }
+
+    entityType(entityId).apDo { entityType ->
+        when (entityType) {
+            is EntityTypeBook -> {
+                Log.d("***GROUP", "getting content ref var")
+                group.contentReferenceVariable().doMaybe {
+                    val namespace = group.context().apply { Just(VariableNamespace(it.value)) }
+                    Log.d("***GROUP", "found namespace $namespace")
+                    val contentRef = contentReferenceVariable(it, entityId, namespace)
+                                        .apply { it.value() }
+                    contentRef.apDo {
+                        it.bookReference().doMaybe { bookRef ->
+                            Log.d("***GROUP", "setting on click listener")
+                            layout.setOnClickListener {
+                                val sessionActivity = context as SessionActivity
+                                sessionActivity.setCurrentBookReference(bookRef)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     return layout
@@ -786,25 +879,36 @@ private fun viewLayout(format : GroupFormat,
 //                          padding.bottomPx())
 
 
-    // Background
-    val bgDrawable = PaintDrawable()
 
-    val corners = format.elementFormat().corners()
-    val topLeft  = Util.dpToPixel(corners.topLeftCornerRadiusDp()).toFloat()
-    val topRight : Float   = Util.dpToPixel(corners.topRightCornerRadiusDp()).toFloat()
-    val bottomRight : Float = Util.dpToPixel(corners.bottomRightCornerRadiusDp()).toFloat()
-    val bottomLeft :Float = Util.dpToPixel(corners.bottomLeftCornerRadiusDp()).toFloat()
+    when (format.elementFormat.style())
+    {
+        is Just -> {
+            layout.setBackgroundResource(R.drawable.bg_card_large_flat)
+        }
+        is Nothing -> {
+            // Background
+            val bgDrawable = PaintDrawable()
 
-    val radii = floatArrayOf(topLeft, topLeft, topRight, topRight,
-                     bottomRight, bottomRight, bottomLeft, bottomLeft)
+            val corners = format.elementFormat().corners()
+            val topLeft  = Util.dpToPixel(corners.topLeftCornerRadiusDp()).toFloat()
+            val topRight : Float   = Util.dpToPixel(corners.topRightCornerRadiusDp()).toFloat()
+            val bottomRight : Float = Util.dpToPixel(corners.bottomRightCornerRadiusDp()).toFloat()
+            val bottomLeft :Float = Util.dpToPixel(corners.bottomLeftCornerRadiusDp()).toFloat()
 
-    bgDrawable.setCornerRadii(radii)
+            val radii = floatArrayOf(topLeft, topLeft, topRight, topRight,
+                             bottomRight, bottomRight, bottomLeft, bottomLeft)
 
-    val bgColor = colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId)
+            bgDrawable.setCornerRadii(radii)
 
-    bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
+            val bgColor = colorOrBlack(format.elementFormat().backgroundColorTheme(), entityId)
 
-    layout.background = bgDrawable
+            bgDrawable.colorFilter = PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN)
+
+            layout.background = bgDrawable
+
+
+        }
+    }
 
     return layout
 }
@@ -857,6 +961,7 @@ private fun rowsView(group : Group, entityId : EntityId, context : Context) : Vi
     val layout = rowsViewLayout(group.format(), context)
 
     group.rows().forEach {
+        Log.d("***GROUP", "group context is: ${group.context()}")
         layout.addView(it.view(group.context(), entityId, context))
     }
 

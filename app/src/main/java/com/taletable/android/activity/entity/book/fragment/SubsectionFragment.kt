@@ -24,7 +24,6 @@ import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.book
 import com.taletable.android.rts.entity.colorOrBlack
 import com.taletable.android.rts.entity.groups
-import kotlin.text.Typography.section
 
 
 
@@ -198,8 +197,8 @@ class SubsectionUI(val subsection : BookSubsection,
 
         //layout.margin.topDp     = 10f
 
-        layout.padding.leftDp   = 7f
-        layout.padding.rightDp  = 7f
+        layout.padding.leftDp   = 15f
+        layout.padding.rightDp  = 15f
         layout.padding.topDp    = 14f
         layout.padding.bottomDp = 14f
 
@@ -219,13 +218,13 @@ class SubsectionUI(val subsection : BookSubsection,
 
         title.text               = subsection.title().value
 
-        title.font               = Font.typeface(TextFont.Garamond,
+        title.font               = Font.typeface(TextFont.Merriweather,
                                                  TextFontStyle.ExtraBold,
                                                  context)
 
         title.color              = Color.WHITE
 
-        title.sizeSp             = 42f
+        title.sizeSp             = 36f
 
         title.lineSpacingAdd     = 10f
         title.lineSpacingMult    = 0.8f
@@ -395,7 +394,7 @@ class SubsectionUI(val subsection : BookSubsection,
 
         contentList.forEach { content ->
             groups(content.groupReferences(), book.entityId()).forEach {
-                layout.addView(it.view(book.entityId(), context))
+                layout.addView(it.group.view(book.entityId(), context, it.groupContext))
             }
         }
 
@@ -416,8 +415,8 @@ class SubsectionUI(val subsection : BookSubsection,
 
         //layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
 
-        layout.padding.topDp        = 8f
-        layout.padding.bottomDp     = 8f
+//        layout.padding.topDp        = 16f
+//        layout.padding.bottomDp     = 16f
 //        layout.padding.leftDp       = 8f
 //        layout.padding.rightDp      = 8f
 

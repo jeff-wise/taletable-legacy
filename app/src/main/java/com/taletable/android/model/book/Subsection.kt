@@ -34,22 +34,24 @@ import java.util.*
 data class BookSubsection(override val id : UUID,
                           val subsectionId : BookSubsectionId,
                           val title : BookSubsectionTitle,
+                          val group : Maybe<BookSubsectionGroup>,
                           val subtitle : Maybe<BookSubsectionSubtitle>,
                           val body : List<BookContentId>)
                            : ToDocument, ProdType, Serializable
 {
 
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
+    // | Constructors
     // -----------------------------------------------------------------------------------------
 
     constructor(subsectionId : BookSubsectionId,
                 title : BookSubsectionTitle,
+                group : Maybe<BookSubsectionGroup>,
                 subtitle : Maybe<BookSubsectionSubtitle>,
                 body : List<BookContentId>)
         : this(UUID.randomUUID(),
                subsectionId,
                title,
+               group,
                subtitle,
                body)
 
@@ -65,6 +67,10 @@ data class BookSubsection(override val id : UUID,
                       doc.at("id") apply { BookSubsectionId.fromDocument(it) },
                       // Title
                       doc.at("title") apply { BookSubsectionTitle.fromDocument(it) },
+                      // Group
+                      split(doc.maybeAt("group"),
+                            effValue<ValueError,Maybe<BookSubsectionGroup>>(Nothing()),
+                            { apply(::Just, BookSubsectionGroup.fromDocument(it)) }),
                       // Subtitle
                       split(doc.maybeAt("subtitle"),
                             effValue<ValueError,Maybe<BookSubsectionSubtitle>>(Nothing()),
@@ -99,6 +105,9 @@ data class BookSubsection(override val id : UUID,
 
 
     fun title() : BookSubsectionTitle = this.title
+
+
+    fun group() : Maybe<BookSubsectionGroup> = this.group
 
 
     fun subtitle() : Maybe<BookSubsectionSubtitle> = this.subtitle
@@ -219,6 +228,34 @@ data class BookSubsectionSubtitle(val value : String) : ToDocument, Serializable
         override fun fromDocument(doc : SchemaDoc) : ValueParser<BookSubsectionSubtitle> = when (doc)
         {
             is DocText -> effValue(BookSubsectionSubtitle(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+}
+
+
+/**
+ * Subsection Group
+ */
+data class BookSubsectionGroup(val value : String) : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<BookSubsectionGroup>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookSubsectionGroup> = when (doc)
+        {
+            is DocText -> effValue(BookSubsectionGroup(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }

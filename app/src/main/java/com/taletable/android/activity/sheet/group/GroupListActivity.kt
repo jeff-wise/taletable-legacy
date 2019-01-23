@@ -21,7 +21,7 @@ import com.taletable.android.R
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.engine.tag.TagQuery
 import com.taletable.android.model.sheet.group.Group
-import com.taletable.android.model.sheet.group.GroupReference
+import com.taletable.android.model.sheet.group.GroupReferenceValue
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
@@ -30,6 +30,7 @@ import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.groups
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.taletable.android.model.sheet.group.GroupId
+import com.taletable.android.model.sheet.group.GroupReference
 import com.taletable.android.rts.entity.sheet.UpdateTarget
 import com.taletable.android.util.configureToolbar
 
@@ -128,7 +129,7 @@ class GroupListActivity : AppCompatActivity()
 
             val theme = officialAppThemeLight
 
-            val adapter = GroupListItemRecyclerViewAdapter(groupList.toMutableList(), title ?: "", theme, entityId, this)
+            val adapter = GroupListItemRecyclerViewAdapter(groupList.map {it.group}.toMutableList(), title ?: "", theme, entityId, this)
 
             val swipeAndDragHelper = SwipeAndDragHelper(adapter)
             val touchHelper = ItemTouchHelper(swipeAndDragHelper)
@@ -224,9 +225,9 @@ class GroupListActivity : AppCompatActivity()
 
     fun updateGroupReferenceList(updatedGroupIds : List<GroupId>)
     {
-        val originalGroupIdList = this.groupRefs.map { it.groupId() }
+        val originalGroupIdList = this.groupRefs.map { it.value.groupId() }
 
-        val newGroupIdList = this.newGroupReferenceList?.let { it.map { it.groupId() } }
+        val newGroupIdList = this.newGroupReferenceList?.let { it.map { it.value.groupId() } }
 
         val isUnique = if (newGroupIdList != null)
                            newGroupIdList != updatedGroupIds
@@ -236,7 +237,7 @@ class GroupListActivity : AppCompatActivity()
         if (isUnique)
         {
             val groupRefById  : MutableMap<GroupId,GroupReference> =
-                                    this.groupRefs.associateBy { it.groupId() }
+                                    this.groupRefs.associateBy { it.value.groupId() }
                                             as MutableMap<GroupId,GroupReference>
 
             val newGroupRefList : MutableList<GroupReference> = mutableListOf()

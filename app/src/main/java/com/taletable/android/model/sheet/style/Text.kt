@@ -15,6 +15,7 @@ import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.*
 import com.taletable.android.lib.ui.Font
 import com.taletable.android.lib.ui.TextViewBuilder
+import com.taletable.android.model.sheet.widget.LineSpacing
 import com.taletable.android.model.theme.ColorTheme
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
@@ -37,6 +38,7 @@ data class TextFormat(private val colorTheme : ColorTheme,
                       private val size : TextSize,
                       private val font : TextFont,
                       private val fontStyle : TextFontStyle,
+                      private val lineSpacing : LineSpacing,
                       private val isUnderlined : IsUnderlined,
                       private val numberFormat : NumberFormat,
                       private val rollFormat : RollFormat,
@@ -56,6 +58,7 @@ data class TextFormat(private val colorTheme : ColorTheme,
         private fun defaultTextSize()       = TextSize(16.0f)
         private fun defaultFont()           = TextFont.Cabin
         private fun defaultFontStyle()      = TextFontStyle.Regular
+        private fun defaultLineSpacing()    = LineSpacing(1.0f)
         private fun defaultIsUnderlined()   = IsUnderlined(false)
         private fun defaultNumberFormat()   = NumberFormat.Normal
         private fun defaultRollFormat()     = RollFormat.Normal
@@ -84,6 +87,10 @@ data class TextFormat(private val colorTheme : ColorTheme,
                       split(doc.maybeAt("font_style"),
                             effValue<ValueError,TextFontStyle>(defaultFontStyle()),
                             { TextFontStyle.fromDocument(it) }),
+                      // Line Spacing
+                      split(doc.maybeAt("line_spacing"),
+                            effValue<ValueError,LineSpacing>(defaultLineSpacing()),
+                            { LineSpacing.fromDocument(it) }),
                       // Is Underlined?
                       split(doc.maybeAt("is_underlined"),
                             effValue(defaultIsUnderlined()),
@@ -114,6 +121,7 @@ data class TextFormat(private val colorTheme : ColorTheme,
                                   defaultTextSize(),
                                   defaultFont(),
                                   defaultFontStyle(),
+                                  defaultLineSpacing(),
                                   defaultIsUnderlined(),
                                   defaultNumberFormat(),
                                   defaultRollFormat(),
@@ -132,6 +140,7 @@ data class TextFormat(private val colorTheme : ColorTheme,
         "size" to this.size.toDocument(),
         "font" to this.font.toDocument(),
         "font_style" to this.fontStyle.toDocument(),
+        "line_spacing" to this.lineSpacing.toDocument(),
         "is_underlined" to this.isUnderlined.toDocument(),
         "number_format" to this.numberFormat.toDocument(),
         "roll_format" to this.rollFormat.toDocument(),
@@ -154,6 +163,9 @@ data class TextFormat(private val colorTheme : ColorTheme,
 
 
     fun fontStyle() : TextFontStyle = this.fontStyle
+
+
+    fun lineSpacing() : LineSpacing = this.lineSpacing
 
 
     fun isUnderlined() : Boolean = this.isUnderlined.value
@@ -187,6 +199,8 @@ data class TextFormat(private val colorTheme : ColorTheme,
         textViewBuilder.font    = Font.typeface(this.font(),
                                                 this.fontStyle(),
                                                 context)
+        textViewBuilder.lineSpacingAdd = 1f
+        textViewBuilder.lineSpacingMult = this.lineSpacing().value
     }
 
 

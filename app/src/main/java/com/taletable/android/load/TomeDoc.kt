@@ -316,10 +316,11 @@ object TomeDoc
     {
         fun templateDocument(templateString : String,
                              variableIndexSchema : Schema,
-                             engineSchema : Schema) : DocLoader<SchemaDoc>
+                             engineSchema : Schema,
+                             bookSchema : Schema) : DocLoader<SchemaDoc>
         {
             val docParse = variableIndexSchema.parseDocument(templateString,
-                                    listOf(engineSchema))
+                                    listOf(engineSchema, bookSchema))
             return when (docParse)
             {
                 is Val -> effValue(docParse.value)
@@ -341,7 +342,8 @@ object TomeDoc
         return templateFileString(filepath, context)
                .applyWith(::templateDocument,
                           variableIndexSchemaLoader(context),
-                          engineSchemaLoader(context))
+                          engineSchemaLoader(context),
+                          bookSchemaLoader(context))
                .apply(::variableIndexFromDocument)
     }
 

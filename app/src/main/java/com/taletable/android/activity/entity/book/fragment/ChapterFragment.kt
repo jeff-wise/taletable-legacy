@@ -199,8 +199,8 @@ class ChapterUI(val chapter : BookChapter,
 
         //layout.margin.topDp     = 10f
 
-        layout.padding.leftDp   = 7f
-        layout.padding.rightDp  = 7f
+        layout.padding.leftDp   = 15f
+        layout.padding.rightDp  = 15f
         layout.padding.topDp    = 14f
         layout.padding.bottomDp = 14f
 
@@ -220,13 +220,13 @@ class ChapterUI(val chapter : BookChapter,
 
         title.text               = chapter.title().value
 
-        title.font               = Font.typeface(TextFont.Garamond,
+        title.font               = Font.typeface(TextFont.Merriweather,
                                                 TextFontStyle.ExtraBold,
                                                 context)
 
         title.color              = Color.WHITE
 
-        title.sizeSp             = 42f
+        title.sizeSp             = 38f
 
         title.lineSpacingAdd     = 10f
         title.lineSpacingMult    = 0.8f
@@ -251,16 +251,16 @@ class ChapterUI(val chapter : BookChapter,
             title.text = it.value
         }
 
-        title.font              = Font.typeface(TextFont.Garamond,
+        title.font              = Font.typeface(TextFont.Merriweather,
                                                 TextFontStyle.Regular,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_8"))))
-        title.color              = theme.colorOrBlack(colorTheme)
+        title.color             = theme.colorOrBlack(colorTheme)
 
-        title.sizeSp             = 22f
+        title.sizeSp            = 16f
 
         return title.textView(context)
     }
@@ -347,7 +347,7 @@ class ChapterUI(val chapter : BookChapter,
 
         contentList.forEach { content ->
             groups(content.groupReferences(), book.entityId()).forEach {
-                layout.addView(it.view(book.entityId(), context))
+                layout.addView(it.group.view(book.entityId(), context))
             }
         }
 

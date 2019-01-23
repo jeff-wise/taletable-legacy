@@ -118,3 +118,21 @@ summaries:
   - '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
   main_entity_kind_id: player_character
   main_entity_id: 'e983de7a-a729-45c7-b6fc-87c44a0fada5'
+- session_id: '2c383a1b-b695-4553-bcf3-22eb4ed16b1c'
+  session_name: Pathfinder 2 Rulebooks
+  info:
+    summary: >-
+      A collection of rulebooks for the Pathfinder 2 Playtest.
+    description: >-
+      A collection of rulebooks for the Pathfinder 2 Playtest. Currently, only an incomplete version
+      of the core rulebook is available, but new content is being added very frequently.
+    primary_tag: 'Level 1'
+    secondary_tags:
+    - Human
+    - Wizard
+    tagline: '1st Level Human Wizard'
+  game_id: '85f6da8e-e497-4aa2-a3c3-c2eab32d2839'
+  entity_ids:
+  # Book - Rulebook
+  - '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+  main_entity_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'

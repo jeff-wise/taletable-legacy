@@ -129,6 +129,9 @@ class BookUI(val book : Book,
 
         //layout.addView(this.chaptersHeaderView())
 
+        layout.addView(this.searchButtonView())
+
+
         layout.addView(this.chapterListView())
 
         return scrollView
@@ -209,7 +212,7 @@ class BookUI(val book : Book,
         val layout = this.contentViewLayout()
 
         groups(content.groupReferences(), book.entityId()).forEach {
-            layout.addView(it.view(book.entityId(), context))
+            layout.addView(it.group.view(book.entityId(), context))
         }
 
         //layout.addView(this.contentReadMoreView())
@@ -386,7 +389,9 @@ class BookUI(val book : Book,
 
         layout.addView(this.summaryView())
 
-        layout.addView(this.toolbarView())
+        layout.addView(this.authorView())
+
+        //layout.addView(this.toolbarView())
 
         return layout
     }
@@ -408,8 +413,8 @@ class BookUI(val book : Book,
 
         //layout.margin.topDp     = 10f
 
-        layout.padding.leftDp   = 7f
-        layout.padding.rightDp  = 7f
+        layout.padding.leftDp   = 15f
+        layout.padding.rightDp  = 15f
         //layout.padding.topDp    = 6f
         layout.padding.bottomDp = 14f
 
@@ -473,6 +478,120 @@ class BookUI(val book : Book,
         return title.textView(context)
     }
 
+
+    // VIEWS > Header > Author
+    // --------------------------------------------------------------------------------------------
+
+    private fun authorView() : TextView
+    {
+        val title               = TextViewBuilder()
+
+        title.width             = LinearLayout.LayoutParams.MATCH_PARENT
+        title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        title.gravity           = Gravity.END
+
+        title.margin.topDp      = 20f
+        title.margin.bottomDp   = 20f
+        title.margin.rightDp    = 12f
+
+        title.text              = "OGL Compliant Material"
+
+        title.font              = Font.typeface(TextFont.Roboto,
+                                                TextFontStyle.Regular,
+                                                context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_15"))))
+        title.color              = theme.colorOrBlack(colorTheme)
+//        title.color             = Color.WHITE
+
+        title.sizeSp             = 18f
+
+        return title.textView(context)
+    }
+
+
+    // | Search Button View
+    // -----------------------------------------------------------------------------------------
+
+    private fun searchButtonView() : LinearLayout
+    {
+        // 1 | Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val icon                = ImageViewBuilder()
+        val label               = TextViewBuilder()
+
+        // 2 | Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+
+        layout.backgroundColor  = Color.WHITE
+
+        layout.padding.topDp    = 20f
+        layout.padding.bottomDp = 20f
+        layout.padding.leftDp   = 16f
+        layout.padding.rightDp  = 16f
+
+        layout.margin.bottomDp  = 1f
+
+        layout.onClick          = View.OnClickListener {
+            sessionActivity.setSearchView(book.bookId)
+        }
+
+        layout.child(icon)
+              .child(label)
+
+        // 3 | Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 21
+        icon.heightDp           = 21
+
+        icon.image              = R.drawable.icon_search
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_18"))))
+        icon.color              = theme.colorOrBlack(iconColorTheme)
+
+        icon.margin.rightDp     = 16f
+
+        // 3 | Label
+        // -------------------------------------------------------------------------------------
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.textId            = R.string.search_book
+
+        label.font              = Font.typeface(TextFont.Roboto,
+                                                TextFontStyle.Regular,
+                                                context)
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_18"))))
+        label.color              = theme.colorOrBlack(iconColorTheme)
+
+        label.sizeSp            = 18f
+
+        return layout.linearLayout(context)
+    }
+
+
+    // | Toolbar View
+    // -----------------------------------------------------------------------------------------
 
     private fun toolbarView() : LinearLayout
     {

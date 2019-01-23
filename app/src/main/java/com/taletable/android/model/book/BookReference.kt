@@ -30,6 +30,7 @@ sealed class BookReference(open val bookId : EntityId) : ToDocument, Serializabl
                 "book_reference_section"    -> BookReferenceSection.fromDocument(doc) as ValueParser<BookReference>
                 "book_reference_subsection" -> BookReferenceSubsection.fromDocument(doc) as ValueParser<BookReference>
                 "book_reference_content"    -> BookReferenceContent.fromDocument(doc) as ValueParser<BookReference>
+                "book_reference_card"       -> BookReferenceCard.fromDocument(doc) as ValueParser<BookReference>
                 else                 -> effError(UnknownCase(doc.case(), doc.path))
             }
     }
@@ -369,6 +370,66 @@ data class BookReferenceSubsection(override val bookId : EntityId,
     override fun chapterReference() : BookReference = BookReferenceChapter(bookId, chapterId)
 
     override fun sectionReference() : BookReference = BookReferenceSection(bookId, chapterId, sectionId)
+
+    override fun subsectionReference() : BookReference = this
+
+}
+
+
+/**
+ * Book Reference Card
+ */
+data class BookReferenceCard(override val bookId : EntityId,
+                             val cardId : BookCardId) : BookReference(bookId)
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<BookReferenceCard>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookReferenceCard> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::BookReferenceCard,
+                      // Book Id
+                      doc.at("book_id") apply { EntityId.fromDocument(it) },
+                      // Card Id
+                      doc.at("card_id") apply { BookCardId.fromDocument(it) }
+                     )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // | To Document
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf(
+        "book_id" to this.bookId.toDocument()
+    ))
+
+
+    // | Getters
+    // -----------------------------------------------------------------------------------------
+
+    fun bookId() : EntityId = this.bookId
+
+
+    fun cardId() : BookCardId = this.cardId
+
+
+    // | Book Reference
+    // -----------------------------------------------------------------------------------------
+
+    override fun bookReference() : BookReference = BookReferenceBook(bookId)
+
+    override fun chapterReference() : BookReference = this
+
+    override fun sectionReference() : BookReference = this
 
     override fun subsectionReference() : BookReference = this
 

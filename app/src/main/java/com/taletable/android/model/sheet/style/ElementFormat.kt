@@ -2,13 +2,18 @@
 package com.taletable.android.model.sheet.style
 
 
+import android.sax.Element
 import com.taletable.android.lib.Factory
 import com.taletable.android.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 
 
@@ -17,6 +22,7 @@ import java.io.Serializable
  * Element Format
  */
 data class ElementFormat(private val position : Position,
+                         private val style : Maybe<ElementStyle>,
                          private val height : Height,
                          private val width : Width,
                          private val padding : Spacing,
@@ -37,6 +43,7 @@ data class ElementFormat(private val position : Position,
     {
 
         private fun defaultPosition()             = Position.Top
+        private fun defaultElementStyle()         = Nothing<ElementStyle>()
         private fun defaultHeight()               = Height.Wrap
         private fun defaultWidth()                = Width.Wrap
         private fun defaultPadding()              = Spacing.default()
@@ -57,6 +64,10 @@ data class ElementFormat(private val position : Position,
                       split(doc.maybeAt("position"),
                             effValue<ValueError,Position>(defaultPosition()),
                             { Position.fromDocument(it) }),
+                      // Element Style
+                      split(doc.maybeAt("style"),
+                            effValue<ValueError,Maybe<ElementStyle>>(defaultElementStyle()),
+                            { apply(::Just, ElementStyle.fromDocument(it)) }),
                       // Height
                       split(doc.maybeAt("height"),
                             effValue<ValueError,Height>(defaultHeight()),
@@ -104,6 +115,7 @@ data class ElementFormat(private val position : Position,
 
 
         fun default() = ElementFormat(defaultPosition(),
+                                      defaultElementStyle(),
                                       defaultHeight(),
                                       defaultWidth(),
                                       defaultPadding(),
@@ -142,6 +154,9 @@ data class ElementFormat(private val position : Position,
     // -----------------------------------------------------------------------------------------
 
     fun position() : Position = this.position
+
+
+    fun style() : Maybe<ElementStyle> = this.style
 
 
     fun height() : Height = this.height
@@ -189,6 +204,7 @@ data class ElementFormat(private val position : Position,
                                  this.margins.left)
 
         return ElementFormat(this.position,
+                             this.style,
                              this.height,
                              this.width,
                              this.padding,
@@ -210,6 +226,7 @@ data class ElementFormat(private val position : Position,
                                  this.margins.left)
 
         return ElementFormat(this.position,
+                             this.style,
                              this.height,
                              this.width,
                              this.padding,
@@ -231,6 +248,7 @@ data class ElementFormat(private val position : Position,
                                  leftMargin)
 
         return ElementFormat(this.position,
+                             this.style,
                              this.height,
                              this.width,
                              this.padding,
@@ -252,6 +270,7 @@ data class ElementFormat(private val position : Position,
                                  this.margins.left)
 
         return ElementFormat(this.position,
+                             this.style,
                              this.height,
                              this.width,
                              this.padding,
@@ -277,6 +296,7 @@ data class ElementFormat(private val position : Position,
                                  this.padding.left)
 
         return ElementFormat(this.position,
+                             this.style,
                              this.height,
                              this.width,
                              newPadding,
@@ -298,6 +318,7 @@ data class ElementFormat(private val position : Position,
                                  this.padding.left)
 
         return ElementFormat(this.position,
+                             this.style,
                              this.height,
                              this.width,
                              newPadding,
@@ -317,6 +338,7 @@ data class ElementFormat(private val position : Position,
     fun withHorizontalAlignment(alignment : Alignment) : ElementFormat
     {
         return ElementFormat(this.position,
+                             this.style,
                              this.height,
                              this.width,
                              this.padding,
@@ -330,3 +352,43 @@ data class ElementFormat(private val position : Position,
     }
 
 }
+
+
+
+/**
+ * Element Style
+ */
+sealed class ElementStyle : ToDocument, Serializable
+{
+
+    object Card : ElementStyle()
+    {
+
+        // | To Document
+
+        override fun toDocument() = DocText("card")
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun fromDocument(doc : SchemaDoc) : ValueParser<ElementStyle> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "card"   -> effValue<ValueError,ElementStyle>(ElementStyle.Card)
+                else     -> effError<ValueError,ElementStyle>(
+                                    UnexpectedValue("ElementStyle", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+}
+
+

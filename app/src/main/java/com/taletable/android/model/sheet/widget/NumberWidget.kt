@@ -15,9 +15,12 @@ import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.lib.ui.TextViewBuilder
+import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.style.*
 import com.taletable.android.rts.entity.EntityId
+import com.taletable.android.rts.entity.EntityTypeSheet
 import com.taletable.android.rts.entity.colorOrBlack
+import com.taletable.android.rts.entity.entityType
 import com.taletable.android.util.Util
 import effect.*
 import lulo.document.*
@@ -25,6 +28,8 @@ import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import java.io.Serializable
 import java.util.*
 
@@ -135,8 +140,7 @@ data class NumberWidgetFormat(val widgetFormat : WidgetFormat,
 data class NumberWidgetLabel(val value : String) : SQLSerializable, Serializable
 {
 
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
+    // | Constructors
     // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberWidgetLabel>
@@ -149,8 +153,7 @@ data class NumberWidgetLabel(val value : String) : SQLSerializable, Serializable
     }
 
 
-    // -----------------------------------------------------------------------------------------
-    // SQL SERIALIZABLE
+    // | SQL Serializable
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLText({this.value})
@@ -279,7 +282,8 @@ object NumberWidgetView
 
     fun view(numberWidget : NumberWidget,
              entityId : EntityId,
-             context : Context) : View
+             context : Context,
+             groupContext : Maybe<GroupContext> = Nothing()) : View
     {
         val layout = WidgetView.layout(numberWidget.format().widgetFormat(), entityId, context)
 
@@ -288,17 +292,22 @@ object NumberWidgetView
         layout.id  = layoutId
 
 
-        layout.setOnClickListener {
-            numberWidget.primaryAction(entityId, context)
+        entityType(entityId).apDo { entityType ->
+            when (entityType) {
+                is EntityTypeSheet -> {
+                    layout.setOnClickListener {
+                        numberWidget.primaryAction(entityId, context)
+                    }
+
+                    layout.setOnLongClickListener {
+                        numberWidget.secondaryAction(entityId, context)
+                        true
+                    }
+                }
+            }
         }
 
-
-        layout.setOnLongClickListener {
-            numberWidget.secondaryAction(entityId, context)
-            true
-        }
-
-        this.updateView(numberWidget, entityId, layout, context)
+        this.updateView(numberWidget, entityId, layout, context, groupContext)
 
         return layout
     }
@@ -307,12 +316,13 @@ object NumberWidgetView
     fun updateView(numberWidget : NumberWidget,
                    entityId : EntityId,
                    layout : LinearLayout,
-                   context : Context)
+                   context : Context,
+                   groupContext : Maybe<GroupContext>)
     {
 
         val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
         contentLayout.removeAllViews()
-        contentLayout.addView(this.mainView(numberWidget, entityId, context))
+        contentLayout.addView(this.mainView(numberWidget, entityId, context, groupContext))
     }
 
 
@@ -330,7 +340,8 @@ object NumberWidgetView
      */
     private fun mainView(numberWidget : NumberWidget,
                          entityId : EntityId,
-                         context : Context) : LinearLayout
+                         context : Context,
+                         groupContext : Maybe<GroupContext>) : LinearLayout
     {
 
         val format = numberWidget.format()
@@ -346,7 +357,7 @@ object NumberWidgetView
 //        }
 
         // > Value
-        layout.addView(this.valueMainView(numberWidget, format, entityId, context))
+        layout.addView(this.valueMainView(numberWidget, format, entityId, context, groupContext))
 
         // > Outside Bottom/Right Label View
 //        if (format.outsideLabelString() != null) {
@@ -386,30 +397,31 @@ object NumberWidgetView
     private fun valueMainView(numberWidget : NumberWidget,
                               format : NumberWidgetFormat,
                               entityId : EntityId,
-                              context : Context) : LinearLayout
+                              context : Context,
+                              groupContext : Maybe<GroupContext>) : LinearLayout
     {
         val layout = this.valueMainViewLayout(format, entityId, context)
 
-        val insideLabel = numberWidget.insideLabel()
+        val insideLabel = numberWidget.insideLabelValue(entityId)
 
         // > Inside Top/Left Label View
         when (insideLabel) {
-            is Just -> {
+            is Val -> {
                 val position = format.insideLabelFormat().elementFormat().position()
                 if (position.isTop() || position.isLeft()) {
-                    layout.addView(this.insideLabelView(format, insideLabel.value.value, entityId, context))
+                    layout.addView(this.insideLabelView(format, insideLabel.value, entityId, context))
                 }
             }
         }
 
-        layout.addView(this.valueView(numberWidget, format, entityId, context))
+        layout.addView(this.valueView(numberWidget, format, entityId, context, groupContext))
 
         // > Inside Bottom/Right Label View
         when (insideLabel) {
-            is Just -> {
+            is Val -> {
                 val position = format.insideLabelFormat().elementFormat().position()
                 if (position.isBottom() || position.isRight()) {
-                    layout.addView(this.insideLabelView(format, insideLabel.value.value, entityId, context))
+                    layout.addView(this.insideLabelView(format, insideLabel.value, entityId, context))
                 }
             }
         }
@@ -496,7 +508,8 @@ object NumberWidgetView
     private fun valueView(numberWidget : NumberWidget,
                           format : NumberWidgetFormat,
                           entityId : EntityId,
-                          context : Context) : LinearLayout
+                          context : Context,
+                          groupContext : Maybe<GroupContext>) : LinearLayout
     {
         val layout = this.valueViewLayout(format, context)
 
@@ -509,7 +522,7 @@ object NumberWidgetView
 //                    sheetUIContext))
 
         // > Value
-        layout.addView(this.valueTextView(numberWidget, format, entityId, context))
+        layout.addView(this.valueTextView(numberWidget, format, entityId, context, groupContext))
 
         // > Base Value
 //        if (this.baseValueVariableName() != null)
@@ -555,7 +568,8 @@ object NumberWidgetView
     private fun valueTextView(numberWidget : NumberWidget,
                               format : NumberWidgetFormat,
                               entityId : EntityId,
-                              context : Context) : TextView
+                              context : Context,
+                              groupContext : Maybe<GroupContext>) : TextView
     {
         val value = TextViewBuilder()
 
@@ -607,7 +621,7 @@ object NumberWidgetView
 //        var valueString = ""
 //        valueString = numberWidget.valueString(sheetContext)
 
-        val valueDouble = numberWidget.value(entityId)
+        val valueDouble = numberWidget.value(entityId, groupContext)
         val valueString = format.valueFormat().numberFormat().formattedString(valueDouble)
 
         value.text = valueString

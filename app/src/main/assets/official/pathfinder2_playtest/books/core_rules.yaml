@@ -21,212 +21,916 @@ engine:
   summations:
   procedures:
 content:
-- id: section_weapons_introduction
-  title: 'Weapons'
-  group_references:
-  - type: group_id
-    group_id: '877b053e-e461-48de-9778-5cff30aff242'
 - id: equipment_basic_rules
   title: 'Weapons'
   group_references:
-  - type: group_id
-    group_id: '5f03282d-8e8f-400a-b53d-c76b6976d146'
+  - value:
+      type: group_id
+      group_id: '5f03282d-8e8f-400a-b53d-c76b6976d146'
 - id: equipment_basic_rules_currency
   title: 'Weapons'
   group_references:
-  - type: group_id
-    group_id: 'dc110cd2-e7b7-4743-b2c6-5146f2655a30'
+  - value:
+      type: group_id
+      group_id: 'dc110cd2-e7b7-4743-b2c6-5146f2655a30'
 - id: equipment_basic_rules_currency_coin_bulk
   title: 'Weapons'
   group_references:
-  - type: group_id
-    group_id: 'ce709e1f-ead5-4f8b-82e2-0b1d32aea651'
+  - value:
+      type: group_id
+      group_id: 'ce709e1f-ead5-4f8b-82e2-0b1d32aea651'
 - id: equipment_basic_rules_currency_coin_values
   title: 'Weapons'
   group_references:
-  - type: group_id
-    group_id: 'beef97fc-f3d5-451b-8905-c36ec3f29eff'
+  - value:
+      type: group_id
+      group_id: 'beef97fc-f3d5-451b-8905-c36ec3f29eff'
 - id: equipment_basic_rules_price
   title: 'Weapons'
   group_references:
-  - type: group_id
-    group_id: 'cb09ddb0-5777-443a-b42f-ce55242561f4'
+  - value:
+      type: group_id
+      group_id: 'cb09ddb0-5777-443a-b42f-ce55242561f4'
 - id: equipment_basic_rules_item_level
   title: 'Item Level'
   group_references:
-  - type: group_id
-    group_id: '680140a1-412c-4d97-b942-b08b600c2eda'
+  - value:
+      type: group_id
+      group_id: '680140a1-412c-4d97-b942-b08b600c2eda'
 - id: equipment_basic_rules_carrying_using_items
   title: 'Item Level'
   group_references:
-  - type: group_id
-    group_id: '4b5655a4-3f30-430b-942b-fc11e7615722'
+  - value:
+      type: group_id
+      group_id: '4b5655a4-3f30-430b-942b-fc11e7615722'
 - id: equipment_basic_rules_carrying_using_items_bulk
   title: 'Bulk'
   group_references:
-  - type: group_id
-    group_id: '7c185721-8c28-47ee-8170-5ff72cdc7394'
+  - value:
+      type: group_id
+      group_id: '7c185721-8c28-47ee-8170-5ff72cdc7394'
 - id: equipment_basic_rules_carrying_using_items_bulk_limit
   title: 'Bulk Limit'
   group_references:
-  - type: group_id
-    group_id: '0e0ba59c-8670-4f0c-9c10-148e77498a2a'
+  - value:
+      type: group_id
+      group_id: '0e0ba59c-8670-4f0c-9c10-148e77498a2a'
 - id: equipment_basic_rules_carrying_using_items_encumbered
   title: 'Bulk Limit'
   group_references:
-  - type: group_id
-    group_id: 'f068899f-5753-455c-a0f4-bae16c2e9136'
+  - value:
+      type: group_id
+      group_id: 'f068899f-5753-455c-a0f4-bae16c2e9136'
 - id: equipment_basic_rules_carrying_using_items_bulk_values
   title: 'Bulk Limit'
   group_references:
-  - type: group_id
-    group_id: '6b70e81b-bbc7-4978-9a65-766e748f106a'
+  - value:
+      type: group_id
+      group_id: '6b70e81b-bbc7-4978-9a65-766e748f106a'
 - id: equipment_basic_rules_carrying_using_items_estimating_bulk
   title: 'Bulk Limit'
   group_references:
-  - type: group_id
-    group_id: '79377910-ea72-4cf9-9319-942b0441b8ea'
+  - value:
+      type: group_id
+      group_id: '79377910-ea72-4cf9-9319-942b0441b8ea'
 - id: equipment_basic_rules_carrying_using_items_donning_removing_armor
   title: 'Donning and Removing Armor'
   group_references:
-  - type: group_id
-    group_id: '80fb6cfe-03cc-4bca-bdfb-eb5e24f59f62'
+  - value:
+      type: group_id
+      group_id: '80fb6cfe-03cc-4bca-bdfb-eb5e24f59f62'
 - id: equipment_basic_rules_carrying_using_items_wielding_items
   title: 'Wielding Items'
   group_references:
-  - type: group_id
-    group_id: '2bbbf53c-dc82-4d61-b910-57907a70b857'
+  - value:
+      type: group_id
+      group_id: '2bbbf53c-dc82-4d61-b910-57907a70b857'
 - id: equipment_basic_rules_item_damage
   title: 'Item Damage'
   group_references:
-  - type: group_id
-    group_id: '4ec2ed94-6e0c-45a1-a837-c8fa7ea9afb9'
+  - value:
+      type: group_id
+      group_id: '4ec2ed94-6e0c-45a1-a837-c8fa7ea9afb9'
 - id: equipment_basic_rules_item_damage_broken
   title: 'Broken'
   group_references:
-  - type: group_id
-    group_id: '112b3065-b83e-447a-a3c1-966acf620ee7'
+  - value:
+      type: group_id
+      group_id: '112b3065-b83e-447a-a3c1-966acf620ee7'
 - id: equipment_basic_rules_item_damage_object_immunities
   title: 'Object Immunities'
   group_references:
-  - type: group_id
-    group_id: 'a5af14c0-b4cc-4480-acba-4e36359a350e'
+  - value:
+      type: group_id
+      group_id: 'a5af14c0-b4cc-4480-acba-4e36359a350e'
 - id: equipment_armor_shields
   title: 'Armor and Shields'
   group_references:
-  - type: group_id
-    group_id: 'f9a6fc61-8e7c-4d16-8838-42448ccdc80c'
+  - value:
+      type: group_id
+      group_id: 'f9a6fc61-8e7c-4d16-8838-42448ccdc80c'
 - id: equipment_armor_shields_armor_class
   title: 'Armor Class'
   group_references:
-  - type: group_id
-    group_id: 'b8207393-1d02-4a42-ae85-89b39f570faf'
+  - value:
+      type: group_id
+      group_id: 'b8207393-1d02-4a42-ae85-89b39f570faf'
 - id: equipment_armor_shields_armor_statistics
   title: 'Armor Statistics'
   group_references:
-  - type: group_id
-    group_id: 'df094dcb-227b-4b47-8dec-9db9fef15b0c'
+  - value:
+      type: group_id
+      group_id: 'df094dcb-227b-4b47-8dec-9db9fef15b0c'
 - id: equipment_armor_shields_armor_statistics_bonuses
   title: 'Armor Bonuses'
   group_references:
-  - type: group_id
-    group_id: 'c6dd6f0c-29e8-4943-9903-09051e05c498'
+  - value:
+      type: group_id
+      group_id: 'c6dd6f0c-29e8-4943-9903-09051e05c498'
 - id: equipment_armor_shields_armor_statistics_dex_mod_cap
   title: 'Dexterity Modifier Cap'
   group_references:
-  - type: group_id
-    group_id: '787c8f52-959b-4566-bb9b-2e960b7e7c20'
+  - value:
+      type: group_id
+      group_id: '787c8f52-959b-4566-bb9b-2e960b7e7c20'
 - id: equipment_armor_shields_armor_statistics_check_penalty
   title: 'Check Penalty'
   group_references:
-  - type: group_id
-    group_id: '048c344a-f53f-43ab-8521-04b6db85670a'
+  - value:
+      type: group_id
+      group_id: '048c344a-f53f-43ab-8521-04b6db85670a'
 - id: equipment_armor_shields_armor_statistics_speed_penalty
   title: 'Speed Penalty'
   group_references:
-  - type: group_id
-    group_id: '74dc1b0e-fcad-4d29-811c-71b45f4eeaaa'
+  - value:
+      type: group_id
+      group_id: '74dc1b0e-fcad-4d29-811c-71b45f4eeaaa'
 - id: equipment_armor_shields_armor_statistics_bulk
   title: 'Bulk'
   group_references:
-  - type: group_id
-    group_id: '9818c3d3-a225-4d3c-8cbb-12edb4bc4a8f'
+  - value:
+      type: group_id
+      group_id: '9818c3d3-a225-4d3c-8cbb-12edb4bc4a8f'
 - id: equipment_armor_shields_armor_statistics_armor_traits
   title: 'Bulk'
   group_references:
-  - type: group_id
-    group_id: '85c2ec70-b88c-4baa-8371-d29285238635'
+  - value:
+      type: group_id
+      group_id: '85c2ec70-b88c-4baa-8371-d29285238635'
 - id: equipment_armor_shields_armor_statistics_shields
   title: 'Bulk'
   group_references:
-  - type: group_id
-    group_id: '8e171712-2632-4dc8-83e1-b82240e5e73b'
+  - value:
+      type: group_id
+      group_id: '8e171712-2632-4dc8-83e1-b82240e5e73b'
 - id: equipment_armor_shields_armor_statistics_attacking_shield
   title: 'Bulk'
   group_references:
-  - type: group_id
-    group_id: 'f8c0a8a3-161f-4857-8f5c-281fe552fbcf'
+  - value:
+      type: group_id
+      group_id: 'f8c0a8a3-161f-4857-8f5c-281fe552fbcf'
 - id: equipment_armor_shields_armor_list_introduction
   title: 'Armor List Introduction'
   group_references:
-  - type: group_id
-    group_id: '05024374-a958-476a-bb4d-5e5a04b7f337'
+  - value:
+      type: group_id
+      group_id: '05024374-a958-476a-bb4d-5e5a04b7f337'
 - id: equipment_armor_shields_armor_list_light_armor
   title: 'Light Armor'
   group_references:
-  - type: group_id
-    group_id: 'c07d32a1-dd59-4c35-a1d4-512954b0d65e'
+  - value:
+      type: group_id
+      group_id: 'c07d32a1-dd59-4c35-a1d4-512954b0d65e'
+- id: equipment_armor_shields_armor_list_light_armor_padded_card
+  title: 'Card: Padded Armor'
+  context: padded
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
+- id: equipment_armor_shields_armor_list_light_armor_leather_card
+  title: 'Card: Leather Armor'
+  context: leather
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
+- id: equipment_armor_shields_armor_list_light_armor_studded_leather_card
+  title: 'Card: Studded Leather Armor'
+  context: studded_leather
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
+- id: equipment_armor_shields_armor_list_light_armor_chain_shirt_card
+  title: 'Card: Chain Shirt Armor'
+  context: chain_shirt
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
+- id: equipment_armor_shields_armor_list_medium_armor_hide_card
+  title: 'Card: Hide Armor'
+  context: hide
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
+- id: equipment_armor_shields_armor_list_medium_armor_scale_mail_card
+  title: 'Card: Scale Mail'
+  context: scale_mail
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
+- id: equipment_armor_shields_armor_list_medium_armor_chain_mail_card
+  title: 'Card: Chain Mail'
+  context: chain_mail
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
+- id: equipment_armor_shields_armor_list_medium_armor_breastplate_card
+  title: 'Card: Breastplate'
+  context: breastplate
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
+- id: equipment_armor_shields_armor_list_medium_armor_splint_mail_card
+  title: 'Card: Splint Mail'
+  context: splint_mail
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
+- id: equipment_armor_shields_armor_list_heavy_armor_splint_mail_card
+  title: 'Card: Splint Mail'
+  context: splint_mail
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
+- id: equipment_armor_shields_armor_list_heavy_armor_half_plate_card
+  title: 'Card: Half Plate'
+  context: half_plate
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
+- id: equipment_armor_shields_armor_list_heavy_armor_full_plate_card
+  title: 'Card: Full Plate'
+  context: full_plate
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
 - id: equipment_armor_shields_armor_list_medium_armor
   title: 'Medium Armor'
   group_references:
-  - type: group_id
-    group_id: '3b061219-9932-4402-8f3b-9b784583fdab'
+  - value:
+      type: group_id
+      group_id: '3b061219-9932-4402-8f3b-9b784583fdab'
+- id: equipment_armor_shields_armor_list_heavy_armor
+  title: 'Medium Armor'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '51629d40-72d2-4401-8b6b-16ae2f3eca6d'
+- id: equipment_weapons
+  title: 'Weapons'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '0d476077-3ac2-40c6-a792-580ae1268296'
+- id: equipment_weapons_basics
+  title: 'Weapon Basics'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '175344f7-2681-4d51-92b2-26b73ad54d50'
+- id: equipment_weapons_statistics
+  title: 'Weapon Statistics'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '65619095-2a8f-42b2-8f42-74c0715d5e21'
+- id: equipment_weapons_traits
+  title: 'Weapon Traits'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '6e70a89b-1d3e-4d2e-9840-ef36332b3453'
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: agile
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: attached
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: backstabber
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: backswing
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: charge
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: deadly
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: disarm
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: dwarf
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: elf
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: fatal
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: finesse
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: forceful
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: freehand
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: gnome
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: goblin
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: halfling
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: monk
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: nonlethal
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: orc
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: parry
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: propulsive
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: reach
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: shove
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: sweep
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: thrown
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: trip
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: twin
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: twohand
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: unarmed
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: versatile
+  - value:
+      type: group_id
+      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
+    group_context: volley
+- id: equipment_weapons_crit_specialization_effects
+  title: 'Critical Specialization Effects'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '83bd3f42-089c-421a-9e73-461c89fb03b0'
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: axe
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: bow
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: brawling
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: club
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: dart
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: flail
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: hammer
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: knife
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: pick
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: polearm
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: shield
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: sling
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: spear
+  - value:
+      type: group_id
+      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
+    group_context: sword
 - id: subsection_weapon_properties
   title: 'Weapon Properties'
   group_references:
-  - type: group_id
-    group_id: '54607d6f-c55b-41a2-b332-d3bdc3284013'
-  - type: group_id
-    group_id: 'e9fe87a4-9ee4-4587-9549-23593b98ef11'
-  - type: group_id
-    group_id: 'e41a3aed-28d6-4b6f-a669-3bb6425ab560'
+  - value:
+      type: group_id
+      group_id: '54607d6f-c55b-41a2-b332-d3bdc3284013'
+  - value:
+      type: group_id
+      group_id: 'e9fe87a4-9ee4-4587-9549-23593b98ef11'
+  - value:
+      type: group_id
+      group_id: 'e41a3aed-28d6-4b6f-a669-3bb6425ab560'
 - id: subsection_weapon_proficiency
   title: 'Weapon Proficiency'
   group_references:
-  - type: group_id
-    group_id: '28c46a98-a1d8-4cb4-a8c2-6a5319c98a5e'
-- id: subsection_weapon_list
-  title: 'Weapon List'
+  - value:
+      type: group_id
+      group_id: '28c46a98-a1d8-4cb4-a8c2-6a5319c98a5e'
+- id: equipment_weapons_list_simple_weapons
+  title: 'Simple Weapons'
   group_references:
-  - type: group_id
-    group_id: 'c86aca23-4391-4d83-b021-b728ffcb743b'
-  - type: group_id
-    group_id: '2de9f95a-60b7-43ea-8703-1c297bde0ae0'
-- id: introduction
-  title: 'Introduction'
+  - value:
+      type: group_id
+      group_id: 'cf74e855-f258-415d-8ce0-ee68b7f1aafb'
+  - value:
+      type: group_id
+      group_id: 'a6d912e1-a1cf-458f-b41c-02f5fa332e0b'
+  - value:
+      type: group_id
+      group_id: '9e6f34d7-81b9-475e-a776-fbe647b28e41'
+  - value:
+      type: group_id
+      group_id: 'e3386172-5f37-4435-bb0b-c46abf4ee0cd'
+  - value:
+      type: group_id
+      group_id: 'a4797519-cd9f-4671-bf4f-e146f2792588'
+- id: equipment_weapons_list_martial_weapons
+  title: 'Martial Weapons'
   group_references:
-  - type: group_id
-    group_id: '8138f056-193d-4780-92ed-18905be898f3'
-- id: card_gear_bedroll
-  title: 'Bedroll'
+  - value:
+      type: group_id
+      group_id: '07a0dcea-98e3-4a1c-b50f-2be1a72db330'
+  - value:
+      type: group_id
+      group_id: '9457a076-8b69-4da5-b6a7-295b5fd9b61d'
+  - value:
+      type: group_id
+      group_id: '5e5ad10b-44f3-43d8-88c6-b9815b8baa06'
+  - value:
+      type: group_id
+      group_id: '7e92babf-3766-4d6d-bc65-d059c730ed54'
+  - value:
+      type: group_id
+      group_id: '59609f81-4aa4-4193-823d-a6013808746c'
+  - value:
+      type: group_id
+      group_id: '3c66ece3-55ba-49ce-9b12-4a304fd98555'
+  - value:
+      type: group_id
+      group_id: 'aa74895e-eae7-4097-9394-1cc910e10aff'
+  - value:
+      type: group_id
+      group_id: 'd57e2471-8652-4d10-ae67-bcc57604b084'
+  - value:
+      type: group_id
+      group_id: 'cd5c7321-10fb-4cff-9f4c-a8465c9a8502'
+  - value:
+      type: group_id
+      group_id: '93d2098d-a440-4e61-b17f-4c3c73b526eb'
+  - value:
+      type: group_id
+      group_id: '47c0e924-b1fc-465a-9a3b-69c13b0a0ac2'
+  - value:
+      type: group_id
+      group_id: '47c0e924-b1fc-465a-9a3b-69c13b0a0ac2'
+- id: equipment_weapons_list_exotic_weapons
+  title: 'Exotic Weapons'
   group_references:
-  - type: group_id
-    group_id: '625f8b74-24ff-4d36-81db-f3b089b23351'
-- id: armor_leather
-  title: 'Leather Armor'
+  - value:
+      type: group_id
+      group_id: '492cf70a-076c-459e-b280-d9a78ecd2f50'
+- id: equipment_weapons_list_club_card
+  title: 'Card: Club'
+  context: club
   group_references:
-  - type: group_id
-    group_id: '21266571-0914-48ff-9c34-557062798c12'
-- id: weapon_rapier
-  title: 'Rapier'
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_dagger_card
+  title: 'Card: Dagger'
+  context: dagger
   group_references:
-  - type: group_id
-    group_id: '43655b03-69e9-4565-bddc-b8e39eb82518'
-- id: race_humans
-  title: 'Humans'
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_fist_card
+  title: 'Card: Fist'
+  context: fist
   group_references:
-  - type: group_id
-    group_id: '6d2e2936-04f8-4ac5-8591-39aebfbcd93f'
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_gauntlet_card
+  title: 'Card: Guantlet'
+  context: guantlet
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_light_mace_card
+  title: 'Card: Light Mace'
+  context: light_mace
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_longspear_card
+  title: 'Card: Longspear'
+  context: longspear
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_mace_card
+  title: 'Card: Mace'
+  context: mace
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_morningstar_card
+  title: 'Card: Morningstar'
+  context: morningstar
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_sickle_card
+  title: 'Card: Sickle'
+  context: sickle
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_spear_card
+  title: 'Card: Spear'
+  context: spear
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_spiked_guantlet_card
+  title: 'Card: Spiked Gauntlet'
+  context: spiked_gauntlet
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_spiked_staff_card
+  title: 'Card: Spiked Staff'
+  context: spiked_staff
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_bastard_sword_card
+  title: 'Card: Bastard Sword'
+  context: bastard_sword
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_battle_axe_card
+  title: 'Card: Battle Axe'
+  context: battle_axe
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_bo_staff_card
+  title: 'Card: Bo Staff'
+  context: bo_staff
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_falchion_card
+  title: 'Card: Falchion'
+  context: falchion
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_flail_card
+  title: 'Card: Flail'
+  context: flail
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_glaive_card
+  title: 'Card: Glaive'
+  context: glaive
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_greataxe_card
+  title: 'Card: Greataxe'
+  context: greataxe
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_greatclub_card
+  title: 'Card: Greatclub'
+  context: greatclub
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_greatpick_card
+  title: 'Card: Greatpick'
+  context: greatpick
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_greatsword_card
+  title: 'Card: Greatsword'
+  context: greatsword
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_guisarme_card
+  title: 'Card: Guisarme'
+  context: guisarme
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_halberd_card
+  title: 'Card: Halberd'
+  context: halberd
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_hatchet_card
+  title: 'Card: Hatchet'
+  context: hatchet
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_heavy_shield_bash_card
+  title: 'Card: Heavy Shield Bash'
+  context: heavy_shield_bash
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_heavy_shield_boss_card
+  title: 'Card: Heavy Shield Boss'
+  context: heavy_shield_boss
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_heavy_shield_spikes_card
+  title: 'Card: Heavy Shield Spikes'
+  context: heavy_shield_spikes
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_lance_card
+  title: 'Card: Lance'
+  context: lance
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_light_hammer_card
+  title: 'Card: Light Hammer'
+  context: light_hammer
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_light_pick_card
+  title: 'Card: Light Pick'
+  context: light_pick
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_light_shield_bash_card
+  title: 'Card: Light Shield Bash'
+  context: light_shield_bash
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_light_shield_boss_card
+  title: 'Card: Light Shield Boss'
+  context: light_shield_boss
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_light_shield_spikes_card
+  title: 'Card: Light Shield Spikes'
+  context: light_shield_spikes
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_longsword_card
+  title: 'Card: Longsword'
+  context: longsword
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_main_gauche_card
+  title: 'Card: Main Gauche'
+  context: main_gauche
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_maul_card
+  title: 'Card: Maul'
+  context: maul
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_pick_card
+  title: 'Card: Pick'
+  context: pick
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_ranseur_card
+  title: 'Card: Ranseur'
+  context: ranseur
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_rapier_card
+  title: 'Card: Rapier'
+  context: rapier
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_sap_card
+  title: 'Card: Sap'
+  context: sap
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_scimitar_card
+  title: 'Card: Scimitar'
+  context: scimitar
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_scythe_card
+  title: 'Card: Scythe'
+  context: scythe
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_shortsword_card
+  title: 'Card: Shortsword'
+  context: shortsword
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_starknife_card
+  title: 'Card: Starknife'
+  context: starknife
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_trident_card
+  title: 'Card: Trident'
+  context: trident
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_war_flail_card
+  title: 'Card: War Flail'
+  context: war_flail
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_warhammer_card
+  title: 'Card: Warhammer'
+  context: warhammer
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_weapons_list_whip_card
+  title: 'Card: Whip'
+  context: whip
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
 chapters:
 - id: ancestries_and_backgrounds
   title: 'Ancestries and Backgrounds'
@@ -363,8 +1067,43 @@ chapters:
       - equipment_armor_shields_armor_list_introduction
       - equipment_armor_shields_armor_list_light_armor
       - equipment_armor_shields_armor_list_medium_armor
+      - equipment_armor_shields_armor_list_heavy_armor
   - id: weapons
     title: 'Weapons'
+    introduction:
+    - equipment_weapons
+    subsections:
+    - id: equipment_weapons_basics
+      title: 'Weapons Basics'
+      body:
+      - equipment_weapons_basics
+    - id: equipment_weapons_statistics
+      title: 'Weapon Statistics'
+      body:
+      - equipment_weapons_statistics
+    - id: equipment_weapons_traits
+      title: 'Weapon Traits'
+      body:
+      - equipment_weapons_traits
+    - id: equipment_weapons_crit_spec_effects
+      title: 'Critical Specialization Effects'
+      body:
+      - equipment_weapons_crit_specialization_effects
+    - id: equipment_weapons_list_simple
+      title: 'Simple Weapons'
+      group: 'Weapon List'
+      body:
+      - equipment_weapons_list_simple_weapons
+    - id: equipment_weapons_list_melee
+      title: 'Martial Weapons'
+      group: 'Weapon List'
+      body:
+      - equipment_weapons_list_martial_weapons
+    - id: equipment_weapons_list_exotic
+      title: 'Exotic Weapons'
+      group: 'Weapon List'
+      body:
+      - equipment_weapons_list_exotic_weapons
   - id: gear
     title: 'Gear'
 - id: spells
@@ -393,4 +1132,606 @@ chapters:
   title: 'Treasure'
   summary: 'Work in progress.'
   sections:
+cards:
+- id: '48f84443-778f-4ab6-ae1d-2e36936eced2'
+  name: 'Padded [Armor]'
+  content_ids:
+  - equipment_armor_shields_armor_list_light_armor_padded_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'padded'
+        weight: 1
+- id: '94bc902c-2370-413b-9987-6f299165122e'
+  name: 'Leather [Armor]'
+  content_ids:
+  - equipment_armor_shields_armor_list_light_armor_leather_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'leather'
+        weight: 1
+- id: '42cc94b6-b363-4573-ac0c-2e92876781f3'
+  name: 'Studded Leather [Armor]'
+  content_ids:
+  - equipment_armor_shields_armor_list_light_armor_studded_leather_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'studded leather'
+        weight: 1
+- id: 'fc292d8a-1e81-4a22-af8a-8c5c67a31cf9'
+  name: 'Chain Shirt [Armor]'
+  content_ids:
+  - equipment_armor_shields_armor_list_light_armor_chain_shirt_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'chain shirt'
+        weight: 1
+- id: 'df56c2d0-070f-4ae6-952b-a24d9d760851'
+  name: 'Hide [Armor]'
+  content_ids:
+  - equipment_armor_shields_armor_list_medium_armor_hide_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'hide'
+        weight: 1
+- id: 'd421e896-180c-489a-aeaa-de7ea251f884'
+  name: 'Scale Mail [Armor]'
+  content_ids:
+  - equipment_armor_shields_armor_list_medium_armor_scale_mail_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'scale mail'
+        weight: 1
+- id: '7913c99f-86df-4ef2-b655-0925992d11af'
+  name: 'Chain Mail [Armor]'
+  content_ids:
+  - equipment_armor_shields_armor_list_medium_armor_chain_mail_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'chain mail'
+        weight: 1
+- id: '7aad31d4-6d86-4c83-b997-7bcb65f27172'
+  name: 'Breastplate [Armor]'
+  content_ids:
+  - equipment_armor_shields_armor_list_medium_armor_breastplate_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'breastplate'
+        weight: 1
+- id: 'efd59abb-d580-4e5f-b46d-78e199925185'
+  name: 'Splint Mail [Armor]'
+  content_ids:
+  - equipment_armor_shields_armor_list_heavy_armor_splint_mail_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'splint mail'
+        weight: 1
+- id: 'e5348923-dd76-48a5-9106-814609effe74'
+  name: 'Half Plate [Armor]'
+  content_ids:
+  - equipment_armor_shields_armor_list_heavy_armor_half_plate_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'half plate'
+        weight: 1
+- id: '98b1eea2-aaa1-4b02-b661-b751b6516f06'
+  name: 'Full Plate [Armor]'
+  content_ids:
+  - equipment_armor_shields_armor_list_heavy_armor_full_plate_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'full plate'
+        weight: 1
+- id: '33136476-a682-43f0-8a18-cca1178b6088'
+  name: 'Club'
+  content_ids:
+  - equipment_weapons_list_club_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'club'
+        weight: 1
+- id: '2b410b64-ba5a-42dd-9d06-64df97bc54be'
+  name: 'Dagger'
+  content_ids:
+  - equipment_weapons_list_dagger_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'dagger'
+        weight: 1
+- id: '779940df-f91b-4adc-addf-7db6fde1702d'
+  name: 'Fist'
+  content_ids:
+  - equipment_weapons_list_fist_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'fist'
+        weight: 1
+- id: 'eb972ce0-772a-4428-8c7e-6da7f3be93f7'
+  name: 'Gauntlet'
+  content_ids:
+  - equipment_weapons_list_gauntlet_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'gauntlet'
+        weight: 1
+- id: '8bbc7dab-c9ba-436a-82c7-ec955352b1d5'
+  name: 'Light Mace'
+  content_ids:
+  - equipment_weapons_list_light_mace_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'light mace'
+        weight: 1
+- id: '1da2039e-aeed-4c03-9f6d-c2f7b839b9ae'
+  name: 'Longspear'
+  content_ids:
+  - equipment_weapons_list_longspear_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'longspear'
+        weight: 1
+- id: '7e448a95-d5c5-4c09-8e87-01445aeb9af6'
+  name: 'Mace'
+  content_ids:
+  - equipment_weapons_list_mace_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'mace'
+        weight: 1
+- id: '917e1652-db35-4635-95c8-067803deafd1'
+  name: 'Morningstar'
+  content_ids:
+  - equipment_weapons_list_morningstar_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'morningstar'
+        weight: 1
+- id: 'df5c8c66-5f9e-47b4-bc0b-cb894a407d9c'
+  name: 'Sickle'
+  content_ids:
+  - equipment_weapons_list_sickle_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'sickle'
+        weight: 1
+- id: '29dc8d40-7d66-4b11-ab2a-8b3ef8a1b810'
+  name: 'Spear'
+  content_ids:
+  - equipment_weapons_list_spear_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'spear'
+        weight: 1
+- id: 'b5028958-623f-4fff-a43c-d8c6f708263b'
+  name: 'Spiked Gauntlet'
+  content_ids:
+  - equipment_weapons_list_spiked_gauntlet_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'spiked gauntlet'
+        weight: 1
+- id: 'd0bf439e-9409-449a-bdf7-9cb7e0a9b554'
+  name: 'Spiked Staff'
+  content_ids:
+  - equipment_weapons_list_spiked_staff_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'spiked staff'
+        weight: 1
+- id: 'c7251c9c-a80b-41d9-9743-229fdde9000a'
+  name: 'Bastard Sword'
+  content_ids:
+  - equipment_weapons_list_bastard_sword_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'bastard sword'
+        weight: 1
+- id: 'eceb92b6-b912-4264-aa60-05d503ef09e7'
+  name: 'Battle axe'
+  content_ids:
+  - equipment_weapons_list_battle_axe_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'battle axe'
+        weight: 1
+- id: '1b348c08-b2a4-4cdd-8a8d-fe141e279770'
+  name: 'Bo Staff'
+  content_ids:
+  - equipment_weapons_list_bo_staff_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'bo staff'
+        weight: 1
+- id: '5828d9b3-1946-47d3-9919-7e282c01f68b'
+  name: 'Falchion'
+  content_ids:
+  - equipment_weapons_list_falchion_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'falchion'
+        weight: 1
+- id: '3a1723ee-d645-4d30-8ff7-96b0232e5ab7'
+  name: 'Flail'
+  content_ids:
+  - equipment_weapons_list_flail_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'flail'
+        weight: 1
+- id: 'f6d39280-8179-43be-aea1-e1f0cff14fe2'
+  name: 'Glaive'
+  content_ids:
+  - equipment_weapons_list_glaive_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'glaive'
+        weight: 1
+- id: 'cb98d5e7-a4f4-4c53-b799-7b1a4a1c550c'
+  name: 'Greataxe'
+  content_ids:
+  - equipment_weapons_list_greataxe_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'greataxe'
+        weight: 1
+- id: '25dfec85-9379-46a6-9044-100bb9592060'
+  name: 'Greatclub'
+  content_ids:
+  - equipment_weapons_list_greatclub_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'great club'
+        weight: 1
+- id: 'c34a98a9-99e6-4f2e-94b6-ec53f3eec72e'
+  name: 'Greatpick'
+  content_ids:
+  - equipment_weapons_list_greatpick_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'greatpick'
+        weight: 1
+- id: '7de6a014-9e70-4567-925e-2ca5a5e0702d'
+  name: 'Greatsword'
+  content_ids:
+  - equipment_weapons_list_greatsword_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'greatsword'
+        weight: 1
+- id: 'fcbe3a48-544c-48fc-b963-65b727f7548e'
+  name: 'Guisarme'
+  content_ids:
+  - equipment_weapons_list_guisarme_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'guisarme'
+        weight: 1
+- id: '2507439d-e0f7-45a5-be96-7c5fd9503818'
+  name: 'Halberd'
+  content_ids:
+  - equipment_weapons_list_halberd_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'halberd'
+        weight: 1
+- id: 'f06ea162-9827-4f59-af7e-e597214ecd63'
+  name: 'Hatchet'
+  content_ids:
+  - equipment_weapons_list_hatchet_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'hatchet'
+        weight: 1
+- id: '8a2b4045-ddfb-4e95-99e4-c8de68069687'
+  name: 'Heavy Shield Bash'
+  content_ids:
+  - equipment_weapons_list_heavy_shield_bash_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'heavy shield bash'
+        weight: 1
+- id: '34daab25-80ae-4060-b82a-cb708f3d8b64'
+  name: 'Heavy Shield Boss'
+  content_ids:
+  - equipment_weapons_list_heavy_shield_boss_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'heavy shield boss'
+        weight: 1
+- id: 'df36c3e7-f3e8-4b5c-a6fa-0c47bf59014a'
+  name: 'Heavy Shield Spikes'
+  content_ids:
+  - equipment_weapons_list_heavy_shield_spikes_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'heavy shield spikes'
+        weight: 1
+- id: '15778114-6eea-4301-a575-17b775b9fb4d'
+  name: 'Lance'
+  content_ids:
+  - equipment_weapons_list_lance_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'lance'
+        weight: 1
+- id: 'c891b368-d1b3-4824-9530-a0e906591d51'
+  name: 'Light Hammer'
+  content_ids:
+  - equipment_weapons_list_light_hammer_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'light hammer'
+        weight: 1
+- id: '72f21b84-b97a-473f-9ddb-900a215d219e'
+  name: 'Light Pick'
+  content_ids:
+  - equipment_weapons_list_light_pick_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'light pick'
+        weight: 1
+- id: 'da47e7af-49dc-44f9-a254-59fda5e6be02'
+  name: 'Light Shield Bash'
+  content_ids:
+  - equipment_weapons_list_light_shield_bash_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'light shield bash'
+        weight: 1
+- id: '025c7016-d89f-4073-8938-a0f4a1ccb53f'
+  name: 'Light Shield Boss'
+  content_ids:
+  - equipment_weapons_list_light_shield_boss_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'light shield boss'
+        weight: 1
+- id: 'a709433e-c445-4660-94cf-c7b1efc2e7b4'
+  name: 'Light Shield Spikes'
+  content_ids:
+  - equipment_weapons_list_light_shield_spikes_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'light shield spikes'
+        weight: 1
+- id: '5724e980-36c0-481c-b881-bd14ba4db1fb'
+  name: 'Longsword'
+  content_ids:
+  - equipment_weapons_list_longsword_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'longsword'
+        weight: 1
+- id: '3ffcf903-f601-4c25-ad44-95c67568cf3f'
+  name: 'Main Gauche'
+  content_ids:
+  - equipment_weapons_list_main_gauche_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'main_gauche'
+        weight: 1
+- id: 'a4b3c65e-2c50-46f7-84fc-bd63716f22c6'
+  name: 'Maul'
+  content_ids:
+  - equipment_weapons_list_maul_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'maul'
+        weight: 1
+- id: '74f20c8e-be8f-4747-8d48-5b87a665c486'
+  name: 'Pick'
+  content_ids:
+  - equipment_weapons_list_pick_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'pick'
+        weight: 1
+- id: '479b03f6-9ee7-4127-a00c-d78b0ee6eb3d'
+  name: 'Ranseur'
+  content_ids:
+  - equipment_weapons_list_ranseur_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'ranseur'
+        weight: 1
+- id: '982fea26-d9a0-4545-8e29-6d12be4bc4a5'
+  name: 'Rapier'
+  content_ids:
+  - equipment_weapons_list_rapier_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'rapier'
+        weight: 1
+- id: 'a1a18340-d5b3-4fe7-997a-00c4df1844dc'
+  name: 'Sap'
+  content_ids:
+  - equipment_weapons_list_sap_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'sap'
+        weight: 1
+- id: 'dc2a16a9-1cc5-47ed-bab7-8129a66e9c74'
+  name: 'Scimitar'
+  content_ids:
+  - equipment_weapons_list_scimitar_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'scimitar'
+        weight: 1
+- id: 'fbb688ac-3c58-40eb-a004-ff8d2173c03f'
+  name: 'Scythe'
+  content_ids:
+  - equipment_weapons_list_scythe_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'scythe'
+        weight: 1
+- id: '75f091d9-b5ec-410e-b7fe-b9a26a6adfde'
+  name: 'Shortsword'
+  content_ids:
+  - equipment_weapons_list_shortsword_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'shortsword'
+        weight: 1
+- id: '37978eb2-639f-4a06-af4d-b58dddaebcfb'
+  name: 'Starknife'
+  content_ids:
+  - equipment_weapons_list_starknife_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'starknife'
+        weight: 1
+- id: 'cd0728b2-6ce0-4b0a-8a48-f929a48b9957'
+  name: 'Trident'
+  content_ids:
+  - equipment_weapons_list_trident_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'trident'
+        weight: 1
+- id: 'bb4a489d-48a7-4327-8bbe-4a461ccace7f'
+  name: 'War Flail'
+  content_ids:
+  - equipment_weapons_list_war_flail_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'war flail'
+        weight: 1
+- id: 'afe87026-2b0f-48a7-9df7-c2cf3baef1b6'
+  name: 'Warhammer'
+  content_ids:
+  - equipment_weapons_list_warhammer_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'warhammer'
+        weight: 1
+- id: '91b47cb0-c8a4-4ffd-a5ae-ba9d96a5b219'
+  name: 'Whip'
+  content_ids:
+  - equipment_weapons_list_whip_card
+  search_data:
+    attributes:
+    - type: search_data_attribute_keyword
+      search_data_attribute_keyword:
+        keyword: 'whip'
+        weight: 1
+
 
