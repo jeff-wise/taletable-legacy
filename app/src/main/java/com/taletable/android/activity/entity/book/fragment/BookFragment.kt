@@ -330,7 +330,7 @@ class BookUI(val book : Book,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_10"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
         summary.sizeSp              = 20f
@@ -365,14 +365,14 @@ class BookUI(val book : Book,
         // (3) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp                = 28
-        icon.heightDp               = 28
+        icon.widthDp                = 17
+        icon.heightDp               = 17
 
-        icon.image                  = R.drawable.icon_chevron_right
+        icon.image                  = R.drawable.icon_arrow_forward
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_13"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         icon.color               = theme.colorOrBlack(iconColorTheme)
 
         return layout.linearLayout(context)
@@ -427,23 +427,25 @@ class BookUI(val book : Book,
 
     private fun titleView() : TextView
     {
-        val title                = TextViewBuilder()
+        val title                   = TextViewBuilder()
 
-        title.width              = LinearLayout.LayoutParams.WRAP_CONTENT
-        title.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+        title.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+        title.height                = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        title.text               = book.bookInfo().title.value
+        title.margin.topDp          = 12f
 
-        title.font               = Font.typeface(TextFont.Garamond,
-                                                 TextFontStyle.ExtraBold,
-                                                 context)
+        title.text                  = book.bookInfo().title.value
 
-        title.color              = Color.WHITE
+        title.font                  = Font.typeface(TextFont.Merriweather,
+                                                    TextFontStyle.ExtraBold,
+                                                    context)
 
-        title.sizeSp             = 56f
+        title.color                 = Color.WHITE
 
-        title.lineSpacingAdd     = 10f
-        title.lineSpacingMult    = 0.8f
+        title.sizeSp                = 48f
+
+        title.lineSpacingAdd        = 10f
+        title.lineSpacingMult       = 0.85f
 
         return title.textView(context)
     }
@@ -463,8 +465,8 @@ class BookUI(val book : Book,
 
         title.text              = book.summary()
 
-        title.font              = Font.typeface(TextFont.Garamond,
-                                                TextFontStyle.Regular,
+        title.font              = Font.typeface(TextFont.Merriweather,
+                                                TextFontStyle.Light,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
@@ -473,7 +475,7 @@ class BookUI(val book : Book,
         title.color              = theme.colorOrBlack(colorTheme)
 //        title.color             = Color.WHITE
 
-        title.sizeSp             = 22f
+        title.sizeSp             = 18f
 
         return title.textView(context)
     }

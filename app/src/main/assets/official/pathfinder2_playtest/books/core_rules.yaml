@@ -533,6 +533,9 @@ content:
       group_id: 'cf74e855-f258-415d-8ce0-ee68b7f1aafb'
   - value:
       type: group_id
+      group_id: 'df48f5da-7d65-4602-92e2-5a03e6af7eb3'
+  - value:
+      type: group_id
       group_id: 'a6d912e1-a1cf-458f-b41c-02f5fa332e0b'
   - value:
       type: group_id
@@ -543,6 +546,18 @@ content:
   - value:
       type: group_id
       group_id: 'a4797519-cd9f-4671-bf4f-e146f2792588'
+  - value:
+      type: group_id
+      group_id: '6340c0bd-0a5a-41fb-b8a1-e9000faf421c'
+  - value:
+      type: group_id
+      group_id: '58b41919-a367-44aa-a573-752d8393eae7'
+  - value:
+      type: group_id
+      group_id: '0bebea29-030a-49e5-9777-52177b87d1c2'
+  - value:
+      type: group_id
+      group_id: '50e3570b-1e8b-48c7-a7e0-0ef63ee1d793'
 - id: equipment_weapons_list_martial_weapons
   title: 'Martial Weapons'
   group_references:
@@ -931,6 +946,48 @@ content:
   - value:
       type: group_id
       group_id: '3e2882c6-845a-41dc-9c41-c3eff7877dbc'
+- id: equipment_gear
+  title: 'Gear'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '91f7ddfb-14a7-4366-9aab-1035b6f2ea7a'
+- id: equipment_gear_statistics
+  title: 'Gear'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '9a3a55e1-bf80-4472-bb40-108c9fd8e9cf'
+  - value:
+      type: group_id
+      group_id: '69f8f799-3f93-4eff-9112-d15f982660ec'
+  - value:
+      type: group_id
+      group_id: 'fd43ca3a-5f81-44a1-ac48-f6960e1c0812'
+  - value:
+      type: group_id
+      group_id: '39114420-0f6e-43b6-99db-4890494970ff'
+- id: equipment_adenturing_gear_list
+  title: 'Adventuring Gear List'
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd20aaa97-0a74-4952-b424-f95e67d4d9c4'
+  - value:
+      type: group_id
+      group_id: '1eaa2772-2fa9-4abe-a459-378dd02fd049'
+    group_context: backpack
+  - value:
+      type: group_id
+      group_id: '1eaa2772-2fa9-4abe-a459-378dd02fd049'
+    group_context: bedroll
+  - value:
+      type: group_id
+      group_id: '1eaa2772-2fa9-4abe-a459-378dd02fd049'
+    group_context: beltpouch
+  - value:
+      type: group_id
+      group_id: '9041b5a7-e067-480d-a295-ed98b087400e'
 chapters:
 - id: ancestries_and_backgrounds
   title: 'Ancestries and Backgrounds'
@@ -1106,6 +1163,33 @@ chapters:
       - equipment_weapons_list_exotic_weapons
   - id: gear
     title: 'Gear'
+    introduction:
+    - equipment_gear
+    subsections:
+    - id: equipment_gear_statistics
+      title: 'Gear Statistics'
+      body:
+      - equipment_gear_statistics
+    - id: equipment_adventuring_gear_list
+      title: 'Adventuring Gear'
+      group: 'Gear List'
+      body:
+      - equipment_adenturing_gear_list
+    - id: equipment_specialty_gear_list
+      title: 'Specialty Gear'
+      group: 'Gear List'
+      body:
+      - equipment_specialty_gear_list
+    - id: equipment_basic_tools_list
+      title: 'Basic Tools'
+      group: 'Gear List'
+      body:
+      - equipment_basic_tools_list
+    - id: equipment_expert_tools_list
+      title: 'Expert Tools'
+      group: 'Gear List'
+      body:
+      - equipment_basic_tools_list
 - id: spells
   title: 'Spells'
   summary: 'Casting spells and rules for using magic as well as a catalog of the available spells.'

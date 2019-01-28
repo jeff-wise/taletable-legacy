@@ -166,6 +166,10 @@ object WidgetView
             layout.addView(this.verticalBorderView(it, entityId, context))
         }
 
+        widgetFormat.elementFormat().border().top().doMaybe {
+            layout.addView(this.horizontalBorderView(it, entityId, context))
+        }
+
         layout.addView(contentLayout)
 
         widgetFormat.elementFormat().border().right().doMaybe {
@@ -339,6 +343,23 @@ object WidgetView
 
         return divider.linearLayout(context)
     }
+
+
+    private fun horizontalBorderView(format : BorderEdge,
+                                     entityId : EntityId,
+                                     context : Context) : LinearLayout
+    {
+        val divider                 = LinearLayoutBuilder()
+
+        divider.width               = LinearLayout.LayoutParams.MATCH_PARENT
+        divider.heightDp            = format.thickness().value
+
+        divider.backgroundColor     = colorOrBlack(format.colorTheme(), entityId)
+
+        return divider.linearLayout(context)
+    }
+
+
 
 
     class WidgetTouchView(context : Context) : LinearLayout(context)

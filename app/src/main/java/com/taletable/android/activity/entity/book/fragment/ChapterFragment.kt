@@ -501,10 +501,10 @@ class ChapterUI(val chapter : BookChapter,
         // (3) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp                = 28
-        icon.heightDp               = 28
+        icon.widthDp                = 17
+        icon.heightDp               = 17
 
-        icon.image                  = R.drawable.icon_chevron_right
+        icon.image                  = R.drawable.icon_arrow_forward
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),

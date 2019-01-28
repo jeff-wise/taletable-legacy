@@ -625,10 +625,10 @@ class SectionUI(val section : BookSection,
         // (3) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp                = 28
-        icon.heightDp               = 28
+        icon.widthDp                = 17
+        icon.heightDp               = 17
 
-        icon.image                  = R.drawable.icon_chevron_right
+        icon.image                  = R.drawable.icon_arrow_forward
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
@@ -653,7 +653,7 @@ class SectionUI(val section : BookSection,
         layoutBuilder.width             = LinearLayout.LayoutParams.MATCH_PARENT
         layoutBuilder.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layoutBuilder.padding.topDp     = 12f
+        layoutBuilder.padding.topDp     = 16f
         layoutBuilder.padding.bottomDp  = 8f
         layoutBuilder.padding.leftDp    = 16f
         layoutBuilder.padding.rightDp   = 16f

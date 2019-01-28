@@ -442,6 +442,8 @@ class ExpanderWidgetUI(val expanderWidget : ExpanderWidget,
         headerView.setOnClickListener { onClick(contentLayout) }
         contentLayout.addView(headerView)
 
+        Log.d("***EXPANDER WIDGET", "context is $groupContext")
+
         return layout
     }
 

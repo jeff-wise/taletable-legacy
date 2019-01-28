@@ -197,8 +197,8 @@ class SubsectionUI(val subsection : BookSubsection,
 
         //layout.margin.topDp     = 10f
 
-        layout.padding.leftDp   = 15f
-        layout.padding.rightDp  = 15f
+        layout.padding.leftDp   = 16f
+        layout.padding.rightDp  = 16f
         layout.padding.topDp    = 14f
         layout.padding.bottomDp = 14f
 

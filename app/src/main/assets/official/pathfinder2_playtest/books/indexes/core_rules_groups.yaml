@@ -1375,8 +1375,8 @@ groups:
       padding:
         left: 16
         right: 16
-        top: 8
-        bottom: 8
+        top: 24
+        bottom: 20
   rows:
   - widgets:
     - type: widget_text
@@ -2616,27 +2616,26 @@ groups:
         theme_color_ids:
         - theme_id: light
           color_id: white
-#      corners:
-#        top_left_radius: 2
-#        top_right_radius: 2
-#        bottom_right_radius: 2
-#        bottom_left_radius: 2
+      border:
+        bottom:
+          thickness: 1
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_blue_grey_14
       margins:
-        left: 6
-        right: 6
         top: 12
       padding:
         top: 16
         bottom: 12
-      style: card
   rows:
   - format:
       element_format:
         horizontal_alignment: left
         padding:
           bottom: 0
-          left: 10
-          right: 10
+          left: 16
+          right: 16
     widgets:
     - type: widget_text
       widget_text:
@@ -2649,9 +2648,9 @@ groups:
               theme_color_ids:
               - theme_id: light
                 color_id: dark_blue_grey_12
-            font: roboto
-            font_style: medium
-            size: 25
+            font: roboto_condensed
+            font_style: bold
+            size: 28
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -2680,9 +2679,20 @@ groups:
               variable_id: equipment_armor_shields_list_full_plate_name
   - format:
       element_format:
+        border:
+          bottom:
+            thickness: 1
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_7
         horizontal_alignment: left
+        margins:
+          bottom: 20
         padding:
           bottom: 12
+          left: 16
+          right: 16
     widgets:
     - type: widget_text
       widget_text:
@@ -2693,14 +2703,14 @@ groups:
                 type: width_wrap
                 width_wrap: wrap
               padding:
-                left: 10
-                right: 10
+                left: 0
+                right: 0
           value_format:
             color_theme:
               theme_color_ids:
               - theme_id: light
                 color_id: light_blue_grey_18
-            font: roboto
+            font: roboto_condensed
             font_style: regular
             size: 18
             element_format:
@@ -2731,56 +2741,16 @@ groups:
               variable_id: equipment_armor_shields_list_half_plate_armor_type
             - context: full_plate
               variable_id: equipment_armor_shields_list_full_plate_armor_type
-#    - type: widget_list
-#      widget_list:
-#        format:
-#          widget_format:
-#            element_format:
-#              width:
-#                type: width_wrap
-#                width_wrap: wrap
-#          item_format:
-#            color_theme:
-#              theme_color_ids:
-#              - theme_id: light
-#                color_id: light_blue_grey_18
-#            font: roboto_condensed
-#            font_style: italic
-#            size: 18
-#        values_variable_id: equipment_armor_shields_list_padded_traits
   - format:
       element_format:
         horizontal_alignment: left
         margins:
-          left: 8
-          bottom: 32
+          bottom: 12
+          left: 16
+          right: 16
+        padding:
+          bottom: 12
     widgets:
-#    - type: widget_text
-#      widget_text:
-#        format:
-#          widget_format:
-#            width: 2
-#            element_format:
-#              height: 54
-#              horizontal_alignment: left
-#              padding:
-#                left: 10
-#              width:
-#                type: width_justify
-#                width_justify: justify
-#          value_format:
-#            color_theme:
-#              theme_color_ids:
-#              - theme_id: light
-#                color_id: dark_blue_grey_22
-#            font: roboto
-#            font_style: bold
-#            size: 19
-#            element_format:
-#              horizontal_alignment: left
-#        value_variable_reference:
-#          type: variable_id
-#          variable_id: equipment_armor_shields_data_ac_bonus_label
     - type: widget_number
       widget_number:
         format:
@@ -2790,11 +2760,11 @@ groups:
               background_color_theme:
                 theme_color_ids:
                 - theme_id: light
-                  color_id: light_blue_tint_1
+                  color_id: light_blue_tint_3
               height: 40
               padding:
-                left: 12
-                right: 12
+                left: 16
+                right: 16
               width:
                 type: width_wrap
                 width_wrap: wrap
@@ -2807,7 +2777,7 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: light_blue_grey_5
+                color_id: light_blue_grey_2
             font: roboto_condensed
             font_style: bold
             size: 20
@@ -2849,32 +2819,6 @@ groups:
               variable_id: equipment_armor_shields_list_half_plate_ac_bonus
             - context: full_plate
               variable_id: equipment_armor_shields_list_full_plate_ac_bonus
-#    - type: widget_text
-#      widget_text:
-#        format:
-#          widget_format:
-#            width: 2
-#            element_format:
-#              height: 54
-#              horizontal_alignment: left
-#              padding:
-#                left: 10
-#              width:
-#                type: width_justify
-#                width_justify: justify
-#          value_format:
-#            color_theme:
-#              theme_color_ids:
-#              - theme_id: light
-#                color_id: dark_blue_grey_22
-#            font: roboto
-#            font_style: bold
-#            size: 19
-#            element_format:
-#              horizontal_alignment: left
-#        value_variable_reference:
-#          type: variable_id
-#          variable_id: equipment_armor_shields_data_tac_bonus_label
     - type: widget_number
       widget_number:
         format:
@@ -2884,14 +2828,14 @@ groups:
               background_color_theme:
                 theme_color_ids:
                 - theme_id: light
-                  color_id: dark_blue_grey_18
+                  color_id: dark_blue_grey_22
               horizontal_alignment: left
               height: 40
               margins:
                 left: 4
               padding:
-                left: 12
-                right: 12
+                left: 16
+                right: 16
               width:
                 type: width_wrap
                 width_wrap: wrap
@@ -2903,7 +2847,7 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: light_blue_grey_5
+                color_id: light_blue_grey_2
             font: roboto_condensed
             font_style: bold
             size: 20
@@ -2948,7 +2892,8 @@ groups:
   - format:
       element_format:
         padding:
-          bottom: 0
+          left: 16
+          right: 16
     widgets:
     - type: widget_text
       widget_text:
@@ -2968,7 +2913,7 @@ groups:
                 type: width_justify
                 width_justify: justify
               padding:
-                left: 10
+                left: 0
                 right: 10
               vertical_alignment: bottom
           value_format:
@@ -3031,7 +2976,7 @@ groups:
                 width_justify: justify
               padding:
                 left: 10
-                right: 10
+                right: 0
           value_format:
             color_theme:
               theme_color_ids:
@@ -3047,6 +2992,9 @@ groups:
           variable_id: equipment_armor_shields_data_speed_penalty_label
   - format:
       element_format:
+        margins:
+          left: 16
+          right: 16
         padding:
           bottom: 8
         border:
@@ -3076,7 +3024,7 @@ groups:
                 width_justify: justify
               padding:
                 top: 4
-                left: 10
+                left: 0
                 right: 10
           value_format:
             color_theme:
@@ -3194,7 +3142,7 @@ groups:
               padding:
                 top: 4
                 left: 10
-                right: 10
+                right: 0
           value_format:
             element_format:
               padding:
@@ -3236,6 +3184,8 @@ groups:
       element_format:
         padding:
           top: 8
+          left: 16
+          right: 16
     widgets:
     - type: widget_text
       widget_text:
@@ -3255,7 +3205,7 @@ groups:
                 type: width_justify
                 width_justify: justify
               padding:
-                left: 10
+                left: 0
                 right: 10
           value_format:
             color_theme:
@@ -3279,7 +3229,7 @@ groups:
               horizontal_alignment: left
               padding:
                 left: 10
-                right: 10
+                right: 0
               width:
                 type: width_justify
                 width_justify: justify
@@ -3296,7 +3246,12 @@ groups:
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_data_price_label
-  - widgets:
+  - format:
+      element_format:
+        padding:
+          left: 16
+          right: 16
+    widgets:
     - type: widget_text
       widget_text:
         format:
@@ -3312,7 +3267,7 @@ groups:
                       color_id: light_blue_grey_5
               horizontal_alignment: left
               padding:
-                left: 10
+                left: 0
                 right: 10
               width:
                 type: width_justify
@@ -3360,7 +3315,7 @@ groups:
               horizontal_alignment: left
               padding:
                 left: 10
-                right: 10
+                right: 0
               width:
                 type: width_justify
                 width_justify: justify
@@ -5685,6 +5640,88 @@ groups:
                         - context: sword
                           variable_id: equipment_weapons_crit_spec_effects_sword_content
 ## ---------------------------------------------------------------------------------------------
+## | Equipment > Weapons > List > Melee Weapons Heaader
+## ---------------------------------------------------------------------------------------------
+- id: 'df48f5da-7d65-4602-92e2-5a03e6af7eb3'
+  name: 'Equipment > Weapons > List > Melee Weapons Header'
+  summary: 'Equipment > Weapons > List > Melee Weapons Header'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 24
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 17
+            font: roboto
+            font_style: medium
+        value_variable_reference:
+          type: variable_id
+          variable_id: equipment_weapons_data_melee_weapons
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Weapons > List > Ranged Weapons Heaader
+## ---------------------------------------------------------------------------------------------
+- id: '6340c0bd-0a5a-41fb-b8a1-e9000faf421c'
+  name: 'Equipment > Weapons > List > Ranged Weapons Header'
+  summary: 'Equipment > Weapons > List > Ranged Weapons Header'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 24
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 17
+            font: roboto
+            font_style: medium
+        value_variable_reference:
+          type: variable_id
+          variable_id: equipment_weapons_data_ranged_weapons
+## ---------------------------------------------------------------------------------------------
 ## | Equipment > Weapons > List > Simple Weapons Introduction
 ## ---------------------------------------------------------------------------------------------
 - id: 'cf74e855-f258-415d-8ce0-ee68b7f1aafb'
@@ -5700,7 +5737,7 @@ groups:
         left: 16
         right: 16
         top: 24
-        bottom: 24
+        bottom: 20
   rows:
   - widgets:
     - type: widget_text
@@ -6428,6 +6465,277 @@ groups:
             - context: temple_sword
               variable_id: equipment_weapons_list_temple_sword_price
 ## ---------------------------------------------------------------------------------------------
+## | Equipment > Weapons > List > Ranged Weapon Link
+## ---------------------------------------------------------------------------------------------
+- id: '7369d021-9aca-4a86-b747-3bf085a7a9e7'
+  name: 'Equipment > Weapons > List > Ranged Weapon Link'
+  summary: 'Equipment > Weapons > List > Ranged Weapon Link'
+  content_reference_variable:
+    type: variable_template
+    variable_template:
+      entries:
+      - context: blowgun
+        variable_id: reference_card_weapon_blowgun
+      - context: crossbow
+        variable_id: reference_card_weapon_crossbow
+      - context: dart
+        variable_id: reference_card_weapon_dart
+      - context: hand_crossbow
+        variable_id: reference_card_weapon_hand_crossbow
+      - context: heavy_crossbow
+        variable_id: reference_card_weapon_heavy_crossbow
+      - context: javelin
+        variable_id: reference_card_weapon_javelin
+      - context: sling
+        variable_id: reference_card_weapon_sling
+      - context: shortbow
+        variable_id: reference_card_weapon_shorbow
+      - context: composite_shortbow
+        variable_id: reference_card_weapon_composite_shorbow
+      - context: longbow
+        variable_id: reference_card_weapon_longbow
+      - context: composite_longbow
+        variable_id: reference_card_weapon_composite_longbow
+  format:
+    element_format:
+      padding:
+        top: 12
+        bottom: 12
+      margins:
+        left: 15
+        right: 15
+      border:
+        top:
+          thickness: 1
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_blue_grey_5
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue
+            font: roboto
+            font_style: medium
+            size: 19
+        value_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: blowgun
+              variable_id: equipment_weapons_list_blowgun_name
+            - context: crossbow
+              variable_id: equipment_weapons_list_crossbow_name
+            - context: dart
+              variable_id: equipment_weapons_list_dart_name
+            - context: hand_crossbow
+              variable_id: equipment_weapons_list_hand_crossbow_name
+            - context: heavy_crossbow
+              variable_id: equipment_weapons_list_heavy_crossbow_name
+            - context: javelin
+              variable_id: equipment_weapons_list_javelin_name
+            - context: sling
+              variable_id: equipment_weapons_list_sling_name
+            - context: shortbow
+              variable_id: equipment_weapons_list_shortbow_name
+            - context: composite_shortbow
+              variable_id: equipment_weapons_list_composite_shortbow_name
+            - context: longbow
+              variable_id: equipment_weapons_list_longbow_name
+            - context: composite_longbow
+              variable_id: equipment_weapons_list_composite_longbow_name
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              width:
+                type: width_wrap
+                width_wrap: wrap
+              padding:
+                right: 6
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_18
+            font: roboto
+            font_style: regular
+            size: 16
+        value_variable_reference:
+          type: variable_id
+          variable_id: equipment_weapons_data_damage_label
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              width:
+                type: width_wrap
+                width_wrap: wrap
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_14
+            font: roboto_condensed
+            font_style: bold
+            size: 18
+            number_format: modifier
+        value_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: blowgun
+              variable_id: equipment_weapons_list_blowgun_damage
+            - context: crossbow
+              variable_id: equipment_weapons_list_crossbow_damage
+            - context: dart
+              variable_id: equipment_weapons_list_dart_damage
+            - context: hand_crossbow
+              variable_id: equipment_weapons_list_hand_crossbow_damage
+            - context: heavy_crossbow
+              variable_id: equipment_weapons_list_heavy_crossbow_damage
+            - context: javelin
+              variable_id: equipment_weapons_list_javelin_damage
+            - context: sling
+              variable_id: equipment_weapons_list_sling_damage
+            - context: shortbow
+              variable_id: equipment_weapons_list_shortbow_damage
+            - context: composite_shortbow
+              variable_id: equipment_weapons_list_composite_shortbow_damage
+            - context: longbow
+              variable_id: equipment_weapons_list_longbow_damage
+            - context: composite_longbow
+              variable_id: equipment_weapons_list_composite_longbow_damage
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              width:
+                type: width_wrap
+                width_wrap: wrap
+              margins:
+                left: 20
+              padding:
+                right: 6
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_18
+            font: roboto
+            font_style: regular
+            size: 16
+        value_variable_reference:
+          type: variable_id
+          variable_id: equipment_weapons_data_range
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              width:
+                type: width_wrap
+                width_wrap: wrap
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_14
+            font: roboto_condensed
+            font_style: bold
+            size: 18
+            number_format: modifier
+        value_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: blowgun
+              variable_id: equipment_weapons_list_blowgun_range
+            - context: crossbow
+              variable_id: equipment_weapons_list_crossbow_range
+            - context: dart
+              variable_id: equipment_weapons_list_dart_range
+            - context: hand_crossbow
+              variable_id: equipment_weapons_list_hand_crossbow_range
+            - context: heavy_crossbow
+              variable_id: equipment_weapons_list_heavy_crossbow_range
+            - context: javelin
+              variable_id: equipment_weapons_list_javelin_range
+            - context: sling
+              variable_id: equipment_weapons_list_sling_range
+            - context: shortbow
+              variable_id: equipment_weapons_list_shortbow_range
+            - context: composite_shortbow
+              variable_id: equipment_weapons_list_composite_shortbow_range
+            - context: longbow
+              variable_id: equipment_weapons_list_longbow_range
+            - context: composite_longbow
+              variable_id: equipment_weapons_list_composite_longbow_range
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              width:
+                type: width_wrap
+                width_wrap: wrap
+              padding:
+                left: 20
+                top: 1
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_22
+            font: roboto
+            font_style: bold_italic
+            size: 17
+        value_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: blowgun
+              variable_id: equipment_weapons_list_blowgun_price
+            - context: crossbow
+              variable_id: equipment_weapons_list_crossbow_price
+            - context: dart
+              variable_id: equipment_weapons_list_dart_price
+            - context: hand_crossbow
+              variable_id: equipment_weapons_list_hand_crossbow_price
+            - context: heavy_crossbow
+              variable_id: equipment_weapons_list_heavy_crossbow_price
+            - context: javelin
+              variable_id: equipment_weapons_list_javelin_price
+            - context: sling
+              variable_id: equipment_weapons_list_sling_price
+            - context: shortbow
+              variable_id: equipment_weapons_list_shortbow_price
+            - context: composite_shortbow
+              variable_id: equipment_weapons_list_composite_shortbow_price
+            - context: longbow
+              variable_id: equipment_weapons_list_longbow_price
+            - context: composite_longbow
+              variable_id: equipment_weapons_list_composite_longbow_price
+## ---------------------------------------------------------------------------------------------
 ## | Equipment > Weapons > List > Simple Weapons > Clubs
 ## ---------------------------------------------------------------------------------------------
 - id: 'a6d912e1-a1cf-458f-b41c-02f5fa332e0b'
@@ -6835,6 +7143,304 @@ groups:
             type: group_id
             group_id: '5c3fb057-30af-448b-b754-6f579dba6146'
           group_context: spear
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Weapons > List > Simple Weapons > Bows
+## ---------------------------------------------------------------------------------------------
+- id: '58b41919-a367-44aa-a573-752d8393eae7'
+  name: 'Equipment > Weapons > List > Martial Weapons > Bows'
+  summary: 'Equipment > Weapons > List > Martial Weapons > Bows'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      border:
+        top:
+          thickness: 2
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_blue_grey_7
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label_variable_reference:
+          type: variable_id
+          variable_id: equipment_weapons_data_group_bows
+        format:
+          widget_format:
+            element_format:
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          content_format:
+            padding:
+              bottom: 8
+          header_open_format:
+            element_format:
+              padding:
+                top: 16
+                bottom: 16
+                right: 16
+                left: 16
+          header_closed_format:
+            element_format:
+              padding:
+                top: 16
+                bottom: 16
+                right: 16
+                left: 16
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            font: roboto
+            font_style: regular
+            size: 18.5
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            font: roboto
+            font_style: regular
+            size: 18.5
+          header_open_icon:
+            icon_type: chevron_down_light
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_12
+              size:
+                width: 19
+                height: 19
+          header_closed_icon:
+            icon_type: chevron_up_light
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_12
+              size:
+                width: 19
+                height: 19
+        group_references:
+        - value:
+            type: group_id
+            group_id: '7369d021-9aca-4a86-b747-3bf085a7a9e7'
+          group_context: crossbow
+        - value:
+            type: group_id
+            group_id: '7369d021-9aca-4a86-b747-3bf085a7a9e7'
+          group_context: hand_crossbow
+        - value:
+            type: group_id
+            group_id: '7369d021-9aca-4a86-b747-3bf085a7a9e7'
+          group_context: heavy_crossbow
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Weapons > List > Simple Weapons > Darts
+## ---------------------------------------------------------------------------------------------
+- id: '0bebea29-030a-49e5-9777-52177b87d1c2'
+  name: 'Equipment > Weapons > List > Martial Weapons > Darts'
+  summary: 'Equipment > Weapons > List > Martial Weapons > Darts'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      border:
+        top:
+          thickness: 2
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_blue_grey_7
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label_variable_reference:
+          type: variable_id
+          variable_id: equipment_weapons_data_group_darts
+        format:
+          widget_format:
+            element_format:
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          content_format:
+            padding:
+              bottom: 8
+          header_open_format:
+            element_format:
+              padding:
+                top: 16
+                bottom: 16
+                right: 16
+                left: 16
+          header_closed_format:
+            element_format:
+              padding:
+                top: 16
+                bottom: 16
+                right: 16
+                left: 16
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            font: roboto
+            font_style: regular
+            size: 18.5
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            font: roboto
+            font_style: regular
+            size: 18.5
+          header_open_icon:
+            icon_type: chevron_down_light
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_12
+              size:
+                width: 19
+                height: 19
+          header_closed_icon:
+            icon_type: chevron_up_light
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_12
+              size:
+                width: 19
+                height: 19
+        group_references:
+        - value:
+            type: group_id
+            group_id: '7369d021-9aca-4a86-b747-3bf085a7a9e7'
+          group_context: blowgun
+        - value:
+            type: group_id
+            group_id: '7369d021-9aca-4a86-b747-3bf085a7a9e7'
+          group_context: dart
+        - value:
+            type: group_id
+            group_id: '7369d021-9aca-4a86-b747-3bf085a7a9e7'
+          group_context: javelin
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Weapons > List > Simple Weapons > Slings
+## ---------------------------------------------------------------------------------------------
+- id: '50e3570b-1e8b-48c7-a7e0-0ef63ee1d793'
+  name: 'Equipment > Weapons > List > Martial Weapons > Slings'
+  summary: 'Equipment > Weapons > List > Martial Weapons > Slings'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      border:
+        top:
+          thickness: 2
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_blue_grey_7
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label_variable_reference:
+          type: variable_id
+          variable_id: equipment_weapons_data_group_slings
+        format:
+          widget_format:
+            element_format:
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          content_format:
+            padding:
+              bottom: 8
+          header_open_format:
+            element_format:
+              padding:
+                top: 16
+                bottom: 16
+                right: 16
+                left: 16
+          header_closed_format:
+            element_format:
+              padding:
+                top: 16
+                bottom: 16
+                right: 16
+                left: 16
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            font: roboto
+            font_style: regular
+            size: 18.5
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            font: roboto
+            font_style: regular
+            size: 18.5
+          header_open_icon:
+            icon_type: chevron_down_light
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_12
+              size:
+                width: 19
+                height: 19
+          header_closed_icon:
+            icon_type: chevron_up_light
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_12
+              size:
+                width: 19
+                height: 19
+        group_references:
+        - value:
+            type: group_id
+            group_id: '7369d021-9aca-4a86-b747-3bf085a7a9e7'
+          group_context: sling
 ## ---------------------------------------------------------------------------------------------
 ## | Equipment > Weapons > List > Martial Weapons > Axes
 ## ---------------------------------------------------------------------------------------------
@@ -7883,3 +8489,623 @@ groups:
             type: group_id
             group_id: '5c3fb057-30af-448b-b754-6f579dba6146'
           group_context: shortsword
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Weapons > List > Martial Weapons > Bows
+## ---------------------------------------------------------------------------------------------
+- id: '32237b71-c585-4d99-b776-331a9893ca6e'
+  name: 'Equipment > Weapons > List > Martial Weapons > Bows'
+  summary: 'Equipment > Weapons > List > Martial Weapons > Bows'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      border:
+        top:
+          thickness: 2
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_blue_grey_7
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label_variable_reference:
+          type: variable_id
+          variable_id: equipment_weapons_data_group_bows
+        format:
+          widget_format:
+            element_format:
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          content_format:
+            padding:
+              bottom: 8
+          header_open_format:
+            element_format:
+              padding:
+                top: 16
+                bottom: 16
+                right: 16
+                left: 16
+          header_closed_format:
+            element_format:
+              padding:
+                top: 16
+                bottom: 16
+                right: 16
+                left: 16
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            font: roboto
+            font_style: regular
+            size: 18.5
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            font: roboto
+            font_style: regular
+            size: 18.5
+          header_open_icon:
+            icon_type: chevron_down_light
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_12
+              size:
+                width: 19
+                height: 19
+          header_closed_icon:
+            icon_type: chevron_up_light
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_12
+              size:
+                width: 19
+                height: 19
+        group_references:
+        - value:
+            type: group_id
+            group_id: '7369d021-9aca-4a86-b747-3bf085a7a9e7'
+          group_context: shortbow
+        - value:
+            type: group_id
+            group_id: '7369d021-9aca-4a86-b747-3bf085a7a9e7'
+          group_context: composite_shortbow
+        - value:
+            type: group_id
+            group_id: '7369d021-9aca-4a86-b747-3bf085a7a9e7'
+          group_context: longbow
+        - value:
+            type: group_id
+            group_id: '7369d021-9aca-4a86-b747-3bf085a7a9e7'
+          group_context: composite_longbow
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Gear > Introduction
+## ---------------------------------------------------------------------------------------------
+- id: '91f7ddfb-14a7-4366-9aab-1035b6f2ea7a'
+  name: 'Equipment > Gear > Introduction'
+  summary: 'Equipment > Gear > Introduction'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 24
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: equipment_gear_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Gear > Statistics > Introduction
+## ---------------------------------------------------------------------------------------------
+- id: '9a3a55e1-bf80-4472-bb40-108c9fd8e9cf'
+  name: 'Equipment > Gear > Statistics > Introduction'
+  summary: 'Equipment > Gear > Statistics > Introduction'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 24
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: equipment_gear_statistics_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Gear > Statistics > Price
+## ---------------------------------------------------------------------------------------------
+- id: '69f8f799-3f93-4eff-9112-d15f982660ec'
+  name: 'Equipment > Gear > Statistics > Price'
+  summary: 'Equipment > Gear > Statistics > Price'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        bottom: 24
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 22
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: equipment_gear_statistics_price_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: equipment_gear_statistics_price_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Gear > Statistics > Bulk
+## ---------------------------------------------------------------------------------------------
+- id: 'fd43ca3a-5f81-44a1-ac48-f6960e1c0812'
+  name: 'Equipment > Gear > Statistics > Bulk'
+  summary: 'Equipment > Gear > Statistics > Bulk'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        bottom: 24
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 22
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: equipment_gear_statistics_bulk_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: equipment_gear_statistics_bulk_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Gear > Statistics > Hands
+## ---------------------------------------------------------------------------------------------
+- id: '39114420-0f6e-43b6-99db-4890494970ff'
+  name: 'Equipment > Gear > Statistics > Hands'
+  summary: 'Equipment > Gear > Statistics > Hands'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        bottom: 24
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 22
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: equipment_gear_statistics_hands_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: equipment_gear_statistics_hands_content
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Gear > List > Adventuring Gear List Introduction
+## ---------------------------------------------------------------------------------------------
+- id: 'd20aaa97-0a74-4952-b424-f95e67d4d9c4'
+  name: 'Equipment > Gear > List > Adventuring Gear List Introduction'
+  summary: 'Equipment > Gear > List > Adventuring Gear List Introduction'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 24
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: equipment_gear_list_adventuring_gear_introduction
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Gear > List > Gear Link
+## ---------------------------------------------------------------------------------------------
+- id: '1eaa2772-2fa9-4abe-a459-378dd02fd049'
+  name: 'Equipment > Gear > List > Link'
+  summary: 'Equipment > Gear > List > Link'
+  content_reference_variable:
+    type: variable_template
+    variable_template:
+      entries:
+      - context: backpack
+        variable_id: reference_card_gear_backpack
+      - context: bedroll
+        variable_id: reference_card_gear_bedroll
+      - context: beltpouch
+        variable_id: reference_card_gear_beltpouch
+      - context: rope_hemp
+        variable_id: reference_card_gear_rope_hemp
+      - context: rope_silk
+        variable_id: reference_card_gear_rope_silk
+  format:
+    element_format:
+      padding:
+        top: 16
+        bottom: 16
+      margins:
+        left: 16
+        right: 16
+      border:
+        top:
+          thickness: 1
+          color_theme:
+            theme_color_ids:
+            - theme_id: light
+              color_id: light_blue_grey_5
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue
+            font: roboto
+            font_style: medium
+            size: 19
+        value_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: backpack
+              variable_id: equipment_gear_descriptions_backpack_name
+            - context: bedroll
+              variable_id: equipment_gear_descriptions_bedroll_name
+            - context: beltpouch
+              variable_id: equipment_gear_descriptions_beltpouch_name
+            - context: rope_hemp
+              variable_id: equipment_gear_list_rope_hemp_name
+            - context: rope_silk
+              variable_id: equipment_gear_list_rope_silk_name
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: right
+              padding:
+                right: 0
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_20
+            font: roboto
+            font_style: medium
+            size: 17
+        value_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: backpack
+              variable_id: equipment_gear_descriptions_backpack_price
+            - context: bedroll
+              variable_id: equipment_gear_descriptions_bedroll_price
+            - context: beltpouch
+              variable_id: equipment_gear_descriptions_beltpouch_price
+            - context: rope_hemp
+              variable_id: equipment_gear_list_rope_hemp_price
+            - context: rope_silk
+              variable_id: equipment_gear_list_rope_silk_price
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Gear > List > Rope
+## ---------------------------------------------------------------------------------------------
+- id: '9041b5a7-e067-480d-a295-ed98b087400e'
+  name: 'Equipment > Gear > List > Link List'
+  summary: 'Equipment > Gear > List > Link List'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_expander
+      widget_expander:
+        label_variable_reference:
+          type: variable_id
+          variable_id: equipment_gear_list_rope_name
+        format:
+          widget_format:
+            element_format:
+              border:
+                top:
+                  thickness: 1
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: light
+                      color_id: light_blue_grey_5
+              width:
+                type: width_justify
+                width_justify: justify
+          view_type: icon_right
+          content_format:
+            padding:
+              bottom: 8
+          header_open_format:
+            element_format:
+              padding:
+                right: 16
+                left: 16
+                top: 16
+                bottom: 16
+          header_closed_format:
+            element_format:
+              padding:
+                right: 16
+                left: 16
+                top: 16
+                bottom: 16
+          header_label_open_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            font: roboto
+            font_style: regular
+            size: 18.5
+          header_label_closed_format:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_8
+            font: roboto
+            font_style: regular
+            size: 18.5
+          header_open_icon:
+            icon_type: chevron_down_light
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_14
+              size:
+                width: 19
+                height: 19
+          header_closed_icon:
+            icon_type: chevron_up_light
+            icon_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_14
+              size:
+                width: 19
+                height: 19
+        group_references:
+        - value:
+            type: group_id
+            group_id: '1eaa2772-2fa9-4abe-a459-378dd02fd049'
+          group_context: rope_silk
+        - value:
+            type: group_id
+            group_id: '1eaa2772-2fa9-4abe-a459-378dd02fd049'
+          group_context: rope_hemp
