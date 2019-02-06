@@ -986,7 +986,7 @@ engine:
       - type: value_text
         value_text:
           value_id: feat_rogue_quick_draw
-          description: 'Quick Draw feat.'
+          description: 'Sniper''s Aim feat.'
           value: 'Quick Draw'
           variables:
           - type: variable_text
@@ -1273,7 +1273,7 @@ engine:
                 number_literal: 6
       - type: value_text
         value_text:
-          value_id: feat_rogue_light_step
+          value_id: feat_rogue_skirmish_strike
           description: 'Light Step feat.'
           value: 'Light Step'
           variables:
