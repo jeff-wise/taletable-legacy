@@ -1241,13 +1241,12 @@ types:
       presence: optional
       description: >
         The list widget formatting options.
-    - name: values_variable_id
+    - name: values_variable_reference
       type:
         type: custom_type
-        custom_type: variable_id
+        custom_type: variable_reference
       presence: required
-      description: >
-        The values in the list.
+      description: The value variable reference.
     - name: title_variable_id
       type:
         type: custom_type
@@ -3859,6 +3858,12 @@ types:
         prim_type: number
       presence: optional
       description: The line spacing multiplier.
+    - name: paragraph_spacing
+      type:
+        type: prim_type
+        prim_type: number
+      presence: optional
+      description: The paragraph spacing multiplier.
     - name: font
       type:
         type: custom_type

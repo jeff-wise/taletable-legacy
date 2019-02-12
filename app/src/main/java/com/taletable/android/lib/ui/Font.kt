@@ -47,6 +47,7 @@ object Font
 
     private val merriweatherRegularFilePath         = "fonts/Merriweather-Regular.ttf"
     private val merriweatherBoldFilePath            = "fonts/Merriweather-Bold.ttf"
+    private val merriweatherBlackFilePath           = "fonts/Merriweather-Black.ttf"
     private val merriweatherItalicFilePath          = "fonts/Merriweather-Italic.ttf"
     private val merriweatherBoldItalicFilePath      = "fonts/Merriweather-BoldItalic.ttf"
     private val merriweatherLightFilePath           = "fonts/Merriweather-Light.ttf"
@@ -127,7 +128,7 @@ object Font
                 is TextFontStyle.Medium     -> getTypeface(merriweatherRegularFilePath, context)
                 is TextFontStyle.SemiBold   -> getTypeface(merriweatherRegularFilePath, context)
                 is TextFontStyle.Bold       -> getTypeface(merriweatherBoldFilePath, context)
-                is TextFontStyle.ExtraBold  -> getTypeface(merriweatherBoldFilePath, context)
+                is TextFontStyle.ExtraBold  -> getTypeface(merriweatherBlackFilePath, context)
                 is TextFontStyle.Italic     -> getTypeface(merriweatherItalicFilePath, context)
                 is TextFontStyle.BoldItalic -> getTypeface(merriweatherBoldItalicFilePath, context)
             }

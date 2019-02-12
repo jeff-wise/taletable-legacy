@@ -6,12 +6,7 @@ import android.content.Context
 import android.util.Log
 import android.util.TypedValue
 import android.widget.TextView
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue9
-import com.taletable.android.lib.orm.schema.PrimValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.*
 import com.taletable.android.lib.ui.Font
 import com.taletable.android.lib.ui.TextViewBuilder
@@ -27,7 +22,6 @@ import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
-import java.util.*
 
 
 
@@ -39,6 +33,7 @@ data class TextFormat(private val colorTheme : ColorTheme,
                       private val font : TextFont,
                       private val fontStyle : TextFontStyle,
                       private val lineSpacing : LineSpacing,
+                      private val paragraphSpacing : ParagraphSpacing,
                       private val isUnderlined : IsUnderlined,
                       private val numberFormat : NumberFormat,
                       private val rollFormat : RollFormat,
@@ -54,16 +49,17 @@ data class TextFormat(private val colorTheme : ColorTheme,
     companion object : Factory<TextFormat>
     {
 
-        private fun defaultColorTheme()     = ColorTheme.black
-        private fun defaultTextSize()       = TextSize(16.0f)
-        private fun defaultFont()           = TextFont.Cabin
-        private fun defaultFontStyle()      = TextFontStyle.Regular
-        private fun defaultLineSpacing()    = LineSpacing(1.0f)
-        private fun defaultIsUnderlined()   = IsUnderlined(false)
-        private fun defaultNumberFormat()   = NumberFormat.Normal
-        private fun defaultRollFormat()     = RollFormat.Normal
-        private fun defaultIconFormat()     = IconFormat.default()
-        private fun defaultElementFormat()  = ElementFormat.default()
+        private fun defaultColorTheme()         = ColorTheme.black
+        private fun defaultTextSize()           = TextSize(16.0f)
+        private fun defaultFont()               = TextFont.Cabin
+        private fun defaultFontStyle()          = TextFontStyle.Regular
+        private fun defaultLineSpacing()        = LineSpacing(1.0f)
+        private fun defaultParagraphSpacing()   = ParagraphSpacing(8.0f)
+        private fun defaultIsUnderlined()       = IsUnderlined(false)
+        private fun defaultNumberFormat()       = NumberFormat.Normal
+        private fun defaultRollFormat()         = RollFormat.Normal
+        private fun defaultIconFormat()         = IconFormat.default()
+        private fun defaultElementFormat()      = ElementFormat.default()
 
 
         override fun fromDocument(doc: SchemaDoc): ValueParser<TextFormat> = when (doc)
@@ -91,6 +87,10 @@ data class TextFormat(private val colorTheme : ColorTheme,
                       split(doc.maybeAt("line_spacing"),
                             effValue<ValueError,LineSpacing>(defaultLineSpacing()),
                             { LineSpacing.fromDocument(it) }),
+                      // Paragraph Spacing
+                      split(doc.maybeAt("paragraph_spacing"),
+                            effValue<ValueError,ParagraphSpacing>(defaultParagraphSpacing()),
+                            { ParagraphSpacing.fromDocument(it) }),
                       // Is Underlined?
                       split(doc.maybeAt("is_underlined"),
                             effValue(defaultIsUnderlined()),
@@ -122,6 +122,7 @@ data class TextFormat(private val colorTheme : ColorTheme,
                                   defaultFont(),
                                   defaultFontStyle(),
                                   defaultLineSpacing(),
+                                  defaultParagraphSpacing(),
                                   defaultIsUnderlined(),
                                   defaultNumberFormat(),
                                   defaultRollFormat(),
@@ -141,6 +142,7 @@ data class TextFormat(private val colorTheme : ColorTheme,
         "font" to this.font.toDocument(),
         "font_style" to this.fontStyle.toDocument(),
         "line_spacing" to this.lineSpacing.toDocument(),
+        "paragraph_spacing" to this.paragraphSpacing.toDocument(),
         "is_underlined" to this.isUnderlined.toDocument(),
         "number_format" to this.numberFormat.toDocument(),
         "roll_format" to this.rollFormat.toDocument(),
@@ -166,6 +168,9 @@ data class TextFormat(private val colorTheme : ColorTheme,
 
 
     fun lineSpacing() : LineSpacing = this.lineSpacing
+
+
+    fun paragraphSpacing() : ParagraphSpacing = this.paragraphSpacing
 
 
     fun isUnderlined() : Boolean = this.isUnderlined.value
@@ -382,6 +387,43 @@ data class IsUnderlined(val value : Boolean) : ToDocument, SQLSerializable, Seri
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() = SQLInt({ if (this.value) 1 else 0 })
+
+}
+
+/**
+ * Paragraph Spacing
+ */
+data class ParagraphSpacing(val value : Float) : ToDocument, SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ParagraphSpacing>
+    {
+        override fun fromDocument(doc: SchemaDoc): ValueParser<ParagraphSpacing> = when (doc)
+        {
+            is DocNumber -> effValue(ParagraphSpacing(doc.number.toFloat()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+
+        fun default() = ParagraphSpacing(1.0f)
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLReal({this.value.toDouble()})
 
 }
 

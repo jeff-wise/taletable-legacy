@@ -388,6 +388,10 @@ fun entityEngines(entityId : EntityId) : AppEff<List<Engine>>
         }
     }
 
+    book(entityId).doMaybe {
+        engines.add(it.engine())
+    }
+
     return effValue(engines)
 }
 
@@ -1039,8 +1043,12 @@ fun textVariable(variableReference : VariableReference,
 // ---------------------------------------------------------------------------------------------
 
 fun textListVariable(variableReference : VariableReference,
-                    entityId : EntityId) : AppEff<TextListVariable> =
-        variable(variableReference, entityId).apply { it.textListVariable(entityId)  }
+                     entityId : EntityId,
+                     context : Maybe<VariableNamespace> = Nothing()) : AppEff<TextListVariable>
+{
+    Log.d("***ENTITY", "text list var context is $context")
+    return variable(variableReference, entityId, context).apply { it.textListVariable(entityId)  }
+}
 
 
 // STATE > Mechanics

@@ -1529,7 +1529,7 @@ data class ImageWidget(val widgetId : WidgetId,
  */
 data class ListWidget(val widgetId : WidgetId,
                       val format : ListWidgetFormat,
-                      val valuesVariableId : VariableId,
+                      val valuesVariableReference : VariableReference,
                       val titleVariableId : Maybe<VariableId>,
                       val description : Maybe<ListWidgetDescription>,
                       val bookReference : Maybe<BookReference>) : Widget()
@@ -1561,8 +1561,8 @@ data class ListWidget(val widgetId : WidgetId,
                       split(doc.maybeAt("format"),
                             effValue(ListWidgetFormat.default()),
                             { ListWidgetFormat.fromDocument(it) }),
-                      // Values Variable Id
-                      doc.at("values_variable_id") ap { VariableId.fromDocument(it) },
+                      // Values Variable Refreence
+                      doc.at("values_variable_reference") ap { VariableReference.fromDocument(it) },
                       // Title Variable Id
                       split(doc.maybeAt("title_variable_id"),
                             effValue<ValueError,Maybe<VariableId>>(Nothing()),
@@ -1588,8 +1588,7 @@ data class ListWidget(val widgetId : WidgetId,
 
     override fun toDocument() = DocDict(mapOf(
         "id" to this.widgetId().toDocument(),
-        "format" to this.format().toDocument(),
-        "values_variable_id" to this.valuesVariableId.toDocument()
+        "format" to this.format().toDocument()
     ))
 
 
@@ -1600,7 +1599,7 @@ data class ListWidget(val widgetId : WidgetId,
     fun format() : ListWidgetFormat = this.format
 
 
-    fun valuesVariableId() : VariableId = this.valuesVariableId
+    fun valuesVariableReference() : VariableReference = this.valuesVariableReference
 
 
     fun titleVariableId() : Maybe<VariableId> = this.titleVariableId
@@ -1624,7 +1623,8 @@ data class ListWidget(val widgetId : WidgetId,
                       entityId : EntityId,
                       context : Context) : View
     {
-        val listWidgetUI = ListWidgetUI(this, entityId, context)
+        Log.d("***WIDGET", "list widget group context is $groupContext")
+        val listWidgetUI = ListWidgetUI(this, entityId, context, groupContext)
         return listWidgetUI.view()
     }
 
@@ -1644,23 +1644,41 @@ data class ListWidget(val widgetId : WidgetId,
     // VALUES
     // -----------------------------------------------------------------------------------------
 
-    fun variable(entityId : EntityId) : AppEff<TextListVariable> =
-        textListVariable(this.valuesVariableId(), entityId)
+//    fun variable(entityId : EntityId) : AppEff<TextListVariable> =
+//        textListVariable(this.valuesVariableReference(), entityId)
 
 
-    fun value(entityId : EntityId) : AppEff<List<String>> =
-        textListVariable(this.valuesVariableId(), entityId)
+    fun variable(entityId : EntityId,
+                 _groupContext : Maybe<GroupContext> = Nothing()) : AppEff<TextListVariable>
+    {
+//        val scopeGroupContext = when (this.groupContext) {
+//            is Just -> this.groupContext
+//            else    -> _groupContext
+//        }
+        Log.d("***WIDGET", "list widget variable context: $_groupContext")
+        return textListVariable(this.valuesVariableReference(),
+                                entityId,
+                                _groupContext.apply { Just(VariableNamespace(it.value)) })
+    }
+
+
+
+    fun value(entityId : EntityId, groupContext : Maybe<GroupContext> = Nothing()) : AppEff<List<String>> =
+        textListVariable(this.valuesVariableReference(), entityId, groupContext.apply { Just(VariableNamespace(it.value)) })
           .apply { it.value(entityId) }
 
 
-    fun valueIdStrings(entityId : EntityId) : AppEff<List<String>> =
-            this.variable(entityId)
+    fun valueIdStrings(entityId : EntityId,
+                       groupContext : Maybe<GroupContext> = Nothing()) : AppEff<List<String>>
+    {
+        Log.d("***WIDGET", "list widget value id strings context is $groupContext")
+        return this.variable(entityId, groupContext)
             .apply {
                 note<AppError, ValueSetId>(it.valueSetId().toNullable(),
                         AppStateError(VariableDoesNotHaveValueSet(it.variableId())))
             }
             .apply { valueSetId ->
-                this.value(entityId) ap { valueIds ->
+                this.value(entityId, groupContext) ap { valueIds ->
                     valueIds.mapM { valueId ->
                         val valueRef = ValueReference(TextReferenceLiteral(valueSetId.value),
                                                       TextReferenceLiteral(valueId))
@@ -1671,6 +1689,8 @@ data class ListWidget(val widgetId : WidgetId,
             .apply { values ->
                 effValue<AppError,List<String>>(values.map { it.valueString() })
             }
+    }
+
 
 
 //    fun baseValueSets(entityId : EntityId) : List<ValueSetBase> =
@@ -1742,12 +1762,15 @@ data class ListWidget(val widgetId : WidgetId,
 
 
 
-    private fun updateView(rootView : View, entityId : EntityId, context : Context)
+    private fun updateView(rootView : View,
+                           entityId : EntityId,
+                           context : Context,
+                           groupContext : Maybe<GroupContext> = Nothing())
     {
         val layoutViewId = this.layoutViewId
         if (layoutViewId != null) {
             rootView.findViewById<LinearLayout>(layoutViewId)?.let {
-                ListWidgetUI(this, entityId, context).updateView(it)
+                ListWidgetUI(this, entityId, context, groupContext).updateView(it)
             }
         }
     }
@@ -4687,8 +4710,8 @@ data class TextWidget(val widgetId : WidgetId,
             else    -> _groupContext
         }
         return textVariable(this.valueVariableReference(),
-                entityId,
-                scopeGroupContext.apply { Just(VariableNamespace(it.value)) })
+                            entityId,
+                            scopeGroupContext.apply { Just(VariableNamespace(it.value)) })
     }
 
 

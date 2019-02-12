@@ -333,7 +333,7 @@ class BookUI(val book : Book,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
-        summary.sizeSp              = 20f
+        summary.sizeSp              = 19f
 
         summary.backgroundColor     = Color.WHITE
 
@@ -461,7 +461,7 @@ class BookUI(val book : Book,
         title.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        title.margin.topDp      = 20f
+        title.margin.topDp      = 24f
 
         title.text              = book.summary()
 

@@ -3,6 +3,7 @@ package com.taletable.android.model.sheet.widget
 
 
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -305,7 +306,12 @@ object TextWidgetView
 //            }
 //        }
 
-        layout.addView(valueTextView(textWidget, format, entityId, context, groupContext))
+        val valueString = textWidget.valueString(entityId, groupContext)
+        val paragraphs = valueString.split("\n")
+        paragraphs.forEachIndexed { index, s ->
+            val isParagraph = index < paragraphs.size - 1
+            layout.addView(valueTextView(s, isParagraph, textWidget, format, entityId, context, groupContext))
+        }
 
         // > Inside Bottom/Right Label View
 //        if (format.insideLabel() != null && textWidget.description() == null) {
@@ -330,6 +336,8 @@ object TextWidgetView
 
         layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.VERTICAL
 
 //        val height = format.widgetFormat().elementFormat().height()
 //        when (height)
@@ -372,7 +380,9 @@ object TextWidgetView
     }
 
 
-    private fun valueTextView(textWidget : TextWidget,
+    private fun valueTextView(paragraph : String,
+                              isParagraph : Boolean,
+                              textWidget : TextWidget,
                               format : TextWidgetFormat,
                               entityId : EntityId,
                               context : Context,
@@ -386,11 +396,17 @@ object TextWidgetView
         value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
+        if (isParagraph) {
+            Log.d("***TEXT WIDGET", "is paragraph")
+            value.margin.bottomDp = format.valueFormat().paragraphSpacing().value
+        }
+
         value.layoutGravity = format.valueFormat().elementFormat().alignment().gravityConstant() or
                                 Gravity.CENTER_VERTICAL
         value.gravity       = format.valueFormat().elementFormat().alignment().gravityConstant()
 
-        value.text          = textWidget.valueString(entityId, groupContext)
+        //value.text          = textWidget.valueString(entityId, groupContext)
+        value.text          = paragraph
 
         format.valueFormat().styleTextViewBuilder(value, entityId, context)
 

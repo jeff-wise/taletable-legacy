@@ -4,6 +4,7 @@ package com.taletable.android.activity.entity.book.fragment
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -25,7 +26,9 @@ import com.taletable.android.model.theme.official.officialThemeLight
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.book
 import com.taletable.android.rts.entity.groups
-
+import maybe.Just
+import maybe.Nothing
+import kotlin.text.Typography.section
 
 
 /**
@@ -245,14 +248,14 @@ class ChapterUI(val chapter : BookChapter,
         title.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        title.margin.topDp      = 20f
+        title.margin.topDp      = 24f
 
         chapter.summary().doMaybe {
             title.text = it.value
         }
 
         title.font              = Font.typeface(TextFont.Merriweather,
-                                                TextFontStyle.Regular,
+                                                TextFontStyle.Light,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
@@ -260,7 +263,7 @@ class ChapterUI(val chapter : BookChapter,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_8"))))
         title.color             = theme.colorOrBlack(colorTheme)
 
-        title.sizeSp            = 16f
+        title.sizeSp            = 17f
 
         return title.textView(context)
     }
@@ -373,35 +376,16 @@ class ChapterUI(val chapter : BookChapter,
     // VIEWS > Section List
     // -----------------------------------------------------------------------------------------
 
-    private fun sectionListView() : LinearLayout
-    {
-        val layout = this.sectionListViewLayout()
-
-        chapter.sections().forEach {
-            layout.addView(this.sectionSummaryView(it))
-        }
-
-        return layout
-    }
-
-
-    private fun sectionListViewLayout() : LinearLayout
-    {
-        val layout                  = LinearLayoutBuilder()
-
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation          = LinearLayout.VERTICAL
-
-        layout.elevation            = 2f
-
-        layout.margin.bottomDp      = 8f
-
-        //layout.margin.topDp         = 20f
-
-        return layout.linearLayout(context)
-    }
+//    private fun sectionListView() : LinearLayout
+//    {
+//        val layout = this.sectionListViewLayout()
+//
+//        chapter.sections().forEach {
+//            layout.addView(this.sectionSummaryView(it))
+//        }
+//
+//        return layout
+//    }
 
 
     private fun sectionSummaryView(section : BookSection) : ViewGroup
@@ -514,4 +498,107 @@ class ChapterUI(val chapter : BookChapter,
         return layout.linearLayout(context)
     }
 
+
+
+    // VIEWS > Section List
+    // -----------------------------------------------------------------------------------------
+
+    private fun sectionListView() : LinearLayout
+    {
+        val layout = this.sectionListViewLayout()
+
+        val noGroup : MutableList<BookSection> = mutableListOf()
+        val byGroup : MutableMap<BookSectionGroup,MutableList<BookSection>> = mutableMapOf()
+
+        chapter.sections().forEach {
+            val group = it.group()
+            when (group) {
+                is Just -> {
+                    if (!byGroup.containsKey(group.value)) {
+                        byGroup[group.value] = mutableListOf()
+                    }
+                    byGroup[group.value]?.add(it)
+                }
+                is Nothing -> {
+                    noGroup.add(it)
+                }
+            }
+
+        }
+
+        noGroup.forEach {
+            layout.addView(this.sectionSummaryView(it))
+        }
+
+        byGroup.keys.forEach { group ->
+
+            layout.addView(this.sectionGroupHeaderView(group.value))
+
+            byGroup[group]?.forEach {
+                layout.addView(this.sectionSummaryView(it))
+            }
+        }
+
+        return layout
+    }
+
+
+    private fun sectionListViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.VERTICAL
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun sectionGroupHeaderView(header : String) : LinearLayout
+    {
+        // | Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layoutBuilder               = LinearLayoutBuilder()
+        val headerViewBuilder           = TextViewBuilder()
+
+        // | Layout Builder
+        // -------------------------------------------------------------------------------------
+
+        layoutBuilder.width             = LinearLayout.LayoutParams.MATCH_PARENT
+        layoutBuilder.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layoutBuilder.padding.topDp     = 20f
+        layoutBuilder.padding.bottomDp  = 4f
+        layoutBuilder.padding.leftDp    = 16f
+        layoutBuilder.padding.rightDp   = 16f
+
+        layoutBuilder.backgroundColor   = Color.WHITE
+
+        layoutBuilder.child(headerViewBuilder)
+
+        // | Header View Builder
+        // -------------------------------------------------------------------------------------
+
+        headerViewBuilder.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        headerViewBuilder.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        headerViewBuilder.text          = header
+
+        headerViewBuilder.font          = Font.typeface(TextFont.RobotoCondensed,
+                                                        TextFontStyle.Bold,
+                                                        context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_18"))))
+        headerViewBuilder.color         = theme.colorOrBlack(colorTheme)
+
+        headerViewBuilder.sizeSp        = 16f
+
+        return layoutBuilder.linearLayout(context)
+    }
 }
+

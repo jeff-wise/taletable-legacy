@@ -1,0 +1,3853 @@
+variables:
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_header
+    label: 'Ancestries and Backgrounds > Header'
+    description: 'Ancestries and Backgrounds > Header'
+    value:
+      type: text_literal
+      text_literal: 'Ancestries and Backgrounds'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_introduction
+    label: 'Ancestries and Backgrounds > Introduction'
+    description: 'Ancestries and Backgrounds > Introduction'
+    value:
+      type: text_literal
+      text_literal: >-
+        The player character ancestries presented in this book are dwarves, elves, gnomes, goblins, halflings, and humans (including the half-human groups of half- elves and half-orcs). These ancestries are each detailed on the following pages of this chapter.
+
+
+        Your character also has a background that represents the training or environments she experienced as a youth. This could include time spent working as an acrobat, a barkeep, or a farmhand, or an upbringing like that of a noble, a nomad, or a scholar. Your character’s background affords her extra ability boosts as well as other benefits, such as a feat and training in one Lore skill. The list of character backgrounds begins on page 38 in this chapter.
+
+
+        A character has one ancestry and one background, both of which you select during character creation. Once chosen, your ancestry and background can’t be changed.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_introduction
+    label: 'Ancestries and Backgrounds > Rules >  Introduction'
+    description: 'Ancestries and Backgrounds > Rules > Introduction'
+    value:
+      type: text_literal
+      text_literal: >-
+        Each ancestry entry contains an overview of the ancestry culture and place in the world, core rules for creating characters with that ancestry, and ancestry specific feats and languages.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_hit_points_header
+    label: 'Ancestries and Backgrounds > Rules > Hit Points > Header'
+    description: 'Ancestries and Backgrounds > Rules > Hit Points > Header'
+    value:
+      type: text_literal
+      text_literal: 'Hit Points'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_hit_points_content
+    label: 'Ancestries and Backgrounds > Rules > Hit Points > Content'
+    description: 'Ancestries and Backgrounds > Rules > Hit Points > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This tells you how many Hit Points your character gains from her ancestry at 1st level. When you determine your starting Hit Points, you will add your character’s Constitution modifier and the Hit Points provided by her class to this number. For more information about calculating Hit Points, see Apply Your Class on page 14.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_size_header
+    label: 'Ancestries and Backgrounds > Rules > Size > Header'
+    description: 'Ancestries and Backgrounds > Rules > Size > Header'
+    value:
+      type: text_literal
+      text_literal: 'Size'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_size_content
+    label: 'Ancestries and Backgrounds > Rules > Size > Content'
+    description: 'Ancestries and Backgrounds > Rules > Size > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This tells you the physical size of members of your character’s ancestry. Most ancestries are Medium, which corresponds roughly to the height and weight range of a human adult. Some ancestries are Small, which corresponds to a height and weight range roughly half that of a Medium creature. For more information about size, see page 313.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_speed_header
+    label: 'Ancestries and Backgrounds > Rules > Spped > Header'
+    description: 'Ancestries and Backgrounds > Rules > Speed > Header'
+    value:
+      type: text_literal
+      text_literal: 'Speed'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_speed_content
+    label: 'Ancestries and Backgrounds > Rules > Speed > Content'
+    description: 'Ancestries and Backgrounds > Rules > Speed > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This entry designates how far a member of your character’s ancestry can move each time she spends an action (such as Stride) to do so. Many ancestries’ Speed is 25 feet, though some are slower or faster.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_ability_boosts_header
+    label: 'Ancestries and Backgrounds > Rules > Ability Boosts > Header'
+    description: 'Ancestries and Backgrounds > Rules > Ability Boosts > Header'
+    value:
+      type: text_literal
+      text_literal: 'Ability Boosts'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_ability_boosts_content
+    label: 'Ancestries and Backgrounds > Rules > Ability Boosts > Content'
+    description: 'Ancestries and Backgrounds > Rules > Ability Boosts > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This lists the ability scores to which you apply ability boosts when creating a character of this ancestry. Most ancestries provide ability boosts to two specific ability scores, plus a free ability boost that you can apply to any other ability score of your choice. For more about ability boosts and applying them during character creation, see page 18.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_ability_flaw_header
+    label: 'Ancestries and Backgrounds > Rules > Ability Flaw > Header'
+    description: 'Ancestries and Backgrounds > Rules > Ability Flaw > Header'
+    value:
+      type: text_literal
+      text_literal: 'Ability Flaw'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_ability_flaw_content
+    label: 'Ancestries and Backgrounds > Rules > Ability Flaw > Content'
+    description: 'Ancestries and Backgrounds > Rules > Ability Flaw > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This lists the ability score to which you apply an ability flaw when creating a character of this ancestry. Most ancestries, with the exception of humans, include an ability flaw. For more about ability flaws and applying them during character creation, see page 18.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_languages_header
+    label: 'Ancestries and Backgrounds > Rules > Languages > Header'
+    description: 'Ancestries and Backgrounds > Rules > Languages > Header'
+    value:
+      type: text_literal
+      text_literal: 'Languages and Bonus Languages'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_languages_content
+    label: 'Ancestries and Backgrounds > Rules > Languages > Content'
+    description: 'Ancestries and Backgrounds > Rules > Languages > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This tells you the languages that members of your character’s ancestry speak at 1st level, as well as a list of additional languages common among members of that ancestry. If your character’s Intelligence score is 14 or higher at 1st level, you can select one of the bonus languages from this list for your character to speak in addition to her ancestry language or languages. Additionally, your character might use sign language. More information about languages, including sign language, can be found on page 40.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_traits_header
+    label: 'Ancestries and Backgrounds > Rules > Traits > Header'
+    description: 'Ancestries and Backgrounds > Rules > Traits > Header'
+    value:
+      type: text_literal
+      text_literal: 'Traits'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_traits_content
+    label: 'Ancestries and Backgrounds > Rules > Traits > Content'
+    description: 'Ancestries and Backgrounds > Rules > Traits > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This lists the mechanical indicators, called traits, that apply to all members of your character’s ancestry. Traits your character gains through her ancestry often don’t convey any mechanical benefit, but they are important for determining how certain spells, effects, and other aspects of the game interact with your character. For more about traits, see page 414.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_special_abilities_header
+    label: 'Ancestries and Backgrounds > Rules > Special Abilities > Header'
+    description: 'Ancestries and Backgrounds > Rules > Special Abiliies > Header'
+    value:
+      type: text_literal
+      text_literal: 'Special Abilities'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_special_abilities_content
+    label: 'Ancestries and Backgrounds > Rules > Special Abilities > Content'
+    description: 'Ancestries and Backgrounds > Rules > Special Abilities > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This section presents the abilities, characteristics, senses, and other unique qualities that members of each ancestry manifest. Some ancestries do not have any special rules, in which case this section is absent.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_feats_content
+    label: 'Ancestries and Backgrounds > Rules > Feats > Content'
+    description: 'Ancestries and Backgrounds > Rules > Feats > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This section presents ancestry feats, which allow you to customize your character. You gain your first ancestry feat at 1st level, and another at 5th level, 9th level, 13th level, and 17th level, as indicated in the class advancement table in the descriptions of each class (see page 42).
+
+        Some of the feats in this section are marked with symbols that denote how you can use them during play. Full rules for actions, activities, free actions, and reactions can be found on page 296.
+
+        Ancestry feats list a number on the same line as the feat’s name, indicating the minimum level your character must be to select the feat. In most cases, ancestry feats are labeled with “Feat 1,” meaning that your character can select the feat at 1st level or anytime you gain an ancestry feat thereafter. Ancestry feats also sometimes list prerequisites—these are additional requirements that your character must fulfill before she can select that feat.
+
+        All ancestry feats have a trait that indicates which ancestry they belong to.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_heritage_feats_header
+    label: 'Ancestries and Backgrounds > Rules > Heritage Feats > Header'
+    description: 'Ancestries and Backgrounds > Rules > Heritage Feats > Header'
+    value:
+      type: text_literal
+      text_literal: 'Heritage Feats'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_heritage_feats_content
+    label: 'Ancestries and Backgrounds > Rules > Heritage Feats > Content'
+    description: 'Ancestries and Backgrounds > Rules > Heritage Feats > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Ancestry feats that have the heritage trait are feats that your character can select only at 1st level. Unlike with other feats, you cannot retrain your character to learn a heritage feat or exchange a heritage feat for one that was selected at 1st level. Your character can never have more than one heritage feat.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_adventurers_header
+    label: 'Ancestries and Backgrounds > Rules > Adventurers > Header'
+    description: 'Ancestries and Backgrounds > Rules > Adventurers > Header'
+    value:
+      type: text_literal
+      text_literal: 'Adventurers'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_rules_adventurers_content
+    label: 'Ancestries and Backgrounds > Rules > Adventurers > Content'
+    description: 'Ancestries and Backgrounds > Rules > Adventurers > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        This section includes some suggested backgrounds and classes that are popular among members of each ancestry. Cultural proclivities and inherent abilities inform these common choices, but they certainly don’t define them, nor do all members of any given ancestry adhere to any of these norms. Ultimately, you should create a character from a concept that excites you!
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_dwarf_hit_points
+    label: 'Ancestries and Backgrounds > Dwarf > Hit Points'
+    description: 'Ancestries and Backgrounds > Dwarf > Hit Points'
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_size
+    label: 'Ancestries and Backgrounds > Dwarf > Size'
+    description: 'Ancestries and Backgrounds > Dwarf > Size'
+    value:
+      type: text_literal
+      text_literal: 'Medium'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_dwarf_speed
+    label: 'Ancestries and Backgrounds > Dwarf > Speed'
+    description: 'Ancestries and Backgrounds > Dwarf > Speed'
+    value:
+      type: number_literal
+      number_literal: 20
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_abilty_boosts
+    label: 'Ancestries and Backgrounds > Dwarf > Ability Boosts'
+    description: 'Ancestries and Backgrounds > Dwarf > Ability Boosts'
+    value_set_id: ability_boosts
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - constitution
+      - wisdom
+      - free
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_abilty_flaw
+    label: 'Ancestries and Backgrounds > Dwarf > Ability Flaw'
+    description: 'Ancestries and Backgrounds > Dwarf > Ability Flaw'
+    value_set_id: ability_scores
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - charisma
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_languages
+    label: 'Ancestries and Backgrounds > Dwarf > Languages'
+    description: 'Ancestries and Backgrounds > Dwarf > Languages'
+    value_set_id: common_languages
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - common
+      - dwarven
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_bonus_languages
+    label: 'Ancestries and Backgrounds > Dwarf > Bonus Languages'
+    description: 'Ancestries and Backgrounds > Dwarf > Bonus Languages'
+    value:
+      type: text_literal
+      text_literal: >-
+        At 1st level, if your Intelligence score is 14 or higher, you can also select one of the following languages: Giant, Gnome, Goblin, Orc, Terran, or Undercommon.
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_traits
+    label: 'Ancestries and Backgrounds > Dwarf > Traits'
+    description: 'Ancestries and Backgrounds > Dwarf > Traits'
+    value_set_id: racial_traits
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - dwarf
+      - humanoid
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_darkvision
+    label: 'Ancestries and Backgrounds > Dwarf > Darkvision'
+    description: 'Ancestries and Backgrounds > Dwarf > Darkvision'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can see in darkness and dim light just as well as you can see in bright light, though your vision in darkness is in black and white.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_unburdened
+    label: 'Ancestries and Backgrounds > Dwarf > Unburdened'
+    description: 'Ancestries and Backgrounds > Dwarf > Unburdened'
+    value:
+      type: text_literal
+      text_literal: >-
+        If your Speed would be reduced by armor you wear or the encumbered condition, you ignore 5 feet of that reduction.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_overview
+    label: 'Ancestries and Backgrounds > Dwarf > Overview'
+    description: 'Ancestries and Backgrounds > Dwarf > Overview'
+    value:
+      type: text_literal
+      text_literal: >-
+        The dwarves’ ancient surface empire fell long ago, overwhelmed by orc and goblinoid enemies, but dwarves today retain many of the qualities that propelled their people to greatness in ancient times: fierceness, gumption, and stubbornness in endeavors ranging from battle and craftsmanship to forging ties with family and friends. Dwarves are slow to trust people who are not their kin—a tendency that traces to their history of bloody conflict with foes such as giants, orcs, and the horrors of the deeps. Trust from a dwarf is hard won, but as strong as iron.
+
+        These sturdy people stand about a foot shorter than most humans. Long hair is often a source of pride among them, particularly when braided into intricate patterns. Men are typically broader than women, and many men take pride in their long beards. Dwarves typically reach physical adulthood around the age of 25 and can live to around 350 years old.
+
+        The distance between dwarven mountain citadels creates vast cultural divides, but many dwarves share a common passion for architecture, gem cutting, metalwork, mining, and stonework. Dwarves revere honor, justice, and the traditions of their clans and kingdoms. Few dwarves are seen without a clan dagger, a weapon forged just before an individual dwarf’s birth and bearing the gemstone of the clan.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_ancestral_hatred_name
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Ancestral Hatred > Name'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Ancestral Hatred > Name'
+    value:
+      type: text_literal
+      text_literal: 'Ancestral Hatred'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_dwarf_feat_ancestral_hatred_level
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Ancestral Hatred > Level'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Ancestral Hatred > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_feat_ancestral_hatred_traits
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Ancestral Hatred > Traits'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Ancestral Hatred > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Dwarf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_ancestral_hatred_description
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Ancestral Hatred > Description'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Ancestral Hatred > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You have shaped your hatred of ancestral dwarven foes into a powerful weapon. Choose two of the following creature traits: derro, duergar, giant, or orc. You gain a +1 circumstance bonus to damage rolls against creatures with one of the chosen traits. If a creature with a chosen trait critically succeeds at an attack against you, this bonus increases to +4 against that creature for 1 minute.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_ancestral_hatred_special
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Ancestral Hatred > Special'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Ancestral Hatred > Special'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your GM can add appropriate creature traits to this list if your character is from a community that commonly fights other types of enemies.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_ancients_blood_name
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Ancient''s Blood > Name'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Ancient''s Blood > Name'
+    value:
+      type: text_literal
+      text_literal: 'Ancient''s Blood'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_dwarf_feat_ancients_blood_level
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Ancient''s Blood > Level'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Ancient''s Blood > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_feat_ancients_blood_traits
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Ancient''s Blood > Traits'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Ancient''s Blood > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Dwarf'
+      - 'Heritage'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_ancients_blood_trigger
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Ancient''s Blood > Trigger'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Ancient''s Blood > Trigger'
+    value:
+      type: text_literal
+      text_literal: >-
+        You attempt a saving throw against a magical effect.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_ancients_blood_description
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Ancient''s Blood > Description'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Ancient''s Blood > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your ancestors’ innate resistance to magic has manifested in you. You gain a +2 circumstance bonus to the triggering saving throw.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_ancients_blood_special
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Ancient''s Blood > Special'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Ancient''s Blood > Special'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your resistance hampers your connection to magic items. Reduce your total Resonance Points by 2 (minimum 0). For more information about Resonance Points, see page 376.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_boulder_roll_name
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Boulder Roll > Name'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Boulder Roll > Name'
+    value:
+      type: text_literal
+      text_literal: 'Boulder Roll'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_dwarf_feat_boulder_roll_level
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Boulder Roll > Level'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Boulder Roll > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_feat_boulder_roll_traits
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Boulder Roll > Traits'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Boulder Roll > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Dwarf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_boulder_roll_prerequisites
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Boulder Roll > Prerequisites'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Boulder Roll > Prerequisites'
+    value:
+      type: text_literal
+      text_literal: >-
+        Mountain Roots (see below)
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_boulder_roll_description
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Boulder Roll > Description'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Boulder Roll > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your dwarven build allows you to push foes around. Take a Step into the square of a foe that is your size or smaller, and the foe must move into the empty space directly behind it. The foe must move even if doing so places it in harm’s way. The foe can attempt to block your Step by rolling a Fortitude saving throw against your Athletics DC. If the foe attempts this saving throw, regardless of the saving throw’s result, the creature takes bludgeoning damage equal to your level plus your Strength modifier.
+
+
+        If the foe can’t move into an empty space (if it is surrounded by solid objects or other creatures, for example), your Boulder Roll has no effect.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_giant_bane_name
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Giant Bane > Name'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Giant Bane > Name'
+    value:
+      type: text_literal
+      text_literal: 'Giant Bane'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_dwarf_feat_giant_bane_level
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Giant Bane > Level'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Giant Bane > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_feat_giant_bane_traits
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Giant Bane > Traits'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Giant Bane > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Dwarf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_giant_bane_description
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Giant Bane > Description'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Giant Bane > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your squat stature and your hatred for giantkind give you an edge when fighting them. You gain a +1 circumstance bonus to your Armor Class against giants; Fortitude and Reflex DCs against giants’ attempts to Disarm, Grapple, Shove, or Trip you; Survival checks to track giants; Perception checks to notice giants; and Stealth checks to avoid being noticed by giants.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_hardy_name
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Hardy > Name'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Hardy > Name'
+    value:
+      type: text_literal
+      text_literal: 'Hardy'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_dwarf_feat_hardy_level
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Hardy > Level'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Hardy > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_feat_hardy_traits
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Hardy > Traits'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Hardy > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Dwarf'
+      - 'Heritage'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_hardy_description
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Hardy > Description'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Hardy > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your blood runs hearty and strong, and you can shake off toxins that would lay others low. You gain poison resistance equal to half your level (minimum 1), and each of your successful saving throws against an ongoing poison reduces its stage by 2, or 1 for a virulent poison. Each critical success against an ongoing poison reduces its stage by 3, or 2 for a virulent poison.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_mountain_roots_name
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Mountain Roots > Name'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Mountain Roots > Name'
+    value:
+      type: text_literal
+      text_literal: 'Mountain Roots'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_dwarf_feat_mountain_roots_level
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Mountain Roots > Level'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Mountain Roots > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_feat_mountain_roots_traits
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Mountain Roots > Traits'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Mountain Roots > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Dwarf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_mountain_roots_description
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Mountain Roots > Description'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Mountain Roots > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can plant your feet on the ground to become nearly immovable. You gain a +2 circumstance bonus to your Fortitude or Reflex DC whenever anyone attempts to Shove or Trip you. This bonus also applies to saves against spells or effects that attempt to knock you prone. In addition, if any ability or effect would force you to move 10 feet or more in any direction, you are moved only half the distance.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_rock_runner_name
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Rock Runner > Name'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Rock Runner > Name'
+    value:
+      type: text_literal
+      text_literal: 'Rock Runner'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_dwarf_feat_rock_runner_level
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Rock Runner > Level'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Rock Runner > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_feat_rock_runner_traits
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Rock Runner > Traits'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Rock Runner > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Dwarf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_rock_runner_description
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Rock Runner > Description'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Rock Runner > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your innate connection to stone makes you adept at moving across uneven surfaces. When you take the Step action, you can ignore difficult terrain caused by uneven ground made of stone and earth. In addition, when you use the Acrobatics skill to Balance (see page 144) on narrow surfaces or uneven ground made of stone or earth, you aren’t flat-footed, and you treat a success on the Acrobatics check as if it were a critical success.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_stonecunning_name
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Stonecunning > Name'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Stonecunning > Name'
+    value:
+      type: text_literal
+      text_literal: 'Stonecunning'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_dwarf_feat_stonecunning_level
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Stonecunning > Level'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Stonecunning > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_feat_stonecunning_traits
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Stonecunning > Traits'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Stonecunning > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Dwarf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_stonecunning_description
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Stonecunning > Description'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Stonecunning > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You have a knack for noticing inconsistencies and craftsmanship techniques in the stonework around you. You gain a +2 circumstance bonus to Perception checks to notice unusual stonework. This bonus applies to checks to discover mechanical traps made of stone or hidden inside of stone. If you aren’t using the Seek action (see page 308) or searching, the GM rolls a secret check without the bonus and with a –2 circumstance penalty for you to notice unusual stonework anyway (in such cases, this feat takes on the secret trait).
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_weapon_cunning_name
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Cunning > Name'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Cunning > Name'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Cunning'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_dwarf_feat_weapon_cunning_level
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Cunning > Level'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Cunning > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_feat_weapon_cunning_traits
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Cunning > Traits'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Cunning > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Dwarf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_weapon_cunning_prerequisities
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Cunning > Prerequisites'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat >  Weapon Cunning > Prerequisites'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Familiarity (Dwarf)'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_weapon_cunning_description
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Cunning > Description'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Cunning > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Whenever you critically hit using a weapon of the axe, hammer, or pick group, you apply the weapon’s critical specialization effect.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_weapon_familiarity_name
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Familiarity > Name'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Familiarity > Name'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Familiarity'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_dwarf_feat_weapon_familiarity_level
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Familiarity > Level'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Familiarity > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_dwarf_feat_weapon_familiarity_traits
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Familiarity > Traits'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Familiarity > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Dwarf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_dwarf_feat_weapon_familiarity_description
+    label: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Familiarity > Description'
+    description: 'Ancestries and Backgrounds > Dwarf > Feat > Weapon Familiarity > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your kin have instilled in you an affinity for hard- hitting weapons, and you prefer them to more elegant arms. You are trained with the battleaxe, pick, and warhammer.
+
+
+        In addition, you gain access to all uncommon dwarf weapons. For the purpose of proficiencies, you treat martial dwarf weapons as simple weapons and exotic dwarf weapons as martial weapons. More about weapons can be found on page 178.
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_elf_hit_points
+    label: 'Ancestries and Backgrounds > Elf > Hit Points'
+    description: 'Ancestries and Backgrounds > Elf > Hit Points'
+    value:
+      type: number_literal
+      number_literal: 6
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_size
+    label: 'Ancestries and Backgrounds > Elf > Size'
+    description: 'Ancestries and Backgrounds > Elf > Size'
+    value:
+      type: text_literal
+      text_literal: 'Medium'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_elf_speed
+    label: 'Ancestries and Backgrounds > Elf > Speed'
+    description: 'Ancestries and Backgrounds > Elf > Speed'
+    value:
+      type: number_literal
+      number_literal: 30
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_abilty_boosts
+    label: 'Ancestries and Backgrounds > Elf > Ability Boosts'
+    description: 'Ancestries and Backgrounds > Elf > Ability Boosts'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Dexterity'
+      - 'Intelligence'
+      - 'Free'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_abilty_flaw
+    label: 'Ancestries and Backgrounds > Elf > Ability Flaw'
+    description: 'Ancestries and Backgrounds > Elf > Ability Flaw'
+    value:
+      type: text_literal
+      text_literal: 'Constitution'
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_languages
+    label: 'Ancestries and Backgrounds > Elf > Languages'
+    description: 'Ancestries and Backgrounds > Elf > Languages'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Common'
+      - 'Elven'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_bonus_languages
+    label: 'Ancestries and Backgrounds > Elf > Bonus Languages'
+    description: 'Ancestries and Backgrounds > Elf > Bonus Languages'
+    value:
+      type: text_literal
+      text_literal: >-
+        At 1st level, if your Intelligence score is 14 or higher, you can also select one of the following languages: Celestial, Draconic, Gnoll, Gnomish, Goblin, Orcish, or Sylvan.
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_traits
+    label: 'Ancestries and Backgrounds > Elf > Traits'
+    description: 'Ancestries and Backgrounds > Elf > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Elf'
+      - 'Humanoid'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_lowlight_vision
+    label: 'Ancestries and Backgrounds > Elf > Low-Light Vision'
+    description: 'Ancestries and Backgrounds > Elf > Low-Light Vision'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can see in dim light as though it were bright light.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_overview
+    label: 'Ancestries and Backgrounds > Elf > Overview'
+    description: 'Ancestries and Backgrounds > Elf > Overview'
+    value:
+      type: text_literal
+      text_literal: >-
+        Elves combine an otherworldly grace, sharp intellect, and mysterious charm in a way that is practically magnetic to members of other ancestries. They are often voraciously intellectual, though they fill their long years with complicated pedagogies that most shorter-lived peoples find inefficient. Elves also hold notoriously long grudges against their rivals, but these antagonistic relationships can sometimes blossom into friendship over time.
+
+
+        Elves are generally taller than humans, and they have a fragile grace accentuated with long facial features and sharply pointed ears. Broad pupils fill their wide eyes, giving elves an alien look and allowing them to see sharply even in very little light. Elves typically reach physical adulthood around the age of 20 (though they’re considered by other elves to be fully emotionally mature at close to the end of their first century), and they can live to around 600 years old.
+
+
+        Elves subtly and deeply attune to their environment and their companions, and they often take on physical traits reflecting their surroundings. An elf who has dwelled in primeval forests for centuries, for example, might exhibit verdant hair and gnarled fingers, while one who’s lived in a desert might have golden pupils and skin.
+
+
+        Elves are often emotional and capricious, yet they also value kindness and beauty.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_ageless_patience_name
+    label: 'Ancestries and Backgrounds > Elf > Feat > Ageless Patience > Name'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Ageless Patience > Name'
+    value:
+      type: text_literal
+      text_literal: 'Ageless Patience'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_elf_feat_ageless_patience_level
+    label: 'Ancestries and Backgrounds > Elf > Feat > Ageless Patience > Level'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Ageless Patience > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_feat_ageless_patience_traits
+    label: 'Ancestries and Backgrounds > Elf > Feat > Ageless Patience > Traits'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Ageless Patience > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Elf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_ageless_patience_description
+    label: 'Ancestries and Backgrounds > Elf > Feat > Ageless Patience > Description'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Ageless Patience > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You move at a pace born from longevity that might infuriate your shorter-lived comrades but enhances your thoroughness. You can spend twice as much downtime as usual on a downtime activity to receive a +2 circumstance bonus to all checks related to that downtime activity. For more about downtime, see page 318.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_ancestral_longevity_name
+    label: 'Ancestries and Backgrounds > Elf > Feat > Ancestral Longevity > Name'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Ancestral Longevity > Name'
+    value:
+      type: text_literal
+      text_literal: 'Ancestral Longevity'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_elf_feat_ancestral_longevity_level
+    label: 'Ancestries and Backgrounds > Elf > Feat > Ancestral Longevity > Level'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Ancestral Longevity > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_feat_ancestral_longevity_traits
+    label: 'Ancestries and Backgrounds > Elf > Feat > Ancestral Longevity > Traits'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Ancestral Longevity > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Elf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_ancestral_longevity_description
+    label: 'Ancestries and Backgrounds > Elf > Feat > Ancestral Longevity > Description'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Ancestral Longevity > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You have accumulated a vast array of lived knowledge over your long life. During your daily preparations (see page 317), you can reflect upon your life experiences to become trained in one skill of your choice. This proficiency lasts until you prepare again. More about skills and proficiency can be found on page 142.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_demon_skirmisher_name
+    label: 'Ancestries and Backgrounds > Elf > Feat > Demon Skirmisher > Name'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Demon Skirmisher > Name'
+    value:
+      type: text_literal
+      text_literal: 'Demon Skirmisher'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_elf_feat_demon_skirmisher_level
+    label: 'Ancestries and Backgrounds > Elf > Feat > Demon Skirmisher > Level'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Demon Skirmisher > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_feat_demon_skirmisher_traits
+    label: 'Ancestries and Backgrounds > Elf > Feat > Demon Skirmisher > Traits'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Demon Skirmisher > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Elf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_demon_skirmisher_description
+    label: 'Ancestries and Backgrounds > Elf > Feat > Demon Skirmisher > Description'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Demon Skirmisher > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You have served in the fight to reclaim your homeland from demons, and thus you have learned to mitigate those fiends’ strengths and amplify their weaknesses. Your attacks treat demons’ resistances as if they were 1 lower and demons’ weaknesses as if they were 1 higher. If you use the Stride action on your turn, you instead treat demons’ resistances as 2 lower and their weaknesses as 2 higher until the end of your turn.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_forlorn_name
+    label: 'Ancestries and Backgrounds > Elf > Feat > Forlorn > Name'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Forlorn > Name'
+    value:
+      type: text_literal
+      text_literal: 'Forlorn'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_elf_feat_forlorn_level
+    label: 'Ancestries and Backgrounds > Elf > Feat > Forlorn > Level'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Forlorn > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_feat_forlorn_traits
+    label: 'Ancestries and Backgrounds > Elf > Feat > Forlorn > Traits'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Forlorn > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Elf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_forlorn_description
+    label: 'Ancestries and Backgrounds > Elf > Feat > Forlorn > Description'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Forlorn > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Watching your friends age and die fills you with moroseness that girds you against harmful emotions. You gain a +1 circumstance bonus to saves against emotion effects. If you succeed at a saving throw against an emotion effect, treat it as a critical success instead.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_keen_hearing_name
+    label: 'Ancestries and Backgrounds > Elf > Feat > Keen Hearing > Name'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Keen Hearing > Name'
+    value:
+      type: text_literal
+      text_literal: 'Keen Hearing'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_elf_feat_keen_hearing_level
+    label: 'Ancestries and Backgrounds > Elf > Feat > Keen Hearing > Level'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Keen Hearing > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_feat_keen_hearing_traits
+    label: 'Ancestries and Backgrounds > Elf > Feat > Keen Hearing > Traits'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Keen Hearing > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Elf'
+      - 'Heritage'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_keen_hearing_description
+    label: 'Ancestries and Backgrounds > Elf > Feat > Keen Hearing > Description'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Keen Hearing > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your ears are finely tuned to even the slightest whispers of sound. As long as you can hear normally, you can use the Seek action to sense unseen creatures in a 60-foot cone instead of a 30-foot cone. You also gain a +2 circumstance bonus to sense unseen creatures within 30 feet that you can hear with a Seek action.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_nimble_name
+    label: 'Ancestries and Backgrounds > Elf > Feat > Nimble > Name'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Nimble > Name'
+    value:
+      type: text_literal
+      text_literal: 'Nimble'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_elf_feat_nimble_level
+    label: 'Ancestries and Backgrounds > Elf > Feat > Nimble > Level'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Nimble > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_feat_nimble_traits
+    label: 'Ancestries and Backgrounds > Elf > Feat > Nimble > Traits'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Nimble > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Elf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_nimble_description
+    label: 'Ancestries and Backgrounds > Elf > Feat > Nimble > Description'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Nimble > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your reflexes and lithe muscles are tightly honed. Your Speed increases by 5 feet. Additionally, when you use the Stride action, you can ignore difficult terrain in one square during that move.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_otherworldly_magic_name
+    label: 'Ancestries and Backgrounds > Elf > Feat > Otherworldly Magic > Name'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Otherworldly Magic > Name'
+    value:
+      type: text_literal
+      text_literal: 'Otherworldly Magic'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_elf_feat_otherworldly_magic_level
+    label: 'Ancestries and Backgrounds > Elf > Feat > Otherworldly Magic > Level'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Otherworldly Magic > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_feat_otherworldly_magic_traits
+    label: 'Ancestries and Backgrounds > Elf > Feat > Otherworldly Magic > Traits'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Otherworldly Magic > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Elf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_otherworldly_magic_description
+    label: 'Ancestries and Backgrounds > Elf > Feat > Otherworldly Magic > Description'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Otherworldly Magic > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Choose one cantrip from the arcane spell list (see page 199). You can cast this cantrip as an innate arcane spell at will. The cantrip is heightened to a spell level equal to half your level rounded up. You can learn more about spells on page 192.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_unwavering_mien_name
+    label: 'Ancestries and Backgrounds > Elf > Feat > Unwavering Mien > Name'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Unwavering Mien > Name'
+    value:
+      type: text_literal
+      text_literal: 'Unwavering Mien'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_elf_feat_unwavering_mien_level
+    label: 'Ancestries and Backgrounds > Elf > Feat > Unwavering Mien > Level'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Unwavering Mien > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_feat_unwavering_mien_traits
+    label: 'Ancestries and Backgrounds > Elf > Feat > Unwavering Mien > Traits'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Unwavering Mien > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Elf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_unwavering_mien_description
+    label: 'Ancestries and Backgrounds > Elf > Feat > Unwavering Mien > Description'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Unwavering Mien > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your mystic control and meditation allow you to resist external influences upon your consciousness. When you would be confused, frightened, or stupefied for at least 2 rounds, reduce the duration by 1 round.
+
+
+        You still require natural sleep, but you are immune to effects that would cause you to fall asleep. This protects only against the asleep condition, not against other forms of falling unconscious.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_weapon_elegance_name
+    label: 'Ancestries and Backgrounds > Elf > Feat > Weapon Elegance > Name'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Weapon Elegance > Name'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Elegance'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_elf_feat_weapon_elegance_level
+    label: 'Ancestries and Backgrounds > Elf > Feat > Weapon Elegance > Level'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Weapon Elegance > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_feat_weapon_elegance_traits
+    label: 'Ancestries and Backgrounds > Elf > Feat > Weapon Elegance > Traits'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Weapon Elegance > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Elf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_weapon_elegance_prerequisites
+    label: 'Ancestries and Backgrounds > Elf > Feat > Weapon Elegance > Prerequisities'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Weapon Elegance > Prerequisites'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Familiarity (Elf)'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_weapon_elegance_description
+    label: 'Ancestries and Backgrounds > Elf > Feat > Weapon Elegance > Description'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Weapon Elegance > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You are attuned to the weapons of your elf ancestors and are particularly deadly when using them. Whenever you critically hit using a weapon of the bow or sword group, you apply the weapon’s critical specialization effect.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_weapon_familiarity_name
+    label: 'Ancestries and Backgrounds > Elf > Feat > Weapon Familiarity > Name'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Weapon Familiarity > Name'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Familiarity'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_elf_feat_weapon_familiarity_level
+    label: 'Ancestries and Backgrounds > Elf > Feat > Weapon Familiarity > Level'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Weapon Familiarity > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_feat_weapon_familiarity_traits
+    label: 'Ancestries and Backgrounds > Elf > Feat > Weapon Familiarity > Traits'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Weapon Familiarity > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Elf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_elf_feat_weapon_familiarity_description
+    label: 'Ancestries and Backgrounds > Elf > Feat > Weapon Familiarity > Description'
+    description: 'Ancestries and Backgrounds > Elf > Feat > Weapon Familiarity > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You favor bows and elegant weapons. You are trained with longbows, composite longbows, longswords, rapiers, shortbows, and composite shortbows.
+
+
+        In addition, you gain access to all uncommon elf weapons. For the purpose of proficiencies, you treat martial elf weapons as simple weapons and exotic elf weapons as martial weapons. More about weapons can be found on page 178.
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_gnome_hit_points
+    label: 'Ancestries and Backgrounds > Gnome > Hit Points'
+    description: 'Ancestries and Backgrounds > Gnome > Hit Points'
+    value:
+      type: number_literal
+      number_literal: 8
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_size
+    label: 'Ancestries and Backgrounds > Gnome > Size'
+    description: 'Ancestries and Backgrounds > Gnome > Size'
+    value:
+      type: text_literal
+      text_literal: 'Small'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_gnome_speed
+    label: 'Ancestries and Backgrounds > Gnome > Speed'
+    description: 'Ancestries and Backgrounds > Gnome > Speed'
+    value:
+      type: number_literal
+      number_literal: 20
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_abilty_boosts
+    label: 'Ancestries and Backgrounds > Gnome > Ability Boosts'
+    description: 'Ancestries and Backgrounds > Gnome > Ability Boosts'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Constitution'
+      - 'Charisma'
+      - 'Free'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_abilty_flaw
+    label: 'Ancestries and Backgrounds > Gnome > Ability Flaw'
+    description: 'Ancestries and Backgrounds > Gnome > Ability Flaw'
+    value:
+      type: text_literal
+      text_literal: 'Strength'
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_languages
+    label: 'Ancestries and Backgrounds > Gnome > Languages'
+    description: 'Ancestries and Backgrounds > Gnome > Languages'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Common'
+      - 'Gnomish'
+      - 'Sylvan'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_bonus_languages
+    label: 'Ancestries and Backgrounds > Gnome > Bonus Languages'
+    description: 'Ancestries and Backgrounds > Gnome > Bonus Languages'
+    value:
+      type: text_literal
+      text_literal: >-
+        At 1st level, if your Intelligence score is 14 or higher, you can also select one of the following languages: Draconic, Dwarven, Elven, Goblin, Jotun, or Orcish.
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_traits
+    label: 'Ancestries and Backgrounds > Gnome > Traits'
+    description: 'Ancestries and Backgrounds > Gnome > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Gnome'
+      - 'Humanoid'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_lowlight_vision
+    label: 'Ancestries and Backgrounds > Gnome > Low-Light Vision'
+    description: 'Ancestries and Backgrounds > Gnome > Low-Light Vision'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can see in dim light as though it were bright light.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_overview
+    label: 'Ancestries and Backgrounds > Gnome > Overview'
+    description: 'Ancestries and Backgrounds > Gnome > Overview'
+    value:
+      type: text_literal
+      text_literal: >-
+        Always hungry for new experiences, gnomes constantly wander both mentally and physically, attempting to stave off a terrible ailment that threatens all of their people. This affliction—the Bleaching—strikes gnomes who fail to dream, innovate, and take in new experiences as their progenitors did every hour of every day in the First World. The Bleaching slowly drains the literal color from gnomes, and it plunges the affected into states of deep depression that eventually claim their lives. Only a very few gnomes survive this scourge, becoming deeply morose and wise survivors known as bleachlings.
+
+
+        Most gnomes stand just over 3 feet tall and weigh little more than a young human child. Gnomes reach physical adulthood around the age of 18, though many retain a childlike curiosity even into adulthood. Gnomes rarely live longer than 400 years.
+
+
+        Though they all trace their ancestry to the First World, gnomes otherwise have little culture they point to as their own. Instead, gnomes tend to pick and choose cultural practices of the region in which they live. Gnomes claim no nation in its entirety, and as a people they wouldn’t know what to do with such a state if one existed. Most gnomes consider adventure not a choice but a necessity, and gnome adventurers often collect mementos during their travels that allow them to relive their most exciting stories.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_animal_accomplice_name
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Animal Accomplice > Name'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Animal Accomplice > Name'
+    value:
+      type: text_literal
+      text_literal: 'Animal Accomplice'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_gnome_feat_animal_accomplice_level
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Animal Accomplice > Level'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Animal Accomplice > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_feat_animal_accomplice_traits
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Animal Accomplice > Traits'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Animal Accomplice > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Gnome'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_animal_accomplice_description
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Animal Accomplice > Description'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Animal Accomplice > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        A rapport develops between you and an animal, which becomes magically bonded to you. You gain a familiar (see page 287). The type of animal is up to you, but most gnomes choose animals with a burrow Speed.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_animal_speaker_name
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Animal Speaker > Name'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Animal Speaker > Name'
+    value:
+      type: text_literal
+      text_literal: 'Animal Speaker'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_gnome_feat_animal_speaker_level
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Animal Speaker > Level'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Animal Speaker > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_feat_animal_speaker_traits
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Animal Speaker > Traits'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Animal Speaker > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Gnome'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_animal_speaker_description
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Animal Speaker > Description'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Animal Speaker > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You recognize the chittering of ground creatures as a language of its own. You can ask questions of, receive answers from, and use the Diplomacy skill with animals that have a burrow Speed, such as badgers, ground squirrels, moles, and prairie dogs. The GM determines which animals count for this ability.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_animal_whisperer_name
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Animal Whisperer > Name'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Animal Whisperer > Name'
+    value:
+      type: text_literal
+      text_literal: 'Animal Whisperer'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_gnome_feat_animal_whisperer_level
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Animal Whisperer > Level'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Animal Whisperer > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_feat_animal_whisperer_traits
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Animal Whisperer > Traits'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Animal Whisperer > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Gnome'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_animal_whisperer_prerequisites
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Animal Whisperer > Prerequisites'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Animal Whipserer > Prerequisites'
+    value:
+      type: text_literal
+      text_literal: 'Animal Speaker'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_animal_whisperer_description
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Animal Whisperer > Description'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Animal Whipserer > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You hear the sounds of animals as conversations instead of unintelligent noise. You can speak to all animals, not just animals with a burrow Speed. You gain a +1 circumstance bonus on Diplomacy checks to Make an Impression on animals.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_discerning_smell_name
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Discerning Smell > Name'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Discerning Smell > Name'
+    value:
+      type: text_literal
+      text_literal: 'Discerning Smell'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_gnome_feat_discerning_smell_level
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Discerning Smell > Level'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Discerning Smell > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_feat_discerning_smell_traits
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Discerning Smell > Traits'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Discerning Smell > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Gnome'
+      - 'Heritage'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_discerning_smell_description
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Discerning Smell > Description'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Discerning Smell > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can smell and taste all sorts of exotic flavors that are too nuanced for a human palate. You gain a +2 circumstance bonus to sense an unseen creature that is close enough for you to smell (typically within 30 feet, though halve the distance if you are upwind and double the distance if you are downwind). For more information about senses, see page 301.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_fey_fellowship_name
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Fey Fellowship > Name'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Fey Fellowship > Name'
+    value:
+      type: text_literal
+      text_literal: 'Fey Fellowship'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_gnome_feat_fey_fellowship_level
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Fey Fellowship > Level'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Fey Fellowship > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_feat_fey_fellowship_traits
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Fey Fellowship > Traits'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Fey Fellowship > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Gnome'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_fey_fellowship_description
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Fey Fellowship > Description'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Fey Fellowship > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your fey origins afford you a warmer reception from creatures of the First World as well as tools to foil their tricks. Against fey creatures, you gain a +1 circumstance bonus to Diplomacy checks, Perception checks, and saving throws.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_first_world_magic_name
+    label: 'Ancestries and Backgrounds > Gnome > Feat > First World Magic > Name'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > First World Magic > Name'
+    value:
+      type: text_literal
+      text_literal: 'First World Magic'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_gnome_feat_first_world_magic_level
+    label: 'Ancestries and Backgrounds > Gnome > Feat > First World Magic > Level'
+    description: 'Ancestries and Backgrounds > gnome > Feat > First World Magic > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_feat_first_world_magic_traits
+    label: 'Ancestries and Backgrounds > Gnome > Feat > First World Magic > Traits'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > First World Magic > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Gnome'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_first_world_magic_description
+    label: 'Ancestries and Backgrounds > Gnome > Feat > First World Magic > Description'
+    description: 'Ancestries and Backgrounds > gnome > Feat > First World Magic > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Choose one cantrip from the primal spell list (see page 201). You can cast this spell as an innate primal spell at will. The cantrip is heightened to a spell level equal to half your level rounded up. For more information about spells, see page 192.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_illusion_sense_name
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Illusion Sense > Name'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Illusion Sense > Name'
+    value:
+      type: text_literal
+      text_literal: 'Illusion Sense'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_gnome_feat_illusion_sense_level
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Illusion Sense > Level'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Illusion Sense > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_feat_illusion_sense_traits
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Illusion Sense > Traits'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Illusion Sense > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Gnome'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_illusion_sense_description
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Illusion Sense > Description'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Illusion Sense > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your ancestors spent their days cloaked and cradled in illusions, and sensing this magic is second nature to you. You gain a +1 circumstance bonus to Perception checks and Will saves against illusions. When you come within 10 feet of an illusion that can be disbelieved, you can attempt a single Perception check to disbelieve it, even without spending an action to interact with it in some way. For more about disbelieving illusions, see page 194.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_obsessive_name
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Obsessive > Name'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Obsessive > Name'
+    value:
+      type: text_literal
+      text_literal: 'Obsessive'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_gnome_feat_obsessive_level
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Obsessive > Level'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Obsessive > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_feat_obsessive_traits
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Obsessive > Traits'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Obsessive > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Gnome'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_obsessive_description
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Obsessive > Description'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Obsessive > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You might have a flighty nature, but when a topic captures your attention, you dive into it headfirst. Pick a category of the Lore skill. You are trained in that skill. At 2nd level you become an expert, at 7th level you become a master, and at 15th level you become legendary.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_weapon_familiarity_name
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Weapon Familiarity > Name'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Weapon Familiarity > Name'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Familiarity'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_gnome_feat_weapon_familiarity_level
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Weapon Familiarity > Level'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Weapon Familiarity > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_feat_weapon_familiarity_traits
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Weapon Familiarity > Traits'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Weapon Familiarity > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Gnome'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_weapon_familiarity_description
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Weapon Familiarity > Description'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Weapon Familiarity > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You favor unusual weapons tied to your people, such as blades with curved and unusual shapes. You are trained with glaives and kukris.
+
+
+        In addition, you gain access to all uncommon gnome weapons. For the purpose of proficiencies, you treat martial gnome weapons as simple weapons and exotic gnome weapons as martial weapons. For more information about weapons, see page 178.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_weapon_innovator_name
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Weapon Innovator > Name'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Weapon Innovator > Name'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Innovator'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_gnome_feat_weapon_innovator_level
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Weapon Innovator > Level'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Weapon Innovator > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_feat_weapon_innovator_traits
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Weapon Innovator > Traits'
+    description: 'Ancestries and Backgrounds > Gnome > Feat > Weapon Innovator > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Gnome'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_weapon_innovator_prerequisites
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Weapon Innovator > Prerequisites'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Weapon Innovator > Prerequisites'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Familiarity (Gnome)'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_gnome_feat_weapon_innovator_description
+    label: 'Ancestries and Backgrounds > Gnome > Feat > Weapon Innovator > Description'
+    description: 'Ancestries and Backgrounds > gnome > Feat > Weapon Innovator > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You produce outstanding results when wielding unusual weapons. Whenever you critically hit using a glaive, kukri, or gnome weapon, you apply the weapon’s critical specialization effect.
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_goblin_hit_points
+    label: 'Ancestries and Backgrounds > Goblin > Hit Points'
+    description: 'Ancestries and Backgrounds > Goblin > Hit Points'
+    value:
+      type: number_literal
+      number_literal: 6
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_size
+    label: 'Ancestries and Backgrounds > Goblin > Size'
+    description: 'Ancestries and Backgrounds > Goblin > Size'
+    value:
+      type: text_literal
+      text_literal: 'Small'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_goblin_speed
+    label: 'Ancestries and Backgrounds > Goblin > Speed'
+    description: 'Ancestries and Backgrounds > Goblin > Speed'
+    value:
+      type: number_literal
+      number_literal: 25
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_abilty_boosts
+    label: 'Ancestries and Backgrounds > Goblin > Ability Boosts'
+    description: 'Ancestries and Backgrounds > Goblin > Ability Boosts'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Dexterity'
+      - 'Charisma'
+      - 'Free'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_abilty_flaw
+    label: 'Ancestries and Backgrounds > Goblin > Ability Flaw'
+    description: 'Ancestries and Backgrounds > Goblin > Ability Flaw'
+    value:
+      type: text_literal
+      text_literal: 'Wisdom'
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_languages
+    label: 'Ancestries and Backgrounds > Goblin > Languages'
+    description: 'Ancestries and Backgrounds > Goblin > Languages'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Common'
+      - 'Goblin'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_bonus_languages
+    label: 'Ancestries and Backgrounds > Goblin > Bonus Languages'
+    description: 'Ancestries and Backgrounds > Goblin > Bonus Languages'
+    value:
+      type: text_literal
+      text_literal: >-
+        At 1st level, if your Intelligence score is 14 or higher, you can also select one of the following languages: Draconic, Dwarven, Gnoll, Gnomish, Halfling, or Orcish.
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_traits
+    label: 'Ancestries and Backgrounds > Goblin > Traits'
+    description: 'Ancestries and Backgrounds > Goblin > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Goblin'
+      - 'Humanoid'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_darkvision
+    label: 'Ancestries and Backgrounds > Goblin > Darkvision'
+    description: 'Ancestries and Backgrounds > Goblin > Darkvision'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can see in darkness and dim light just as well as you can see in bright light, though your vision in darkness is in black and white.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_overview
+    label: 'Ancestries and Backgrounds > Goblin > Overview'
+    description: 'Ancestries and Backgrounds > Goblin > Overview'
+    value:
+      type: text_literal
+      text_literal: >-
+        Even those goblins who break from their destructive past often subtly perpetuate some of the qualities that have been tied to the creatures for millennia. Goblins tend to flock to strong leaders, fiercely protecting those companions who have protected them from physical harm or offered a sympathetic ear when they learn of the goblins’ woes. Some goblins remain deeply fascinated with fire, or fearlessly devour a meal that might turn others’ stomachs. Others are endless tinkerers and view their companions’ trash simply as components of gadgets yet to be made. Occasionally, fellow adventurers find these proclivities unsettling or odd, but more often than not, goblins’ friends consider these qualities endearing.
+
+
+        Though goblins’ culture has splintered radically, their reputation across the Inner Sea region has changed little. As such, goblins who travel to larger cities are frequently subjected to derision, and as a result many goblins work twice as hard at proving their worth. Those who befriend a goblin quickly learn that while a goblin’s friendship might include all manners of pranks, such fun comes from a place of true acceptance—something that a goblin does not give freely.
+
+        Goblins reach adolescence by the age of 3 and adulthood 4 or 5 years later. In theory, goblins could live 50 years or more, but without anyone to protect them from each other or themselves, few live past 20 years of age. Goblins typically stand about 3 feet tall, with skin colors that range from green to gray to blue.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_burn_it_name
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Burn It > Name'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Burn It > Name'
+    value:
+      type: text_literal
+      text_literal: 'Burn It'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_goblin_feat_burn_it_level
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Burn It > Level'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Burn It > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_feat_burn_it_traits
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Burn It > Traits'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Burn It > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Goblin'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_burn_it_description
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Burn It > Description'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Burn It > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Fire fascinates you. Your spells and alchemical items that deal fire damage gain a conditional bonus to damage equal to half the spell’s level or the item’s level (minimum 1). You also gain a +1 conditional bonus to any persistent fire damage you deal, whether it’s from a spell or not.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_city_scavenger_name
+    label: 'Ancestries and Backgrounds > Goblin > Feat > City Scavenger > Name'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > City Scavenger > Name'
+    value:
+      type: text_literal
+      text_literal: 'City Scavenger'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_goblin_feat_city_scavenger_level
+    label: 'Ancestries and Backgrounds > Goblin > Feat > City Scavenger > Level'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > City Scavenger > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_feat_city_scavenger_traits
+    label: 'Ancestries and Backgrounds > Goblin > Feat > City Scavenger > Traits'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > City Scavenger > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Goblin'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_city_scavenger_description
+    label: 'Ancestries and Backgrounds > Goblin > Feat > City Scavenger > Description'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > City Scavenger > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You know that the greatest treasures often look like refuse, and you scoff at those who throw away perfectly good scraps. You can attempt a Survival check to search for food and supplies and to subsist in a city as well as in the wild. When you do, you gain a +1 circumstance bonus to your Survival check.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_eat_anything_name
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Eat Anything > Name'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Eat Anything > Name'
+    value:
+      type: text_literal
+      text_literal: 'Eat Anything'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_goblin_feat_eat_anything_level
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Eat Anything > Level'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Eat Anything > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_feat_eat_anything_traits
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Eat Anything > Traits'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Eat Anything > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Goblin'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_eat_anything_description
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Eat Anything > Description'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Eat Anything > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You are comfortable subsisting on food that most folks would consider spoiled. You gain a +2 circumstance bonus to saving throws against toxins and against gaining the sick condition, but only if it resulted from something you ate. You can eat and drink things when you have the sick condition.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_flame_heart_name
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Flame Heart > Name'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Flame Heart > Name'
+    value:
+      type: text_literal
+      text_literal: 'Flame Hart'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_goblin_feat_flame_heart_level
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Flame Heart > Level'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Flame Heart > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_feat_flame_heart_traits
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Flame Heart > Traits'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Flame Heart > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Goblin'
+      - 'Heritage'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_flame_heart_description
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Flame Heart > Description'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Flame Heart > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        As a result of either a childhood accident with flames or an ongoing fascination with fire, your skin has thickened, protecting you against burning. You gain resistance to fire equal to half your level (minimum 1), and your flat check to remove persistent fire damage (see page 323) is DC 15 instead of DC 20 without requiring an action to reduce the DC.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_junk_tinker_name
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Junk Tinker > Name'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Junk Tinker > Name'
+    value:
+      type: text_literal
+      text_literal: 'Junk Tinker'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_goblin_feat_junk_tinker_level
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Junk Tinker > Level'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Junk Tinker > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_feat_junk_tinker_traits
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Junk Tinker > Traits'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Junk Tinker > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Goblin'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_junk_tinker_description
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Junk Tinker > Description'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Junk Tinker > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can make useful tools out of even the most twisted or rusted scraps. You can craft ordinary items, including weapons but not armor, out of junk. This costs one-quarter the usual amount for a standard-quality item but always results in an item of poor quality. You take only a –1 item penalty when using poor-quality items you crafted. For more information about crafting items, see page 147.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_razor_teeth_name
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Razor Teeth > Name'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Razor Teeth > Name'
+    value:
+      type: text_literal
+      text_literal: 'Razor Teeth'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_goblin_feat_razor_teeth_level
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Razor Teeth > Level'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Razor Teeth > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_feat_razor_teeth_traits
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Razor Teeth > Traits'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Razor Teeth > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Goblin'
+      - 'Heritage'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_razor_teeth_description
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Razor Teeth > Description'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Razor Teeth > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your teeth are formidable weapons. You gain a jaws unarmed attack that deals 1d6 piercing damage. For more information about unarmed attacks, see page 178.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_rough_rider_name
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Rough Rider > Name'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Rough Rider > Name'
+    value:
+      type: text_literal
+      text_literal: 'Rough Rider'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_goblin_feat_rough_rider_level
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Rough Rider > Level'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Rough Rider > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_feat_rough_rider_traits
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Rough Rider > Traits'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Rough Rider > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Goblin'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_rough_rider_description
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Rough Rider > Description'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Rough Rider > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Any creature that will bear your weight can become your loyal steed, and you know how to coax even the strangest beasts into service. You gain the Ride feat, even if you don’t meet the prerequisites. You gain a +1 circumstance bonus to Nature checks to Handle a goblin dog or wolf mount. For more about the Nature skill, see page 152.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_very_sneaky_name
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Very Sneaky > Name'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Very Sneaky > Name'
+    value:
+      type: text_literal
+      text_literal: 'Very Sneaky'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_goblin_feat_very_sneaky_level
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Very Sneaky > Level'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Very Sneaky > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_feat_very_sneaky_traits
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Very Sneaky > Traits'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Very Sneaky > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Goblin'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_very_sneaky_description
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Very Sneaky > Description'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Very Sneaky > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Taller folk rarely pay attention to the shadows at Goblin their feet, and you take full advantage of this. You can move 5 feet farther when you take the Sneak action, up to your Speed (see page 158).
+
+
+        In addition, if you critically succeed at a Stealth check against a creature and then attack that creature, your target remains flat-footed during your attack. The GM doesn’t reveal that your Stealth check resulted in a critical success until you declare your attack.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_weapon_familiarity_name
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Familiarity Very Sneaky > Name'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Familiarity Very Sneaky > Name'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Familiarity'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_goblin_feat_weapon_familiarity_level
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Familiarity > Level'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Familiarity > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_feat_weapon_familiarity_traits
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Familiarity > Traits'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Familiarity > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Goblin'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_weapon_familiarity_description
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Familiarity > Description'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Familiarity > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Others might look upon them with disdain, but you know that the weapons of your people are as effective as they are sharp. You are trained with the dogslicer and horsechopper. In addition, you gain access to all uncommon goblin weapons. For the purpose of proficiencies, you treat martial goblin weapons as simple weapons and exotic goblin weapons as martial weapons. For more information about weapons, see page 178.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_weapon_frenzy_name
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Frenzy > Name'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Frenzy > Name'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Frenzy'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_goblin_feat_weapon_frenzy_level
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Frenzy > Level'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Frenzy > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_feat_weapon_frenzy_traits
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Frenzy > Traits'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Frenzy > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Goblin'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_weapon_frenzy_prerequisites
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Frenzy > Prerequisites'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Frenzy > Prerequisites'
+    value:
+      type: text_literal
+      text_literal: >-
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_goblin_feat_weapon_frenzy_description
+    label: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Frenzy > Description'
+    description: 'Ancestries and Backgrounds > Goblin > Feat > Weapon Frenzy > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can wield your people’s weapons of choice as well as any elf brandishes a longsword or dwarf swings a warhammer. Whenever you critically hit using a goblin weapon, you apply the weapon’s critical specialization effect.
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfling_hit_points
+    label: 'Ancestries and Backgrounds > Halfling > Hit Points'
+    description: 'Ancestries and Backgrounds > Halfling > Hit Points'
+    value:
+      type: number_literal
+      number_literal: 6
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_size
+    label: 'Ancestries and Backgrounds > Halfling > Size'
+    description: 'Ancestries and Backgrounds > Halfling > Size'
+    value:
+      type: text_literal
+      text_literal: 'Small'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfling_speed
+    label: 'Ancestries and Backgrounds > Halfling > Speed'
+    description: 'Ancestries and Backgrounds > Halfling > Speed'
+    value:
+      type: number_literal
+      number_literal: 25
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_abilty_boosts
+    label: 'Ancestries and Backgrounds > Halfling > Ability Boosts'
+    description: 'Ancestries and Backgrounds > Halfling > Ability Boosts'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Dexterity'
+      - 'Wisdom'
+      - 'Free'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_abilty_flaw
+    label: 'Ancestries and Backgrounds > Halfling > Ability Flaw'
+    description: 'Ancestries and Backgrounds > Halfling > Ability Flaw'
+    value:
+      type: text_literal
+      text_literal: 'Strength'
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_languages
+    label: 'Ancestries and Backgrounds > Halfling > Languages'
+    description: 'Ancestries and Backgrounds > Halfling > Languages'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Common'
+      - 'Halfling'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_bonus_languages
+    label: 'Ancestries and Backgrounds > Halfling > Bonus Languages'
+    description: 'Ancestries and Backgrounds > Halfling > Bonus Languages'
+    value:
+      type: text_literal
+      text_literal: >-
+        At 1st level, if your Intelligence score is 14 or higher, you can also select one of the following languages: Dwarven, Elven, Gnomish, or Goblin.
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_traits
+    label: 'Ancestries and Backgrounds > Halfling > Traits'
+    description: 'Ancestries and Backgrounds > Halfling > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Halfling'
+      - 'Humanoid'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_overview
+    label: 'Ancestries and Backgrounds > Halfling > Overview'
+    description: 'Ancestries and Backgrounds > Halfling > Overview'
+    value:
+      type: text_literal
+      text_literal: >-
+        Many taller people dismiss halflings due to their size or, worse still, treat them like children. Halflings use these misconceptions and prejudices to their advantage, gaining access to opportunities and performing deeds of daring mischief or heroism. A halfling’s curiosity is tempered with caution, often leading to narrow escapes.
+
+        Despite their jovial and friendly nature, halflings don’t naturally tend to congregate together. They have no cultural homeland, and they instead weave themselves throughout the world’s societies. Halflings usually dwell among humans within the walls of cities, eking out whatever livings they can, many performing menial labor or simple service jobs. Some halflings reject such a life, instead turning to the open road, traveling from place to place in search of fortune and fame. These nomadic halflings often travel in small groups, sharing hardships and simple pleasures among close friends and family.
+
+
+        Halflings rarely grow to more than 3 feet in height. Tufts of hair warm the tops of their broad, tanned feet, and they prefer to walk barefoot. Halflings typically reach physical adulthood at the age of 20. A typical halfling can live to around 150 years old. Halflings are loyal to their friends and family, but they are not afraid to do what needs to be done in order to survive.
+
+
+        Halflings’ wanderlust and opportunism make them ideal adventurers, and one popular superstition even claims that traveling with a halfling is good luck.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_attentive_name
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Attentive > Name'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Attentive > Name'
+    value:
+      type: text_literal
+      text_literal: 'Attentive'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfling_feat_attentive_level
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Attentive > Level'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Attentive > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_feat_attentive_traits
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Attentive > Traits'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Attentive > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Halfling'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_attentive_description
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Attentive > Description'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Attentive > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your communal lifestyle causes you to notice when those around you act out of character. You gain a +2 circumstance bonus to Perception checks when using the Seek action to notice enchanted or possessed characters.
+
+
+        If you aren’t Seeking, the GM rolls a secret check anyway, with a –2 circumstance penalty, for you to notice the enchantment or possession.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_distracting_shadows_name
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Distracting Shadows > Name'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Distracting Shadows > Name'
+    value:
+      type: text_literal
+      text_literal: 'Distracting Shadows'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfling_feat_distracting_shadows_level
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Distracting Shadows > Level'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Distracting Shadows > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_feat_distracting_shadows_traits
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Distracting Shadows > Traits'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Distracting Shadows > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Halfling'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_distracting_shadows_description
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Distracting Shadows > Description'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Distracting Shadows > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You’ve learned to use larger folk to avoid drawing attention to yourself. You can use creatures that are at least one size larger than you (usually Medium or larger) as cover for the Hide and Sneak actions (see page 158).
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_keen_eyes_name
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Keen Eyes > Name'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Keen Eyes > Name'
+    value:
+      type: text_literal
+      text_literal: 'Keen Eyes'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfling_feat_keen_eyes_level
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Keen Eyes > Level'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Keen Eyes > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_feat_keen_eyes_traits
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Keen Eyes > Traits'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Keen Eyes > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Halfling'
+      - 'Heritage'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_keen_eyes_description
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Keen Eyes > Description'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Keen Eyes > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your eyes are sharp, and your other senses are similarly attuned to your surroundings. When you attack an opponent that is concealed from you or sensed by you, reduce the flat check DC you need to hit that creature to 3 for concealed or 9 for sensed. You gain a +2 circumstance bonus when using the Seek action to sense unseen creatures within 30 feet.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_lucky_halfling_name
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Lucky Halfling > Name'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Lucky Halfling > Name'
+    value:
+      type: text_literal
+      text_literal: 'Lucky Halfling'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfling_feat_lucky_halfling_level
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Lucky Halfling > Level'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Lucky Halfling > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_feat_lucky_halfling_traits
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Lucky Halfling > Traits'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Lucky Halfling > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Fortune'
+      - 'Halfling'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_lucky_halfling_frequency
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Lucky Halfling > Frequency'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Lucky Halfling > Frequency'
+    value:
+      type: text_literal
+      text_literal: 'once per day'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_lucky_halfling_trigger
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Lucky Halfling > Trigger'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Lucky Halfling > Trigger'
+    value:
+      type: text_literal
+      text_literal: 'You fail a skill check or saving throw.'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_lucky_halfling_description
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Lucky Halfling > Description'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Lucky Halfling > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your happy-go-lucky nature makes it seem like misfortune avoids you, and to an extent, that’s true. You can reroll the triggering check or saving throw and take the better of the two results.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_plucky_name
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Plucky > Name'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Pluck > Name'
+    value:
+      type: text_literal
+      text_literal: 'Plucky'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfling_feat_plucky_level
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Plucky > Level'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Plucky > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_feat_plucky_traits
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Plucky > Traits'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Plucky > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Halfling'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_plucky_description
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Plucky > Description'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Plucky > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You are easily able to ward off attempts to play on your fears and emotions. If you succeed at a saving throw against an emotion or fear effect, treat your result as a critical success instead of a success.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_surefooted_name
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Sure-footed > Name'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Sure-footed > Name'
+    value:
+      type: text_literal
+      text_literal: 'Sure-footed'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfling_feat_surefooted_level
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Sure-footed > Level'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Sure-footed > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_feat_surefooted_traits
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Sure-footed > Traits'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Sure-footedd > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Halfling'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_surefooted_description
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Sure-footed > Description'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Sure-footed > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        If you succeed at an Acrobatics check to Balance or an Athletics check to Climb, you get a critical success instead of a success. You’re not flat-footed when you attempt to Balance or Climb. For more about these skills and their uses, see pages 144 and 146, respectively.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_titan_slinger_name
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Titan Slinger > Name'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Titan Slinger > Name'
+    value:
+      type: text_literal
+      text_literal: 'Titan Slinger'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfling_feat_titan_slinger_level
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Titan Slinger > Level'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Titan Slinger > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_feat_titan_slinger_traits
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Titan Slinger > Traits'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Titan Slinger > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Halfling'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_titan_slinger_description
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Titan Slinger > Description'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Titan Slinger > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You have learned how to use your sling to fell big creatures. You gain a +1 circumstance bonus to damage rolls with slings against Large or larger creatures. This bonus increases to +2 on critical hits (and then doubles on a critical hit as normal).
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_unfettered_name
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Unfettered > Name'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Unfettered > Name'
+    value:
+      type: text_literal
+      text_literal: 'Unfettered'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfling_feat_unfettered_level
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Unfettered > Level'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Unfettered > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_feat_unfettered_traits
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Unfettered > Traits'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Unfettered > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Halfling'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_unfettered_trigger
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Unfettered > Trigger'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Unfettered > Trigger'
+    value:
+      type: text_literal
+      text_literal: >-
+        You roll an Acrobatics check to Escape, an Athletics check to Break a Grapple, or a saving throw against an effect that would entangle or grab you, or you use your Fortitude DC to resist a Grapple.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_unfettered_description
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Unfettered > Description'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Unfettered > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You were forced into service as a laborer, either pressed into indenture or shackled by the evils of slavery, but you’ve since escaped and have trained to ensure you’ll never labor against your will again. You gain a +2 circumstance bonus to the triggering check or your Fortitude DC.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_weapon_familiarity_name
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Familiarity > Name'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Familiarity > Name'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Familiarity'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfling_feat_weapon_familiarity_level
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Familiarity > Level'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Familiarity > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_feat_weapon_familiarity_traits
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Familiarity > Traits'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Familiarity > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Halfling'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_weapon_familiarity_description
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Familiarity > Description'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Familiarity > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You favor traditional halfling weapons. You are trained with slings, sling staves, and shortswords. In addition, you gain access to all uncommon halfling weapons. For the purpose of proficiencies, you treat martial halfling weapons as simple weapons and exotic halfling weapons as martial weapons. For more information about weapons, see page 178.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_weapon_trickster_name
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Trickster > Name'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Trickster > Name'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Trickster'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfling_feat_weapon_trickster_level
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Trickster > Level'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Trickster > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_feat_weapon_trickster_traits
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Trickster > Traits'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Trickster > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Halfling'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_weapon_trickster_prerequisites
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Trickster > Prerequisites'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Trickster > Prerequisites'
+    value:
+      type: text_literal
+      text_literal: 'Weapon Familiarity (Halfling)'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_feat_weapon_trickster_description
+    label: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Trickster > Description'
+    description: 'Ancestries and Backgrounds > Halfling > Feat > Weapon Trickster > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You are particularly adept at fighting with your people’s favored weapons. Whenever you critically succeed at an attack roll using a weapon of the sling group, a shortsword, or a halfling weapon, you apply the weapon’s critical specialization effect.
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_human_hit_points
+    label: 'Ancestries and Backgrounds > Human > Hit Points'
+    description: 'Ancestries and Backgrounds > Human > Hit Points'
+    value:
+      type: number_literal
+      number_literal: 8
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_size
+    label: 'Ancestries and Backgrounds > Human > Size'
+    description: 'Ancestries and Backgrounds > Human > Size'
+    value:
+      type: text_literal
+      text_literal: 'Medium'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_human_speed
+    label: 'Ancestries and Backgrounds > Human > Speed'
+    description: 'Ancestries and Backgrounds > Human > Speed'
+    value:
+      type: number_literal
+      number_literal: 25
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_human_abilty_boosts
+    label: 'Ancestries and Backgrounds > Human > Ability Boosts'
+    description: 'Ancestries and Backgrounds > Human > Ability Boosts'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Free'
+      - 'Free'
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_human_languages
+    label: 'Ancestries and Backgrounds > Human > Languages'
+    description: 'Ancestries and Backgrounds > Human > Languages'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Common'
+      - 'One additional language, selected from those to which you have access'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_bonus_languages
+    label: 'Ancestries and Backgrounds > Human > Bonus Languages'
+    description: 'Ancestries and Backgrounds > Human > Bonus Languages'
+    value:
+      type: text_literal
+      text_literal: >-
+        At 1st level, if your Intelligence score is 14 or higher, you can also select one of the languages from the list of common languages on page 40 or from other languages you have access to.
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_human_traits
+    label: 'Ancestries and Backgrounds > Human > Traits'
+    description: 'Ancestries and Backgrounds > Human > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Human'
+      - 'Humanoid'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfling_overview
+    label: 'Ancestries and Backgrounds > Halfling > Overview'
+    description: 'Ancestries and Backgrounds > Halfling > Overview'
+    value:
+      type: text_literal
+      text_literal: >-
+        Humans’ empires and nations are vast, sprawling things, and their citizens carve names for themselves with the strength of their sword arms and the power of their spells. Humanity is both diverse and tumultuous, running the gamut from cruel to kind, from sinister to saintlike. And while humans build large nation states and free cities alike, many of them venture forth to explore, leaving their homes to map uncharted realms, search for long-lost treasure, or lead mighty armies to conquer their neighbors for no better reason than because they can.
+
+
+        Human variety also manifests in their governments, attitudes, and social norms. Though the oldest of human cultures trace their histories thousands of years into the past, when compared to the societies of the elves or dwarves, human civilizations seem to be in a constant state of flux, as empires fragment and new kingdoms subsume the old.
+
+        Humans typically reach physical adulthood at the age of 18. A typical human can live to be around 90 years old. Humans often intermarry with other peoples, giving rise to children who bear traits of both parents. The most notable half-humans are half-elves and half-orcs. Humans worship a wide range of gods and practice many different religions.
+
+        For many humans, adventuring serves as a means to an end, whether that end is accumulating wealth, striving for acclaim, increasing in social status, or uncovering arcane knowledge and power.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_half_elves_header
+    label: 'Ancestries and Backgrounds > Half-elves > Header'
+    description: 'Ancestries and Backgrounds > Half-elves > Header'
+    value:
+      type: text_literal
+      text_literal: 'Half-elves'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_half_elves_content
+    label: 'Ancestries and Backgrounds > Half-elves > Content'
+    description: 'Ancestries and Backgrounds > Half-elves > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        A half-elf is born to an elf and a human, or to two half- elves. The life of a half-elf can be difficult, marked by a struggle to fit in. Half-elves don’t have their own homeland on Golarion, nor are populations of half-elves particularly tied to one another, since they often have very disparate human and elven heritages. Instead, most half-elves attempt to find acceptance in either human or elven settlements.
+
+
+        Half-elves often appear primarily human, with subtly pointed ears and a taller stature than most full-blooded humans. Half-elves lack the almost alien eyes of their elf parents, though they do carry a natural presence— and often a striking beauty—that leads many to become artists or entertainers. Despite this innate appeal, many half-elves have difficulty forming lasting bonds with humans or elves due to the disconnection they feel from both peoples as a whole.
+
+        Half-elves live longer than other humans, often reaching an age around 150 years. This causes some of them to fear friendship and romance with humans, knowing that they’ll likely outlive their companions.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_half_elves_playing_header
+    label: 'Ancestries and Backgrounds > Half-Elves > Playing > Header'
+    description: 'Ancestries and Backgrounds > Half-Elves > Playing > Header'
+    value:
+      type: text_literal
+      text_literal: 'Playing a Half-Elf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_half_elves_playing_content
+    label: 'Ancestries and Backgrounds > Half-Elves > Playing > Content'
+    description: 'Ancestries and Backgrounds > Half-Elves > Playing > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can create a half-elf character by selecting the Half-Elf human ancestry feat at 1st level. This gives you access to elf and half-elf ancestry feats in addition to human ancestry feats, from which you can select ancestry feats at a later level.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_half_orcs_header
+    label: 'Ancestries and Backgrounds > Half-Orcs > Header'
+    description: 'Ancestries and Backgrounds > Half-Orcs > Header'
+    value:
+      type: text_literal
+      text_literal: 'Half-Orcs'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_half_orcs_content
+    label: 'Ancestries and Backgrounds > Half-Orcs > Content'
+    description: 'Ancestries and Backgrounds > Half-Orcs > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+          A half-orc is the offspring of a human and an orc, or in some cases, the offspring of two half-orcs. Because some bigoted humans see orcs as more akin to creatures than people, they sometimes hate and fear half-orcs simply due to their lineage. This commonly pushes half-orcs to the margins of society, where some find work in drudgery or as mercenaries, and others tragically fall into crime or cruelty. Many who can’t stand the indignities heaped on them in human society find a home among their orc kin or trek out into the wilderness to live in peace.
+
+
+          Humans often assume half-orcs are unintelligent or uncivilized, and half-orcs rarely find acceptance among societies with a large concentration of such folk. To an orc tribe, a half-orc is considered intelligent enough to make a good war leader but weaker than the other orcs. Consequently, many half-orcs end up having low status among orc tribes unless they can prove their strength.
+
+          A half-orc has a shorter lifespan than other humans, living to be roughly 70 years old.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_half_orcs_playing_header
+    label: 'Ancestries and Backgrounds > Half-Orcs > Playing > Header'
+    description: 'Ancestries and Backgrounds > Half-Orcs > Playing > Header'
+    value:
+      type: text_literal
+      text_literal: 'Playing a Half-Orc'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_half_orcs_playing_content
+    label: 'Ancestries and Backgrounds > Half-Orcs > Playing > Content'
+    description: 'Ancestries and Backgrounds > Half-Orcs > Playing > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can create a half-orc character by selecting the Half- Orc human ancestry feat at 1st level. This gives you access to orc and half-orc ancestry feats in addition to human ancestry feats, from which you can select ancestry feats at a later level.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_adapted_spell_name
+    label: 'Ancestries and Backgrounds > Human > Feat > Adapted Spell > Name'
+    description: 'Ancestries and Backgrounds > Human > Feat > Adapted Spell > Name'
+    value:
+      type: text_literal
+      text_literal: 'Adapted Spell'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_human_feat_adapted_spell_level
+    label: 'Ancestries and Backgrounds > Human > Feat > Adapted Spell > Level'
+    description: 'Ancestries and Backgrounds > Human > Feat > Adapted Spell > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_human_feat_adapted_spell_traits
+    label: 'Ancestries and Backgrounds > Human > Feat > Adapted Spell > Traits'
+    description: 'Ancestries and Backgrounds > Human > Feat > Adapted Spell > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Human'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_adapted_spell_prerequisites
+    label: 'Ancestries and Backgrounds > Human > Feat > Adapted Spell > Prerequisites'
+    description: 'Ancestries and Backgrounds > Human > Feat > Adapted Spell > Prerequisites'
+    value:
+      type: text_literal
+      text_literal: 'You are a spellcaster.'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_adapted_spell_description
+    label: 'Ancestries and Backgrounds > Human > Feat > Adapted Spell > Description'
+    description: 'Ancestries and Backgrounds > Human > Feat > Adapted Spell > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Study of multiple magical traditions reveals how to alter a spell to suit your spellcasting style. Choose one cantrip from a spell list other than your own. If you have a spell repertoire or spellbook, replace one of the cantrips you know or have in your spellbook with the chosen spell. If you prepare spells without a spellbook (if you’re a cleric or druid, for example), one of your cantrips must always be the chosen spell, and you prepare the rest normally.
+
+
+        If you swap or retrain this cantrip later, you can choose its replacement from the same alternate list or a different one. For more about magic and spells, see page 192.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_clever_improviser_name
+    label: 'Ancestries and Backgrounds > Human > Feat > Clever Improviser > Name'
+    description: 'Ancestries and Backgrounds > Human > Feat > Clever Improviser > Name'
+    value:
+      type: text_literal
+      text_literal: 'Clever Improviser'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_human_feat_clever_improviser_level
+    label: 'Ancestries and Backgrounds > Human > Feat > Clever Improviser > Level'
+    description: 'Ancestries and Backgrounds > Human > Feat > Clever Improviser > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_human_feat_clever_improviser_traits
+    label: 'Ancestries and Backgrounds > Human > Feat > Clever Improviser > Traits'
+    description: 'Ancestries and Backgrounds > Human > Feat > Clever Improviser > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Human'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_clever_improviser_description
+    label: 'Ancestries and Backgrounds > Human > Feat > Clever Improviser > Description'
+    description: 'Ancestries and Backgrounds > Human > Feat > Clever Improviser > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You’ve learned how to handle situations when you’re out of your depth. You gain a +1 circumstance bonus to skill checks in which you’re untrained.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_cooperative_nature_name
+    label: 'Ancestries and Backgrounds > Human > Feat > Cooperative Nature > Name'
+    description: 'Ancestries and Backgrounds > Human > Feat > Cooperative Nature > Name'
+    value:
+      type: text_literal
+      text_literal: 'Cooperative Nature'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_human_feat_cooperative_nature_level
+    label: 'Ancestries and Backgrounds > Human > Feat > Cooperative Nature > Level'
+    description: 'Ancestries and Backgrounds > Human > Feat > Cooperative Nature > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_human_feat_cooperative_nature_traits
+    label: 'Ancestries and Backgrounds > Human > Feat > Cooperative Nature > Traits'
+    description: 'Ancestries and Backgrounds > Human > Feat > Cooperative Nature > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Human'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_cooperative_nature_description
+    label: 'Ancestries and Backgrounds > Human > Feat > Cooperative Nature > Description'
+    description: 'Ancestries and Backgrounds > Human > Feat > Cooperative Nature > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        A short human life span lends perspective and has taught you from a young age to set aside differences and work together to achieve greatness. You gain a +2 circumstance bonus to your check when you use the Aid reaction or Assist action (see page 307).
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_general_training_name
+    label: 'Ancestries and Backgrounds > Human > Feat > General Training > Name'
+    description: 'Ancestries and Backgrounds > Human > Feat > General Training > Name'
+    value:
+      type: text_literal
+      text_literal: 'General Training'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_human_feat_general_training_level
+    label: 'Ancestries and Backgrounds > Human > Feat > General Training > Level'
+    description: 'Ancestries and Backgrounds > Human > Feat > General Training > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_human_feat_general_training_traits
+    label: 'Ancestries and Backgrounds > Human > Feat > General Training > Traits'
+    description: 'Ancestries and Backgrounds > Human > Feat > General Training > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Human'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_general_training_description
+    label: 'Ancestries and Backgrounds > Human > Feat > General Training > Description'
+    description: 'Ancestries and Backgrounds > Human > Feat > General Training > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your adaptability manifests in your mastery of a range of useful abilities. You gain a 1st-level general feat.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_general_training_special
+    label: 'Ancestries and Backgrounds > Human > Feat > General Training > Special'
+    description: 'Ancestries and Backgrounds > Human > Feat > General Training > Special'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can select this feat multiple times, choosing a different feat each time.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_halfelf_name
+    label: 'Ancestries and Backgrounds > Human > Feat > Half-Elf > Name'
+    description: 'Ancestries and Backgrounds > Human > Feat > Half-Elf > Name'
+    value:
+      type: text_literal
+      text_literal: 'Half-Elf'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_human_feat_halfelf_level
+    label: 'Ancestries and Backgrounds > Human > Feat > Half-Elf > Level'
+    description: 'Ancestries and Backgrounds > Human > Feat > Half-Elf > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_human_feat_halfelf_traits
+    label: 'Ancestries and Backgrounds > Human > Feat > Half-Elf > Traits'
+    description: 'Ancestries and Backgrounds > Human > Feat > Half-Elf > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Heritage'
+      - 'Human'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_halfelf_description
+    label: 'Ancestries and Backgrounds > Human > Feat > Half-Elf > Description'
+    description: 'Ancestries and Backgrounds > Human > Feat > Half-Elf > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Either one of your parents was an elf, or one or both were half-elves. You have pointed ears and other telltale signs of elf heritage. You gain the elf trait. Select two of the following benefits: elven speed (increase your Speed by 5 feet), elven tongue (add Elven to your list of languages), gifted speaker (you are trained in Diplomacy), or low-light vision (you can see in dim light as well as you can in bright light). In addition, you can select elf, half-elf, and human feats whenever you gain an ancestry feat.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_halfelf_special
+    label: 'Ancestries and Backgrounds > Human > Feat > Half-Elf > Special'
+    description: 'Ancestries and Backgrounds > Human > Feat > Half-Elf > Special'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can select this feat twice. The second time, it loses the heritage trait and you gain the other two benefits.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_halforc_name
+    label: 'Ancestries and Backgrounds > Human > Feat > Half-Orc > Name'
+    description: 'Ancestries and Backgrounds > Human > Feat > Half-Orc > Name'
+    value:
+      type: text_literal
+      text_literal: 'Half-Orc'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_human_feat_halforc_level
+    label: 'Ancestries and Backgrounds > Human > Feat > Half-Orc > Level'
+    description: 'Ancestries and Backgrounds > Human > Feat > Half-Orc > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_human_feat_halforc_traits
+    label: 'Ancestries and Backgrounds > Human > Feat > Half-Orc > Traits'
+    description: 'Ancestries and Backgrounds > Human > Feat > Half-Orc > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Heritage'
+      - 'Human'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_halforc_description
+    label: 'Ancestries and Backgrounds > Human > Feat > Half-Orc > Description'
+    description: 'Ancestries and Backgrounds > Human > Feat > Half-Orc > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Either one of your parents was an orc, or one or both were half-orcs. You have a green tinge to your skin and other indicators of orc heritage. You gain the orc trait. Select two of the following benefits: intimidating visage (you are trained in Intimidation), low-light vision (you can see in dim light as well as you can in bright light), orc tongue (add Orcish to your list of languages), or orc toughness (gain 2 Hit Points). You can select orc, half-orc, and human feats whenever you gain an ancestry feat.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_halforc_special
+    label: 'Ancestries and Backgrounds > Human > Feat > Half-Orc > Special'
+    description: 'Ancestries and Backgrounds > Human > Feat > Half-Orc > Special'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can select this feat twice. The second time, it loses the heritage trait and you gain the other two benefits.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_haughty_obstinacy_name
+    label: 'Ancestries and Backgrounds > Human > Feat > Haughty Obstinacy > Name'
+    description: 'Ancestries and Backgrounds > Human > Feat > Haughty Obstinacy > Name'
+    value:
+      type: text_literal
+      text_literal: 'Haughty Obstinacy'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_human_feat_haughty_obstinacy_level
+    label: 'Ancestries and Backgrounds > Human > Feat > Haughty Obstinacy > Level'
+    description: 'Ancestries and Backgrounds > Human > Feat > Haughty Obstinacy > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_human_feat_haughty_obstinacy_traits
+    label: 'Ancestries and Backgrounds > Human > Feat > Haughty Obstinacy > Traits'
+    description: 'Ancestries and Backgrounds > Human > Feat > Haughty Obstinacy > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Human'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_haughty_obstinacy_description
+    label: 'Ancestries and Backgrounds > Human > Feat > Haughty Obstinacy > Description'
+    description: 'Ancestries and Backgrounds > Human > Feat > Haughty Obstinacy > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your powerful ego makes it harder for others to order you around. If you succeed at a saving throw against a mental effect that attempts to directly control your actions, you critically succeed instead. If a creature fails to Coerce you using the Intimidation skill (see page 150), it treats the result as a critical failure instead (so it can’t try to Coerce you again for 1 week).
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_natural_ambition_name
+    label: 'Ancestries and Backgrounds > Human > Feat > Natural Ambition > Name'
+    description: 'Ancestries and Backgrounds > Human > Feat > Natural Ambition > Name'
+    value:
+      type: text_literal
+      text_literal: 'Natural Ambition'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_human_feat_natural_ambition_level
+    label: 'Ancestries and Backgrounds > Human > Feat > Natural Ambition > Level'
+    description: 'Ancestries and Backgrounds > Human > Feat > Natural Ambition > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_human_feat_natural_ambition_traits
+    label: 'Ancestries and Backgrounds > Human > Feat > Natural Ambition > Traits'
+    description: 'Ancestries and Backgrounds > Human > Feat > Natural Ambition > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Human'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_natural_ambition_description
+    label: 'Ancestries and Backgrounds > Human > Feat > Natural Ambition > Description'
+    description: 'Ancestries and Backgrounds > Human > Feat > Natural Ambition > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You were raised to be ambitious and always reach for the stars, causing you to progress quickly in your chosen field. You gain a 1st-level class feat for your class.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_skilled_name
+    label: 'Ancestries and Backgrounds > Human > Feat > Skilled > Name'
+    description: 'Ancestries and Backgrounds > Human > Feat > Skilled > Name'
+    value:
+      type: text_literal
+      text_literal: 'Skilled'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_human_feat_skilled_level
+    label: 'Ancestries and Backgrounds > Human > Feat > Skilled > Level'
+    description: 'Ancestries and Backgrounds > Human > Feat > Skilled > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_human_feat_skilled_traits
+    label: 'Ancestries and Backgrounds > Human > Feat > Skilled > Traits'
+    description: 'Ancestries and Backgrounds > Human > Feat > Skilled > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Human'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_skilled_description
+    label: 'Ancestries and Backgrounds > Human > Feat > Skilled > Description'
+    description: 'Ancestries and Backgrounds > Human > Feat > Skilled > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your ingenuity allows you to train in a wide variety of skills. You become trained in two skills of your choice. For more about skills, see page 142.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_unconventional_weaponry_name
+    label: 'Ancestries and Backgrounds > Human > Feat > Unconventional Weaponry > Name'
+    description: 'Ancestries and Backgrounds > Human > Feat > Unconventional Weaponry > Name'
+    value:
+      type: text_literal
+      text_literal: 'Unconventional Weaponry'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_human_feat_unconventional_weaponry_level
+    label: 'Ancestries and Backgrounds > Human > Feat > Unconventional Weaponry > Level'
+    description: 'Ancestries and Backgrounds > Human > Feat > Unconventional Weaponry > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_human_feat_unconventional_weaponry_traits
+    label: 'Ancestries and Backgrounds > Human > Feat > Unconventional Weaponry > Traits'
+    description: 'Ancestries and Backgrounds > Human > Feat > Unconventional Weaponry > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Human'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_human_feat_unconventional_weaponry_description
+    label: 'Ancestries and Backgrounds > Human > Feat > Unconventional Weaponry > Description'
+    description: 'Ancestries and Backgrounds > Human > Feat > Unconventional Weaponry > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You’ve familiarized yourself with a weapon from another ancestry or culture. You gain access to an uncommon weapon with an ancestry trait of your choice. This doesn’t change your proficiency for that weapon. For more about weapons, see page 178.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfelf_feat_inspire_imitation_name
+    label: 'Ancestries and Backgrounds > Half-Elf > Feat > Inspire Imitation > Name'
+    description: 'Ancestries and Backgrounds > Half-Elf > Feat > Inspire Imitation > Name'
+    value:
+      type: text_literal
+      text_literal: 'Inspire Imitation'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfelf_feat_inspire_imitation_level
+    label: 'Ancestries and Backgrounds > Half-Elf > Feat > Inspire Imitation > Level'
+    description: 'Ancestries and Backgrounds > Half-Elf > Feat > Inspire Imitation > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfelf_feat_inspire_imitation_traits
+    label: 'Ancestries and Backgrounds > Half-Elf > Feat > Inspire Imitation > Traits'
+    description: 'Ancestries and Backgrounds > Half-Elf > Feat > Inspire Imitation > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Half-Elf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfelf_feat_inspire_imitation_description
+    label: 'Ancestries and Backgrounds > Half-Elf > Feat > Inspire Imitation > Description'
+    description: 'Ancestries and Backgrounds > Half-Elf > Feat > Inspire Imitation > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You inspire your allies to great feats through your own actions. Whenever you critically succeed at a skill check, you automatically qualify to take the Aid reaction when attempting to help an ally at the same skill check, even without spending an action to prepare to do so.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfelf_feat_supernatural_charm_name
+    label: 'Ancestries and Backgrounds > Half-Elf > Feat > Supernatural Charm > Name'
+    description: 'Ancestries and Backgrounds > Half-Elf > Feat > Supernatural Charm > Name'
+    value:
+      type: text_literal
+      text_literal: 'Supernatural Charm'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halfelf_feat_supernatural_charm_level
+    label: 'Ancestries and Backgrounds > Half-Elf > Feat > Supernatural Charm > Level'
+    description: 'Ancestries and Backgrounds > Half-Elf > Feat > Supernatural Charm > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfelf_feat_supernatural_charm_traits
+    label: 'Ancestries and Backgrounds > Half-Elf > Feat > Supernatural Charm > Traits'
+    description: 'Ancestries and Backgrounds > Half-Elf > Feat > Supernatural Charm > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Half-Elf'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halfelf_feat_supernatural_charm_description
+    label: 'Ancestries and Backgrounds > Half-Elf > Feat > Supernatural Charm > Description'
+    description: 'Ancestries and Backgrounds > Half-Elf > Feat > Supernatural Charm > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The elven magic in your blood manifests as magic that makes you more appealing or alluring. You can cast 1st-level charm as an innate arcane spell once per day. For more about magic and spells, see page 192.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halforc_feat_orc_ferocity_name
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Ferocity > Name'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Ferocity > Name'
+    value:
+      type: text_literal
+      text_literal: 'Orc Ferocity'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halforc_feat_orc_ferocity_level
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Ferocity > Level'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Ferocity > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halforc_feat_orc_ferocity_traits
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Ferocity > Traits'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Ferocity > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Orc'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halforc_feat_orc_ferocity_frequency
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Ferocity > Frequency'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Ferocity > Frequency'
+    value:
+      type: text_literal
+      text_literal: 'once per day'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halforc_feat_orc_ferocity_trigger
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Ferocity > Trigger'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Ferocity > Trigger'
+    value:
+      type: text_literal
+      text_literal: 'You’re reduced to 0 Hit Points.'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halforc_feat_orc_ferocity_description
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Ferocity > Description'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Ferocity > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Fierceness in battle runs through your blood, and you refuse to fall from your injuries. When this feat is triggered, you avoid being knocked out and remain at 1 Hit Point.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halforc_feat_orc_sight_name
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Sight > Name'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Sight > Name'
+    value:
+      type: text_literal
+      text_literal: 'Orc Sight'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halforc_feat_orc_sight_level
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Sight > Level'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Sight > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halforc_feat_orc_sight_traits
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Sight > Traits'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Sight > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Half-Orc'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halforc_feat_orc_sight_description
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Sight > Description'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Sight > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your orc blood is strong enough to grant you the keen vision of your orc forebears. You gain low-light vision, allowing you to see in dim light just as well as you can in bright light. If you have low-light vision (from the Half-Orc feat), you instead gain darkvision, allowing you to see in darkness and dim light just as well as you can in bright light. Your vision in darkness is in black and white.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halforc_feat_orc_weapon_carnage_name
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Carnage > Name'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Carnage > Name'
+    value:
+      type: text_literal
+      text_literal: 'Orc Weapon Carnage'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halforc_feat_orc_weapon_carnage_level
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Carnage > Level'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Carnage > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halforc_feat_orc_weapon_carnage_traits
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Carnage > Traits'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Carnage > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Orc'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halforc_feat_orc_weapon_carnage_prerequisites
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Carnage > Prerequisites'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Carnage > Prerequisites'
+    value:
+      type: text_literal
+      text_literal: 'Orc Weapon Familiarity (see below)'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halforc_feat_orc_weapon_carnage_description
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Carnage > Description'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Carnage > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You are brutally efficient with the weapons of your orc ancestors. Whenever you critically hit using a two-handed weapon of the axe or sword group, or with an orc weapon, you apply the weapon’s critical specialization effect.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halforc_feat_orc_weapon_familiarity_name
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Familiarity > Name'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Familiarity > Name'
+    value:
+      type: text_literal
+      text_literal: 'Orc Weapon Familiarity'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halforc_feat_orc_weapon_familiarity_level
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Familiarity > Level'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Familiarity > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halforc_feat_orc_weapon_familiarity_traits
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Familiarity > Traits'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Familiartiy > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Orc'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halforc_feat_orc_weapon_familiarity_description
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Familiarity > Description'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Orc Weapon Familiarity > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You favor the brutal weapons of your orc ancestors. You are trained with the greataxe and falchion.
+
+
+        In addition, you gain access to all uncommon orc weapons. For the purpose of proficiencies, you treat martial orc weapons as simple weapons and exotic orc weapons as martial weapons. For more about weapons, see page 178.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halforc_feat_superstition_name
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Superstition > Name'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Superstition > Name'
+    value:
+      type: text_literal
+      text_literal: 'Superstition'
+- type: variable_number
+  variable_number:
+    id: ancestries_backgrounds_halforc_feat_superstition_level
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Superstition > Level'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Superstition > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halforc_feat_superstition_traits
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Superstition > Traits'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Superstition > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Concentrate'
+      - 'Orc'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_halforc_feat_superstition_description
+    label: 'Ancestries and Backgrounds > Half-Orc > Feat > Superstition > Description'
+    description: 'Ancestries and Backgrounds > Half-Orc > Feat > Superstition > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Orcs have a distrust of magic, and you have picked up these misgivings. You seek inner strength from your superstitions, granting you a +1 circumstance bonus to saves against spells and other magical effects until the start of your next turn.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_backgrounds_header
+    label: 'Ancestries and Backgrounds > Backgrounds > Header'
+    description: 'Ancestries and Backgrounds > Backgrounds > Header'
+    value:
+      type: text_literal
+      text_literal: 'Backgrounds'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_backgrounds_description
+    label: 'Ancestries and Backgrounds > Backgrounds > Description'
+    description: 'Ancestries and Backgrounds > Backgrounds > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Backgrounds allow you to customize your character based on her life before adventuring. Your character’s background can help you learn or portray more about her personality while suggesting what sorts of things she’s likely to know. Each background grants two ability boosts, a bonus skill feat, and training in one Lore skill. A character can have only one background, chosen at 1st level, and it can’t be changed.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_acolyte_name
+    label: 'Ancestries and Backgrounds > Background List > Acolyte > Name'
+    description: 'Ancestries and Backgrounds > Background List > Acolyte > Name'
+    value:
+      type: text_literal
+      text_literal: 'Acolyte'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_acolyte_description
+    label: 'Ancestries and Backgrounds > Background List > Acolyte > Description'
+    description: 'Ancestries and Backgrounds > Background List > Acolyte > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You spent your early days in a religious monastery or cloister. You may have traveled out into the world to spread the message of your religion or because you cast away the teachings of your faith, but deep inside you’ll always carry the lessons you learned.
+
+
+        Choose two ability boosts. One must be to Constitution or Wisdom, and one is a free ability boost.
+
+        You gain the Student of the Canon skill feat, and you’re trained in the Lore skill corresponding to your deity (such as Desna Lore or Sarenrae Lore).
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_acrobat_name
+    label: 'Ancestries and Backgrounds > Background List > Acrobat > Name'
+    description: 'Ancestries and Backgrounds > Background List > Acrobat > Name'
+    value:
+      type: text_literal
+      text_literal: 'Acrobat'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_acrobat_description
+    label: 'Ancestries and Backgrounds > Background List > Acrobat > Description'
+    description: 'Ancestries and Backgrounds > Background List > Acrobat > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        In a circus or on the streets, you earned your pay by performing as an acrobat. You might have turned to adventuring when the money dried up, or when you learned to put skills to better use.
+
+
+        Choose two ability boosts. One must be to Strength or Dexterity, and one is a free ability boost.
+
+
+        You gain the Steady Balance skill feat, and you’re trained in the Circus Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_animal_whisperer_name
+    label: 'Ancestries and Backgrounds > Background List > Animal Whisperer > Name'
+    description: 'Ancestries and Backgrounds > Background List > Animal Whisperer > Name'
+    value:
+      type: text_literal
+      text_literal: 'Animal Whisperer'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_animal_whisperer_description
+    label: 'Ancestries and Backgrounds > Background List > Animal Whisperer > Description'
+    description: 'Ancestries and Backgrounds > Background List > Animal Whisperer > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You have always felt a connection to animals, and it was only a small leap to learn to train them. As you travel, you continuously encounter different creatures, befriending them along the way.
+
+
+        Choose two ability boosts. One must be to Wisdom or Charisma, and one is a free ability boost.
+
+
+        You gain the Train Animal skill feat, and you’re trained in the Animal Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_barkeep_name
+    label: 'Ancestries and Backgrounds > Background List > Barkeep > Name'
+    description: 'Ancestries and Backgrounds > Background List > Barkeep > Name'
+    value:
+      type: text_literal
+      text_literal: 'Barkeep'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_barkeep_description
+    label: 'Ancestries and Backgrounds > Background List > Barkeep > Description'
+    description: 'Ancestries and Backgrounds > Background List > Barkeep > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You have five specialties: hefting barrels, polishing steins, drinking, drinking, and drinking. You ran or worked in a bar, where you learned how to hold your liquor and rowdily socialize.
+
+
+        Choose two ability boosts. One must be to Constitution or Charisma, and one is a free ability boost.
+
+
+        You gain the Hobnobber skill feat, and you’re trained in the Alcohol Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_blacksmith_name
+    label: 'Ancestries and Backgrounds > Background List > Blacksmith > Name'
+    description: 'Ancestries and Backgrounds > Background List > Blacksmith > Name'
+    value:
+      type: text_literal
+      text_literal: 'Blacksmith'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_blacksmith_description
+    label: 'Ancestries and Backgrounds > Background List > Blacksmith > Description'
+    description: 'Ancestries and Backgrounds > Background List > Blacksmith > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You were a blacksmith or a blacksmith’s apprentice, and during countless hours toiling at the forge, you learned how to smith armor and weapons. Perhaps you worked hard each day and dreamed of adventure each night, or perhaps the adventuring life was thrust upon you by a pivotal event.
+
+
+        Choose two ability boosts. One must be to Strength or Intelligence, and one is a free ability boost.
+
+
+        You gain the Specialty Crafting skill feat for blacksmithing, and you’re trained in the Smithing Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_criminal_name
+    label: 'Ancestries and Backgrounds > Background List > Criminal > Name'
+    description: 'Ancestries and Backgrounds > Background List > Criminal > Name'
+    value:
+      type: text_literal
+      text_literal: 'Criminal'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_criminal_description
+    label: 'Ancestries and Backgrounds > Background List > Criminal > Description'
+    description: 'Ancestries and Backgrounds > Background List > Criminal > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        As an unscrupulous independent or as a member of an underworld organization, you lived a life of crime. You might have become an adventurer to seek redemption, to escape the law, or simply to get access to bigger and better loot.
+
+
+        Choose two ability boosts. One must be to Dexterity or Intelligence, and one is a free ability boost.
+
+
+        You gain the Experienced Smuggler skill feat, and you’re trained in the Underworld Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_entertainer_name
+    label: 'Ancestries and Backgrounds > Background List > Entertainer > Name'
+    description: 'Ancestries and Backgrounds > Background List > Entertainer > Name'
+    value:
+      type: text_literal
+      text_literal: 'Entertainer'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_entertainer_description
+    label: 'Ancestries and Backgrounds > Background List > Entertainer > Description'
+    description: 'Ancestries and Backgrounds > Background List > Entertainer > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Through an education in the arts or sheer, dogged practice, you learned to entertain crowds. You might have been an actor, a dancer, a musician, a magician, or any other sort of performer.
+
+
+        Choose two ability boosts. One must be to Dexterity or Charisma, and one is a free ability boost.
+
+
+        You gain the Fascinating Performance skill feat, and you’re trained in the Entertainment Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_farmhand_name
+    label: 'Ancestries and Backgrounds > Background List > Farmhand > Name'
+    description: 'Ancestries and Backgrounds > Background List > Farmhand > Name'
+    value:
+      type: text_literal
+      text_literal: 'Farmhand'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_farmhand_description
+    label: 'Ancestries and Backgrounds > Background List > Farmhand > Description'
+    description: 'Ancestries and Backgrounds > Background List > Farmhand > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        With a strong back and an understanding of seasonal cycles, you tilled the land and tended crops. Your farm could have been razed by invaders, you could have lost the family tying you to the land, or you might have simply tired of the drudgery, but at some point you became an adventurer.
+
+
+        Choose two ability boosts. One must be to Constitution or Wisdom, and one is a free ability boost.
+
+
+        You gain the Assurance skill feat with Athletics, and you’re trained in the Farming Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_gladiator_name
+    label: 'Ancestries and Backgrounds > Background List > Gladiator > Name'
+    description: 'Ancestries and Backgrounds > Background List > Gladiator > Name'
+    value:
+      type: text_literal
+      text_literal: 'Gladiator'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_gladiator_description
+    label: 'Ancestries and Backgrounds > Background List > Gladiator > Description'
+    description: 'Ancestries and Backgrounds > Background List > Gladiator > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The bloody games of the arena taught you the art of combat. Before you attained true fame, you departed—or escaped—the arena to explore the world. Your skill at drawing both blood and a crowd’s attention pay off in a new adventuring life.
+
+
+        Choose two ability boosts. One must be to Strength or Charisma, and one is a free ability boost.
+
+
+        You gain the Fascinating Performance skill feat, and you’re trained in the Gladiatorial Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_hunter_name
+    label: 'Ancestries and Backgrounds > Background List > Hunter > Name'
+    description: 'Ancestries and Backgrounds > Background List > Hunter > Name'
+    value:
+      type: text_literal
+      text_literal: 'Hunter'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_hunter_description
+    label: 'Ancestries and Backgrounds > Background List > Hunter > Description'
+    description: 'Ancestries and Backgrounds > Background List > Hunter > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You stalk and take down animals and other creatures of the wild. Skinning animals, harvesting their flesh, and cooking them were also part of your training, all of which can give you useful resources while you adventure.
+
+
+        Choose two ability boosts. One must be to Dexterity or Wisdom, and one is a free ability boost.
+
+
+        You gain the Survey Wildlife skill feat, and you’re trained in the Hunting Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_laborer_name
+    label: 'Ancestries and Backgrounds > Background List > Laborer > Name'
+    description: 'Ancestries and Backgrounds > Background List > Laborer > Name'
+    value:
+      type: text_literal
+      text_literal: 'Laborer'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_laborer_description
+    label: 'Ancestries and Backgrounds > Background List > Laborer > Description'
+    description: 'Ancestries and Backgrounds > Background List > Laborer > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You have spent years performing arduous physical labor, perhaps against your will. It was a difficult life, but you somehow survived. You may have embraced adventuring as an easier method to make your way in the world, or you might adventure under someone else’s command.
+
+
+        Choose two ability boosts. One must be to Strength or Constitution, and one is a free ability boost.
+
+
+        You gain the Robust Recovery skill feat, and you’re trained in the Labor Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_merchant_name
+    label: 'Ancestries and Backgrounds > Background List > Merchant > Name'
+    description: 'Ancestries and Backgrounds > Background List > Merchant > Name'
+    value:
+      type: text_literal
+      text_literal: 'Merchant'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_merchant_description
+    label: 'Ancestries and Backgrounds > Background List > Merchant > Description'
+    description: 'Ancestries and Backgrounds > Background List > Merchant > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        In a dusty shop, market stall, or merchant caravan, you bartered wares for coin and trade goods. The skills you picked up still apply in the adventuring life, in which a deal on a suit of armor could save your life.
+
+
+        Choose two ability boosts. One must be to Intelligence or Charisma, and one is a free ability boost.
+
+
+        You gain the Bargain Hunter skill feat, and you’re trained in the Mercantile Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_noble_name
+    label: 'Ancestries and Backgrounds > Background List > Noble > Name'
+    description: 'Ancestries and Backgrounds > Background List > Noble > Name'
+    value:
+      type: text_literal
+      text_literal: 'Noble'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_noble_description
+    label: 'Ancestries and Backgrounds > Background List > Noble > Description'
+    description: 'Ancestries and Backgrounds > Background List > Noble > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        To the common folk, the life of a noble seems one of idyllic luxury, but growing up as a noble or member of the aspiring gentry, you know the reality: a noble’s lot is obligation and intrigue. Whether you seek to escape your duties by adventuring or to thereby better your station, you have traded silks and pageantry for an adventurer’s life.
+
+
+        Choose two ability boosts. One must be to Intelligence or Charisma, and one is a free ability boost.
+
+
+        You gain the Courtly Graces skill feat, and you’re trained in the Nobility Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_nomad_name
+    label: 'Ancestries and Backgrounds > Background List > Nomad > Name'
+    description: 'Ancestries and Backgrounds > Background List > Nomad > Name'
+    value:
+      type: text_literal
+      text_literal: 'Nomad'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_nomad_description
+    label: 'Ancestries and Backgrounds > Background List > Nomad > Description'
+    description: 'Ancestries and Backgrounds > Background List > Nomad > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Traveling far and wide, you picked up basic tactics for surviving on the road and in unknown lands, getting by with few supplies and even fewer comforts. As an adventurer, you travel still, often into even more dangerous places.
+
+        Choose two ability boosts. One must be to Constitution or Wisdom, and one is a free ability boost.
+
+
+        You gain the Assurance skill feat with Survival, and you’re trained in a Lore skill related to one terrain you traveled in (such as Desert Lore or Swamp Lore).
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_sailor_name
+    label: 'Ancestries and Backgrounds > Background List > Sailor > Name'
+    description: 'Ancestries and Backgrounds > Background List > Sailor > Name'
+    value:
+      type: text_literal
+      text_literal: 'Sailor'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_sailor_description
+    label: 'Ancestries and Backgrounds > Background List > Sailor > Description'
+    description: 'Ancestries and Backgrounds > Background List > Sailor > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You heard the call of the sea from a young age. Perhaps you signed onto a merchant’s vessel, joined the navy, or even fell in with a crew of pirates and scallywags.
+
+
+        Choose two ability boosts. One must be to Strength or Dexterity, and one is a free ability boost.
+
+
+        You gain the Underwater Marauder skill feat, and you’re trained in the Sailing Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_scholor_name
+    label: 'Ancestries and Backgrounds > Background List > Scholar > Name'
+    description: 'Ancestries and Backgrounds > Background List > Scholar > Name'
+    value:
+      type: text_literal
+      text_literal: 'Scholar'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_scholor_description
+    label: 'Ancestries and Backgrounds > Background List > Scholar > Description'
+    description: 'Ancestries and Backgrounds > Background List > Scholar > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You have a knack for learning, and from a young age, you sequestered yourself from the outside world to learn all that you could. You’ve read about so many wondrous places and things in your books, and you’ve always dreamed about one day seeing the real things. Eventually, that curiosity led you to leave your studies and become an adventurer.
+
+        Choose two ability boosts. One must be to Intelligence or Wisdom, and one is a free ability boost.
+
+        Choose Arcana, Nature, Occultism, or Religion; you gain the Assurance skill feat in your chosen skill. You’re trained in the Academia Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_scout_name
+    label: 'Ancestries and Backgrounds > Background List > Scout > Name'
+    description: 'Ancestries and Backgrounds > Background List > Scout > Name'
+    value:
+      type: text_literal
+      text_literal: 'Scout'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_scout_description
+    label: 'Ancestries and Backgrounds > Background List > Scout > Description'
+    description: 'Ancestries and Backgrounds > Background List > Scout > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You called the wilderness home as you hunted game, found trails, and guided travelers. Your wanderlust could have called you to the adventuring life, or perhaps you were serving as a scout for soldiers and found you liked battle.
+
+
+        Choose two ability boosts. One must be to Dexterity or Wisdom, and one is a free ability boost.
+
+
+        You gain the Forager skill feat, and you’re trained in the Scouting Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_street_urchin_name
+    label: 'Ancestries and Backgrounds > Background List > Street Urchin > Name'
+    description: 'Ancestries and Backgrounds > Background List > Street Urchin > Name'
+    value:
+      type: text_literal
+      text_literal: 'Street Urchin'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_street_urchin_description
+    label: 'Ancestries and Backgrounds > Background List > Street Urchin > Description'
+    description: 'Ancestries and Backgrounds > Background List > Street Urchin > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You eked out a living by picking pockets on the streets of a major city, never knowing where you’d find your next meal. While some folk adventure for the glory, you adventure as a means of survival.
+
+
+        Choose two ability boosts. One must be to Dexterity or Intelligence, and one is a free ability boost.
+
+
+        You gain the Pickpocket skill feat, and you’re trained in the Underworld Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_warrior_name
+    label: 'Ancestries and Backgrounds > Background List > Warrior > Name'
+    description: 'Ancestries and Backgrounds > Background List > Warrior > Name'
+    value:
+      type: text_literal
+      text_literal: 'Warrior'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_background_list_warrior_description
+    label: 'Ancestries and Backgrounds > Background List > Warrior > Description'
+    description: 'Ancestries and Backgrounds > Background List > Warrior > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        As a warrior in a tribe or a member of a militia or army, you waded into battle in your younger days. You might have wanted to break out from the regimented structure of these forces, or could have always been as independent a warrior as you are now.
+
+
+        Choose two ability boosts. One must be to Strength or Constitution, and one is a free ability boost.
+
+
+        You gain the Quick Repair skill feat, and you’re trained in the Warfare Lore skill.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_languages_description
+    label: 'Ancestries and Backgrounds > Languages > Description'
+    description: 'Ancestries and Backgrounds > Languages > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your character’s ancestry section states which languages she speaks at 1st level. Having an Intelligence score of 14 or higher also grants one additional language, which you can choose from the list presented in your character’s ancestry entry and from those available from your region or ethnicity.
+
+        The languages presented in this section are grouped according to how commonly they are found throughout the Inner Sea region. Languages that are common are regularly found in most places, even among those who aren’t native speakers. Languages that are uncommon are most frequently spoken by native speakers, but they are also spoken by certain scholars and others interested in those associated cultures.
+
+        Pathfinder also includes Druidic, which is a secret language. Druidic is not available to characters who are not druids, and druids are prohibited from teaching the language to nondruids, as described further on page 81.
+
+
+        It is, of course, possible for your character to learn languages later in her adventuring career. The Multilingual feat (see page 169), for example, grants two new languages that can be chosen from the languages listed in the common and uncommon tables below. Other abilities and effects might grant access to common or uncommon languages as detailed in their descriptions.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_languages_sign_language_header
+    label: 'Ancestries and Backgrounds > Languages > Sign Language > Header'
+    description: 'Ancestries and Backgrounds > Languages > Sign Language > Header'
+    value:
+      type: text_literal
+      text_literal: 'Sign Language'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_languages_sign_language_description
+    label: 'Ancestries and Backgrounds > Languages > Sign Language > Description'
+    description: 'Ancestries and Backgrounds > Languages > Sign Language > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your character might use sign language instead of spoken language. This is especially common for a character who is deaf or hard of hearing or who can’t speak. In this case, your character can communicate using the sign languages associated with the languages she selects, as well as being able to read and write the written forms of those languages.
+
+
+        When you first choose your character’s languages, you must decide whether she knows the sign language versions of all of her languages or their spoken versions. If you choose sign language instead of spoken language, your character receives Read Lips (see page 170) as a bonus feat. However, if your character is unable to speak, that feat may not convey the ability to speak. A deaf or hard of hearing character can’t use hearing as an imprecise sense (see page 301). Should your character lose or gain her sense of hearing during the game, she can spend downtime retraining her languages from spoken to signed or vice versa. If you’re playing a hearing character who would know one or more sign languages as a result of her backstory (for example, a hearing character with a deaf parent), you may get Sign Language (see page 171) as a bonus feat at the GM’s discretion.
+
+
+        Sign languages typically require both hands to convey more than basic concepts, and they require direct visual attention to understand. Since they are quiet, they are ideal for infiltrations in exploration mode, but the required attention makes them extremely difficult to understand in combat. Much as a character can’t engage in complex spoken dialogue while swinging a sword, a character can’t communicate a hefty amount of information in sign language during combat, but simple concepts such as designating a target, mocking a foe, or signaling an ally to look out can be conveyed through signs as easily as shouted words. Using sign language in some situations, such as areas of low visibility, can be tricky—just as it can be difficult to communicate verbally in a noisy environment.
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_languages_in_game_header
+    label: 'Ancestries and Backgrounds > Languages > In the Game > Header'
+    description: 'Ancestries and Backgrounds > Languages > In the Game > Header'
+    value:
+      type: text_literal
+      text_literal: 'Languages in the Game'
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_languages_in_game_content
+    label: 'Ancestries and Backgrounds > Languages > In the Game > Content'
+    description: 'Ancestries and Backgrounds > Languages > In the Game > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        Learning a new language affords your character opportunities, particularly if you choose a language to fit the adventure, such as learning Undercommon before an adventure in the Darklands. While in most cases you can eventually find an NPC who also speaks Common, knowing the language yourself allows you to hear what the NPCs are saying to each other and appeal to NPCs other than your translator. Your whole party could even learn a little-known language that you use for secret communications!

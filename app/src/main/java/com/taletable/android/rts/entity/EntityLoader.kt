@@ -222,7 +222,10 @@ private fun loadGroupIndex(filepath : String, context : Context) : GroupIndex
 {
     val groupIndexLoader = TomeDoc.loadGroupIndex(filepath, context)
     return when (groupIndexLoader) {
-        is Val -> groupIndexLoader.value
+        is Val -> {
+            Log.d("***ENTITY LOADER", "Loaded group index: $filepath")
+            groupIndexLoader.value
+        }
         is Err -> {
             ApplicationLog.error(groupIndexLoader.error)
             GroupIndex.empty()
@@ -235,7 +238,10 @@ private fun loadVariableIndex(filepath : String, context : Context) : List<Varia
 {
     val variableIndexLoader = TomeDoc.loadVariableIndex(filepath, context)
     return when (variableIndexLoader) {
-        is Val -> variableIndexLoader.value.variables
+        is Val -> {
+            Log.d("***ENTITY LOADER", "Loaded variable index: $filepath")
+            variableIndexLoader.value.variables
+        }
         is Err -> {
             ApplicationLog.error(variableIndexLoader.error)
             listOf()

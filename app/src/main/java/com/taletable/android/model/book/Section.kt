@@ -2,14 +2,7 @@
 package com.taletable.android.model.book
 
 
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue1
-import com.taletable.android.lib.orm.RowValue3
-import com.taletable.android.lib.orm.schema.CollValue
-import com.taletable.android.lib.orm.schema.PrimValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
@@ -21,10 +14,13 @@ import effect.effValue
 import effect.split
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
+import maybe.Nothing
 import maybe.filterJust
 import java.io.Serializable
-import java.util.*
 
 
 
@@ -35,6 +31,7 @@ data class BookSection(val sectionId : BookSectionId,
                        val title : BookSectionTitle,
                        val introduction : List<BookContentId>,
                        val conclusion : List<BookContentId>,
+                       val group: Maybe<BookSectionGroup>,
                        val format : BookSectionFormat,
                        val subsections : MutableList<BookSubsection>)
                         : ToDocument, Serializable
@@ -69,6 +66,10 @@ data class BookSection(val sectionId : BookSectionId,
                       split(doc.maybeList("conclusion"),
                             effValue(listOf()),
                             { it.map { BookContentId.fromDocument(it) } }),
+                      // Group
+                      split(doc.maybeAt("group"),
+                            effValue<ValueError,Maybe<BookSectionGroup>>(Nothing()),
+                            { apply(::Just, BookSectionGroup.fromDocument(it)) }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(BookSectionFormat.default()),
@@ -103,6 +104,9 @@ data class BookSection(val sectionId : BookSectionId,
 
 
     fun title() : BookSectionTitle = this.title
+
+
+    fun group() : Maybe<BookSectionGroup> = this.group
 
 
     fun introduction() : List<BookContentId> = this.introduction
@@ -332,6 +336,34 @@ data class BookSectionPageHeaderFormat(val elementFormat : ElementFormat,
 
     fun sectionNameFormat() : TextFormat = this.sectionNameFormat
 
+
+}
+
+
+/**
+ * Section Group
+ */
+data class BookSectionGroup(val value : String) : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<BookSectionGroup>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookSectionGroup> = when (doc)
+        {
+            is DocText -> effValue(BookSectionGroup(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
 
 }
 

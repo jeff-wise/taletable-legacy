@@ -1,0 +1,997 @@
+groups:
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Reading Entries
+## ---------------------------------------------------------------------------------------------
+- id: '499b584e-3162-488c-92fd-8b02ef3588b9'
+  name: 'Ancestries and Backgrounds > Reading Entries'
+  summary: 'Ancestries and Backgrounds > Reading Entries'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 20
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_6
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_rules_introduction
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Reading Entries > Rules > Hit Points
+## ---------------------------------------------------------------------------------------------
+- id: '4b487f1f-3440-4ab6-8203-3bba48867e20'
+  name: 'Ancestries and Backgrounds > Reading Entries > Rules > Hit Points'
+  summary: 'Ancestries and Backgrounds > Reading Entries > Rules > Hit Points'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 20
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_6
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_rules_hit_points_content
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Reading Entries > Rules > Size
+## ---------------------------------------------------------------------------------------------
+- id: '95072f8a-1abe-4fe8-b98a-ccaad2aca36e'
+  name: 'Ancestries and Backgrounds > Reading Entries > Rules > Size'
+  summary: 'Ancestries and Backgrounds > Reading Entries > Rules > Size'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 20
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_6
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_rules_size_content
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Reading Entries > Rules > Speed
+## ---------------------------------------------------------------------------------------------
+- id: 'b5239c39-8fdc-4a1a-b29e-e4a0baea0ce2'
+  name: 'Ancestries and Backgrounds > Reading Entries > Rules > Speed'
+  summary: 'Ancestries and Backgrounds > Reading Entries > Rules > Speed'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 20
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_6
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_rules_speed_content
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Reading Entries > Rules > Ability Boosts
+## ---------------------------------------------------------------------------------------------
+- id: '790e2a53-b8af-49ad-9a2a-010dbe948fd0'
+  name: 'Ancestries and Backgrounds > Reading Entries > Rules > Ability Boosts'
+  summary: 'Ancestries and Backgrounds > Reading Entries > Rules > Ability Boosts'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 20
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_6
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_rules_ability_boosts_content
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Reading Entries > Rules > Ability Flaw
+## ---------------------------------------------------------------------------------------------
+- id: 'cc99d173-2841-4070-a616-80ba7800ae1d'
+  name: 'Ancestries and Backgrounds > Reading Entries > Rules > Ability Flaw'
+  summary: 'Ancestries and Backgrounds > Reading Entries > Rules > Ability Flaw'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 20
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_6
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_rules_ability_flaw_content
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Reading Entries > Languages
+## ---------------------------------------------------------------------------------------------
+- id: '8d0ae461-07b0-417d-8482-45f62bbb9a63'
+  name: 'Ancestries and Backgrounds > Reading Entries > Languages'
+  summary: 'Ancestries and Backgrounds > Reading Entries > Languages'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 24
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_6
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_rules_languages_content
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Reading Entries > Traits
+## ---------------------------------------------------------------------------------------------
+- id: 'f9591e9a-55ae-4b46-9583-ce7f6ed88717'
+  name: 'Ancestries and Backgrounds > Reading Entries > Traits'
+  summary: 'Ancestries and Backgrounds > Reading Entries > Traits'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 24
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_6
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_rules_traits_content
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Reading Entries > Special Abilities
+## ---------------------------------------------------------------------------------------------
+- id: 'f76e8e8b-a437-45c7-b9d9-041b9d0efd2a'
+  name: 'Ancestries and Backgrounds > Reading Entries > Special Abilities'
+  summary: 'Ancestries and Backgrounds > Reading Entries > Special Abilities'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 24
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_6
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_rules_special_abilities_content
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Reading Entries > Adventurers
+## ---------------------------------------------------------------------------------------------
+- id: 'd2179f96-ad16-40ea-9926-4c85ba53f230'
+  name: 'Ancestries and Backgrounds > Reading Entries > Adventurers'
+  summary: 'Ancestries and Backgrounds > Reading Entries > Adventurers'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 24
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_6
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_rules_adventurers_content
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Reading Entries > Feats
+## ---------------------------------------------------------------------------------------------
+- id: '87a63631-cfa1-4c50-9dd6-5bcc7a70de14'
+  name: 'Ancestries and Backgrounds > Reading Entries > Feats'
+  summary: 'Ancestries and Backgrounds > Reading Entries > Feats'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        bottom: 24
+        top: 24
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 4
+          bottom: 24
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+            paragraph_spacing: 24
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_rules_feats_content
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 22
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_rules_heritage_feats_header
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_8
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_rules_heritage_feats_content
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Ancestries > Dwarf > Overview
+## ---------------------------------------------------------------------------------------------
+- id: '7e838b5b-1f39-4c85-908f-dbc9afebc800'
+  name: 'Ancestries and Backgrounds > Ancestries > Dwarf > Overview'
+  summary: 'Ancestries and Backgrounds > Ancestries > Dwarf > Overview'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 20
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_6
+            size: 15.7
+            font: merriweather
+            font_style: light
+            line_spacing: 1.35
+            paragraph_spacing: 24
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_dwarf_overview
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Ancestries > Template > Basic Rules
+## ---------------------------------------------------------------------------------------------
+- id: '29141ef0-2641-4cb8-a76f-dd0654fdd599'
+  name: 'Ancestries and Backgrounds > Ancestries > Template > Basic Rules'
+  summary: 'Ancestries and Backgrounds > Ancestries > Template > Basic Rules'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 24
+        bottom: 20
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 22
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: term_ability_boosts
+  - widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          view_type: rows_simple_editor
+          item_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_2
+              corners:
+                top_left_radius: 1
+                top_right_radius: 1
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              margins:
+                bottom: 2
+              padding:
+                top: 12
+                bottom: 12
+                left: 12
+                right: 12
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_16
+            font: merriweather
+            font_style: bold
+            size: 16
+        values_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: dwarf
+              variable_id: ancestries_backgrounds_dwarf_abilty_boosts
+            - context: elf
+              variable_id: ancestries_backgrounds_elf_abilty_boosts
+            - context: gnome
+              variable_id: ancestries_backgrounds_gnome_abilty_boosts
+            - context: goblin
+              variable_id: ancestries_backgrounds_goblin_abilty_boosts
+            - context: halfling
+              variable_id: ancestries_backgrounds_halfling_abilty_boosts
+            - context: human
+              variable_id: ancestries_backgrounds_human_abilty_boosts
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 24
+          bottom: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 22
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: term_ability_flaw
+  - widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          view_type: rows_simple_editor
+          item_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_2
+              corners:
+                top_left_radius: 1
+                top_right_radius: 1
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              margins:
+                bottom: 2
+              padding:
+                top: 12
+                bottom: 12
+                left: 12
+                right: 12
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_16
+            font: merriweather
+            font_style: bold
+            size: 16
+        values_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: dwarf
+              variable_id: ancestries_backgrounds_dwarf_abilty_flaw
+            - context: elf
+              variable_id: ancestries_backgrounds_elf_abilty_flaw
+            - context: gnome
+              variable_id: ancestries_backgrounds_gnome_abilty_flaw
+            - context: goblin
+              variable_id: ancestries_backgrounds_goblin_abilty_flaw
+            - context: halfling
+              variable_id: ancestries_backgrounds_haflling_abilty_flaw
+            - context: human
+              variable_id: ancestries_backgrounds_human_abilty_flaw
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 24
+          bottom: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 22
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: term_languages
+  - widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          view_type: rows_simple_editor
+          item_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_2
+              corners:
+                top_left_radius: 1
+                top_right_radius: 1
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              margins:
+                bottom: 2
+              padding:
+                top: 12
+                bottom: 12
+                left: 12
+                right: 12
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_16
+            font: merriweather
+            font_style: bold
+            size: 16
+        values_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: dwarf
+              variable_id: ancestries_backgrounds_dwarf_languages
+            - context: elf
+              variable_id: ancestries_backgrounds_elf_languages
+            - context: gnome
+              variable_id: ancestries_backgrounds_gnome_languages
+            - context: goblin
+              variable_id: ancestries_backgrounds_goblin_languages
+            - context: halfling
+              variable_id: ancestries_backgrounds_halfling_languages
+            - context: human
+              variable_id: ancestries_backgrounds_human_languages
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 24
+          bottom: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 22
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: term_bonus_languages
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_16
+            size: 16
+            font: merriweather
+            font_style: regular
+            line_spacing: 1.3
+            paragraph_spacing: 24
+        value_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: dwarf
+              variable_id: ancestries_backgrounds_dwarf_bonus_languages
+            - context: elf
+              variable_id: ancestries_backgrounds_elf_bonus_languages
+            - context: gnome
+              variable_id: ancestries_backgrounds_gnome_bonus_languages
+            - context: goblin
+              variable_id: ancestries_backgrounds_goblin_bonus_languages
+            - context: halfling
+              variable_id: ancestries_backgrounds_halfling_bonus_languages
+            - context: human
+              variable_id: ancestries_backgrounds_human_bonus_languages
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 24
+          bottom: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 22
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: term_traits
+  - widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          view_type: rows_simple_editor
+          item_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_2
+              corners:
+                top_left_radius: 1
+                top_right_radius: 1
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              margins:
+                bottom: 2
+              padding:
+                top: 12
+                bottom: 12
+                left: 12
+                right: 12
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_14
+            font: merriweather
+            font_style: bold
+            size: 16
+        values_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: dwarf
+              variable_id: ancestries_backgrounds_dwarf_traits
+            - context: elf
+              variable_id: ancestries_backgrounds_elf_traits
+            - context: gnome
+              variable_id: ancestries_backgrounds_gnome_traits
+            - context: goblin
+              variable_id: ancestries_backgrounds_goblin_traits
+            - context: halfling
+              variable_id: ancestries_backgrounds_halfling_traits
+            - context: human
+              variable_id: ancestries_backgrounds_human_traits
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 24
+          bottom: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 22
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: term_darkvision
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_16
+            size: 16
+            font: merriweather
+            font_style: regular
+            line_spacing: 1.3
+            paragraph_spacing: 24
+        value_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: dwarf
+              variable_id: ancestries_backgrounds_dwarf_darkvision
+            - context: elf
+              variable_id: ancestries_backgrounds_elf_darkvision
+            - context: gnome
+              variable_id: ancestries_backgrounds_gnome_darkvision
+            - context: goblin
+              variable_id: ancestries_backgrounds_goblin_darkvision
+            - context: halfling
+              variable_id: ancestries_backgrounds_halfling_darkvision
+            - context: human
+              variable_id: ancestries_backgrounds_human_darkvision
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 24
+          bottom: 10
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              horizontal_alignment: left
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 22
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: term_unburdened
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: dark
+                color_id: light_grey_20
+              - theme_id: light
+                color_id: dark_grey_16
+            size: 16
+            font: merriweather
+            font_style: regular
+            line_spacing: 1.3
+            paragraph_spacing: 24
+        value_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: dwarf
+              variable_id: ancestries_backgrounds_dwarf_unburdened
+            - context: elf
+              variable_id: ancestries_backgrounds_elf_unburdened
+            - context: gnome
+              variable_id: ancestries_backgrounds_gnome_unburdened
+            - context: goblin
+              variable_id: ancestries_backgrounds_goblin_unburdened
+            - context: halfling
+              variable_id: ancestries_backgrounds_halfling_unburdened
+            - context: human
+              variable_id: ancestries_backgrounds_human_unburdened

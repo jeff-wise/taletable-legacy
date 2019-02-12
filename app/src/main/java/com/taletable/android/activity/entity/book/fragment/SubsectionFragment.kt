@@ -13,6 +13,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.taletable.android.R
+import com.taletable.android.R.string.group
 import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.book.*
@@ -24,7 +25,7 @@ import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.book
 import com.taletable.android.rts.entity.colorOrBlack
 import com.taletable.android.rts.entity.groups
-
+import maybe.Just
 
 
 /**
@@ -197,7 +198,7 @@ class SubsectionUI(val subsection : BookSubsection,
 
         //layout.margin.topDp     = 10f
 
-        layout.padding.leftDp   = 16f
+        layout.padding.leftDp   = 15f
         layout.padding.rightDp  = 16f
         layout.padding.topDp    = 14f
         layout.padding.bottomDp = 14f
@@ -393,8 +394,13 @@ class SubsectionUI(val subsection : BookSubsection,
         val layout = this.contentViewLayout()
 
         contentList.forEach { content ->
-            groups(content.groupReferences(), book.entityId()).forEach {
-                layout.addView(it.group.view(book.entityId(), context, it.groupContext))
+            groups(content.groupReferences(), book.entityId()).forEach { groupInvocation ->
+                val group = groupInvocation.group
+                val groupContext = when (content.context()) {
+                    is Just -> content.context()
+                    else    -> groupInvocation.groupContext
+                }
+                layout.addView(group.view(book.entityId(), context, groupContext))
             }
         }
 

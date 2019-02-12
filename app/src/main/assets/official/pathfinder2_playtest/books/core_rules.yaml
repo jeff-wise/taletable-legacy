@@ -13,6 +13,168 @@ settings:
   theme_id: light
 engine:
   value_sets:
+  - type: value_set_base
+    value_set_base:
+      value_set_id: ability_boosts
+      label: Ability Boosts
+      label_singular: Ability Boost
+      description: Ability boosts.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: strength
+          description: Strength
+          value: Strength
+      - type: value_text
+        value_text:
+          value_id: dexterity
+          description: Dexterity ability.
+          value: Dexterity
+      - type: value_text
+        value_text:
+          value_id: constitution
+          description: Constitution ability.
+          value: Constitution
+      - type: value_text
+        value_text:
+          value_id: intelligence
+          description: Intelligence ability.
+          value: Intelligence
+      - type: value_text
+        value_text:
+          value_id: wisdom
+          description: Wisdom ability.
+          value: Wisdom
+      - type: value_text
+        value_text:
+          value_id: charisma
+          description: Charisma ability.
+          value: Charisma
+      - type: value_text
+        value_text:
+          value_id: free
+          description: Free choice of ability.
+          value: Free (your choice)
+  - type: value_set_base
+    value_set_base:
+      value_set_id: ability_scores
+      label: Ability Scores
+      label_singular: Ability Score
+      description: Ability scores.
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: strength
+          description: Strength
+          value: Strength
+      - type: value_text
+        value_text:
+          value_id: dexterity
+          description: Dexterity ability.
+          value: Dexterity
+      - type: value_text
+        value_text:
+          value_id: constitution
+          description: Constitution ability.
+          value: Constitution
+      - type: value_text
+        value_text:
+          value_id: intelligence
+          description: Intelligence ability.
+          value: Intelligence
+      - type: value_text
+        value_text:
+          value_id: wisdom
+          description: Wisdom ability.
+          value: Wisdom
+      - type: value_text
+        value_text:
+          value_id: charisma
+          description: Charisma ability.
+          value: Charisma
+  - type: value_set_base
+    value_set_base:
+      value_set_id: common_languages
+      label: Common Languages
+      label_singular: Common Language
+      description: Common Languages
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: common
+          description: Common
+          value: Common
+      - type: value_text
+        value_text:
+          value_id: draconic
+          description: Draconic
+          value: Draconic
+      - type: value_text
+        value_text:
+          value_id: dwarven
+          description: Dwarven
+          value: Dwarven
+      - type: value_text
+        value_text:
+          value_id: elven
+          description: Elven
+          value: Elven
+      - type: value_text
+        value_text:
+          value_id: gnomish
+          description: Gnomish
+          value: Gnomish
+      - type: value_text
+        value_text:
+          value_id: goblin
+          description: Goblin
+          value: Goblin
+      - type: value_text
+        value_text:
+          value_id: halfling
+          description: Halfling
+          value: Halfling
+      - type: value_text
+        value_text:
+          value_id: jotun
+          description: Jotun
+          value: Jotun
+      - type: value_text
+        value_text:
+          value_id: orcish
+          description: Orcish
+          value: Orcish
+      - type: value_text
+        value_text:
+          value_id: sylvan
+          description: Sylvan
+          value: Sylvan
+      - type: value_text
+        value_text:
+          value_id: undercommon
+          description: Undercommon
+          value: Undercommon
+  - type: value_set_base
+    value_set_base:
+      value_set_id: racial_traits
+      label: Race Traits
+      label_singular: Race Trait
+      description: race traits
+      value_type: text
+      values:
+      - type: value_text
+        value_text:
+          value_id: dwarf
+          description: Dwarf
+          value: Dwarf
+      - type: value_text
+        value_text:
+          value_id: humanoid
+          description: Humanoid
+          value: Humanoid
   tasks:
   mechanics:
   mechanic_categories:
@@ -21,6 +183,85 @@ engine:
   summations:
   procedures:
 content:
+- id: ancestries_backgrounds_reading_introduction
+  title: 'Ancestries and Backgrounds > Reading Entries > Introduction'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '499b584e-3162-488c-92fd-8b02ef3588b9'
+- id: ancestries_backgrounds_reading_rules_hp
+  title: 'Ancestries and Backgrounds > Reading Entries > Rules > Hit Points'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4b487f1f-3440-4ab6-8203-3bba48867e20'
+- id: ancestries_backgrounds_reading_rules_size
+  title: 'Ancestries and Backgrounds > Reading Entries > Rules > Size'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '95072f8a-1abe-4fe8-b98a-ccaad2aca36e'
+- id: ancestries_backgrounds_reading_rules_speed
+  title: 'Ancestries and Backgrounds > Reading Entries > Rules > Speed'
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'b5239c39-8fdc-4a1a-b29e-e4a0baea0ce2'
+- id: ancestries_backgrounds_reading_rules_ability_boosts
+  title: 'Ancestries and Backgrounds > Reading Entries > Rules > Ability Boosts'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '790e2a53-b8af-49ad-9a2a-010dbe948fd0'
+- id: ancestries_backgrounds_reading_rules_ability_flaw
+  title: 'Ancestries and Backgrounds > Reading Entries > Rules > Ability Flaw'
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'cc99d173-2841-4070-a616-80ba7800ae1d'
+- id: ancestries_backgrounds_reading_languages
+  title: 'Ancestries and Backgrounds > Reading Entries > Languages'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8d0ae461-07b0-417d-8482-45f62bbb9a63'
+- id: ancestries_backgrounds_reading_traits
+  title: 'Ancestries and Backgrounds > Reading Entries > Traits'
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9591e9a-55ae-4b46-9583-ce7f6ed88717'
+- id: ancestries_backgrounds_reading_adventurers
+  title: 'Ancestries and Backgrounds > Reading Entries > Adventurers'
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'd2179f96-ad16-40ea-9926-4c85ba53f230'
+- id: ancestries_backgrounds_reading_special_abilities
+  title: 'Ancestries and Backgrounds > Reading Entries > Special Abilities'
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f76e8e8b-a437-45c7-b9d9-041b9d0efd2a'
+- id: ancestries_backgrounds_reading_feats
+  title: 'Ancestries and Backgrounds > Reading Entries > Feats'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '87a63631-cfa1-4c50-9dd6-5bcc7a70de14'
+- id: ancestries_backgrounds_ancestries_dwarf_overview
+  title: 'Ancestries and Backgrounds > Ancestries > Dwarf > Overview'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '7e838b5b-1f39-4c85-908f-dbc9afebc800'
+- id: ancestries_backgrounds_ancestries_dwarf_basic_rules
+  title: 'Ancestries and Backgrounds > Ancestries > Dwarf > Basic Rules'
+  context: dwarf
+  group_references:
+  - value:
+      type: group_id
+      group_id: '29141ef0-2641-4cb8-a76f-dd0654fdd599'
 - id: equipment_basic_rules
   title: 'Weapons'
   group_references:
@@ -993,20 +1234,83 @@ chapters:
   title: 'Ancestries and Backgrounds'
   summary: 'The ancestries and backgrounds available for player characters.'
   sections:
-  - id: reading_ancestry_entries
+  - id: ancestries_backgrounds_reading
     title: 'Reading Ancestry Entries'
+    introduction:
+    - ancestries_backgrounds_reading_introduction
+    subsections:
+    - id: ancestries_backgrounds_reading_rules_hp
+      title: 'Hit Points'
+      group: 'Rules'
+      body:
+      - ancestries_backgrounds_reading_rules_hp
+    - id: ancestries_backgrounds_reading_rules_size
+      title: 'Size'
+      group: 'Rules'
+      body:
+      - ancestries_backgrounds_reading_rules_size
+    - id: ancestries_backgrounds_reading_rules_speed
+      title: 'Speed'
+      group: 'Rules'
+      body:
+      - ancestries_backgrounds_reading_rules_speed
+    - id: ancestries_backgrounds_reading_rules_ability_boosts
+      title: 'Ability Boosts'
+      group: 'Rules'
+      body:
+      - ancestries_backgrounds_reading_rules_ability_boosts
+    - id: ancestries_backgrounds_reading_rules_ability_flaw
+      title: 'Ability Flaw'
+      group: 'Rules'
+      body:
+      - ancestries_backgrounds_reading_rules_ability_flaw
+    - id: ancestries_backgrounds_reading_rules_languages
+      title: 'Languages and Bonus Languages'
+      body:
+      - ancestries_backgrounds_reading_languages
+    - id: ancestries_backgrounds_reading_rules_traits
+      title: 'Traits'
+      body:
+      - ancestries_backgrounds_reading_traits
+    - id: ancestries_backgrounds_reading_rules_special_abilities
+      title: 'Special Abilities'
+      body:
+      - ancestries_backgrounds_reading_special_abilities
+    - id: ancestries_backgrounds_reading_rules_feats
+      title: 'Ancestry Feats'
+      body:
+      - ancestries_backgrounds_reading_feats
+    - id: ancestries_backgrounds_reading_rules_adventurers
+      title: 'Adventurers'
+      body:
+      - ancestries_backgrounds_reading_adventurers
   - id: dwarf
     title: 'Dwarf'
+    group: 'Ancestries'
+    subsections:
+    - id: ancestries_backgrounds_ancestries_dwarf_overview
+      title: 'Overview'
+      body:
+      - ancestries_backgrounds_ancestries_dwarf_overview
+    - id: ancestries_backgrounds_ancestries_dwarf_basic_rules
+      title: 'Basic Rules'
+      body:
+      - ancestries_backgrounds_ancestries_dwarf_basic_rules
   - id: elf
     title: 'Elf'
+    group: 'Ancestries'
   - id: gnome
     title: 'Gnome'
+    group: 'Ancestries'
   - id: goblin
     title: 'Goblin'
+    group: 'Ancestries'
   - id: halfling
     title: 'Halfling'
+    group: 'Ancestries'
   - id: human
     title: 'Human'
+    group: 'Ancestries'
   - id: backgrounds
     title: 'Backgrounds'
   - id: languages

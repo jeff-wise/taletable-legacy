@@ -40,6 +40,7 @@ import com.taletable.android.model.engine.value.Value
 import com.taletable.android.model.engine.value.ValueId
 import com.taletable.android.model.engine.value.ValueReference
 import com.taletable.android.model.engine.value.ValueSetId
+import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.style.*
 import com.taletable.android.model.theme.ColorId
 import com.taletable.android.model.theme.ColorTheme
@@ -460,7 +461,8 @@ sealed class ListWidgetEditType
 
 class ListWidgetUI(val listWidget : ListWidget,
                    val entityId : EntityId,
-                   val context : Context)
+                   val context : Context,
+                   val groupContext : Maybe<GroupContext> = Nothing())
 {
 
     // -----------------------------------------------------------------------------------------
@@ -621,6 +623,8 @@ class ListWidgetUI(val listWidget : ListWidget,
         val layoutId = Util.generateViewId()
         layout.id = layoutId
         listWidget.layoutViewId = layoutId
+
+        //Log.d("***LIST WIDGET", "group context is : $groupContext")
 
         this.updateView(layout)
 
@@ -819,9 +823,10 @@ class ListWidgetUI(val listWidget : ListWidget,
     {
         val layout = this.rowsViewLayout()
 
-        layout.addView(this.titleBarView(editType))
+        // skip this for now
+        //layout.addView(this.titleBarView(editType))
 
-        listWidget.variable(entityId) apDo { variable ->
+        listWidget.variable(entityId, groupContext) apDo { variable ->
             variable.constraint().doMaybe { constraint ->
             constraint.constraintOfType(ConstraintTypeTextListMaxSize).doMaybe {
                 if (it is TextListConstraintMaxSize)
@@ -864,13 +869,18 @@ class ListWidgetUI(val listWidget : ListWidget,
     {
         val layout = this.itemsViewLayout()
 
-        val itemStrings = listWidget.valueIdStrings(entityId)
+        Log.d("***LIST WIDGET", "group context is : $groupContext")
+        val itemStrings = listWidget.valueIdStrings(entityId, groupContext)
         when (itemStrings)
         {
             is Val -> {
-                itemStrings.value.sorted().forEach {
+
+                // add option to sort
+                //itemStrings.value.sorted().forEach {
+                itemStrings.value.forEach {
                     val rowView = this.rowView(it)
                     this.rowViews.add(rowView)
+                    Log.d("***LIST WIDGET", "adding item: $it")
                     layout.addView(rowView)
                 }
             }
@@ -1019,9 +1029,10 @@ class ListWidgetUI(val listWidget : ListWidget,
         item.width              = LinearLayout.LayoutParams.WRAP_CONTENT
         item.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        listWidget.title(entityId).doMaybe { titleString ->
-            item.text           = titleString
-        }
+        // what is this for???
+//        listWidget.title(entityId).doMaybe { titleString ->
+//            item.text           = titleString
+//        }
 
         item.text               = itemString
 

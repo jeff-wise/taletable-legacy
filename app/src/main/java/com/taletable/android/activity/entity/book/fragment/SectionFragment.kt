@@ -566,7 +566,7 @@ class SectionUI(val section : BookSection,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
-        summary.sizeSp              = 18.5f
+        summary.sizeSp              = 19f
 
         summary.backgroundColor     = Color.WHITE
 
