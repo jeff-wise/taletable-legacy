@@ -1,0 +1,27 @@
+
+---
+
+version: '0.7'
+metadata:
+  name: Variable Index
+  authors:
+  - name: 'Jeff Wise'
+description:
+  overview: >
+    A variable index...
+root_type: variable_index
+types:
+- type: product_type
+  product_type: 
+    name: variable_index  
+    label: Variable Index
+    description: A collection of variables.
+    group: Variable Index
+    fields:
+    - name: variables
+      type:
+        type: custom_coll_type
+        custom_coll_type: variable
+      presence: required
+      description: The variables.
+constraints:

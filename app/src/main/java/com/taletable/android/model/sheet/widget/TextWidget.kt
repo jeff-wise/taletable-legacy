@@ -9,11 +9,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.taletable.android.R
-import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue4
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.lib.ui.TextViewBuilder
 import com.taletable.android.model.sheet.group.GroupContext
@@ -32,7 +28,6 @@ import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
-import java.util.*
 
 
 
@@ -306,6 +301,18 @@ object TextWidgetView
 //            }
 //        }
 
+        val insideLabel = textWidget.insideLabelValue(entityId)
+
+        // > Inside Top/Left Label View
+        when (insideLabel) {
+            is Val -> {
+                val position = format.insideLabelFormat().elementFormat().position()
+                if (position.isTop() || position.isLeft()) {
+                    layout.addView(this.insideLabelView(format, insideLabel.value, entityId, context))
+                }
+            }
+        }
+
         val valueString = textWidget.valueString(entityId, groupContext)
         val paragraphs = valueString.split("\n")
         paragraphs.forEachIndexed { index, s ->
@@ -433,23 +440,30 @@ object TextWidgetView
 //        return label.textView(sheetUIContext.context)
 //    }
 //
-//
-//    private fun insideLabelView(format : TextWidgetFormat,
-//                                sheetUIContext: SheetUIContext) : TextView
-//    {
-//        val label               = TextViewBuilder()
-//
-//        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-//        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-//
-//        //label.text              = format.insideLabel()
-//
-//        format.insideLabelFormat().styleTextViewBuilder(label, sheetUIContext)
-//
-//        label.marginSpacing     = format.insideLabelFormat().elementFormat().margins()
-//
-//        return label.textView(sheetUIContext.context)
-//    }
+
+
+    private fun insideLabelView(format : TextWidgetFormat,
+                                labelString : String,
+                                entityId : EntityId,
+                                context : Context) : TextView
+    {
+        val label               = TextViewBuilder()
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.text              = labelString
+
+        label.layoutGravity     = format.insideLabelFormat().elementFormat().alignment().gravityConstant() or
+                                      Gravity.CENTER_VERTICAL;
+
+        format.insideLabelFormat().styleTextViewBuilder(label, entityId, context)
+
+        label.marginSpacing     = format.insideLabelFormat().elementFormat().margins()
+
+        return label.textView(context)
+    }
+
 
 
 }

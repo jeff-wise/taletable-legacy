@@ -4502,6 +4502,7 @@ data class TableWidget(private val widgetId : WidgetId,
 data class TextWidget(val widgetId : WidgetId,
                       val format : TextWidgetFormat,
                       val valueVariableReference : VariableReference,
+                      val insideLabelVariableReference : Maybe<VariableReference>,
                       val bookReference : Maybe<BookReference>,
                       val primaryActionWidgetId : Maybe<WidgetId>,
                       val secondaryActionWigdetId : Maybe<WidgetId>)
@@ -4528,6 +4529,7 @@ data class TextWidget(val widgetId : WidgetId,
                valueVariableId,
                Nothing(),
                Nothing(),
+               Nothing(),
                Nothing())
 
 
@@ -4548,6 +4550,10 @@ data class TextWidget(val widgetId : WidgetId,
                             { TextWidgetFormat.fromDocument(it) }),
                       // Value Variable Reference
                       doc.at("value_variable_reference") ap { VariableReference.fromDocument(it) },
+                      // Inside Label
+                      split(doc.maybeAt("inside_label_variable_reference"),
+                            effValue<ValueError,Maybe<VariableReference>>(Nothing()),
+                            { apply(::Just, VariableReference.fromDocument(it)) }),
                       // Book Reference
                       split(doc.maybeAt("book_reference"),
                             effValue<ValueError,Maybe<BookReference>>(Nothing()),
@@ -4586,6 +4592,9 @@ data class TextWidget(val widgetId : WidgetId,
 
 
     fun valueVariableReference() : VariableReference = this.valueVariableReference
+
+
+    fun insideLabelVariableReference() : Maybe<VariableReference> = this.insideLabelVariableReference
 
 
     fun rulebookReference() : Maybe<BookReference> = this.bookReference
@@ -4713,6 +4722,18 @@ data class TextWidget(val widgetId : WidgetId,
                             entityId,
                             scopeGroupContext.apply { Just(VariableNamespace(it.value)) })
     }
+
+
+
+    fun insideLabelValueVariable(entityId : EntityId) : AppEff<TextVariable> =
+            note<AppError,VariableReference>(this.insideLabelVariableReference, AppVoidError())
+                .apply { textVariable(it, entityId) }
+
+
+
+    fun insideLabelValue(entityId : EntityId) : AppEff<String> =
+            insideLabelValueVariable(entityId).apply { it.valueString(entityId) }
+
 
 
 

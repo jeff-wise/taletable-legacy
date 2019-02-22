@@ -472,11 +472,11 @@ groups:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_heritage_feats_content
 ## ---------------------------------------------------------------------------------------------
-## | Ancestries and Backgrounds > Ancestries > Dwarf > Overview
+## | Ancestries and Backgrounds > Ancestries > Template > Overview
 ## ---------------------------------------------------------------------------------------------
 - id: '7e838b5b-1f39-4c85-908f-dbc9afebc800'
-  name: 'Ancestries and Backgrounds > Ancestries > Dwarf > Overview'
-  summary: 'Ancestries and Backgrounds > Ancestries > Dwarf > Overview'
+  name: 'Ancestries and Backgrounds > Ancestries > Template > Overview'
+  summary: 'Ancestries and Backgrounds > Ancestries > Template > Overview'
   format:
     element_format:
       background_color_theme:
@@ -508,8 +508,21 @@ groups:
             line_spacing: 1.35
             paragraph_spacing: 24
         value_variable_reference:
-          type: variable_id
-          variable_id: ancestries_backgrounds_dwarf_overview
+          type: variable_template
+          variable_template:
+            entries:
+            - context: dwarf
+              variable_id: ancestries_backgrounds_dwarf_overview
+            - context: elf
+              variable_id: ancestries_backgrounds_elf_overview
+            - context: gnome
+              variable_id: ancestries_backgrounds_gnome_overview
+            - context: goblin
+              variable_id: ancestries_backgrounds_goblin_overview
+            - context: halfling
+              variable_id: ancestries_backgrounds_halfling_overview
+            - context: human
+              variable_id: ancestries_backgrounds_human_overview
 ## ---------------------------------------------------------------------------------------------
 ## | Ancestries and Backgrounds > Ancestries > Template > Basic Rules
 ## ---------------------------------------------------------------------------------------------
@@ -588,17 +601,17 @@ groups:
           variable_template:
             entries:
             - context: dwarf
-              variable_id: ancestries_backgrounds_dwarf_abilty_boosts
+              variable_id: ancestries_backgrounds_dwarf_ability_boosts
             - context: elf
-              variable_id: ancestries_backgrounds_elf_abilty_boosts
+              variable_id: ancestries_backgrounds_elf_ability_boosts
             - context: gnome
-              variable_id: ancestries_backgrounds_gnome_abilty_boosts
+              variable_id: ancestries_backgrounds_gnome_ability_boosts
             - context: goblin
-              variable_id: ancestries_backgrounds_goblin_abilty_boosts
+              variable_id: ancestries_backgrounds_goblin_ability_boosts
             - context: halfling
-              variable_id: ancestries_backgrounds_halfling_abilty_boosts
+              variable_id: ancestries_backgrounds_halfling_ability_boosts
             - context: human
-              variable_id: ancestries_backgrounds_human_abilty_boosts
+              variable_id: ancestries_backgrounds_human_ability_boosts
   - format:
       element_format:
         horizontal_alignment: left
@@ -660,17 +673,17 @@ groups:
           variable_template:
             entries:
             - context: dwarf
-              variable_id: ancestries_backgrounds_dwarf_abilty_flaw
+              variable_id: ancestries_backgrounds_dwarf_ability_flaw
             - context: elf
-              variable_id: ancestries_backgrounds_elf_abilty_flaw
+              variable_id: ancestries_backgrounds_elf_ability_flaw
             - context: gnome
-              variable_id: ancestries_backgrounds_gnome_abilty_flaw
+              variable_id: ancestries_backgrounds_gnome_ability_flaw
             - context: goblin
-              variable_id: ancestries_backgrounds_goblin_abilty_flaw
+              variable_id: ancestries_backgrounds_goblin_ability_flaw
             - context: halfling
-              variable_id: ancestries_backgrounds_haflling_abilty_flaw
+              variable_id: ancestries_backgrounds_halfling_ability_flaw
             - context: human
-              variable_id: ancestries_backgrounds_human_abilty_flaw
+              variable_id: ancestries_backgrounds_human_ability_flaw
   - format:
       element_format:
         horizontal_alignment: left
@@ -995,3 +1008,299 @@ groups:
               variable_id: ancestries_backgrounds_halfling_unburdened
             - context: human
               variable_id: ancestries_backgrounds_human_unburdened
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Ancestries > Template > Summary
+## ---------------------------------------------------------------------------------------------
+- id: '7cf4f86a-73ca-4873-91a1-819fadab70c0'
+  name: 'Ancestries and Backgrounds > Ancestries > Template > Summary'
+  summary: 'Ancestries and Backgrounds > Ancestries > Template > Summary'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 16
+        bottom: 12
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_2
+              corners:
+                top_left_radius: 1
+                top_right_radius: 1
+              margins:
+                right: 2
+              padding:
+                left: 4
+                top: 4
+                right: 4
+              horizontal_alignment: left
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_20
+            size: 15
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: term_hit_points
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_2
+              corners:
+                top_left_radius: 1
+                top_right_radius: 1
+              horizontal_alignment: left
+              margins:
+                left: 2
+                right: 2
+              padding:
+                left: 4
+                top: 4
+                right: 4
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_20
+            size: 15
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: term_size
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_2
+              corners:
+                top_left_radius: 1
+                top_right_radius: 1
+              horizontal_alignment: left
+              margins:
+                left: 2
+              padding:
+                left: 4
+                top: 4
+                right: 4
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_20
+            size: 15
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_id
+          variable_id: term_speed
+  - format:
+      element_format:
+        margins:
+          bottom: 0
+    widgets:
+    - type: widget_number
+      widget_number:
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_2
+              corners:
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              height: 38
+              horizontal_alignment: left
+              vertical_alignment: bottom
+              margins:
+                right: 2
+              padding:
+                bottom: 4
+                left: 4
+                right: 4
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 24
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: dwarf
+              variable_id: ancestries_backgrounds_dwarf_hit_points
+            - context: elf
+              variable_id: ancestries_backgrounds_elf_hit_points
+            - context: gnome
+              variable_id: ancestries_backgrounds_gnome_hit_points
+            - context: goblin
+              variable_id: ancestries_backgrounds_goblin_hit_points
+            - context: halfling
+              variable_id: ancestries_backgrounds_halfling_hit_points
+            - context: human
+              variable_id: ancestries_backgrounds_human_hit_points
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_2
+              corners:
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              height: 38
+              horizontal_alignment: left
+              vertical_alignment: bottom
+              margins:
+                left: 2
+                right: 2
+              padding:
+                bottom: 4
+                left: 4
+                right: 4
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 20
+            font: merriweather
+            font_style: bold
+        value_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: dwarf
+              variable_id: ancestries_backgrounds_dwarf_size
+            - context: elf
+              variable_id: ancestries_backgrounds_elf_size
+            - context: gnome
+              variable_id: ancestries_backgrounds_gnome_size
+            - context: goblin
+              variable_id: ancestries_backgrounds_goblin_size
+            - context: halfling
+              variable_id: ancestries_backgrounds_halfling_size
+            - context: human
+              variable_id: ancestries_backgrounds_human_size
+    - type: widget_number
+      widget_number:
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_grey_2
+              corners:
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              height: 38
+              horizontal_alignment: left
+              vertical_alignment: bottom
+              margins:
+                left: 2
+              padding:
+                bottom: 4
+                left: 4
+                right: 4
+              width:
+                type: width_justify
+                width_justify: justify
+          inside_label_format:
+            element_format:
+              position: right
+              margins:
+                left: 4
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 22
+            font: merriweather
+            font_style: bold
+          value_format:
+            element_format:
+              horizontal_alignment: left
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_10
+            size: 22
+            font: merriweather
+            font_style: bold
+        inside_label_variable_reference:
+          type: variable_id
+          variable_id: term_feet_abbr
+        value_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: dwarf
+              variable_id: ancestries_backgrounds_dwarf_speed
+            - context: elf
+              variable_id: ancestries_backgrounds_elf_speed
+            - context: gnome
+              variable_id: ancestries_backgrounds_gnome_speed
+            - context: goblin
+              variable_id: ancestries_backgrounds_goblin_speed
+            - context: halfling
+              variable_id: ancestries_backgrounds_halfling_speed
+            - context: human
+              variable_id: ancestries_backgrounds_human_speed

@@ -242,7 +242,7 @@ variables:
       number_literal: 20
 - type: variable_text_list
   variable_text_list:
-    id: ancestries_backgrounds_dwarf_abilty_boosts
+    id: ancestries_backgrounds_dwarf_ability_boosts
     label: 'Ancestries and Backgrounds > Dwarf > Ability Boosts'
     description: 'Ancestries and Backgrounds > Dwarf > Ability Boosts'
     value_set_id: ability_boosts
@@ -254,7 +254,7 @@ variables:
       - free
 - type: variable_text_list
   variable_text_list:
-    id: ancestries_backgrounds_dwarf_abilty_flaw
+    id: ancestries_backgrounds_dwarf_ability_flaw
     label: 'Ancestries and Backgrounds > Dwarf > Ability Flaw'
     description: 'Ancestries and Backgrounds > Dwarf > Ability Flaw'
     value_set_id: ability_scores
@@ -742,33 +742,37 @@ variables:
       number_literal: 30
 - type: variable_text_list
   variable_text_list:
-    id: ancestries_backgrounds_elf_abilty_boosts
+    id: ancestries_backgrounds_elf_ability_boosts
     label: 'Ancestries and Backgrounds > Elf > Ability Boosts'
     description: 'Ancestries and Backgrounds > Elf > Ability Boosts'
+    value_set_id: ability_boosts
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Dexterity'
-      - 'Intelligence'
-      - 'Free'
-- type: variable_text
-  variable_text:
-    id: ancestries_backgrounds_elf_abilty_flaw
+      - dexterity
+      - intelligence
+      - free
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_elf_ability_flaw
     label: 'Ancestries and Backgrounds > Elf > Ability Flaw'
     description: 'Ancestries and Backgrounds > Elf > Ability Flaw'
+    value_set_id: ability_scores
     value:
-      type: text_literal
-      text_literal: 'Constitution'
+      type: text_list_literal
+      text_list_literal:
+      - constitution
 - type: variable_text_list
   variable_text_list:
     id: ancestries_backgrounds_elf_languages
     label: 'Ancestries and Backgrounds > Elf > Languages'
     description: 'Ancestries and Backgrounds > Elf > Languages'
+    value_set_id: common_languages
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Common'
-      - 'Elven'
+      - common
+      - elven
 - type: variable_text
   variable_text:
     id: ancestries_backgrounds_elf_bonus_languages
@@ -783,11 +787,12 @@ variables:
     id: ancestries_backgrounds_elf_traits
     label: 'Ancestries and Backgrounds > Elf > Traits'
     description: 'Ancestries and Backgrounds > Elf > Traits'
+    value_set_id: racial_traits
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Elf'
-      - 'Humanoid'
+      - elf
+      - humanoid
 - type: variable_text
   variable_text:
     id: ancestries_backgrounds_elf_lowlight_vision
@@ -807,12 +812,9 @@ variables:
       text_literal: >-
         Elves combine an otherworldly grace, sharp intellect, and mysterious charm in a way that is practically magnetic to members of other ancestries. They are often voraciously intellectual, though they fill their long years with complicated pedagogies that most shorter-lived peoples find inefficient. Elves also hold notoriously long grudges against their rivals, but these antagonistic relationships can sometimes blossom into friendship over time.
 
-
         Elves are generally taller than humans, and they have a fragile grace accentuated with long facial features and sharply pointed ears. Broad pupils fill their wide eyes, giving elves an alien look and allowing them to see sharply even in very little light. Elves typically reach physical adulthood around the age of 20 (though they’re considered by other elves to be fully emotionally mature at close to the end of their first century), and they can live to around 600 years old.
 
-
         Elves subtly and deeply attune to their environment and their companions, and they often take on physical traits reflecting their surroundings. An elf who has dwelled in primeval forests for centuries, for example, might exhibit verdant hair and gnarled fingers, while one who’s lived in a desert might have golden pupils and skin.
-
 
         Elves are often emotional and capricious, yet they also value kindness and beauty.
 - type: variable_text
@@ -1196,34 +1198,38 @@ variables:
       number_literal: 20
 - type: variable_text_list
   variable_text_list:
-    id: ancestries_backgrounds_gnome_abilty_boosts
+    id: ancestries_backgrounds_gnome_ability_boosts
     label: 'Ancestries and Backgrounds > Gnome > Ability Boosts'
     description: 'Ancestries and Backgrounds > Gnome > Ability Boosts'
+    value_set_id: ability_boosts
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Constitution'
-      - 'Charisma'
-      - 'Free'
-- type: variable_text
-  variable_text:
-    id: ancestries_backgrounds_gnome_abilty_flaw
+      - constitution
+      - charisma
+      - free
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_gnome_ability_flaw
     label: 'Ancestries and Backgrounds > Gnome > Ability Flaw'
     description: 'Ancestries and Backgrounds > Gnome > Ability Flaw'
+    value_set_id: ability_scores
     value:
-      type: text_literal
-      text_literal: 'Strength'
+      type: text_list_literal
+      text_list_literal:
+      - strength
 - type: variable_text_list
   variable_text_list:
     id: ancestries_backgrounds_gnome_languages
     label: 'Ancestries and Backgrounds > Gnome > Languages'
     description: 'Ancestries and Backgrounds > Gnome > Languages'
+    value_set_id: common_languages
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Common'
-      - 'Gnomish'
-      - 'Sylvan'
+      - common
+      - gnomish
+      - sylvan
 - type: variable_text
   variable_text:
     id: ancestries_backgrounds_gnome_bonus_languages
@@ -1238,11 +1244,12 @@ variables:
     id: ancestries_backgrounds_gnome_traits
     label: 'Ancestries and Backgrounds > Gnome > Traits'
     description: 'Ancestries and Backgrounds > Gnome > Traits'
+    value_set_id: racial_traits
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Gnome'
-      - 'Humanoid'
+      - gnome
+      - humanoid
 - type: variable_text
   variable_text:
     id: ancestries_backgrounds_gnome_lowlight_vision
@@ -1262,9 +1269,7 @@ variables:
       text_literal: >-
         Always hungry for new experiences, gnomes constantly wander both mentally and physically, attempting to stave off a terrible ailment that threatens all of their people. This affliction—the Bleaching—strikes gnomes who fail to dream, innovate, and take in new experiences as their progenitors did every hour of every day in the First World. The Bleaching slowly drains the literal color from gnomes, and it plunges the affected into states of deep depression that eventually claim their lives. Only a very few gnomes survive this scourge, becoming deeply morose and wise survivors known as bleachlings.
 
-
         Most gnomes stand just over 3 feet tall and weigh little more than a young human child. Gnomes reach physical adulthood around the age of 18, though many retain a childlike curiosity even into adulthood. Gnomes rarely live longer than 400 years.
-
 
         Though they all trace their ancestry to the First World, gnomes otherwise have little culture they point to as their own. Instead, gnomes tend to pick and choose cultural practices of the region in which they live. Gnomes claim no nation in its entirety, and as a people they wouldn’t know what to do with such a state if one existed. Most gnomes consider adventure not a choice but a necessity, and gnome adventurers often collect mementos during their travels that allow them to relive their most exciting stories.
 - type: variable_text
@@ -1653,33 +1658,37 @@ variables:
       number_literal: 25
 - type: variable_text_list
   variable_text_list:
-    id: ancestries_backgrounds_goblin_abilty_boosts
+    id: ancestries_backgrounds_goblin_ability_boosts
     label: 'Ancestries and Backgrounds > Goblin > Ability Boosts'
     description: 'Ancestries and Backgrounds > Goblin > Ability Boosts'
+    value_set_id: ability_boosts
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Dexterity'
-      - 'Charisma'
-      - 'Free'
-- type: variable_text
-  variable_text:
-    id: ancestries_backgrounds_goblin_abilty_flaw
+      - dexterity
+      - charisma
+      - free
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_goblin_ability_flaw
     label: 'Ancestries and Backgrounds > Goblin > Ability Flaw'
     description: 'Ancestries and Backgrounds > Goblin > Ability Flaw'
+    value_set_id: ability_scores
     value:
-      type: text_literal
-      text_literal: 'Wisdom'
+      type: text_list_literal
+      text_list_literal:
+      - wisdom
 - type: variable_text_list
   variable_text_list:
     id: ancestries_backgrounds_goblin_languages
     label: 'Ancestries and Backgrounds > Goblin > Languages'
     description: 'Ancestries and Backgrounds > Goblin > Languages'
+    value_set_id: common_languages
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Common'
-      - 'Goblin'
+      - common
+      - goblin
 - type: variable_text
   variable_text:
     id: ancestries_backgrounds_goblin_bonus_languages
@@ -1694,11 +1703,12 @@ variables:
     id: ancestries_backgrounds_goblin_traits
     label: 'Ancestries and Backgrounds > Goblin > Traits'
     description: 'Ancestries and Backgrounds > Goblin > Traits'
+    value_set_id: racial_traits
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Goblin'
-      - 'Humanoid'
+      - goblin
+      - humanoid
 - type: variable_text
   variable_text:
     id: ancestries_backgrounds_goblin_darkvision
@@ -1717,7 +1727,6 @@ variables:
       type: text_literal
       text_literal: >-
         Even those goblins who break from their destructive past often subtly perpetuate some of the qualities that have been tied to the creatures for millennia. Goblins tend to flock to strong leaders, fiercely protecting those companions who have protected them from physical harm or offered a sympathetic ear when they learn of the goblins’ woes. Some goblins remain deeply fascinated with fire, or fearlessly devour a meal that might turn others’ stomachs. Others are endless tinkerers and view their companions’ trash simply as components of gadgets yet to be made. Occasionally, fellow adventurers find these proclivities unsettling or odd, but more often than not, goblins’ friends consider these qualities endearing.
-
 
         Though goblins’ culture has splintered radically, their reputation across the Inner Sea region has changed little. As such, goblins who travel to larger cities are frequently subjected to derision, and as a result many goblins work twice as hard at proving their worth. Those who befriend a goblin quickly learn that while a goblin’s friendship might include all manners of pranks, such fun comes from a place of true acceptance—something that a goblin does not give freely.
 
@@ -2101,33 +2110,37 @@ variables:
       number_literal: 25
 - type: variable_text_list
   variable_text_list:
-    id: ancestries_backgrounds_halfling_abilty_boosts
+    id: ancestries_backgrounds_halfling_ability_boosts
     label: 'Ancestries and Backgrounds > Halfling > Ability Boosts'
     description: 'Ancestries and Backgrounds > Halfling > Ability Boosts'
+    value_set_id: ability_boosts
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Dexterity'
-      - 'Wisdom'
-      - 'Free'
-- type: variable_text
-  variable_text:
-    id: ancestries_backgrounds_halfling_abilty_flaw
+      - dexterity
+      - wisdom
+      - free
+- type: variable_text_list
+  variable_text_list:
+    id: ancestries_backgrounds_halfling_ability_flaw
     label: 'Ancestries and Backgrounds > Halfling > Ability Flaw'
     description: 'Ancestries and Backgrounds > Halfling > Ability Flaw'
+    value_set_id: ability_scores
     value:
-      type: text_literal
-      text_literal: 'Strength'
+      type: text_list_literal
+      text_list_literal:
+      - strength
 - type: variable_text_list
   variable_text_list:
     id: ancestries_backgrounds_halfling_languages
     label: 'Ancestries and Backgrounds > Halfling > Languages'
     description: 'Ancestries and Backgrounds > Halfling > Languages'
+    value_set_id: common_languages
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Common'
-      - 'Halfling'
+      - common
+      - halfling
 - type: variable_text
   variable_text:
     id: ancestries_backgrounds_halfling_bonus_languages
@@ -2142,11 +2155,12 @@ variables:
     id: ancestries_backgrounds_halfling_traits
     label: 'Ancestries and Backgrounds > Halfling > Traits'
     description: 'Ancestries and Backgrounds > Halfling > Traits'
+    value_set_id: racial_traits
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Halfling'
-      - 'Humanoid'
+      - halfling
+      - humanoid
 - type: variable_text
   variable_text:
     id: ancestries_backgrounds_halfling_overview
@@ -2159,9 +2173,7 @@ variables:
 
         Despite their jovial and friendly nature, halflings don’t naturally tend to congregate together. They have no cultural homeland, and they instead weave themselves throughout the world’s societies. Halflings usually dwell among humans within the walls of cities, eking out whatever livings they can, many performing menial labor or simple service jobs. Some halflings reject such a life, instead turning to the open road, traveling from place to place in search of fortune and fame. These nomadic halflings often travel in small groups, sharing hardships and simple pleasures among close friends and family.
 
-
         Halflings rarely grow to more than 3 feet in height. Tufts of hair warm the tops of their broad, tanned feet, and they prefer to walk barefoot. Halflings typically reach physical adulthood at the age of 20. A typical halfling can live to around 150 years old. Halflings are loyal to their friends and family, but they are not afraid to do what needs to be done in order to survive.
-
 
         Halflings’ wanderlust and opportunism make them ideal adventurers, and one popular superstition even claims that traveling with a halfling is good luck.
 - type: variable_text
@@ -2568,24 +2580,26 @@ variables:
       number_literal: 25
 - type: variable_text_list
   variable_text_list:
-    id: ancestries_backgrounds_human_abilty_boosts
+    id: ancestries_backgrounds_human_ability_boosts
     label: 'Ancestries and Backgrounds > Human > Ability Boosts'
     description: 'Ancestries and Backgrounds > Human > Ability Boosts'
+    value_set_id: ability_boosts
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Free'
-      - 'Free'
+      - free
+      - free
 - type: variable_text_list
   variable_text_list:
     id: ancestries_backgrounds_human_languages
     label: 'Ancestries and Backgrounds > Human > Languages'
     description: 'Ancestries and Backgrounds > Human > Languages'
+    value_set_id: common_languages
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Common'
-      - 'One additional language, selected from those to which you have access'
+      - common
+      # - 'One additional language, selected from those to which you have access'
 - type: variable_text
   variable_text:
     id: ancestries_backgrounds_human_bonus_languages
@@ -2600,21 +2614,21 @@ variables:
     id: ancestries_backgrounds_human_traits
     label: 'Ancestries and Backgrounds > Human > Traits'
     description: 'Ancestries and Backgrounds > Human > Traits'
+    value_set_id: racial_traits
     value:
       type: text_list_literal
       text_list_literal:
-      - 'Human'
-      - 'Humanoid'
+      - human
+      - humanoid
 - type: variable_text
   variable_text:
-    id: ancestries_backgrounds_halfling_overview
-    label: 'Ancestries and Backgrounds > Halfling > Overview'
-    description: 'Ancestries and Backgrounds > Halfling > Overview'
+    id: ancestries_backgrounds_human_overview
+    label: 'Ancestries and Backgrounds > Human > Overview'
+    description: 'Ancestries and Backgrounds > Human > Overview'
     value:
       type: text_literal
       text_literal: >-
         Humans’ empires and nations are vast, sprawling things, and their citizens carve names for themselves with the strength of their sword arms and the power of their spells. Humanity is both diverse and tumultuous, running the gamut from cruel to kind, from sinister to saintlike. And while humans build large nation states and free cities alike, many of them venture forth to explore, leaving their homes to map uncharted realms, search for long-lost treasure, or lead mighty armies to conquer their neighbors for no better reason than because they can.
-
 
         Human variety also manifests in their governments, attitudes, and social norms. Though the oldest of human cultures trace their histories thousands of years into the past, when compared to the societies of the elves or dwarves, human civilizations seem to be in a constant state of flux, as empires fragment and new kingdoms subsume the old.
 

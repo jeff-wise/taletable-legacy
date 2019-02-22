@@ -55,14 +55,6 @@ variables:
       text_literal: 'TAC'
 - type: variable_text
   variable_text:
-    id: term_darkvision
-    label: 'Term > Darkvision'
-    description: 'Term > Darkvision'
-    value:
-      type: text_literal
-      text_literal: 'Darkvision'
-- type: variable_text
-  variable_text:
     id: term_ability_boosts
     label: 'Term > Ability Boosts'
     description: 'Term > Ability Boosts'
@@ -79,6 +71,30 @@ variables:
       text_literal: 'Ability Flaw'
 - type: variable_text
   variable_text:
+    id: term_bonus_languages
+    label: 'Term > Bonus Languages'
+    description: 'Term > Bonus Languages'
+    value:
+      type: text_literal
+      text_literal: 'Bonus Languages'
+- type: variable_text
+  variable_text:
+    id: term_darkvision
+    label: 'Term > Darkvision'
+    description: 'Term > Darkvision'
+    value:
+      type: text_literal
+      text_literal: 'Darkvision'
+- type: variable_text
+  variable_text:
+    id: term_hit_points
+    label: 'Term > Hit Points'
+    description: 'Term > Hit Points'
+    value:
+      type: text_literal
+      text_literal: 'Hit Points'
+- type: variable_text
+  variable_text:
     id: term_languages
     label: 'Term > Languages'
     description: 'Term > Languages'
@@ -87,12 +103,20 @@ variables:
       text_literal: 'Languages'
 - type: variable_text
   variable_text:
-    id: term_bonus_languages
-    label: 'Term > Bonus Languages'
-    description: 'Term > Bonus Languages'
+    id: term_size
+    label: 'Term > Size'
+    description: 'Term > Size'
     value:
       type: text_literal
-      text_literal: 'Bonus Languages'
+      text_literal: 'Size'
+- type: variable_text
+  variable_text:
+    id: term_speed
+    label: 'Term > Speed'
+    description: 'Term > Speed'
+    value:
+      type: text_literal
+      text_literal: 'Speed'
 - type: variable_text
   variable_text:
     id: term_traits
@@ -136,7 +160,6 @@ variables:
       text_literal: >-
         Although there are a limited number of character classes from which you can choose, there are unlimited character concepts that these rules allow you to bring to life. Perhaps your character is a brilliant but scatterbrained alchemist who can rattle off complex formulas for alchemical items but has trouble remembering his best friend’s birthday. Or perhaps she’s a muscle-bound swordswoman who becomes as immovable as a mountain when she hoists a shield. Maybe your character is a hot-tempered sorcerer whose gesticulating fingers pulse with light from an angelic ancestor. The choices you make for your character within her class—such as a cleric’s choice of god, a fighter’s choice of weapon, or a sorcerer’s bloodline— bring these visions to life within the context of the rules.
 
-
         The following entries describe Pathfinder’s 12 core classes, containing the information you need to play a character of that class from level 1 to 20. Once you choose your character’s class, the game’s rules provide optional archetypes that allow you to further customize her abilities, though these rules (described on page 279) are not recommended for beginners. Additionally, the game includes multiclass archetypes that allow her to gain abilities from other classes.
 - type: variable_text
   variable_text:
@@ -146,7 +169,7 @@ variables:
     value:
       type: text_literal
       text_literal: >-
-        Each class entry includes information about typical members of the class, as well as suggestions for roleplaying characters of that class and playing such characters in the game’s various modes. Each class provides your character with an ability boost in a key ability score, a number of Hit Points she receives at each level, her proficiencies in various abilities and equipment, signature skills in which she can excel, special abilities from her class features, and more. Your character’s class entry also provides all of the information needed when she gains levels, so it will be a vital reference to you throughout the course of your campaign.
+        Each class entry includes information about typical members of the class, as well as suggestions for roleplaying that class in various situations. In addition, each entry contains all of the rules and information for a classes abilities across all 20 levels.
 - type: variable_text
   variable_text:
     id: classes_entries_playing_class_header

@@ -172,6 +172,31 @@ engine:
           value: Dwarf
       - type: value_text
         value_text:
+          value_id: elf
+          description: Elf
+          value: Elf
+      - type: value_text
+        value_text:
+          value_id: gnome
+          description: Gnome
+          value: Gnome
+      - type: value_text
+        value_text:
+          value_id: goblin
+          description: Goblin
+          value: Goblin
+      - type: value_text
+        value_text:
+          value_id: halfling
+          description: Halfling
+          value: Halfling
+      - type: value_text
+        value_text:
+          value_id: human
+          description: Human
+          value: Human
+      - type: value_text
+        value_text:
           value_id: humanoid
           description: Humanoid
           value: Humanoid
@@ -249,8 +274,16 @@ content:
   - value:
       type: group_id
       group_id: '87a63631-cfa1-4c50-9dd6-5bcc7a70de14'
+- id: ancestries_backgrounds_ancestries_dwarf_stats
+  title: 'Ancestries and Backgrounds > Ancestries > Dwarf > Stats'
+  context: dwarf
+  group_references:
+  - value:
+      type: group_id
+      group_id: '7cf4f86a-73ca-4873-91a1-819fadab70c0'
 - id: ancestries_backgrounds_ancestries_dwarf_overview
   title: 'Ancestries and Backgrounds > Ancestries > Dwarf > Overview'
+  context: dwarf
   group_references:
   - value:
       type: group_id
@@ -262,6 +295,123 @@ content:
   - value:
       type: group_id
       group_id: '29141ef0-2641-4cb8-a76f-dd0654fdd599'
+- id: ancestries_backgrounds_ancestries_elf_stats
+  title: 'Ancestries and Backgrounds > Ancestries > Elf > Stats'
+  context: elf
+  group_references:
+  - value:
+      type: group_id
+      group_id: '7cf4f86a-73ca-4873-91a1-819fadab70c0'
+- id: ancestries_backgrounds_ancestries_elf_overview
+  title: 'Ancestries and Backgrounds > Ancestries > Elf > Overview'
+  context: elf
+  group_references:
+  - value:
+      type: group_id
+      group_id: '7e838b5b-1f39-4c85-908f-dbc9afebc800'
+- id: ancestries_backgrounds_ancestries_elf_basic_rules
+  title: 'Ancestries and Backgrounds > Ancestries > Elf > Basic Rules'
+  context: elf
+  group_references:
+  - value:
+      type: group_id
+      group_id: '29141ef0-2641-4cb8-a76f-dd0654fdd599'
+- id: ancestries_backgrounds_ancestries_gnome_stats
+  title: 'Ancestries and Backgrounds > Ancestries > Gnome > Stats'
+  context: gnome
+  group_references:
+  - value:
+      type: group_id
+      group_id: '7cf4f86a-73ca-4873-91a1-819fadab70c0'
+- id: ancestries_backgrounds_ancestries_gnome_overview
+  title: 'Ancestries and Backgrounds > Ancestries > Gnome > Overview'
+  context: gnome
+  group_references:
+  - value:
+      type: group_id
+      group_id: '7e838b5b-1f39-4c85-908f-dbc9afebc800'
+- id: ancestries_backgrounds_ancestries_gnome_basic_rules
+  title: 'Ancestries and Backgrounds > Ancestries > Gnome > Basic Rules'
+  context: gnome
+  group_references:
+  - value:
+      type: group_id
+      group_id: '29141ef0-2641-4cb8-a76f-dd0654fdd599'
+- id: ancestries_backgrounds_ancestries_goblin_stats
+  title: 'Ancestries and Backgrounds > Ancestries > Goblin > Stats'
+  context: goblin
+  group_references:
+  - value:
+      type: group_id
+      group_id: '7cf4f86a-73ca-4873-91a1-819fadab70c0'
+- id: ancestries_backgrounds_ancestries_goblin_overview
+  title: 'Ancestries and Backgrounds > Ancestries > Goblin > Overview'
+  context: goblin
+  group_references:
+  - value:
+      type: group_id
+      group_id: '7e838b5b-1f39-4c85-908f-dbc9afebc800'
+- id: ancestries_backgrounds_ancestries_goblin_basic_rules
+  title: 'Ancestries and Backgrounds > Ancestries > Goblin > Basic Rules'
+  context: goblin
+  group_references:
+  - value:
+      type: group_id
+      group_id: '29141ef0-2641-4cb8-a76f-dd0654fdd599'
+- id: ancestries_backgrounds_ancestries_halfling_stats
+  title: 'Ancestries and Backgrounds > Ancestries > Halfling > Stats'
+  context: halfling
+  group_references:
+  - value:
+      type: group_id
+      group_id: '7cf4f86a-73ca-4873-91a1-819fadab70c0'
+- id: ancestries_backgrounds_ancestries_halfling_overview
+  title: 'Ancestries and Backgrounds > Ancestries > Halfling > Overview'
+  context: halfling
+  group_references:
+  - value:
+      type: group_id
+      group_id: '7e838b5b-1f39-4c85-908f-dbc9afebc800'
+- id: ancestries_backgrounds_ancestries_halfling_basic_rules
+  title: 'Ancestries and Backgrounds > Ancestries > Halfling > Basic Rules'
+  context: halfling
+  group_references:
+  - value:
+      type: group_id
+      group_id: '29141ef0-2641-4cb8-a76f-dd0654fdd599'
+- id: ancestries_backgrounds_ancestries_human_stats
+  title: 'Ancestries and Backgrounds > Ancestries > Human > Stats'
+  context: human
+  group_references:
+  - value:
+      type: group_id
+      group_id: '7cf4f86a-73ca-4873-91a1-819fadab70c0'
+- id: ancestries_backgrounds_ancestries_human_overview
+  title: 'Ancestries and Backgrounds > Ancestries > Human > Overview'
+  context: human
+  group_references:
+  - value:
+      type: group_id
+      group_id: '7e838b5b-1f39-4c85-908f-dbc9afebc800'
+- id: ancestries_backgrounds_ancestries_human_basic_rules
+  title: 'Ancestries and Backgrounds > Ancestries > Human > Basic Rules'
+  context: human
+  group_references:
+  - value:
+      type: group_id
+      group_id: '29141ef0-2641-4cb8-a76f-dd0654fdd599'
+- id: classes_introduction
+  title: 'Classes > Introduction'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '3897548e-2a0d-4bf6-be2e-75c00760ccad'
+- id: classes_entries_introduction
+  title: 'Classes > Entries > Introduction'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '102f1af7-fed9-45df-b17a-6081b7b0cf74'
 - id: equipment_basic_rules
   title: 'Weapons'
   group_references:
@@ -1287,6 +1437,8 @@ chapters:
   - id: dwarf
     title: 'Dwarf'
     group: 'Ancestries'
+    introduction:
+    - ancestries_backgrounds_ancestries_dwarf_stats
     subsections:
     - id: ancestries_backgrounds_ancestries_dwarf_overview
       title: 'Overview'
@@ -1296,53 +1448,157 @@ chapters:
       title: 'Basic Rules'
       body:
       - ancestries_backgrounds_ancestries_dwarf_basic_rules
+    - id: ancestries_backgrounds_ancestries_dwarf_feats
+      title: 'Feats'
   - id: elf
     title: 'Elf'
     group: 'Ancestries'
+    introduction:
+    - ancestries_backgrounds_ancestries_elf_stats
+    subsections:
+    - id: ancestries_backgrounds_ancestries_elf_overview
+      title: 'Overview'
+      body:
+      - ancestries_backgrounds_ancestries_elf_overview
+    - id: ancestries_backgrounds_ancestries_elf_basic_rules
+      title: 'Basic Rules'
+      body:
+      - ancestries_backgrounds_ancestries_elf_basic_rules
+    - id: ancestries_backgrounds_ancestries_elf_feats
+      title: 'Feats'
   - id: gnome
     title: 'Gnome'
     group: 'Ancestries'
+    introduction:
+    - ancestries_backgrounds_ancestries_gnome_stats
+    subsections:
+    - id: ancestries_backgrounds_ancestries_gnome_overview
+      title: 'Overview'
+      body:
+      - ancestries_backgrounds_ancestries_gnome_overview
+    - id: ancestries_backgrounds_ancestries_gnome_basic_rules
+      title: 'Basic Rules'
+      body:
+      - ancestries_backgrounds_ancestries_gnome_basic_rules
+    - id: ancestries_backgrounds_ancestries_gnome_feats
+      title: 'Feats'
   - id: goblin
     title: 'Goblin'
     group: 'Ancestries'
+    introduction:
+    - ancestries_backgrounds_ancestries_goblin_stats
+    subsections:
+    - id: ancestries_backgrounds_ancestries_goblin_overview
+      title: 'Overview'
+      body:
+      - ancestries_backgrounds_ancestries_goblin_overview
+    - id: ancestries_backgrounds_ancestries_goblin_basic_rules
+      title: 'Basic Rules'
+      body:
+      - ancestries_backgrounds_ancestries_goblin_basic_rules
+    - id: ancestries_backgrounds_ancestries_goblin_feats
+      title: 'Feats'
   - id: halfling
     title: 'Halfling'
     group: 'Ancestries'
+    introduction:
+    - ancestries_backgrounds_ancestries_halfling_stats
+    subsections:
+    - id: ancestries_backgrounds_ancestries_halfling_overview
+      title: 'Overview'
+      body:
+      - ancestries_backgrounds_ancestries_halfling_overview
+    - id: ancestries_backgrounds_ancestries_halfling_basic_rules
+      title: 'Basic Rules'
+      body:
+      - ancestries_backgrounds_ancestries_halfling_basic_rules
+    - id: ancestries_backgrounds_ancestries_halfling_feats
+      title: 'Feats'
   - id: human
     title: 'Human'
     group: 'Ancestries'
+    introduction:
+    - ancestries_backgrounds_ancestries_human_stats
+    subsections:
+    - id: ancestries_backgrounds_ancestries_human_overview
+      title: 'Overview'
+      body:
+      - ancestries_backgrounds_ancestries_human_overview
+    - id: ancestries_backgrounds_ancestries_human_basic_rules
+      title: 'Basic Rules'
+      body:
+      - ancestries_backgrounds_ancestries_human_basic_rules
+    - id: ancestries_backgrounds_ancestries_human_feats
+      title: 'Feats'
   - id: backgrounds
     title: 'Backgrounds'
   - id: languages
     title: 'Languages'
 - id: classes
   title: 'Classes'
-  summary: 'The classes available player chatacters.'
+  summary: 'The twelve classes available to player characters.'
   sections:
+  - id: overview
+    title: 'Overview'
+    introduction:
+    - classes_introduction
+  - id: reading_entries
+    title: 'Reading Entries'
+    introduction:
+    - classes_entries_introduction
+    subsections:
+    - id: playing
+      title: 'Playing the Class'
+    - id: roleplaying
+      title: 'Roleplaying the Class'
+    - id: key_ability
+      title: 'Key Ability'
+    - id: hit_points
+      title: 'Hit Points'
+    - id: proficiencies
+      title: 'Proficiencies'
+    - id: signature_skills
+      title: 'Signature Skills'
+    - id: advancement_table
+      title: 'Advancement Table'
+  - id: class_features
+    title: 'Class Features'
   - id: alchemist
     title: 'Alchemist'
+    group: 'Classes'
   - id: barbarian
     title: 'Barbarian'
+    group: 'Classes'
   - id: bard
     title: 'Bard'
+    group: 'Classes'
   - id: cleric
     title: 'Cleric'
+    group: 'Classes'
   - id: druid
     title: 'Druid'
+    group: 'Classes'
   - id: fighter
     title: 'Fighter'
+    group: 'Classes'
   - id: monk
     title: 'Monk'
+    group: 'Classes'
   - id: paladin
     title: 'Paladin'
+    group: 'Classes'
   - id: ranger
     title: 'Ranger'
+    group: 'Classes'
   - id: rogue
     title: 'Rogue'
+    group: 'Classes'
   - id: sorcerer
     title: 'Sorcerer'
+    group: 'Classes'
   - id: wizard
     title: 'Wizard'
+    group: 'Classes'
 - id: skills
   title: 'Skills'
   summary: 'The skills in the game and rules for using them.'

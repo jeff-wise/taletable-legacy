@@ -2616,13 +2616,6 @@ groups:
         theme_color_ids:
         - theme_id: light
           color_id: white
-      border:
-        bottom:
-          thickness: 1
-          color_theme:
-            theme_color_ids:
-            - theme_id: light
-              color_id: light_blue_grey_14
       margins:
         top: 12
       padding:
@@ -2647,10 +2640,10 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_blue_grey_12
-            font: roboto_condensed
-            font_style: bold
-            size: 28
+                color_id: dark_grey_12
+            font: merriweather
+            font_style: extra_bold
+            size: 27
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -2679,18 +2672,18 @@ groups:
               variable_id: equipment_armor_shields_list_full_plate_name
   - format:
       element_format:
-        border:
-          bottom:
-            thickness: 1
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_blue_grey_7
+#        border:
+#          bottom:
+#            thickness: 1
+#            color_theme:
+#              theme_color_ids:
+#              - theme_id: light
+#                color_id: light_blue_grey_7
         horizontal_alignment: left
-        margins:
-          bottom: 20
+#        margins:
+#          bottom: 20
         padding:
-          bottom: 12
+          bottom: 28
           left: 16
           right: 16
     widgets:
@@ -2710,9 +2703,9 @@ groups:
               theme_color_ids:
               - theme_id: light
                 color_id: light_blue_grey_18
-            font: roboto_condensed
-            font_style: regular
-            size: 18
+            font: merriweather
+            font_style: bold
+            size: 16
             element_format:
               horizontal_alignment: left
         value_variable_reference:
@@ -2745,11 +2738,9 @@ groups:
       element_format:
         horizontal_alignment: left
         margins:
-          bottom: 12
+          bottom: 6
           left: 16
           right: 16
-        padding:
-          bottom: 12
     widgets:
     - type: widget_number
       widget_number:
@@ -2760,35 +2751,41 @@ groups:
               background_color_theme:
                 theme_color_ids:
                 - theme_id: light
-                  color_id: light_blue_tint_3
-              height: 40
+                  color_id: light_blue_grey_2
+              height: 42
+              horizontal_alignment: left
               padding:
-                left: 16
-                right: 16
+                left: 6
+                right: 6
               width:
                 type: width_wrap
                 width_wrap: wrap
-              horizontal_alignment: left
           inside_label_format:
             element_format:
-              position: left
+              position: right
               margins:
-                right: 16
+                left: 8
+              padding:
+                bottom: 0
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: light_blue_grey_2
-            font: roboto_condensed
-            font_style: bold
-            size: 20
+                color_id: dark_grey_23
+            font: merriweather
+            font_style: extra_bold
+            size: 21.5
           value_format:
+            element_format:
+              horizontal_alignment: left
+              padding:
+                bottom: 2
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: white
-            font: roboto_condensed
-            font_style: bold
-            size: 20
+                color_id: dark_grey_14
+            font: merriweather
+            font_style: extra_bold
+            size: 26
             number_format: modifier
         inside_label_variable_reference:
           type: variable_id
@@ -2828,37 +2825,43 @@ groups:
               background_color_theme:
                 theme_color_ids:
                 - theme_id: light
-                  color_id: dark_blue_grey_22
+                  color_id: light_blue_grey_2
               horizontal_alignment: left
-              height: 40
+              height: 42
               margins:
-                left: 4
+                left: 6
               padding:
-                left: 16
-                right: 16
+                left: 6
+                right: 6
               width:
                 type: width_wrap
                 width_wrap: wrap
           inside_label_format:
             element_format:
-              position: left
+              position: right
               margins:
-                right: 16
+                left: 8
+              padding:
+                bottom: 0
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: light_blue_grey_2
-            font: roboto_condensed
-            font_style: bold
-            size: 20
+                color_id: dark_grey_23
+            font: merriweather
+            font_style: extra_bold
+            size: 21.5
           value_format:
+            element_format:
+              horizontal_alignment: left
+              padding:
+                bottom: 2
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: white
-            font: roboto_condensed
-            font_style: bold
-            size: 20
+                color_id: dark_grey_14
+            font: merriweather
+            font_style: extra_bold
+            size: 26
             number_format: modifier
         inside_label_variable_reference:
           type: variable_id
@@ -2899,67 +2902,36 @@ groups:
       widget_text:
         format:
           widget_format:
-            width: 1
             element_format:
-              border:
-                right:
-                  thickness: 1
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_blue_grey_5
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_2
+              corners:
+                top_left_radius: 1
+                top_right_radius: 1
+              height: 30
               horizontal_alignment: left
+              margins:
+                right: 3
+              padding:
+                left: 6
+                top: 6
+                right: 6
+              vertical_alignment: top
               width:
                 type: width_justify
                 width_justify: justify
-              padding:
-                left: 0
-                right: 10
-              vertical_alignment: bottom
           value_format:
+            element_format:
+              horizontal_alignment: left
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_blue_grey_22
-            font: roboto
-            font_style: regular
-            size: 14
-            element_format:
-              horizontal_alignment: left
-        value_variable_reference:
-          type: variable_id
-          variable_id: equipment_armor_shields_data_dex_mod_cap_bonus_label
-    - type: widget_text
-      widget_text:
-        format:
-          widget_format:
-            width: 1
-            element_format:
-              border:
-                right:
-                  thickness: 1
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_blue_grey_5
-              horizontal_alignment: left
-              vertical_alignment: bottom
-              width:
-                type: width_justify
-                width_justify: justify
-              padding:
-                left: 10
-                right: 10
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_22
-            font: roboto
-            font_style: regular
-            size: 14
-            element_format:
-              horizontal_alignment: left
+                color_id: dark_grey_22
+            size: 13
+            font: merriweather
+            font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_data_check_penalty_label
@@ -2967,129 +2939,80 @@ groups:
       widget_text:
         format:
           widget_format:
-            width: 1
             element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_2
+              corners:
+                top_left_radius: 1
+                top_right_radius: 1
               horizontal_alignment: left
-              vertical_alignment: bottom
+              height: 30
+              margins:
+                left: 3
+              padding:
+                left: 6
+                top: 6
+                right: 6
+              vertical_alignment: top
               width:
                 type: width_justify
                 width_justify: justify
-              padding:
-                left: 10
-                right: 0
           value_format:
+            element_format:
+              horizontal_alignment: left
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_blue_grey_22
-            font: roboto
-            font_style: regular
-            size: 14
-            element_format:
-              horizontal_alignment: left
+                color_id: dark_grey_22
+            size: 13
+            font: merriweather
+            font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_data_speed_penalty_label
   - format:
       element_format:
-        margins:
+        padding:
           left: 16
           right: 16
-        padding:
-          bottom: 8
-        border:
-          bottom:
-            thickness: 1
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_blue_grey_5
     widgets:
     - type: widget_number
       widget_number:
         format:
           widget_format:
-            width: 1
             element_format:
-              border:
-                right:
-                  thickness: 1
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_blue_grey_5
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_2
+              corners:
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              height: 40
               horizontal_alignment: left
+              vertical_alignment: bottom
+              margins:
+                right: 3
+              padding:
+                bottom: 6
+                left: 6
+                right: 6
               width:
                 type: width_justify
                 width_justify: justify
-              padding:
-                top: 4
-                left: 0
-                right: 10
           value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_14
-            font: roboto_condensed
-            font_style: bold
-            size: 23
-            number_format: modifier
-        value_variable_reference:
-          type: variable_template
-          variable_template:
-            entries:
-            - context: padded
-              variable_id: equipment_armor_shields_list_padded_dex_mod_cap
-            - context: leather
-              variable_id: equipment_armor_shields_list_leather_dex_mod_cap
-            - context: studded_leather
-              variable_id: equipment_armor_shields_list_studded_leather_dex_mod_cap
-            - context: chain_shirt
-              variable_id: equipment_armor_shields_list_chain_shirt_dex_mod_cap
-            - context: hide
-              variable_id: equipment_armor_shields_list_hide_dex_mod_cap
-            - context: scale_mail
-              variable_id: equipment_armor_shields_list_scale_mail_dex_mod_cap
-            - context: chain_mail
-              variable_id: equipment_armor_shields_list_chain_mail_dex_mod_cap
-            - context: breastplate
-              variable_id: equipment_armor_shields_list_breastplate_dex_mod_cap
-            - context: splint_mail
-              variable_id: equipment_armor_shields_list_splint_mail_dex_mod_cap
-            - context: half_plate
-              variable_id: equipment_armor_shields_list_half_plate_dex_mod_cap
-            - context: full_plate
-              variable_id: equipment_armor_shields_list_full_plate_dex_mod_cap
-    - type: widget_number
-      widget_number:
-        format:
-          widget_format:
-            width: 1
             element_format:
-              border:
-                right:
-                  thickness: 1
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_blue_grey_5
               horizontal_alignment: left
-              width:
-                type: width_justify
-                width_justify: justify
-              padding:
-                top: 4
-                left: 10
-                right: 10
-          value_format:
+              vertical_alignment: bottom
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_blue_grey_14
-            font: roboto_condensed
-            font_style: bold
-            size: 23
+                color_id: dark_grey_14
+            size: 26
+            font: merriweather
+            font_style: extra_bold
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -3118,42 +3041,54 @@ groups:
               variable_id: equipment_armor_shields_list_full_plate_check_penalty
     - type: widget_number
       widget_number:
-        inside_label_variable_reference:
-          type: variable_id
-          variable_id: term_feet_abbr
         format:
-          inside_label_format:
-            element_format:
-              position: right
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_14
-            font: roboto_condensed
-            font_style: bold
-            size: 23
           widget_format:
-            width: 1
             element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_2
+              corners:
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              height: 40
               horizontal_alignment: left
+              vertical_alignment: bottom
+              margins:
+                left: 3
+              padding:
+                bottom: 6
+                left: 6
+                right: 6
               width:
                 type: width_justify
                 width_justify: justify
-              padding:
-                top: 4
-                left: 10
-                right: 0
-          value_format:
+          inside_label_format:
             element_format:
-              padding:
-                right: 6
+              position: right
+              margins:
+                left: 4
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_blue_grey_14
-            font: roboto_condensed
-            font_style: bold
-            size: 22
+                color_id: dark_grey_14
+            size: 25
+            font: merriweather
+            font_style: extra_bold
+          value_format:
+            element_format:
+              horizontal_alignment: left
+              vertical_alignment: bottom
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_14
+            size: 26
+            font: merriweather
+            font_style: extra_bold
+        inside_label_variable_reference:
+          type: variable_id
+          variable_id: term_feet_abbr
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -3183,7 +3118,7 @@ groups:
   - format:
       element_format:
         padding:
-          top: 8
+          top: 6
           left: 16
           right: 16
     widgets:
@@ -3191,95 +3126,215 @@ groups:
       widget_text:
         format:
           widget_format:
-            width: 1
             element_format:
-              border:
-                right:
-                  thickness: 1
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_blue_grey_5
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_2
+              corners:
+                top_left_radius: 1
+                top_right_radius: 1
+              height: 30
+              margins:
+                right: 3
+              padding:
+                left: 6
+                top: 6
+                right: 6
               horizontal_alignment: left
+              vertical_alignment: top
               width:
                 type: width_justify
                 width_justify: justify
-              padding:
-                left: 0
-                right: 10
           value_format:
+            element_format:
+              horizontal_alignment: left
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_blue_grey_22
-            font: roboto
-            font_style: regular
-            size: 14
-            element_format:
-              horizontal_alignment: left
+                color_id: dark_grey_22
+            size: 13
+            font: merriweather
+            font_style: bold
         value_variable_reference:
           type: variable_id
-          variable_id: equipment_armor_shields_data_bulk_label
+          variable_id: equipment_armor_shields_data_dex_mod_cap_bonus_label
     - type: widget_text
       widget_text:
         format:
           widget_format:
-            width: 1
             element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_2
+              corners:
+                top_left_radius: 1
+                top_right_radius: 1
               horizontal_alignment: left
+              height: 30
+              margins:
+                left: 3
               padding:
-                left: 10
-                right: 0
+                left: 6
+                top: 6
+                right: 6
+              vertical_alignment: top
               width:
                 type: width_justify
                 width_justify: justify
           value_format:
+            element_format:
+              horizontal_alignment: left
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_blue_grey_22
-            font: roboto
-            font_style: regular
-            size: 14
-            element_format:
-              horizontal_alignment: left
+                color_id: dark_grey_22
+            size: 13
+            font: merriweather
+            font_style: bold
         value_variable_reference:
           type: variable_id
-          variable_id: equipment_armor_shields_data_price_label
+          variable_id: equipment_armor_shields_data_bulk_label
+#    - type: widget_text
+#      widget_text:
+#        format:
+#          widget_format:
+#            element_format:
+#              background_color_theme:
+#                theme_color_ids:
+#                - theme_id: light
+#                  color_id: light_blue_grey_2
+#              corners:
+#                top_left_radius: 1
+#                top_right_radius: 1
+#              horizontal_alignment: left
+#              height: 30
+#              margins:
+#                left: 2
+#              padding:
+#                left: 6
+#                top: 6
+#                right: 6
+#              vertical_alignment: top
+#              width:
+#                type: width_justify
+#                width_justify: justify
+#          value_format:
+#            element_format:
+#              horizontal_alignment: left
+#            color_theme:
+#              theme_color_ids:
+#              - theme_id: light
+#                color_id: dark_grey_20
+#            size: 13
+#            font: merriweather
+#            font_style: bold
+#        value_variable_reference:
+#          type: variable_id
+#          variable_id: equipment_armor_shields_data_price_label
   - format:
       element_format:
         padding:
           left: 16
           right: 16
     widgets:
-    - type: widget_text
-      widget_text:
+    - type: widget_number
+      widget_number:
         format:
           widget_format:
-            width: 1
             element_format:
-              border:
-                right:
-                  thickness: 1
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_blue_grey_5
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_2
+              corners:
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              height: 40
               horizontal_alignment: left
+              vertical_alignment: bottom
+              margins:
+                right: 3
               padding:
-                left: 0
-                right: 10
+                bottom: 6
+                left: 6
+                right: 6
               width:
                 type: width_justify
                 width_justify: justify
           value_format:
+            element_format:
+              horizontal_alignment: left
+              vertical_alignment: bottom
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_blue_grey_14
-            font: roboto_condensed
-            font_style: bold
-            size: 23
+                color_id: dark_grey_14
+            size: 26
+            font: merriweather
+            font_style: extra_bold
+        value_variable_reference:
+          type: variable_template
+          variable_template:
+            entries:
+            - context: padded
+              variable_id: equipment_armor_shields_list_padded_dex_mod_cap
+            - context: leather
+              variable_id: equipment_armor_shields_list_leather_dex_mod_cap
+            - context: studded_leather
+              variable_id: equipment_armor_shields_list_studded_leather_dex_mod_cap
+            - context: chain_shirt
+              variable_id: equipment_armor_shields_list_chain_shirt_dex_mod_cap
+            - context: hide
+              variable_id: equipment_armor_shields_list_hide_dex_mod_cap
+            - context: scale_mail
+              variable_id: equipment_armor_shields_list_scale_mail_dex_mod_cap
+            - context: chain_mail
+              variable_id: equipment_armor_shields_list_chain_mail_dex_mod_cap
+            - context: breastplate
+              variable_id: equipment_armor_shields_list_breastplate_dex_mod_cap
+            - context: splint_mail
+              variable_id: equipment_armor_shields_list_splint_mail_dex_mod_cap
+            - context: half_plate
+              variable_id: equipment_armor_shields_list_half_plate_dex_mod_cap
+            - context: full_plate
+              variable_id: equipment_armor_shields_list_full_plate_dex_mod_cap
+    - type: widget_text
+      widget_text:
+        format:
+          widget_format:
+            element_format:
+              background_color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_2
+              corners:
+                bottom_right_radius: 1
+                bottom_left_radius: 1
+              height: 40
+              horizontal_alignment: left
+              vertical_alignment: bottom
+              margins:
+                left: 3
+              padding:
+                bottom: 6
+                left: 6
+                right: 6
+              width:
+                type: width_justify
+                width_justify: justify
+          value_format:
+            element_format:
+              horizontal_alignment: left
+              vertical_alignment: bottom
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: dark_grey_14
+            size: 26
+            font: merriweather
+            font_style: extra_bold
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -3306,53 +3361,67 @@ groups:
               variable_id: equipment_armor_shields_list_half_plate_bulk
             - context: full_plate
               variable_id: equipment_armor_shields_list_full_plate_bulk
-    - type: widget_text
-      widget_text:
-        format:
-          widget_format:
-            width: 1
-            element_format:
-              horizontal_alignment: left
-              padding:
-                left: 10
-                right: 0
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_14
-            font: roboto_condensed
-            font_style: bold
-            size: 23
-        value_variable_reference:
-          type: variable_template
-          variable_template:
-            entries:
-            - context: padded
-              variable_id: equipment_armor_shields_list_padded_price
-            - context: leather
-              variable_id: equipment_armor_shields_list_leather_price
-            - context: studded_leather
-              variable_id: equipment_armor_shields_list_studded_leather_price
-            - context: chain_shirt
-              variable_id: equipment_armor_shields_list_chain_shirt_price
-            - context: hide
-              variable_id: equipment_armor_shields_list_hide_price
-            - context: scale_mail
-              variable_id: equipment_armor_shields_list_scale_mail_price
-            - context: chain_mail
-              variable_id: equipment_armor_shields_list_chain_mail_price
-            - context: breastplate
-              variable_id: equipment_armor_shields_list_breastplate_price
-            - context: splint_mail
-              variable_id: equipment_armor_shields_list_splint_mail_price
-            - context: half_plate
-              variable_id: equipment_armor_shields_list_half_plate_price
-            - context: full_plate
-              variable_id: equipment_armor_shields_list_full_plate_price
+#    - type: widget_text
+#      widget_text:
+#        format:
+#          widget_format:
+#            element_format:
+#              background_color_theme:
+#                theme_color_ids:
+#                - theme_id: light
+#                  color_id: light_blue_grey_2
+#              corners:
+#                bottom_right_radius: 1
+#                bottom_left_radius: 1
+#              height: 46
+#              horizontal_alignment: left
+#              vertical_alignment: bottom
+#              margins:
+#                left: 2
+#              padding:
+#                bottom: 6
+#                left: 6
+#                right: 6
+#              width:
+#                type: width_justify
+#                width_justify: justify
+#          value_format:
+#            element_format:
+#              horizontal_alignment: left
+#              vertical_alignment: bottom
+#            color_theme:
+#              theme_color_ids:
+#              - theme_id: light
+#                color_id: dark_grey_10
+#            size: 24
+#            font: merriweather
+#            font_style: bold
+#        value_variable_reference:
+#          type: variable_template
+#          variable_template:
+#            entries:
+#            - context: padded
+#              variable_id: equipment_armor_shields_list_padded_price
+#            - context: leather
+#              variable_id: equipment_armor_shields_list_leather_price
+#            - context: studded_leather
+#              variable_id: equipment_armor_shields_list_studded_leather_price
+#            - context: chain_shirt
+#              variable_id: equipment_armor_shields_list_chain_shirt_price
+#            - context: hide
+#              variable_id: equipment_armor_shields_list_hide_price
+#            - context: scale_mail
+#              variable_id: equipment_armor_shields_list_scale_mail_price
+#            - context: chain_mail
+#              variable_id: equipment_armor_shields_list_chain_mail_price
+#            - context: breastplate
+#              variable_id: equipment_armor_shields_list_breastplate_price
+#            - context: splint_mail
+#              variable_id: equipment_armor_shields_list_splint_mail_price
+#            - context: half_plate
+#              variable_id: equipment_armor_shields_list_half_plate_price
+#            - context: full_plate
+#              variable_id: equipment_armor_shields_list_full_plate_price
 ## ---------------------------------------------------------------------------------------------
 ## | Equipment > Armor and Shields > Armor List > Medium Armor
 ## ---------------------------------------------------------------------------------------------

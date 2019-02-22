@@ -299,8 +299,8 @@ class BookUI(val book : Book,
 
         layout.backgroundColor      = Color.WHITE
 
-        layout.padding.topDp        = 16f
-        layout.padding.bottomDp     = 16f
+        layout.padding.topDp        = 18f
+        layout.padding.bottomDp     = 18f
         layout.padding.leftDp       = 16f
         layout.padding.rightDp      = 16f
 

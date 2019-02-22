@@ -393,7 +393,11 @@ class SectionUI(val section : BookSection,
 
         contentList.forEach { content ->
             groups(content.groupReferences(), book.entityId()).forEach {
-                layout.addView(it.group.view(book.entityId(), context))
+                val groupContext = when (content.context()) {
+                    is Just -> content.context()
+                    is Nothing -> it.groupContext
+                }
+                layout.addView(it.group.view(book.entityId(), context, groupContext))
             }
         }
 
@@ -653,7 +657,7 @@ class SectionUI(val section : BookSection,
         layoutBuilder.width             = LinearLayout.LayoutParams.MATCH_PARENT
         layoutBuilder.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layoutBuilder.padding.topDp     = 16f
+        layoutBuilder.padding.topDp     = 20f
         layoutBuilder.padding.bottomDp  = 8f
         layoutBuilder.padding.leftDp    = 16f
         layoutBuilder.padding.rightDp   = 16f

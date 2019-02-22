@@ -610,7 +610,7 @@ variables:
     description: Equipment > Armor and Shields > Data > Dexterity Modifier Cap Label
     value:
       type: text_literal
-      text_literal: 'Dex Mod Cap'
+      text_literal: 'Dex Modifier Cap'
 - type: variable_text
   variable_text:
     id: equipment_armor_shields_data_check_penalty_label

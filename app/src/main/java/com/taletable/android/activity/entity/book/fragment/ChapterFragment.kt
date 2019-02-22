@@ -3,8 +3,8 @@ package com.taletable.android.activity.entity.book.fragment
 
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -15,10 +15,10 @@ import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.taletable.android.R
-import com.taletable.android.activity.entity.book.BookActivity
 import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.book.*
+import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
@@ -28,7 +28,6 @@ import com.taletable.android.rts.entity.book
 import com.taletable.android.rts.entity.groups
 import maybe.Just
 import maybe.Nothing
-import kotlin.text.Typography.section
 
 
 /**
@@ -133,8 +132,11 @@ class ChapterUI(val chapter : BookChapter,
         // Header
         layout.addView(this.headerView())
 
+        layout.addView(this.searchbarView())
+
         // Section List
         layout.addView(this.sectionListView())
+
 
         // Content
         layout.addView(this.contentView(chapter.content(book)))
@@ -149,6 +151,8 @@ class ChapterUI(val chapter : BookChapter,
 
         scrollView.width        = LinearLayout.LayoutParams.MATCH_PARENT
         scrollView.height       = LinearLayout.LayoutParams.MATCH_PARENT
+
+        scrollView.backgroundColor  = Color.WHITE
 
         return scrollView.scrollView(context)
 
@@ -205,7 +209,7 @@ class ChapterUI(val chapter : BookChapter,
         layout.padding.leftDp   = 15f
         layout.padding.rightDp  = 15f
         layout.padding.topDp    = 14f
-        layout.padding.bottomDp = 14f
+        layout.padding.bottomDp = 20f
 
         return layout.linearLayout(context)
     }
@@ -269,16 +273,17 @@ class ChapterUI(val chapter : BookChapter,
     }
 
 
+
     // VIEWS > Header > Toolbar
     // --------------------------------------------------------------------------------------------
 
     private fun toolbarView() : LinearLayout
     {
-        val layout = this.toolbarViewLayout()
+        val layout = toolbarViewLayout()
 
-        layout.addView(this.toolbarButtonView(R.drawable.icon_bookmark))
-        layout.addView(this.toolbarButtonView(R.drawable.icon_share))
-        layout.addView(this.toolbarButtonView(R.drawable.icon_ellipsis_filled))
+        layout.addView(toolbarButtonView(R.drawable.icon_bookmark_filled, 19, R.string.save))
+
+        layout.addView(toolbarButtonView(R.drawable.icon_questions, 20, R.string.help))
 
         return layout
     }
@@ -288,55 +293,233 @@ class ChapterUI(val chapter : BookChapter,
     {
         val layout              = LinearLayoutBuilder()
 
-        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.margin.topDp     = 40f
-        layout.margin.bottomDp  = 12f
-        layout.margin.rightDp   = 14f
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
         layout.gravity          = Gravity.CENTER_VERTICAL
-        layout.layoutGravity    = Gravity.END
+
+        layout.padding.topDp    = 32f
 
         return layout.linearLayout(context)
     }
 
 
-    private fun toolbarButtonView(iconId : Int) : LinearLayout
+    private fun toolbarButtonView(iconId : Int, iconSize : Int, labelId : Int) : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
 
-        val layout              = LinearLayoutBuilder()
-        val icon                = ImageViewBuilder()
+        val layout                 = LinearLayoutBuilder()
+        val icon                        = ImageViewBuilder()
+        val label                       = TextViewBuilder()
 
         // (2) Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.width               = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.margin.leftDp    = 26f
+        layout.corners             = Corners(3.0, 3.0, 3.0, 3.0)
+
+        layout.padding.topDp       = 8f
+        layout.padding.bottomDp    = 8f
+        layout.padding.leftDp      = 12f
+        layout.padding.rightDp     = 14f
+
+        layout.gravity             = Gravity.CENTER
+
+        layout.margin.rightDp       = 12f
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_16"))))
+        layout.backgroundColor     = theme.colorOrBlack(bgColorTheme)
 
         layout.child(icon)
+              .child(label)
 
         // (3) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp            = 21
-        icon.heightDp           = 21
+        icon.widthDp            = 20
+        icon.heightDp           = 20
 
         icon.image              = iconId
 
-        val colorTheme = ColorTheme(setOf(
+        val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_4"))))
-        icon.color              = theme.colorOrBlack(colorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
+        icon.color              = theme.colorOrBlack(iconColorTheme)
         //icon.color              = Color.WHITE
 
+        icon.margin.rightDp     = 6f
+
+        // (3) Label
+        // -------------------------------------------------------------------------------------
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Bold,
+                                                context)
+
+        label.textId            = labelId
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
+        label.color             = theme.colorOrBlack(labelColorTheme)
+        //label.color             = Color.WHITE
+
+        label.sizeSp            = 18f
+
         return layout.linearLayout(context)
+    }
+
+
+    // VIEWS > Header > Searchbar
+    // --------------------------------------------------------------------------------------------
+
+    private fun searchbarView() : LinearLayout
+    {
+        val layout = this.searchbarViewLayout()
+
+        val buttonView = this.searchbarButtonView(R.drawable.icon_bookmark)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            layout.translationZ = 10000f
+            buttonView.translationZ = 10000f
+        }
+
+        layout.addView(buttonView)
+//        layout.addView(this.searchbarButtonView(R.drawable.icon_share))
+//        layout.addView(this.searchbarButtonView(R.drawable.icon_ellipsis_filled))
+
+        return layout
+    }
+
+
+    private fun searchbarViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        //layout.backgroundResource   = R.drawable.bg_button_book_search_bg
+
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_4"))))
+        layout.backgroundColor  = Color.TRANSPARENT
+
+//        layout.margin.topDp     = 40f
+//        layout.margin.bottomDp  = 12f
+        layout.margin.rightDp   = 14f
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.gravity          = Gravity.CENTER_VERTICAL or Gravity.END
+//        layout.layoutGravity    = Gravity.END
+
+        layout.margin.topDp         = -28f
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun searchbarButtonView(iconId : Int) : LinearLayout
+    {
+        // (1) Declarations
+        // -------------------------------------------------------------------------------------
+
+        val outerLayout                 = LinearLayoutBuilder()
+        val innerLayout                 = LinearLayoutBuilder()
+        val icon                        = ImageViewBuilder()
+        val label                       = TextViewBuilder()
+
+        // (2) Layout
+        // -------------------------------------------------------------------------------------
+
+
+        outerLayout.width               = LinearLayout.LayoutParams.WRAP_CONTENT
+        outerLayout.height              = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        outerLayout.corners             = Corners(6.0, 6.0, 6.0, 6.0)
+
+        outerLayout.orientation         = LinearLayout.HORIZONTAL
+
+        outerLayout.padding.topDp       = 8f
+        outerLayout.padding.bottomDp    = 8f
+        outerLayout.padding.leftDp      = 8f
+        outerLayout.padding.rightDp     = 8f
+
+        val outerBgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_13"))))
+        outerLayout.backgroundColor     = theme.colorOrBlack(outerBgColorTheme)
+
+        outerLayout.child(innerLayout)
+
+        innerLayout.width               = LinearLayout.LayoutParams.WRAP_CONTENT
+        innerLayout.height              = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        innerLayout.corners             = Corners(4.0, 4.0, 4.0, 4.0)
+
+        innerLayout.padding.topDp       = 12f
+        innerLayout.padding.bottomDp    = 12f
+        innerLayout.padding.leftDp      = 12f
+        innerLayout.padding.rightDp     = 14f
+
+        innerLayout.gravity             = Gravity.CENTER_VERTICAL
+
+        val innerBgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_green"))))
+        innerLayout.backgroundColor     = theme.colorOrBlack(innerBgColorTheme)
+
+        innerLayout.child(icon)
+                   .child(label)
+
+        // (3) Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 19
+        icon.heightDp           = 19
+
+        icon.image              = R.drawable.icon_search
+
+//        val iconColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_4"))))
+//        icon.color              = theme.colorOrBlack(iconColorTheme)
+        icon.color              = Color.WHITE
+
+        icon.margin.rightDp     = 6f
+
+        // (3) Label
+        // -------------------------------------------------------------------------------------
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Bold,
+                                                context)
+
+        label.textId            = R.string.search
+
+//        val labelColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_8"))))
+//        label.color             = theme.colorOrBlack(labelColorTheme)
+        label.color             = Color.WHITE
+
+        label.sizeSp            = 19f
+
+        return outerLayout.linearLayout(context)
     }
 
 
@@ -411,8 +594,8 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.backgroundColor      = Color.WHITE
 
-        layout.padding.topDp        = 16f
-        layout.padding.bottomDp     = 16f
+        layout.padding.topDp        = 18f
+        layout.padding.bottomDp     = 18f
         layout.padding.leftDp       = 16f
         layout.padding.rightDp      = 16f
 
@@ -551,6 +734,11 @@ class ChapterUI(val chapter : BookChapter,
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.orientation          = LinearLayout.VERTICAL
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_7"))))
+        layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
 
         return layout.linearLayout(context)
     }

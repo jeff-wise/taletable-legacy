@@ -3,6 +3,7 @@ package com.taletable.android.model.sheet.widget
 
 
 import android.content.Context
+import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -381,8 +382,10 @@ object NumberWidgetView
         layout.orientation          = format.outsideLabelFormat().elementFormat().position()
                                             .linearLayoutOrientation()
 
-//        layout.gravity              = format.widgetFormat().elementFormat().alignment().gravityConstant() or
+//        layout.layoutGravity        = format.widgetFormat().elementFormat().alignment().gravityConstant() or
 //                                        Gravity.CENTER_VERTICAL
+
+        ///layout.backgroundColor      = Color.CYAN
 
 //        layout.padding.leftDp       = format.widgetFormat().padding().leftDp()
 //        layout.padding.rightDp      = format.widgetFormat().padding().rightDp()
@@ -414,7 +417,9 @@ object NumberWidgetView
             }
         }
 
-        layout.addView(this.valueView(numberWidget, format, entityId, context, groupContext))
+        //layout.addView(this.valueView(numberWidget, format, entityId, context, groupContext))
+
+        layout.addView(this.valueTextView(numberWidget, format, entityId, context, groupContext))
 
         // > Inside Bottom/Right Label View
         when (insideLabel) {
@@ -475,6 +480,8 @@ object NumberWidgetView
 //                                            .resourceId(format.widgetFormat().corners())
 
         layout.corners              = format.valueFormat().elementFormat().corners()
+
+        layout.gravity              = Gravity.CENTER_VERTICAL
 
         layout.paddingSpacing       = format.valueFormat().elementFormat().padding()
 
@@ -548,10 +555,10 @@ object NumberWidgetView
 
         layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        if (format.widgetFormat().elementFormat().height().isWrap())
+        //if (format.widgetFormat().elementFormat().height().isWrap())
             layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
-        else
-            layout.height       = LinearLayout.LayoutParams.MATCH_PARENT
+//        else
+//            layout.height       = LinearLayout.LayoutParams.MATCH_PARENT
 
         layout.paddingSpacing   = format.valueFormat().elementFormat().padding()
 
@@ -581,6 +588,8 @@ object NumberWidgetView
 
         value.layoutGravity       = format.valueFormat().elementFormat().alignment().gravityConstant() or
                 format.valueFormat().elementFormat().verticalAlignment().gravityConstant()
+
+        value.paddingSpacing    = format.valueFormat().elementFormat().padding()
 
 //        if (numberWidget.description() != null)
 //        {
@@ -758,6 +767,8 @@ object NumberWidgetView
         format.insideLabelFormat().styleTextViewBuilder(label, entityId, context)
 
         label.marginSpacing     = format.insideLabelFormat().elementFormat().margins()
+
+        label.paddingSpacing    = format.insideLabelFormat().elementFormat().padding()
 
         return label.textView(context)
     }

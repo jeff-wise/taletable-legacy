@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid
+        android:color="@color/red_5">
+    </solid>
+
+    <!--<size-->
+        <!--android:height="26dp"-->
+        <!--android:width="26dp" />-->
+
+    <stroke
+        android:width="6dp"
+        android:color="@color/light_theme_dark_blue_grey_13">
+    </stroke>
+
+    <!--<padding-->
+        <!--android:left="8dp"-->
+        <!--android:top="5dp"-->
+        <!--android:right="8dp"-->
+        <!--android:bottom="5dp">-->
+    <!--</padding>-->
+
+    <corners
+        android:radius="4dp" >
+    </corners>
+
+</shape>
