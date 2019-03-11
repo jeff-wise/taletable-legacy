@@ -46,6 +46,8 @@ public class ImageViewBuilder implements ViewBuilder
 
     public IconSize                 iconSize;
 
+    public Float                    scaleX;
+
     public ImageView.ScaleType      scaleType;
     public Boolean                  adjustViewBounds;
 
@@ -148,6 +150,12 @@ public class ImageViewBuilder implements ViewBuilder
 
         if (this.bitmap != null)
             imageView.setImageBitmap(this.bitmap);
+
+        // > Rotation X
+        // --------------------------------------------------------------------------------------
+
+        if (this.scaleX != null)
+            imageView.setScaleX(this.scaleX);
 
         // > Image
         // --------------------------------------------------------------------------------------

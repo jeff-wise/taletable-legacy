@@ -481,7 +481,13 @@ object NumberWidgetView
 
         layout.corners              = format.valueFormat().elementFormat().corners()
 
-        layout.gravity              = Gravity.CENTER_VERTICAL
+//        layout.gravity              = Gravity.CENTER_VERTICAL
+//
+//        layout.gravity = format.valueFormat().elementFormat().alignment().gravityConstant() or
+//                format.valueFormat().elementFormat().verticalAlignment().gravityConstant()
+
+        layout.layoutGravity = format.valueFormat().elementFormat().alignment().gravityConstant() or
+                format.valueFormat().elementFormat().verticalAlignment().gravityConstant()
 
         layout.paddingSpacing       = format.valueFormat().elementFormat().padding()
 

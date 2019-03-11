@@ -14,8 +14,6 @@ import com.taletable.android.router.Router
 import com.taletable.android.rts.entity.*
 import com.taletable.android.rts.session.*
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 import java.util.*
 
 
@@ -66,21 +64,21 @@ class TestSessionActivity : AppCompatActivity()
         // (3) Load Test Sheet
         // -------------------------------------------------------------------------------------
 
-        val context = this
-        launch(UI) {
-
-//            val intent = Intent(homeActivity, SessionActivity::class.java)
-//            intent.putExtra("session_id", item.sessionId)
-//            homeActivity.startActivity(intent)
-
-            sessionManifest(context).doMaybe {
-                it.session(testSessionId).doMaybe {
-
-                    openSession(it, context)
-                }
-            }
-
-        }
+//        val context = this
+//        launch(UI) {
+//
+////            val intent = Intent(homeActivity, SessionActivity::class.java)
+////            intent.putExtra("session_id", item.sessionId)
+////            homeActivity.startActivity(intent)
+//
+//            sessionManifest(context).doMaybe {
+//                it.session(testSessionId).doMaybe {
+//
+//                    openSession(it, context)
+//                }
+//            }
+//
+//        }
 
     }
 

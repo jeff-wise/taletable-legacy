@@ -165,7 +165,7 @@ data class Book(val bookId : EntityId,
     // ENTITY
     // -----------------------------------------------------------------------------------------
 
-    override fun name() = this.bookInfo.shortTitle.value
+    override fun name() = this.bookInfo.title.value
 
 
     override fun summary() = this.bookInfo.summary.value
@@ -300,58 +300,13 @@ data class Book(val bookId : EntityId,
 }
 
 
-/**
- * Rulebook Id
- */
-//data class BookId(val value : String) : ToDocument, SQLSerializable, Serializable
-//{
-//
-//    // -----------------------------------------------------------------------------------------
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    companion object : Factory<BookId>
-//    {
-//        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookId> = when (doc)
-//        {
-//            is DocText -> effValue(BookId(doc.text))
-//            else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-//        }
-//
-//        fun fromYaml(yamlValue : YamlValue) : YamlParser<BookId> =
-//            when (yamlValue)
-//            {
-//                is YamlText -> effValue(BookId(yamlValue.text))
-//                else        -> error(UnexpectedTypeFound(YamlType.TEXT,
-//                                                         yamlType(yamlValue),
-//                                                         yamlValue.path))
-//            }
-//
-//    }
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // TO DOCUMENT
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun toDocument() = DocText(this.value)
-//
-//
-//    // -----------------------------------------------------------------------------------------
-//    // SQL SERIALIZABLE
-//    // -----------------------------------------------------------------------------------------
-//
-//    override fun asSQLValue() : SQLValue = SQLText({ this.value })
-//
-//}
-
 
 /**
  * Book Info
  */
 data class BookInfo(override val id : UUID,
                     val title : BookTitle,
-                    val shortTitle : BookShortTitle,
+                    val subtitle : BookSubtitle,
                     val summary : BookSummary,
                     val authors : List<Author>,
                     val abstract : BookAbstract)
@@ -363,13 +318,13 @@ data class BookInfo(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(title : BookTitle,
-                shortTitle : BookShortTitle,
+                subtitle : BookSubtitle,
                 summary : BookSummary,
                 authors : List<Author>,
                 abstract : BookAbstract)
         : this(UUID.randomUUID(),
                title,
-               shortTitle,
+               subtitle,
                summary,
                authors,
                abstract)
@@ -384,8 +339,8 @@ data class BookInfo(override val id : UUID,
                 apply(::BookInfo,
                       // Title
                       doc.at("title") apply { BookTitle.fromDocument(it) },
-                      // Short Title
-                      doc.at("short_title") apply { BookShortTitle.fromDocument(it) },
+                      // Subtitle
+                      doc.at("subtitle") apply { BookSubtitle.fromDocument(it) },
                       // Summary
                       doc.at("summary") apply { BookSummary.fromDocument(it) },
                       // Authors
@@ -415,6 +370,9 @@ data class BookInfo(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun title() : BookTitle = this.title
+
+
+    fun subtitle() : BookSubtitle = this.subtitle
 
 
     fun summary() : BookSummary = this.summary
@@ -521,20 +479,20 @@ data class BookTitle(val value : String) : ToDocument, SQLSerializable, Serializ
 
 
 /**
- * Book Short Title
+ * Book Subtitle
  */
-data class BookShortTitle(val value : String) : ToDocument, SQLSerializable, Serializable
+data class BookSubtitle(val value : String) : ToDocument, SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    companion object : Factory<BookShortTitle>
+    companion object : Factory<BookSubtitle>
     {
-        override fun fromDocument(doc : SchemaDoc): ValueParser<BookShortTitle> = when (doc)
+        override fun fromDocument(doc : SchemaDoc): ValueParser<BookSubtitle> = when (doc)
         {
-            is DocText -> effValue(BookShortTitle(doc.text))
+            is DocText -> effValue(BookSubtitle(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }

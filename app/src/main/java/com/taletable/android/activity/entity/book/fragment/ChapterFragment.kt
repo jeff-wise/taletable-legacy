@@ -233,10 +233,10 @@ class ChapterUI(val chapter : BookChapter,
 
         title.color              = Color.WHITE
 
-        title.sizeSp             = 38f
+        title.sizeSp             = 44f
 
         title.lineSpacingAdd     = 10f
-        title.lineSpacingMult    = 0.8f
+        title.lineSpacingMult    = 0.82f
 
         return title.textView(context)
     }
@@ -267,7 +267,10 @@ class ChapterUI(val chapter : BookChapter,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_8"))))
         title.color             = theme.colorOrBlack(colorTheme)
 
-        title.sizeSp            = 17f
+        title.sizeSp             = 16f
+
+        title.lineSpacingAdd      = 4f
+        title.lineSpacingMult     = 1.05f
 
         return title.textView(context)
     }
@@ -281,7 +284,7 @@ class ChapterUI(val chapter : BookChapter,
     {
         val layout = toolbarViewLayout()
 
-        layout.addView(toolbarButtonView(R.drawable.icon_bookmark_filled, 19, R.string.save))
+        layout.addView(toolbarButtonView(R.drawable.icon_pencil, 18, R.string.edit))
 
         layout.addView(toolbarButtonView(R.drawable.icon_questions, 20, R.string.help))
 
@@ -300,7 +303,7 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.gravity          = Gravity.CENTER_VERTICAL
 
-        layout.padding.topDp    = 32f
+        layout.padding.topDp    = 36f
 
         return layout.linearLayout(context)
     }
@@ -342,8 +345,8 @@ class ChapterUI(val chapter : BookChapter,
         // (3) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp            = 20
-        icon.heightDp           = 20
+        icon.widthDp            = iconSize
+        icon.heightDp           = iconSize
 
         icon.image              = iconId
 
@@ -424,7 +427,7 @@ class ChapterUI(val chapter : BookChapter,
         layout.gravity          = Gravity.CENTER_VERTICAL or Gravity.END
 //        layout.layoutGravity    = Gravity.END
 
-        layout.margin.topDp         = -28f
+        layout.margin.topDp         = -44f
 
         return layout.linearLayout(context)
     }
@@ -468,10 +471,10 @@ class ChapterUI(val chapter : BookChapter,
 
         innerLayout.corners             = Corners(4.0, 4.0, 4.0, 4.0)
 
-        innerLayout.padding.topDp       = 12f
-        innerLayout.padding.bottomDp    = 12f
+        innerLayout.padding.topDp       = 10f
+        innerLayout.padding.bottomDp    = 10f
         innerLayout.padding.leftDp      = 12f
-        innerLayout.padding.rightDp     = 14f
+        innerLayout.padding.rightDp     = 12f
 
         innerLayout.gravity             = Gravity.CENTER_VERTICAL
 
@@ -486,10 +489,10 @@ class ChapterUI(val chapter : BookChapter,
         // (3) Icon
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp            = 19
-        icon.heightDp           = 19
+        icon.widthDp            = 17
+        icon.heightDp           = 17
 
-        icon.image              = R.drawable.icon_search
+        icon.image              = R.drawable.icon_bookmark_filled
 
 //        val iconColorTheme = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
@@ -509,7 +512,8 @@ class ChapterUI(val chapter : BookChapter,
                                                 TextFontStyle.Bold,
                                                 context)
 
-        label.textId            = R.string.search
+        //label.textId            = R.string.search
+        label.text              = "MARK"
 
 //        val labelColorTheme = ColorTheme(setOf(
 //                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
@@ -517,7 +521,7 @@ class ChapterUI(val chapter : BookChapter,
 //        label.color             = theme.colorOrBlack(labelColorTheme)
         label.color             = Color.WHITE
 
-        label.sizeSp            = 19f
+        label.sizeSp            = 17.5f
 
         return outerLayout.linearLayout(context)
     }
@@ -633,7 +637,7 @@ class ChapterUI(val chapter : BookChapter,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_10"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
         summary.sizeSp              = 19f
@@ -675,7 +679,7 @@ class ChapterUI(val chapter : BookChapter,
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_13"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_18"))))
         icon.color               = theme.colorOrBlack(iconColorTheme)
 
         return layout.linearLayout(context)

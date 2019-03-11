@@ -27,114 +27,114 @@ import com.taletable.android.rts.entity.theme.ThemeManager
 /**
  * Game Navigation Fragment
  */
-class GameNavigationFragment : Fragment()
-{
-
-    // -----------------------------------------------------------------------------------------
-    // PROPERTIES
-    // -----------------------------------------------------------------------------------------
-
-    private var themeId : ThemeId? = null
-
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object
-    {
-        fun newInstance(themeId : ThemeId) : GameNavigationFragment
-        {
-            val fragment = GameNavigationFragment()
-
-            val args = Bundle()
-            args.putSerializable("theme_id", themeId)
-            fragment.arguments = args
-
-            return fragment
-        }
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // FRAGMENT
-    // -----------------------------------------------------------------------------------------
-
-    override fun onCreate(savedInstanceState : Bundle?)
-    {
-        super.onCreate(savedInstanceState)
-
-        this.themeId = arguments?.getSerializable("theme_id") as ThemeId
-    }
-
-
-    override fun onCreateView(inflater : LayoutInflater,
-                              container : ViewGroup?,
-                              savedInstanceState : Bundle?) : View?
-    {
-        val themeId = this.themeId
-        val context = this.context
-
-        if (themeId != null && context != null)
-            return this.view(themeId, context)
-        else
-        return null
-    }
-
-
-    // -----------------------------------------------------------------------------------------
-    // VIEWS
-    // -----------------------------------------------------------------------------------------
-
-    private fun view(themeId : ThemeId, context : Context) : View
-    {
-        val layout = this.viewLayout(themeId, context)
-
-        // Recycler View
-        val games = GameManager.openGames()
-        layout.addView(this.campaignSummaryRecyclerView(games, themeId, context))
-
-        return layout
-    }
-
-
-    private fun viewLayout(themeId : ThemeId, context : Context) : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
-        layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun campaignSummaryRecyclerView(games : List<Game>,
-                                            themeId : ThemeId,
-                                            context : Context) : RecyclerView
-    {
-        val recyclerView                = RecyclerViewBuilder()
-
-        recyclerView.width              = LinearLayout.LayoutParams.MATCH_PARENT
-        recyclerView.height             = LinearLayout.LayoutParams.MATCH_PARENT
-
-        recyclerView.layoutManager      = LinearLayoutManager(context)
-
-        val activity = context as AppCompatActivity
-        recyclerView.adapter            = GameRecyclerViewAdapter(games, activity, themeId)
-
-        recyclerView.padding.leftDp     = 6f
-        recyclerView.padding.rightDp    = 6f
-
-        return recyclerView.recyclerView(context)
-    }
-
-}
+//class GameNavigationFragment : Fragment()
+//{
+//
+//    // -----------------------------------------------------------------------------------------
+//    // PROPERTIES
+//    // -----------------------------------------------------------------------------------------
+//
+//    private var themeId : ThemeId? = null
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // CONSTRUCTORS
+//    // -----------------------------------------------------------------------------------------
+//
+//    companion object
+//    {
+//        fun newInstance(themeId : ThemeId) : GameNavigationFragment
+//        {
+//            val fragment = GameNavigationFragment()
+//
+//            val args = Bundle()
+//            args.putSerializable("theme_id", themeId)
+//            fragment.arguments = args
+//
+//            return fragment
+//        }
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // FRAGMENT
+//    // -----------------------------------------------------------------------------------------
+//
+//    override fun onCreate(savedInstanceState : Bundle?)
+//    {
+//        super.onCreate(savedInstanceState)
+//
+//        this.themeId = arguments?.getSerializable("theme_id") as ThemeId
+//    }
+//
+//
+//    override fun onCreateView(inflater : LayoutInflater,
+//                              container : ViewGroup?,
+//                              savedInstanceState : Bundle?) : View?
+//    {
+//        val themeId = this.themeId
+//        val context = this.context
+//
+//        if (themeId != null && context != null)
+//            return this.view(themeId, context)
+//        else
+//        return null
+//    }
+//
+//
+//    // -----------------------------------------------------------------------------------------
+//    // VIEWS
+//    // -----------------------------------------------------------------------------------------
+//
+//    private fun view(themeId : ThemeId, context : Context) : View
+//    {
+//        val layout = this.viewLayout(themeId, context)
+//
+//        // Recycler View
+//        val games = GameManager.openGames()
+//        layout.addView(this.campaignSummaryRecyclerView(games, themeId, context))
+//
+//        return layout
+//    }
+//
+//
+//    private fun viewLayout(themeId : ThemeId, context : Context) : LinearLayout
+//    {
+//        val layout              = LinearLayoutBuilder()
+//
+//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
+//
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_10")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey"))))
+//        layout.backgroundColor  = ThemeManager.color(themeId, colorTheme)
+//
+//        return layout.linearLayout(context)
+//    }
+//
+//
+//    private fun campaignSummaryRecyclerView(games : List<Game>,
+//                                            themeId : ThemeId,
+//                                            context : Context) : RecyclerView
+//    {
+//        val recyclerView                = RecyclerViewBuilder()
+//
+//        recyclerView.width              = LinearLayout.LayoutParams.MATCH_PARENT
+//        recyclerView.height             = LinearLayout.LayoutParams.MATCH_PARENT
+//
+//        recyclerView.layoutManager      = LinearLayoutManager(context)
+//
+//        val activity = context as AppCompatActivity
+//        recyclerView.adapter            = GameRecyclerViewAdapter(games, activity, themeId)
+//
+//        recyclerView.padding.leftDp     = 6f
+//        recyclerView.padding.rightDp    = 6f
+//
+//        return recyclerView.recyclerView(context)
+//    }
+//
+//}
 
 
 //// -----------------------------------------------------------------------------------------

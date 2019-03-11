@@ -108,12 +108,12 @@ types:
         prim_type: string
       presence: required
       description: The title of the book.
-    - name: short_title
+    - name: subtitle
       type:
         type: prim_type
         prim_type: string
-      presence: required
-      description: The title of the book.
+      presence: optional
+      description: The subtitle of the book.
     - name: summary
       type:
         type: prim_type

@@ -19,8 +19,6 @@ import com.taletable.android.model.sheet.widget.*
 import com.taletable.android.rts.entity.*
 import com.taletable.android.rts.entity.sheet.*
 import effect.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -270,19 +268,19 @@ data class Sheet(private var sheetId : EntityId,
     }
 
 
-    fun updateAndSave(sheetUpdate : EntityUpdateSheet,
-                      rootView : View?,
-                      context : Context)
-    {
-        this.update(sheetUpdate, rootView, context)
-
-        // Save update
-        if (this.isSavable) {
-            launch(UI) {
-                saveSheetUpdate(sheetUpdate, context)
-            }
-        }
-    }
+//    fun updateAndSave(sheetUpdate : EntityUpdateSheet,
+//                      rootView : View?,
+//                      context : Context)
+//    {
+//        this.update(sheetUpdate, rootView, context)
+//
+//        // Save update
+//        if (this.isSavable) {
+//            launch(UI) {
+//                saveSheetUpdate(sheetUpdate, context)
+//            }
+//        }
+//    }
 
 
     fun update(sheetUpdate : EntityUpdateSheet,

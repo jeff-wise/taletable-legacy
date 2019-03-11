@@ -4,6 +4,9 @@ package com.taletable.android.activity.entity.book.fragment
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -129,7 +132,7 @@ class BookUI(val book : Book,
 
         //layout.addView(this.chaptersHeaderView())
 
-        layout.addView(this.searchButtonView())
+        layout.addView(this.metadataView())
 
 
         layout.addView(this.chapterListView())
@@ -250,6 +253,8 @@ class BookUI(val book : Book,
     {
         val layout = this.chapterListViewLayout()
 
+        layout.addView(this.chapterHeaderView())
+
         book.chapters().forEach {
             layout.addView(this.chapterSummaryView(it))
         }
@@ -268,6 +273,42 @@ class BookUI(val book : Book,
         layout.orientation          = LinearLayout.VERTICAL
 
         return layout.linearLayout(context)
+    }
+
+
+    private fun chapterHeaderView() : TextView
+    {
+        val headerViewBuilder               = TextViewBuilder()
+
+        headerViewBuilder.width             = LinearLayout.LayoutParams.MATCH_PARENT
+        headerViewBuilder.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        headerViewBuilder.padding.bottomDp   = 4f
+        headerViewBuilder.padding.leftDp    = 16f
+        headerViewBuilder.padding.rightDp   = 16f
+        headerViewBuilder.padding.topDp     = 16f
+
+        headerViewBuilder.backgroundColor   = Color.WHITE
+
+        headerViewBuilder.addRule(RelativeLayout.ALIGN_PARENT_START)
+        headerViewBuilder.addRule(RelativeLayout.CENTER_VERTICAL)
+
+        headerViewBuilder.text              = "Chapters"
+
+
+        headerViewBuilder.font          = Font.typeface(TextFont.RobotoCondensed,
+                                                        TextFontStyle.Bold,
+                                                        context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_18"))))
+        headerViewBuilder.color         = theme.colorOrBlack(colorTheme)
+
+        headerViewBuilder.sizeSp              = 17f
+
+        return headerViewBuilder.textView(context)
+
     }
 
 
@@ -330,7 +371,7 @@ class BookUI(val book : Book,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_8"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
         summary.sizeSp              = 19f
@@ -372,7 +413,7 @@ class BookUI(val book : Book,
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
         icon.color               = theme.colorOrBlack(iconColorTheme)
 
         return layout.linearLayout(context)
@@ -387,9 +428,13 @@ class BookUI(val book : Book,
 
         layout.addView(this.titleView())
 
+        book.bookInfo().subtitle()?.let {
+            layout.addView(this.subtitleView(it.value))
+        }
+
         layout.addView(this.summaryView())
 
-        layout.addView(this.authorView())
+        // layout.addView(this.authorView())
 
         //layout.addView(this.toolbarView())
 
@@ -416,7 +461,7 @@ class BookUI(val book : Book,
         layout.padding.leftDp   = 15f
         layout.padding.rightDp  = 15f
         //layout.padding.topDp    = 6f
-        layout.padding.bottomDp = 14f
+        layout.padding.bottomDp = 32f
 
         return layout.linearLayout(context)
     }
@@ -432,7 +477,7 @@ class BookUI(val book : Book,
         title.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
         title.height                = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        title.margin.topDp          = 12f
+        title.margin.topDp          = 8f
 
         title.text                  = book.bookInfo().title.value
 
@@ -442,17 +487,53 @@ class BookUI(val book : Book,
 
         title.color                 = Color.WHITE
 
-        title.sizeSp                = 48f
+        title.sizeSp                = 54f
 
         title.lineSpacingAdd        = 10f
-        title.lineSpacingMult       = 0.85f
+        title.lineSpacingMult       = 0.82f
 
         return title.textView(context)
     }
 
 
-    // VIEWS > Header > Summary
-    // --------------------------------------------------------------------------------------------
+    private fun subtitleView(subtitle : String) : TextView
+    {
+        val builder = SpannableStringBuilder()
+
+        builder.append("For ")
+        builder.append(subtitle)
+
+        // Format for
+
+        val forColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_14"))))
+        val forColor = theme.colorOrBlack(forColorTheme)
+        val colorSpan = ForegroundColorSpan(forColor)
+        builder.setSpan(colorSpan, 0, 4, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+
+        val subtitleViewBuilder                 = TextViewBuilder()
+
+        subtitleViewBuilder.width               = LinearLayout.LayoutParams.WRAP_CONTENT
+        subtitleViewBuilder.height              = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        subtitleViewBuilder.margin.topDp        = 0f
+
+        subtitleViewBuilder.textSpan            = builder
+
+        subtitleViewBuilder.font                = Font.typeface(TextFont.Merriweather,
+                                                                TextFontStyle.ExtraBold,
+                                                                context)
+
+        subtitleViewBuilder.color               = Color.WHITE
+
+        subtitleViewBuilder.sizeSp              = 26f
+
+        subtitleViewBuilder.lineSpacingAdd      = 10f
+        subtitleViewBuilder.lineSpacingMult     = 0.85f
+
+        return subtitleViewBuilder.textView(context)
+    }
+
 
     private fun summaryView() : TextView
     {
@@ -475,43 +556,190 @@ class BookUI(val book : Book,
         title.color              = theme.colorOrBlack(colorTheme)
 //        title.color             = Color.WHITE
 
-        title.sizeSp             = 18f
+        title.sizeSp             = 16f
+
+        title.lineSpacingAdd      = 4f
+        title.lineSpacingMult     = 1.05f
 
         return title.textView(context)
     }
 
 
-    // VIEWS > Header > Author
-    // --------------------------------------------------------------------------------------------
-
-    private fun authorView() : TextView
+    private fun metadataView() : LinearLayout
     {
-        val title               = TextViewBuilder()
+        val layout = metadataViewLayout()
 
-        title.width             = LinearLayout.LayoutParams.MATCH_PARENT
-        title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.addView(authorsView())
 
-        title.gravity           = Gravity.END
+        layout.addView(lastEditView())
+//
+//        layout.addView(moreInfoView())
 
-        title.margin.topDp      = 20f
-        title.margin.bottomDp   = 20f
-        title.margin.rightDp    = 12f
+        return layout
+    }
 
-        title.text              = "OGL Compliant Material"
 
-        title.font              = Font.typeface(TextFont.Roboto,
-                                                TextFontStyle.Regular,
+
+    private fun metadataViewLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_13"))))
+//        layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
+
+
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 8f
+        layout.padding.topDp    = 16f
+        layout.padding.bottomDp = 16f
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun authorsView() : LinearLayout
+    {
+        // 1 | Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val icon                = ImageViewBuilder()
+        val label               = TextViewBuilder()
+
+        // 2 | Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+
+        //layout.backgroundColor  = Color.WHITE
+        layout.backgroundResource  = R.drawable.bg_card_flat
+
+        layout.padding.topDp    = 16f
+        layout.padding.bottomDp = 16f
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 8f
+
+
+        layout.child(icon)
+              .child(label)
+
+        // 3 | Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 21
+        icon.heightDp           = 21
+
+        icon.image              = R.drawable.icon_user
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
+        icon.color              = theme.colorOrBlack(iconColorTheme)
+
+        icon.margin.rightDp     = 16f
+
+        // 3 | Label
+        // -------------------------------------------------------------------------------------
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.text              = book.bookInfo().authorListString()
+
+        label.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Bold,
                                                 context)
 
-        val colorTheme = ColorTheme(setOf(
+        val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_15"))))
-        title.color              = theme.colorOrBlack(colorTheme)
-//        title.color             = Color.WHITE
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_14"))))
+        label.color              = theme.colorOrBlack(labelColorTheme)
 
-        title.sizeSp             = 18f
+        label.sizeSp            = 18.5f
 
-        return title.textView(context)
+        return layout.linearLayout(context)
+    }
+
+
+    private fun lastEditView() : LinearLayout
+    {
+        // 1 | Declarations
+        // -------------------------------------------------------------------------------------
+
+        val layout              = LinearLayoutBuilder()
+        val icon                = ImageViewBuilder()
+        val label               = TextViewBuilder()
+
+        // 2 | Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.gravity          = Gravity.CENTER_VERTICAL
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+
+        //layout.backgroundColor  = Color.WHITE
+        layout.backgroundResource  = R.drawable.bg_card_flat
+
+        layout.padding.topDp    = 16f
+        layout.padding.bottomDp = 16f
+        layout.padding.leftDp   = 8f
+        layout.padding.rightDp  = 8f
+
+        layout.child(icon)
+              .child(label)
+
+        // 3 | Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.widthDp            = 20
+        icon.heightDp           = 20
+
+        icon.image              = R.drawable.icon_calendar
+
+        val iconColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
+        icon.color              = theme.colorOrBlack(iconColorTheme)
+
+        icon.margin.rightDp     = 16f
+
+        // 3 | Label
+        // -------------------------------------------------------------------------------------
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.text              = "March 6th, 2019"
+
+        label.font              = Font.typeface(TextFont.RobotoCondensed,
+                                                TextFontStyle.Bold,
+                                                context)
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
+        label.color              = theme.colorOrBlack(labelColorTheme)
+
+        label.sizeSp            = 18.5f
+
+        return layout.linearLayout(context)
     }
 
 

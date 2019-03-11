@@ -3,8 +3,8 @@ package com.taletable.android.lib.orm
 
 
 import com.taletable.android.lib.orm.schema.ColumnValue
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.run
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 
 
@@ -29,17 +29,17 @@ interface ProdType
      * Saves this product type. It runs non-recursive, saving the row only. It creates a
      * transaction for the update operation. It runs asynchronoulsy
      */
-    suspend fun save() = run(CommonPool, {
-        saveProdType(this, listOf(), false, true)
-    })
+//    suspend fun save() = withContext(Dispatchers.Default, {
+//        saveProdType(this, listOf(), false, true)
+//    })
 
 
     /**
      * Save recrusive
      */
-    suspend fun saveAll() = run(CommonPool, {
-        saveProdType(this, listOf(), true, true)
-    })
+//    suspend fun saveAll() = run(CommonPool, {
+//        saveProdType(this, listOf(), true, true)
+//    })
 
 
 //    fun oneToManyRelation(fieldName : String) : OneToManyRelation =

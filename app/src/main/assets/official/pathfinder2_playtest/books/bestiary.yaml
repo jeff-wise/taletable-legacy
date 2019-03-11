@@ -1,0 +1,22 @@
+book_id: '60096464-3ffc-42bf-b6a8-83c047b2b35d'
+book_info:
+  title: 'Bestiary'
+  subtitle: 'Pathfinder 2'
+  summary: 'The core rules for being a player and running a game with the Pathfinder 2 Playtest.'
+  authors:
+    - name: 'Paizo Publishing'
+  abstract: >-
+    The core rules for being a player and running a game with the Pathfinder 2 Playtest.
+introduction:
+settings:
+  theme_id: light
+engine:
+  value_sets:
+  tasks:
+  mechanics:
+  mechanic_categories:
+  functions:
+  programs:
+  summations:
+  procedures:
+content:

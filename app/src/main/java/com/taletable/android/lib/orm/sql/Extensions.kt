@@ -5,8 +5,6 @@ package com.taletable.android.lib.orm.sql
 import android.content.ContentValues
 import com.taletable.android.lib.orm.ProdType
 import com.taletable.android.lib.orm.saveProdType
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.run
 
 
 
@@ -42,8 +40,8 @@ fun ContentValues.addSQLValue(key : String, sqlValue : SQLValue)
  * Saves this product type. It runs non-recursive, saving the row only. It creates a
  * transaction for the update operation. It runs asynchronoulsy
  */
-suspend fun <A : ProdType> MutableList<A>.save() = run(CommonPool, {
-    this.forEach {
-        saveProdType(it, listOf(), false, true)
-    }
-})
+//suspend fun <A : ProdType> MutableList<A>.save() = run(CommonPool, {
+//    this.forEach {
+//        saveProdType(it, listOf(), false, true)
+//    }
+//})

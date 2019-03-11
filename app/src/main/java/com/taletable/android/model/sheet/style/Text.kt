@@ -449,17 +449,17 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
     }
 
 
-    object FiraSansExtraCondensed : TextFont()
+    object FiraSans : TextFont()
     {
         // SQL SERIALIZABLE
         // -------------------------------------------------------------------------------------
 
-        override fun asSQLValue() = SQLText({ "fira_sans_extra_condensed "})
+        override fun asSQLValue() = SQLText({ "fira_sans"})
 
         // TO DOCUMENT
         // -------------------------------------------------------------------------------------
 
-        override fun toDocument() = DocText("fira_sans_extra_condensed")
+        override fun toDocument() = DocText("fira_sans")
 
     }
 
@@ -524,6 +524,21 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object Lato : TextFont()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() = SQLText({ "lato"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("lato")
+
+    }
+
+
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
@@ -537,9 +552,10 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
                 "cabin"             -> effValue<ValueError,TextFont>(TextFont.Cabin)
                 "roboto"            -> effValue<ValueError,TextFont>(TextFont.Roboto)
                 "roboto_condensed"  -> effValue<ValueError,TextFont>(TextFont.RobotoCondensed)
-                "fira_sans_extra_condensed"  -> effValue<ValueError,TextFont>(TextFont.FiraSansExtraCondensed)
+                "fira_sans"         -> effValue<ValueError,TextFont>(TextFont.FiraSans)
                 "merriweather"      -> effValue<ValueError,TextFont>(TextFont.Merriweather)
                 "garamond"          -> effValue<ValueError,TextFont>(TextFont.Garamond)
+                "lato"              -> effValue<ValueError,TextFont>(TextFont.Lato)
                 else                -> effError<ValueError,TextFont>(
                                       UnexpectedValue("TextFont", doc.text, doc.path))
             }
@@ -636,6 +652,21 @@ sealed class TextFontStyle : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object Black : TextFontStyle()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() = SQLText({ "black "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("black")
+
+    }
+
+
     object Italic : TextFontStyle()
     {
         // SQL SERIALIZABLE
@@ -699,6 +730,7 @@ sealed class TextFontStyle : ToDocument, SQLSerializable, Serializable
                 "bold"        -> effValue<ValueError,TextFontStyle>(TextFontStyle.Bold)
                 "bold_italic" -> effValue<ValueError,TextFontStyle>(TextFontStyle.BoldItalic)
                 "extra_bold"  -> effValue<ValueError,TextFontStyle>(TextFontStyle.ExtraBold)
+                "black"       -> effValue<ValueError,TextFontStyle>(TextFontStyle.Black)
                 else          -> effError<ValueError,TextFontStyle>(
                                     UnexpectedValue("TextFontStyle", doc.text, doc.path))
             }

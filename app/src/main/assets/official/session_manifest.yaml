@@ -135,4 +135,6 @@ summaries:
   entity_ids:
   # Book - Rulebook
   - '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+  # Book - Bestiary
+  - '60096464-3ffc-42bf-b6a8-83c047b2b35d'
   main_entity_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'

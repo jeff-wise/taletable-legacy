@@ -2,16 +2,22 @@
 
 <shape
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
+    android:shape="rectangle">
 
-    <!--<stroke-->
-        <!--android:width="1dp"-->
-        <!--android:color="@color/dark_theme_dark_grey_5">-->
-    <!--</stroke>-->
+    <stroke
+        android:width="1dp"
+        android:color="@color/light_theme_dark_blue_grey_21">
+    </stroke>
 
     <solid
         android:color="@color/light_theme_dark_blue_grey_22">
     </solid>
+
+    <corners
+        android:topLeftRadius="2dp"
+        android:topRightRadius="2dp"
+        android:bottomLeftRadius="2dp"
+        android:bottomRightRadius="2dp" />
 
     <size
         android:height="48dp"

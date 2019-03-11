@@ -9,8 +9,8 @@ import com.taletable.android.model.engine.Engine
 import com.taletable.android.official.*
 import com.taletable.android.rts.entity.EntityId
 import effect.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+//import kotlinx.coroutines.experimental.android.UI
+//import kotlinx.coroutines.experimental.launch
 import lulo.schema.Schema
 
 
@@ -40,17 +40,17 @@ object GameManager
     // Game
     // -----------------------------------------------------------------------------------------
 
-    fun addGameToSession(game : Game, isSaved : Boolean)
-    {
-        val gameRecord = GameRecord(game)
-
-        this.session.put(game.gameId(), gameRecord)
-
-        // Save if needed
-        if (!isSaved)
-            launch(UI) { gameRecord.save() }
-    }
-
+//    fun addGameToSession(game : Game, isSaved : Boolean)
+//    {
+//        val gameRecord = GameRecord(game)
+//
+//        this.session.put(game.gameId(), gameRecord)
+//
+//        // Save if needed
+//        if (!isSaved)
+//            launch(UI) { gameRecord.save() }
+//    }
+//
 
     fun openGames() : List<Game> = this.session.values.map { it.game() }
 

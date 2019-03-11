@@ -4,8 +4,6 @@ package com.taletable.android.rts.entity.campaign
 
 import com.taletable.android.model.campaign.Campaign
 import com.taletable.android.rts.entity.EntityId
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 import lulo.schema.Schema
 
 
@@ -32,15 +30,15 @@ object CampaignManager
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun addCampaignToSession(campaign : Campaign, isSaved : Boolean)
-    {
-        val campaignRecord = CampaignRecord(campaign)
-        this.session[campaign.entityId()] = campaignRecord
-
-        // Save if needed
-        if (!isSaved)
-            launch(UI) { campaignRecord.save() }
-    }
+//    fun addCampaignToSession(campaign : Campaign, isSaved : Boolean)
+//    {
+//        val campaignRecord = CampaignRecord(campaign)
+//        this.session[campaign.entityId()] = campaignRecord
+//
+//        // Save if needed
+//        if (!isSaved)
+//            launch(UI) { campaignRecord.save() }
+//    }
 
 
     fun openCampaigns() : List<Campaign> = this.session.values.map { it.campaign() }

@@ -104,6 +104,12 @@ persisted_entities:
   - entity_id: '64557bfe-17b1-44f3-a8bb-a047b98bdc14'
     index_type: variable
     path: 'pathfinder2_playtest/books/indexes/core_rules_variables_equipment.yaml'
+- entity_id: '60096464-3ffc-42bf-b6a8-83c047b2b35d'
+  entity_type: book
+  name: 'Bestiary'
+  category: 'Book'
+  summary: 'Pathfinder OGL bestiary'
+  path: 'pathfinder2_playtest/books/bestiary.yaml'
 - entity_id: '829bce54-aba6-4611-b73b-9f9b1a8fac6f'
   entity_type: book
   name: 'Using Tale Table'

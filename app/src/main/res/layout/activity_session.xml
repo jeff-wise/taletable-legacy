@@ -1,106 +1,277 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.drawerlayout.widget.DrawerLayout
-    android:id="@+id/drawer_layout"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:background="@color/light_theme_light_blue_grey_7"
+    android:id="@+id/coordinator_layout" >
 
-    <RelativeLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:elevation="0dp"
+        android:layout_margin="0dp"
+        android:padding="0dp"
+        android:background="@color/transparent">
 
-        <LinearLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:background="@color/light_theme_dark_blue_grey_9"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            app:contentInsetStart="0dp"
+            android:theme="@style/AppTheme.NoActionBar" >
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/dark_theme_primary_88"
-                app:contentInsetStart="0dp"
-                android:elevation="3dp"
-                android:theme="@style/AppTheme.NoActionBar" >
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+
 
                     <ImageButton
-                        android:id="@+id/toolbar_back_button"
+                        android:id="@+id/entity_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:layout_marginStart="15dp"
+                        android:layout_marginStart="16dp"
                         android:layout_centerVertical="true"
                         android:background="#00000000"
-                        android:src="@drawable/ic_toolbar_back"
-                        android:tint="@color/dark_theme_primary_15" />
+                        android:src="@drawable/ic_toolbar_menu"
+                        android:tint="@color/light_theme_light_blue_grey_3" />
 
 
                     <TextView
-                        android:id="@+id/toolbar_title"
+                        android:id="@+id/entity_name"
                         android:layout_gravity="start"
-                        android:textSize="18sp"
-                        android:textColor="@color/light_theme_dark_grey_10"
-                        android:text="@string/new_session"
+                        android:textSize="19sp"
+                        android:textColor="@color/light_theme_light_blue_grey_1"
+                        android:text="@string/player_session"
                         android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/entity_button"
                         android:layout_marginStart="20dp"
-                        android:layout_toEndOf="@id/toolbar_back_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
-
                     <ImageButton
-                        android:id="@+id/toolbar_options_button"
+                        android:id="@+id/entity_search_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="#00000000"
                         android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="16dp"
                         android:layout_centerVertical="true"
-                        android:layout_marginEnd="15dp"
-                        android:src="@drawable/ic_toolbar_options"
-                        android:tint="@color/dark_theme_primary_15" />
+                        android:background="#00000000"
+                        android:src="@drawable/ic_toolbar_search"
+                        android:tint="@color/light_theme_light_blue_grey_7" />
 
                 </RelativeLayout>
 
-            </androidx.appcompat.widget.Toolbar>
+                <HorizontalScrollView
+                    android:id="@+id/toolbar_nav"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none"
+                    android:visibility="gone">
+                </HorizontalScrollView>
+
+                <LinearLayout
+                    android:id="@+id/toolbar_bottom_padding"
+                    android:layout_width="match_parent"
+                    android:layout_height="14dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                </LinearLayout>
+
+                <com.taletable.android.lib.ui.CustomTabLayout
+                    android:id="@+id/tab_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingTop="4dp"
+                    app:tabGravity="fill"
+                    app:tabMode="scrollable"
+                    app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
+                    app:tabTextColor="@color/dark_blue_hl_8"
+                    app:tabSelectedTextColor="@color/dark_blue_hlx_5"
+                    app:tabIndicatorColor="@color/dark_blue_hl_1" />
+
+            </LinearLayout>
+
+         </androidx.appcompat.widget.Toolbar>
 
 
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:background="@color/light_theme_light_blue_grey_9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_weight="1">
+    </androidx.viewpager.widget.ViewPager>
+
+
+    <LinearLayout
+        android:id="@+id/session_content"
+        android:background="@color/light_theme_light_blue_grey_9"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_weight="1">
+    </LinearLayout>
+
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="14dp"
+        android:background="@drawable/shadow_bottom_sheet"
+        app:layout_anchor="@id/bottom_sheet" />
+
+    <LinearLayout
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:paddingTop="0dp"
+        android:layout_margin="0dp"
+        android:orientation="vertical"
+        app:behavior_hideable="true"
+        app:expandedTitleMargin="0dp"
+        app:behavior_peekHeight="52dp"
+        app:layout_behavior="@string/bottom_sheet_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_session_sheet_header"
+            android:orientation="vertical">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:id="@+id/content"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/light_theme_light_blue_grey_8">
-                </LinearLayout>
+                <!--<ImageView-->
+                    <!--android:id="@+id/session_icon"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentStart="true"-->
+                    <!--android:layout_marginStart="15dp"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:background="#00000000"-->
+                    <!--android:src="@drawable/ic_bottom_sheet_session" />-->
 
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fab"
+                <TextView
+                    android:id="@+id/session_name"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:textColor="@color/light_theme_dark_blue_grey_12"
+                    android:text="@string/untitled_session"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="15dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:clickable="true"
-                    android:src="@drawable/ic_fab_add"
-                    app:layout_anchor="@id/content"
-                    app:layout_anchorGravity="bottom|end"
-                    app:backgroundTint="@color/light_theme_dark_grey_10"
-                    app:rippleColor="#FFF" />
+                    android:layout_height="wrap_content" />
 
 
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+                <TextView
+                    android:id="@+id/session_count_view"
+                    android:layout_gravity="start"
+                    android:textSize="17sp"
+                    android:textColor="@color/white"
+                    android:text="@string/plus_one"
+                    android:background="@drawable/bg_session_count"
+                    android:gravity="center"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 
-    </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_theme_light_blue_grey_9"
+            android:orientation="horizontal"
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="0dp">
+        </LinearLayout>
 
-</androidx.drawerlayout.widget.DrawerLayout>
+        <FrameLayout
+            android:id="@+id/bottom_sheet_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/light_theme_light_blue_grey_5"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_session_add_button"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/ic_fab_add"
+                android:elevation="1dp"
+                android:layout_marginEnd="16dp">
+            </ImageButton>
+        </FrameLayout>
+
+
+        <LinearLayout
+            android:id="@+id/bottom_sheet_footer"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/light_theme_light_blue_grey_9"
+                android:orientation="horizontal"
+                android:layout_marginEnd="0dp"
+                android:layout_marginStart="0dp">
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/bottom_sheet_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
+
+            <FrameLayout
+                android:id="@+id/session_loader_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom">
+            </FrameLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

@@ -6,12 +6,22 @@ import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
+import com.taletable.android.model.user.catalog.Catalog
 import effect.effError
 import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import java.io.Serializable
+
+
+
+
+data class User(val userName : UserName,
+                val catalog : Catalog) : Serializable
+{
+
+}
 
 
 

@@ -28,6 +28,7 @@ import com.taletable.android.rts.entity.groups
 import maybe.Just
 
 
+
 /**
  * Subsection Fragment
  */

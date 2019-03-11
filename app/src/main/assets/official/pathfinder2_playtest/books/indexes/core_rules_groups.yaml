@@ -2616,17 +2616,22 @@ groups:
         theme_color_ids:
         - theme_id: light
           color_id: white
-      margins:
-        top: 12
       padding:
-        top: 16
         bottom: 12
   rows:
   - format:
       element_format:
+        border:
+          bottom:
+            thickness: 1
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_5
         horizontal_alignment: left
         padding:
-          bottom: 0
+          bottom: 16
+          top: 16
           left: 16
           right: 16
     widgets:
@@ -2640,10 +2645,10 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_12
-            font: merriweather
-            font_style: extra_bold
-            size: 27
+                color_id: dark_blue_grey_12
+            font: lato
+            font_style: black
+            size: 28
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -2683,7 +2688,8 @@ groups:
 #        margins:
 #          bottom: 20
         padding:
-          bottom: 28
+          bottom: 16
+          top: 16
           left: 16
           right: 16
     widgets:
@@ -2703,9 +2709,9 @@ groups:
               theme_color_ids:
               - theme_id: light
                 color_id: light_blue_grey_18
-            font: merriweather
-            font_style: bold
-            size: 16
+            font: lato
+            font_style: regular
+            size: 18
             element_format:
               horizontal_alignment: left
         value_variable_reference:
@@ -2752,11 +2758,11 @@ groups:
                 theme_color_ids:
                 - theme_id: light
                   color_id: light_blue_grey_2
-              height: 42
+              height: 46
               horizontal_alignment: left
               padding:
-                left: 6
-                right: 6
+                left: 8
+                right: 8
               width:
                 type: width_wrap
                 width_wrap: wrap
@@ -2770,22 +2776,22 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_23
-            font: merriweather
-            font_style: extra_bold
-            size: 21.5
+                color_id: dark_blue_grey_22
+            font: lato
+            font_style: black
+            size: 22
           value_format:
             element_format:
               horizontal_alignment: left
               padding:
-                bottom: 2
+                bottom: 0
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_14
-            font: merriweather
-            font_style: extra_bold
-            size: 26
+                color_id: dark_blue_grey_14
+            font: lato
+            font_style: black
+            size: 22
             number_format: modifier
         inside_label_variable_reference:
           type: variable_id
@@ -2827,12 +2833,12 @@ groups:
                 - theme_id: light
                   color_id: light_blue_grey_2
               horizontal_alignment: left
-              height: 42
+              height: 46
               margins:
-                left: 6
+                left: 8
               padding:
-                left: 6
-                right: 6
+                left: 8
+                right: 8
               width:
                 type: width_wrap
                 width_wrap: wrap
@@ -2846,22 +2852,22 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_23
-            font: merriweather
-            font_style: extra_bold
-            size: 21.5
+                color_id: dark_blue_grey_22
+            font: lato
+            font_style: black
+            size: 22
           value_format:
             element_format:
               horizontal_alignment: left
               padding:
-                bottom: 2
+                bottom: 0
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_14
-            font: merriweather
-            font_style: extra_bold
-            size: 26
+                color_id: dark_blue_grey_14
+            font: lato
+            font_style: black
+            size: 22
             number_format: modifier
         inside_label_variable_reference:
           type: variable_id
@@ -2928,9 +2934,9 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_22
+                color_id: dark_blue_grey_22
             size: 13
-            font: merriweather
+            font: lato
             font_style: bold
         value_variable_reference:
           type: variable_id
@@ -2952,9 +2958,9 @@ groups:
               margins:
                 left: 3
               padding:
-                left: 6
-                top: 6
-                right: 6
+                left: 8
+                top: 8
+                right: 8
               vertical_alignment: top
               width:
                 type: width_justify
@@ -2965,9 +2971,9 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_22
+                color_id: dark_blue_grey_22
             size: 13
-            font: merriweather
+            font: lato
             font_style: bold
         value_variable_reference:
           type: variable_id
@@ -2996,9 +3002,9 @@ groups:
               margins:
                 right: 3
               padding:
-                bottom: 6
-                left: 6
-                right: 6
+                bottom: 8
+                left: 8
+                right: 8
               width:
                 type: width_justify
                 width_justify: justify
@@ -3009,10 +3015,10 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_14
-            size: 26
-            font: merriweather
-            font_style: extra_bold
+                color_id: dark_blue_grey_14
+            size: 24
+            font: lato
+            font_style: black
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -3057,9 +3063,9 @@ groups:
               margins:
                 left: 3
               padding:
-                bottom: 6
-                left: 6
-                right: 6
+                bottom: 8
+                left: 8
+                right: 8
               width:
                 type: width_justify
                 width_justify: justify
@@ -3071,10 +3077,10 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_14
-            size: 25
-            font: merriweather
-            font_style: extra_bold
+                color_id: dark_blue_grey_14
+            size: 24
+            font: lato
+            font_style: black
           value_format:
             element_format:
               horizontal_alignment: left
@@ -3082,10 +3088,10 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_14
-            size: 26
-            font: merriweather
-            font_style: extra_bold
+                color_id: dark_blue_grey_14
+            size: 24
+            font: lato
+            font_style: black
         inside_label_variable_reference:
           type: variable_id
           variable_id: term_feet_abbr
@@ -3138,9 +3144,9 @@ groups:
               margins:
                 right: 3
               padding:
-                left: 6
-                top: 6
-                right: 6
+                left: 8
+                top: 8
+                right: 8
               horizontal_alignment: left
               vertical_alignment: top
               width:
@@ -3152,9 +3158,9 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_22
+                color_id: dark_blue_grey_22
             size: 13
-            font: merriweather
+            font: lato
             font_style: bold
         value_variable_reference:
           type: variable_id
@@ -3176,9 +3182,9 @@ groups:
               margins:
                 left: 3
               padding:
-                left: 6
-                top: 6
-                right: 6
+                left: 8
+                top: 8
+                right: 8
               vertical_alignment: top
               width:
                 type: width_justify
@@ -3189,9 +3195,9 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_22
+                color_id: dark_blue_grey_22
             size: 13
-            font: merriweather
+            font: lato
             font_style: bold
         value_variable_reference:
           type: variable_id
@@ -3257,9 +3263,9 @@ groups:
               margins:
                 right: 3
               padding:
-                bottom: 6
-                left: 6
-                right: 6
+                bottom: 8
+                left: 8
+                right: 8
               width:
                 type: width_justify
                 width_justify: justify
@@ -3270,10 +3276,10 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_14
-            size: 26
-            font: merriweather
-            font_style: extra_bold
+                color_id: dark_blue_grey_14
+            size: 24
+            font: lato
+            font_style: black
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -3318,9 +3324,9 @@ groups:
               margins:
                 left: 3
               padding:
-                bottom: 6
-                left: 6
-                right: 6
+                bottom: 8
+                left: 8
+                right: 8
               width:
                 type: width_justify
                 width_justify: justify
@@ -3331,10 +3337,10 @@ groups:
             color_theme:
               theme_color_ids:
               - theme_id: light
-                color_id: dark_grey_14
-            size: 26
-            font: merriweather
-            font_style: extra_bold
+                color_id: dark_blue_grey_14
+            size: 24
+            font: lato
+            font_style: black
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -3662,7 +3668,7 @@ groups:
               - theme_id: light
                 color_id: dark_grey_8
             size: 15.7
-            font: merriweather
+            font: fira_sans
             font_style: light
             line_spacing: 1.35
         value_variable_reference:

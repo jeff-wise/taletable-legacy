@@ -4,7 +4,7 @@ package com.taletable.android.rts.session
 
 import android.content.Context
 import com.kispoko.culebra.*
-import com.taletable.android.db.writeSession
+import com.taletable.android.activity.session.SessionListHeader
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
@@ -14,11 +14,9 @@ import com.taletable.android.model.entity.entityManifest
 import com.taletable.android.router.Router
 import com.taletable.android.rts.entity.*
 import effect.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import com.taletable.android.rts.entity.sheet as entitySheet
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
@@ -51,18 +49,15 @@ fun activeSession() : Maybe<Session> = activeSessionId ap {
 }
 
 
-fun openSession(session : Session,
-                context : Context) = launch(UI)
+suspend fun openSession(session : Session, context : Context)
 {
-    async(CommonPool) {
-        activateSession(session, context)
-    }.await()
+    activateSession(session, context)
 
     sessionById[session.sessionId] = session
 
     activeSessionId = Just(session.sessionId)
 
-    writeSession(session, context)
+//    writeSession(session, context)
 
     Router.send(MessageSessionLoaded(session.sessionId))
 }
@@ -85,9 +80,9 @@ suspend fun activateSession(loader : Session, context : Context)
     val numberOfLoaders = loader.entityIds.size
     loader.entityIds.forEachIndexed { index, entityId ->
 
-        val entityLoadResult = async(CommonPool) {
+        val entityLoadResult = withContext(Dispatchers.IO) {
             loadEntity(entityId, context)
-        }.await()
+        }
 
         entityLoadResult.doMaybe {
 //            Log.d("***SESSION", "loaded: $entityLoadResult")
@@ -100,13 +95,6 @@ suspend fun activateSession(loader : Session, context : Context)
         if (!it.fromCache)
             initialize(it.entityId)
     }
-
-//    val entityIds = entityLoadResults.map { it.entityId }.toMutableSet()
-//
-//    val date = when (loader.timeLastUsed) {
-//        is Just    -> loader.timeLastUsed.value
-//        is Nothing -> Calendar.getInstance()
-//    }
 
 }
 
@@ -124,7 +112,13 @@ data class Session(val sessionId : SessionId,
                    val mainEntityId : EntityId) : Serializable
 {
 
+    // | PROPERTIES
     // -----------------------------------------------------------------------------------------
+
+    var selectedEntityId : EntityId? = null
+
+
+
     // | CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -182,6 +176,37 @@ data class Session(val sessionId : SessionId,
     }
 
 
+    fun entityViewList(context : Context) : List<Any>
+    {
+        val viewList : MutableList<Any> = mutableListOf()
+
+//        var selectedEntity : PersistedEntity? = null
+        var otherEntities : MutableList<PersistedEntity> = mutableListOf()
+
+        entityManifest(context).doMaybe { manifest ->
+
+            this.entityIds.forEach { entityId ->
+//                if (selectedEntityId == entityId) {
+//                    selectedEntity = manifest.persistedEntity(entityId).toNullable()
+//                } else {
+                manifest.persistedEntity(entityId).doMaybe { otherEntities.add(it) }
+                //}
+            }
+        }
+
+
+//        viewList.add(SessionCurrentEntityHeader())
+//        selectedEntity?.let { viewList.add(SessionCurrentEntity(it)) }
+//        viewList.add(SessionOtherEntitiesHeader())
+//        viewList.addAll(otherEntities)
+
+        viewList.add(SessionListHeader())
+        viewList.addAll(otherEntities)
+
+        return viewList
+    }
+
+
     fun entities() : List<Entity>
     {
         val entityList : MutableList<Entity> = mutableListOf()
@@ -213,53 +238,6 @@ data class Session(val sessionId : SessionId,
         return recordByType
     }
 
-
-    fun entityAndHeaders() : List<Any>
-    {
-        val items : MutableList<Any> = mutableListOf()
-
-        val entityByCategory : MutableMap<String,MutableList<Entity>> = mutableMapOf()
-
-        this.entityIds.forEach { entityId ->
-            entityRecord(entityId) apDo { record ->
-                val category = record.entity().category()
-                if (!entityByCategory.containsKey(category))
-                    entityByCategory.put(category, mutableListOf())
-
-                entityByCategory[category]!!.add(record.entity())
-            }
-        }
-
-        if (entityByCategory.containsKey("Player Character")) {
-            items.add("Player Characters")
-            entityByCategory["Player Character"]!!.forEach {
-                items.add(it)
-            }
-        }
-
-        if (entityByCategory.containsKey("Book")) {
-            items.add("Books")
-            entityByCategory["Book"]!!.forEach {
-                items.add(it)
-            }
-        }
-
-        if (entityByCategory.containsKey("Campaign")) {
-            items.add("Campaigns")
-            entityByCategory["Campaign"]!!.forEach {
-                items.add(it)
-            }
-        }
-
-        if (entityByCategory.containsKey("Game")) {
-            items.add("Games")
-            entityByCategory["Game"]!!.forEach {
-                items.add(it)
-            }
-        }
-
-        return items
-    }
 
 }
 
