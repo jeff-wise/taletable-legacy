@@ -15,7 +15,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_theme_light_blue_grey_9">
+        android:background="@color/light_theme_light_blue_grey_7">
 
 
         <com.google.android.material.appbar.AppBarLayout
@@ -28,7 +28,7 @@
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 app:contentScrim="?attr/colorPrimary"
                 app:expandedTitleGravity="top"
                 app:layout_scrollFlags="scroll|enterAlways|snap">
@@ -38,8 +38,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="0dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
                     app:contentInsetStart="0dp"
                     app:layout_collapseMode="pin">
 
@@ -50,9 +50,9 @@
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_height="50dp"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginRight="12dp"
                             android:focusableInTouchMode="true"
                             android:background="@drawable/bg_search_box">
 
@@ -64,21 +64,19 @@
                                 android:layout_centerVertical="true"
                                 android:paddingLeft="10dp"
                                 android:paddingRight="10dp"
-                                android:paddingTop="10dp"
-                                android:paddingBottom="10dp"
                                 android:background="#00000000"
-                                android:src="@drawable/ic_searchbar_search"
-                                android:tint="@color/light_theme_dark_blue_grey_14" />
+                                android:src="@drawable/ic_toolbar_search"
+                                android:tint="@color/light_theme_dark_blue_grey_12" />
 
                             <EditText
                                 android:id="@+id/searchbar_text_view"
-                                android:textSize="18sp"
+                                android:textSize="17sp"
                                 android:textColor="@color/light_theme_dark_blue_grey_12"
                                 android:hint="@string/search_everything"
                                 android:layout_centerVertical="true"
                                 android:background="@color/transparent"
                                 android:textColorHint="#959595"
-                                android:layout_marginStart="17dp"
+                                android:layout_marginStart="12dp"
                                 android:layout_toEndOf="@id/searchbar_left_button_view"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" />
@@ -117,16 +115,30 @@
 
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/search_results"
+        <!--<androidx.recyclerview.widget.RecyclerView-->
+            <!--android:id="@+id/search_results"-->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginBottom="54dp"-->
+            <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+            <!--android:paddingBottom="60dp"-->
+            <!--android:background="@color/white">-->
+        <!--</androidx.recyclerview.widget.RecyclerView>-->
+
+        <!---->
+        <LinearLayout
+            android:id="@+id/content"
+            android:background="@color/white"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusableInTouchMode="true"
             android:layout_marginBottom="54dp"
+            android:layout_marginTop="1dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:paddingBottom="60dp"
-            android:background="@color/white">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:paddingBottom="60dp">
+        </LinearLayout>
 
 
 
@@ -140,7 +152,7 @@
             app:fabAlignmentMode="center"
             app:fabCradleRoundedCornerRadius="3dp"
             app:elevation="8dp"
-            app:backgroundTint="@color/light_theme_dark_blue_grey_10"
+            app:backgroundTint="@color/light_theme_dark_blue_grey_8"
             app:navigationIcon="@drawable/ic_bottom_app_bar_menu"/>
 
 

@@ -11,9 +11,10 @@ import effect.effError
 import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
-
+import java.util.*
 
 
 
@@ -57,6 +58,44 @@ data class UserName(val value : String) : ToDocument, SQLSerializable, Serializa
     // -----------------------------------------------------------------------------------------
 
     override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * User Id
+ */
+data class UserId(val value : UUID) : ToDocument, Serializable
+{
+
+    // Constructors
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<UserId>
+    {
+        override fun fromDocument(doc : SchemaDoc): ValueParser<UserId> = when (doc)
+        {
+            is DocText -> {
+                try {
+                    effValue<ValueError,UserId>(UserId(UUID.fromString(doc.text)))
+                }
+                catch (e : IllegalArgumentException) {
+                    effError<ValueError,UserId>(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+                }
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+
+
+        fun random() = UserId(UUID.randomUUID())
+    }
+
+
+    // | To Document
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value.toString())
+
 
 }
 

@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.transition.Slide
 import com.taletable.android.R
 import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.lib.ui.*
@@ -23,11 +24,13 @@ import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
 import com.taletable.android.model.theme.official.officialThemeLight
+import com.taletable.android.model.user.UserId
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.book
 import com.taletable.android.rts.entity.groups
 import maybe.Just
 import maybe.Nothing
+import java.util.*
 
 
 /**
@@ -100,7 +103,6 @@ class ChapterFragment : Fragment()
 
         return view
     }
-
 
 }
 
@@ -394,6 +396,18 @@ class ChapterUI(val chapter : BookChapter,
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             layout.translationZ = 10000f
             buttonView.translationZ = 10000f
+        }
+
+        buttonView.setOnClickListener {
+            val newFragment = BookmarkCollectionListFragment.newInstance(
+                                  UserId(UUID.fromString("0244f109-22e6-431b-95ad-8dede7e274c1")))
+            newFragment.enterTransition = Slide(Gravity.BOTTOM)
+            newFragment.exitTransition  = Slide(Gravity.TOP)
+
+            val transaction = sessionActivity.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.session_content, newFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
 
         layout.addView(buttonView)

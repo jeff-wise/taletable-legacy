@@ -48,9 +48,10 @@ object Font
 
     private val robotoLightFilePath                 = "fonts/Roboto-Light.ttf"
     private val robotoRegularFilePath               = "fonts/Roboto-Regular.ttf"
-    private val robotoMediumFilePath                = "fonts/Roboto-Medium.ttf"
-    private val robotoBoldFilePath                  = "fonts/Roboto-Bold.ttf"
     private val robotoItalicFilePath                = "fonts/Roboto-Italic.ttf"
+    private val robotoMediumFilePath                = "fonts/Roboto-Medium.ttf"
+    private val robotoMediumItalicFilePath          = "fonts/Roboto-MediumItalic.ttf"
+    private val robotoBoldFilePath                  = "fonts/Roboto-Bold.ttf"
     private val robotoBoldItalicFilePath            = "fonts/Roboto-BoldItalic.ttf"
 
     private val latoLightFilePath                   = "fonts/Lato-Light.ttf"
@@ -95,8 +96,9 @@ object Font
             {
                 is TextFontStyle.Regular    -> getTypeface(cabinRegularFilePath, context)
                 is TextFontStyle.Medium     -> getTypeface(cabinMediumFilePath, context)
-                is TextFontStyle.SemiBold   -> getTypeface(cabinSemiboldFilePath, context)
-                is TextFontStyle.Bold       -> getTypeface(cabinBoldFilePath, context)
+                is TextFontStyle.MediumItalic   -> getTypeface(cabinMediumFilePath, context)
+                is TextFontStyle.SemiBold       -> getTypeface(cabinSemiboldFilePath, context)
+                is TextFontStyle.Bold           -> getTypeface(cabinBoldFilePath, context)
                 is TextFontStyle.BoldItalic -> getTypeface(cabinBoldItalicFilePath, context)
                 is TextFontStyle.ExtraBold  -> getTypeface(cabinBoldFilePath, context)
                 is TextFontStyle.Black      -> getTypeface(cabinBoldFilePath, context)
@@ -109,6 +111,7 @@ object Font
                 is TextFontStyle.Regular    -> getTypeface(firaSansRegularFilePath, context)
                 is TextFontStyle.Italic     -> getTypeface(firaSansRegularFilePath, context)
                 is TextFontStyle.Medium     -> getTypeface(firaSansMediumFilePath, context)
+                is TextFontStyle.MediumItalic     -> getTypeface(firaSansMediumFilePath, context)
                 is TextFontStyle.SemiBold   -> getTypeface(firaSansMediumFilePath, context)
                 is TextFontStyle.Bold       -> getTypeface(firaSansBoldFilePath, context)
                 is TextFontStyle.BoldItalic -> getTypeface(firaSansRegularFilePath, context)
@@ -117,15 +120,16 @@ object Font
             }
             is TextFont.Roboto -> when (fontStyle)
             {
-                is TextFontStyle.Light      -> getTypeface(robotoLightFilePath, context)
-                is TextFontStyle.Regular    -> getTypeface(robotoRegularFilePath, context)
-                is TextFontStyle.Italic     -> getTypeface(robotoItalicFilePath, context)
-                is TextFontStyle.Medium     -> getTypeface(robotoMediumFilePath, context)
-                is TextFontStyle.SemiBold   -> getTypeface(robotoMediumFilePath, context)
-                is TextFontStyle.Bold       -> getTypeface(robotoBoldFilePath, context)
-                is TextFontStyle.BoldItalic -> getTypeface(robotoBoldItalicFilePath, context)
-                is TextFontStyle.ExtraBold  -> getTypeface(robotoBoldFilePath, context)
-                is TextFontStyle.Black      -> getTypeface(robotoBoldFilePath, context)
+                is TextFontStyle.Light          -> getTypeface(robotoLightFilePath, context)
+                is TextFontStyle.Regular        -> getTypeface(robotoRegularFilePath, context)
+                is TextFontStyle.Italic         -> getTypeface(robotoItalicFilePath, context)
+                is TextFontStyle.Medium         -> getTypeface(robotoMediumFilePath, context)
+                is TextFontStyle.MediumItalic   -> getTypeface(robotoMediumItalicFilePath, context)
+                is TextFontStyle.SemiBold       -> getTypeface(robotoMediumFilePath, context)
+                is TextFontStyle.Bold           -> getTypeface(robotoBoldFilePath, context)
+                is TextFontStyle.BoldItalic     -> getTypeface(robotoBoldItalicFilePath, context)
+                is TextFontStyle.ExtraBold      -> getTypeface(robotoBoldFilePath, context)
+                is TextFontStyle.Black          -> getTypeface(robotoBoldFilePath, context)
             }
             is TextFont.RobotoCondensed -> when (fontStyle)
             {
@@ -133,6 +137,7 @@ object Font
                 is TextFontStyle.Regular    -> getTypeface(robotoCondensedRegularFilePath, context)
                 is TextFontStyle.Italic     -> getTypeface(robotoCondensedItalicFilePath, context)
                 is TextFontStyle.Medium     -> getTypeface(robotoCondensedRegularFilePath, context)
+                is TextFontStyle.MediumItalic     -> getTypeface(robotoCondensedRegularFilePath, context)
                 is TextFontStyle.SemiBold   -> getTypeface(robotoCondensedBoldFilePath, context)
                 is TextFontStyle.Bold       -> getTypeface(robotoCondensedBoldFilePath, context)
                 is TextFontStyle.BoldItalic -> getTypeface(robotoCondensedBoldItalicFilePath, context)
@@ -144,6 +149,7 @@ object Font
                 is TextFontStyle.Light      -> getTypeface(merriweatherLightFilePath, context)
                 is TextFontStyle.Regular    -> getTypeface(merriweatherRegularFilePath, context)
                 is TextFontStyle.Medium     -> getTypeface(merriweatherRegularFilePath, context)
+                is TextFontStyle.MediumItalic     -> getTypeface(merriweatherRegularFilePath, context)
                 is TextFontStyle.SemiBold   -> getTypeface(merriweatherRegularFilePath, context)
                 is TextFontStyle.Bold       -> getTypeface(merriweatherBoldFilePath, context)
                 is TextFontStyle.ExtraBold  -> getTypeface(merriweatherBlackFilePath, context)
@@ -156,6 +162,7 @@ object Font
                 is TextFontStyle.Light      -> getTypeface(garamondRegularFilePath, context)
                 is TextFontStyle.Regular    -> getTypeface(garamondRegularFilePath, context)
                 is TextFontStyle.Medium     -> getTypeface(garamondMediumFilePath, context)
+                is TextFontStyle.MediumItalic     -> getTypeface(garamondMediumFilePath, context)
                 is TextFontStyle.SemiBold   -> getTypeface(garamondSemiboldFilePath, context)
                 is TextFontStyle.Bold       -> getTypeface(garamondBoldFilePath, context)
                 is TextFontStyle.ExtraBold  -> getTypeface(garamondExtraBoldFilePath, context)
@@ -168,6 +175,7 @@ object Font
                 is TextFontStyle.Light      -> getTypeface(latoLightFilePath, context)
                 is TextFontStyle.Regular    -> getTypeface(latoRegularFilePath, context)
                 is TextFontStyle.Medium     -> getTypeface(latoRegularFilePath, context)
+                is TextFontStyle.MediumItalic     -> getTypeface(latoRegularFilePath, context)
                 is TextFontStyle.SemiBold   -> getTypeface(latoBoldFilePath, context)
                 is TextFontStyle.Bold       -> getTypeface(latoBoldFilePath, context)
                 is TextFontStyle.ExtraBold  -> getTypeface(latoBlackFilePath, context)

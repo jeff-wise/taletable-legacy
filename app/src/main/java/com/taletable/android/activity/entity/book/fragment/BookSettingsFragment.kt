@@ -5,7 +5,6 @@ package com.taletable.android.activity.entity.book.fragment
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -84,7 +83,7 @@ class BookSettingsFragment : Fragment()
 //                view = BookUI(it, bookActivity, officialThemeLight).view()
 //            }
 
-            view = bookSettingsView(officialThemeLight, this, context)
+            view = bookmarkCollectionListView(officialThemeLight, this, context)
         }
 
         return view
@@ -95,42 +94,51 @@ class BookSettingsFragment : Fragment()
 
 
 
-private fun bookSettingsView(theme : Theme,
-                             fragment : BookSettingsFragment,
-                             context : Context) : LinearLayout
+private fun bookmarkCollectionListView(theme : Theme,
+                                       fragment : BookSettingsFragment,
+                                       context : Context) : ViewGroup
 {
-    val layout = bookSettingsViewLayout(theme, context)
+    val layout = bookmarkCollectionListViewLayout(theme, context)
 
-    layout.addView(bookSettingsHeaderView(theme, fragment, context))
+    val headerView = bookmarkCollectionListHeaderView(theme, fragment, context)
 
-    layout.addView(bookSettingsContentView(theme, context))
+    val contentView = bookmarkListContentView(theme, context)
+    val contentViewLP = contentView.layoutParams as RelativeLayout.LayoutParams
+    contentViewLP.addRule(RelativeLayout.BELOW, R.id.header)
+    contentViewLP.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+    contentView.layoutParams = contentViewLP
+
+    layout.addView(headerView)
+    layout.addView(contentView)
 
     return layout
 }
 
 
-private fun bookSettingsViewLayout(theme : Theme, context : Context) : LinearLayout
+private fun bookmarkCollectionListViewLayout(theme : Theme, context : Context) : RelativeLayout
 {
-    val layoutBuilder               = LinearLayoutBuilder()
+    val layoutBuilder               = RelativeLayoutBuilder()
 
     layoutBuilder.width             = LinearLayout.LayoutParams.MATCH_PARENT
     layoutBuilder.height            = LinearLayout.LayoutParams.MATCH_PARENT
 
-    layoutBuilder.orientation       = LinearLayout.VERTICAL
+//    layoutBuilder.orientation       = LinearLayout.VERTICAL
 
-    return layoutBuilder.linearLayout(context)
+    layoutBuilder.backgroundColor   = Color.WHITE
+
+    return layoutBuilder.relativeLayout(context)
 }
 
 
-private fun bookSettingsHeaderView(theme : Theme,
-                                   fragment : BookSettingsFragment,
-                                   context : Context) : ViewGroup
+private fun bookmarkCollectionListHeaderView(theme : Theme,
+                                             fragment : BookSettingsFragment,
+                                             context : Context) : ViewGroup
 {
-    val layout = bookSettingsHeaderViewLayout(theme, context)
+    val layout = bookmarkCollectionListHeaderViewLayout(theme, context)
 
-    val closeIconView = bookSettingsHeaderCloseIconView(theme, context)
+    val closeIconView = bookmarkCollectionListHeaderCloseIconView(theme, context)
 
-    val titleView     = bookSettingsHeaderTitleView(theme, context)
+    val titleView     = bookmarkCollectionListHeaderTitleView(theme, context)
     val titleViewLP = titleView.layoutParams as RelativeLayout.LayoutParams
     titleViewLP.addRule(RelativeLayout.END_OF, R.id.icon)
     titleViewLP.addRule(RelativeLayout.CENTER_VERTICAL)
@@ -147,12 +155,17 @@ private fun bookSettingsHeaderView(theme : Theme,
 }
 
 
-private fun bookSettingsHeaderViewLayout(theme : Theme, context : Context) : ViewGroup
+private fun bookmarkCollectionListHeaderViewLayout(theme : Theme, context : Context) : ViewGroup
 {
     val layout                  = RelativeLayoutBuilder()
 
-    layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-    layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+    layout.id                   = R.id.header
+
+    layout.layoutType           = LayoutType.RELATIVE
+    layout.width                = RelativeLayout.LayoutParams.MATCH_PARENT
+    layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
+
+    layout.addRule(RelativeLayout.ALIGN_PARENT_TOP)
 
     layout.padding.topDp        = 16f
     layout.padding.bottomDp     = 16f
@@ -167,7 +180,7 @@ private fun bookSettingsHeaderViewLayout(theme : Theme, context : Context) : Vie
 }
 
 
-private fun bookSettingsHeaderCloseIconView(theme : Theme, context : Context) : ImageView
+private fun bookmarkCollectionListHeaderCloseIconView(theme : Theme, context : Context) : ImageView
 {
     val iconViewBuilder             = ImageViewBuilder()
 
@@ -191,7 +204,7 @@ private fun bookSettingsHeaderCloseIconView(theme : Theme, context : Context) : 
 }
 
 
-private fun bookSettingsHeaderTitleView(theme : Theme, context : Context) : TextView
+private fun bookmarkCollectionListHeaderTitleView(theme : Theme, context : Context) : TextView
 {
     val titleViewBuilder                = TextViewBuilder()
 
@@ -216,25 +229,26 @@ private fun bookSettingsHeaderTitleView(theme : Theme, context : Context) : Text
 }
 
 
-private fun bookSettingsContentView(theme : Theme, context : Context) : LinearLayout
+private fun bookmarkListContentView(theme : Theme, context : Context) : ViewGroup
 {
-    val layout = bookSettingsContentViewLayout(theme, context)
+    val layout = bookmarkListContentViewLayout(theme, context)
 
     return layout
 }
 
 
-private fun bookSettingsContentViewLayout(theme : Theme, context : Context) : LinearLayout
+private fun bookmarkListContentViewLayout(theme : Theme, context : Context) : RelativeLayout
 {
-    val layoutBuilder               = LinearLayoutBuilder()
+    val layoutBuilder               = RelativeLayoutBuilder()
 
-    layoutBuilder.width             = LinearLayout.LayoutParams.MATCH_PARENT
-    layoutBuilder.height            = LinearLayout.LayoutParams.MATCH_PARENT
+    layoutBuilder.layoutType        = LayoutType.RELATIVE
+    layoutBuilder.width             = RelativeLayout.LayoutParams.MATCH_PARENT
+    layoutBuilder.heightDp          = 0
 
     layoutBuilder.orientation       = LinearLayout.VERTICAL
 
     layoutBuilder.backgroundColor   = Color.WHITE
 
-    return layoutBuilder.linearLayout(context)
+    return layoutBuilder.relativeLayout(context)
 }
 

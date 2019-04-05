@@ -110,6 +110,12 @@ persisted_entities:
   category: 'Book'
   summary: 'Pathfinder OGL bestiary'
   path: 'pathfinder2_playtest/books/bestiary.yaml'
+- entity_id: '813479ee-f9a0-4314-8b82-70cbd17c8e8d'
+  entity_type: book
+  name: 'Sample Adventure'
+  category: 'Book'
+  summary: 'A sample Pathfinder 2 adventure module.'
+  path: 'pathfinder2_playtest/books/bestiary.yaml'
 - entity_id: '829bce54-aba6-4611-b73b-9f9b1a8fac6f'
   entity_type: book
   name: 'Using Tale Table'

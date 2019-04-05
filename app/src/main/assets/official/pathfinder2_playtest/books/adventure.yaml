@@ -1,0 +1,22 @@
+book_id: '813479ee-f9a0-4314-8b82-70cbd17c8e8d'
+book_info:
+  title: 'Sample Adventure'
+  subtitle: 'Pathfinder 2'
+  summary: 'The core rules for being a player and running a game with the Pathfinder 2 Playtest.'
+  authors:
+    - name: 'Paizo Publishing'
+  abstract: >-
+    The core rules for being a player and running a game with the Pathfinder 2 Playtest.
+introduction:
+settings:
+  theme_id: light
+engine:
+  value_sets:
+  tasks:
+  mechanics:
+  mechanic_categories:
+  functions:
+  programs:
+  summations:
+  procedures:
+content:

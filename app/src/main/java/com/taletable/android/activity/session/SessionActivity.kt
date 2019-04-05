@@ -2,20 +2,20 @@
 package com.taletable.android.activity.session
 
 
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.transition.Slide
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.*
+import androidx.core.content.ContextCompat.startActivity
 import com.taletable.android.R
 import com.taletable.android.activity.sheet.page.PagePagerAdapter
 import com.taletable.android.lib.ui.*
@@ -29,14 +29,13 @@ import com.taletable.android.rts.entity.*
 import com.taletable.android.rts.entity.sheet.*
 import maybe.Just
 import io.reactivex.disposables.CompositeDisposable
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Slide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.taletable.android.activity.entity.book.fragment.*
 import com.taletable.android.activity.entity.book.navView
+import com.taletable.android.activity.home.HomeActivity
 import com.taletable.android.activity.session.campaign.campaignView
 import com.taletable.android.activity.session.game.gameView
 import com.taletable.android.app.AppError
@@ -48,6 +47,7 @@ import com.taletable.android.model.session.sessionManifest
 import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.theme.official.officialAppThemeLight
 import com.taletable.android.rts.session.*
+import com.taletable.android.util.SimpleDividerItemDecoration
 import effect.Val
 import effect.effValue
 import kotlinx.coroutines.Dispatchers
@@ -55,7 +55,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import maybe.Maybe
 import java.util.*
-import java.util.concurrent.ThreadLocalRandom.current
+
 
 
 object SheetActivityGlobal
@@ -125,6 +125,20 @@ class SessionActivity : AppCompatActivity()
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
+
+        with(window) {
+
+            // Check if we're running on Android 5.0 or higher
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+                //exitTransition = Slide(Gravity.END)
+                exitTransition = Slide(Gravity.END)
+                allowEnterTransitionOverlap = true
+            } else {
+                // Swap without transition
+            }
+        }
+
 
         // (1) Set Content View
         // -------------------------------------------------------------------------------------
@@ -688,6 +702,8 @@ class SessionActivity : AppCompatActivity()
 
         this.bookNavHistory = this.bookNavHistory.plus(bookReference)
 
+        val prevBookReference = this.bookNavHistory.lastOrNull()
+
         when (bookReference)
         {
             is BookReferenceBook ->
@@ -702,6 +718,16 @@ class SessionActivity : AppCompatActivity()
             is BookReferenceChapter ->
             {
                 val newFragment = ChapterFragment.newInstance(bookReference.chapterId(), bookReference.bookId())
+
+                when (prevBookReference) {
+                    is BookReferenceBook -> {
+                        newFragment.enterTransition = Slide(Gravity.END)
+                    }
+                    else -> {
+                        newFragment.enterTransition = Slide(Gravity.START)
+                    }
+                }
+
 
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.replace(R.id.session_content, newFragment)
@@ -1046,14 +1072,14 @@ fun activeSessionRecyclerView(session : Session,
 
 //    recyclerView.adapter            = ActiveSessionRecyclerViewAdapter(theme, context)
 
-    recyclerView.padding.leftDp     = 8f
-    recyclerView.padding.rightDp    = 8f
+//    recyclerView.padding.leftDp     = 8f
+//    recyclerView.padding.rightDp    = 8f
 
-//    val dividerColorTheme = ColorTheme(setOf(
-//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-//            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
-//    val dividerColor              = theme.colorOrBlack(dividerColorTheme)
-//    recyclerView.divider            = SimpleDividerItemDecoration(context, dividerColor)
+    val dividerColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
+    val dividerColor              = theme.colorOrBlack(dividerColorTheme)
+    recyclerView.divider            = SimpleDividerItemDecoration(context, dividerColor)
 
 //    recyclerView.padding.topDp      = 6f
 
@@ -1067,16 +1093,27 @@ fun activeSessionRecyclerView(session : Session,
 // | Bottom Sheet > Toolbar View
 // -----------------------------------------------------------------------------------------
 
-fun bottomSheetToolbarView(theme : Theme, context : Context) : ViewGroup
+fun bottomSheetToolbarView(theme : Theme, activity : AppCompatActivity) : ViewGroup
 {
-    val layout              = bottomSheetToolbarViewLayout(context)
+    val layout              = bottomSheetToolbarViewLayout(activity)
 
-    layout.addView(bottomSheetToolbarHomeButtonView(theme, context))
+    val homeButtonView = bottomSheetToolbarHomeButtonView(theme, activity)
+    homeButtonView.setOnClickListener {
+        val intent = Intent(activity, HomeActivity::class.java)
+        // Check if we're running on Android 5.0 or higher
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.startActivity(intent,
+                    ActivityOptions.makeSceneTransitionAnimation(activity).toBundle())
+        } else {
+            activity.startActivity(intent)
+        }
 
-//    layout.addView(bottomSheetToolbarAddButtonView(theme, context))
+    }
 
-    layout.addView(bottomSheetToolbarEditButtonView(theme, context))
+    val editButtonView = bottomSheetToolbarEditButtonView(theme, activity)
 
+    layout.addView(homeButtonView)
+    layout.addView(editButtonView)
 
     return layout
 }
@@ -1091,6 +1128,8 @@ fun bottomSheetToolbarViewLayout(context : Context) : RelativeLayout
 
     layoutBuilder.padding.leftDp    = 16f
     layoutBuilder.padding.rightDp   = 16f
+
+    layoutBuilder.backgroundColor   = Color.WHITE
 
     return layoutBuilder.relativeLayout(context)
 }
@@ -1227,146 +1266,13 @@ private fun bottomSheetToolbarEditButtonView(theme : Theme, context : Context) :
 }
 
 
-private fun bottomSheetToolbarAddButtonView(theme : Theme, context : Context) : LinearLayout
-{
-    // 1 | Declarations
-    // -----------------------------------------------------------------------------------------
-
-    val layoutBuilder                   = LinearLayoutBuilder()
-    val iconViewBuilder                 = ImageViewBuilder()
-    val labelViewBuilder                = TextViewBuilder()
-
-    // 2 | Layout
-    // -----------------------------------------------------------------------------------------
-
-    layoutBuilder.width                 = 0
-    layoutBuilder.height                = LinearLayout.LayoutParams.WRAP_CONTENT
-    layoutBuilder.weight                = 1f
-
-    layoutBuilder.gravity               = Gravity.CENTER
-
-    layoutBuilder.orientation           = LinearLayout.HORIZONTAL
-
-    layoutBuilder.corners               = Corners(7.0, 7.0, 7.0, 7.0)
-
-    layoutBuilder.margin.leftDp         = 12f
-    layoutBuilder.margin.rightDp        = 12f
-
-    layoutBuilder.padding.topDp         = 8f
-    layoutBuilder.padding.bottomDp      = 8f
-
-    val bgColorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_green"))))
-    layoutBuilder.backgroundColor       = theme.colorOrBlack(bgColorTheme)
-
-    layoutBuilder.child(iconViewBuilder)
-                 .child(labelViewBuilder)
-
-    // 3 | Icon
-    // -----------------------------------------------------------------------------------------
-
-    iconViewBuilder.widthDp             = 20
-    iconViewBuilder.heightDp            = 20
-
-    iconViewBuilder.image               = R.drawable.icon_simple_plus
-
-//    val iconColorTheme = ColorTheme(setOf(
-//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-//            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
-//    iconViewBuilder.color               = theme.colorOrBlack(iconColorTheme)
-    iconViewBuilder.color               = Color.WHITE
-
-    iconViewBuilder.margin.rightDp      = 4f
-
-    // 3 | Label
-    // -----------------------------------------------------------------------------------------
-
-    labelViewBuilder.width              = LinearLayout.LayoutParams.WRAP_CONTENT
-    labelViewBuilder.height             = LinearLayout.LayoutParams.WRAP_CONTENT
-
-    labelViewBuilder.textId             = R.string.item
-
-    labelViewBuilder.font               = Font.typeface(TextFont.Roboto,
-                                                        TextFontStyle.Regular,
-                                                        context)
-
-//    val labelColorTheme = ColorTheme(setOf(
-//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-//            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
-//    labelViewBuilder.color              = theme.colorOrBlack(labelColorTheme)
-    labelViewBuilder.color              = Color.WHITE
-
-    labelViewBuilder.sizeSp             = 18f
-
-    return layoutBuilder.linearLayout(context)
-}
-
-
-
-// | VIEW > Toolbar
-// -----------------------------------------------------------------------------------------
-
-//fun currentEntityHeaderView(numOfComponents : Int, theme : Theme, context : Context) : RelativeLayout
-//{
-//    val layout = currentEntityHeaderViewLayout(context)
-//
-//    layout.addView(currentEntityHeaderTitleView(theme, context))
-//
-//    return layout
-//}
-//
-//
-//private fun currentEntityHeaderViewLayout(context : Context) : RelativeLayout
-//{
-//    val layout              = RelativeLayoutBuilder()
-//
-//    layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-//    layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-//
-//    layout.padding.topDp    = 12f
-//    layout.padding.bottomDp = 12f
-//
-//    layout.padding.leftDp   = 8f
-//    layout.padding.rightDp  = 8f
-//
-//    return layout.relativeLayout(context)
-//}
-//
-//
-//private fun currentEntityHeaderTitleView(theme : Theme, context : Context) : TextView
-//{
-//    val name                = TextViewBuilder()
-//
-//    name.layoutType         = LayoutType.RELATIVE
-//    name.width              = RelativeLayout.LayoutParams.WRAP_CONTENT
-//    name.height             = RelativeLayout.LayoutParams.WRAP_CONTENT
-//
-//    name.addRule(RelativeLayout.CENTER_VERTICAL)
-//    name.addRule(RelativeLayout.ALIGN_PARENT_START)
-//
-//    name.text               = "Current Entity"
-//
-//    name.font               = Font.typeface(TextFont.RobotoCondensed,
-//                                            TextFontStyle.Bold,
-//                                            context)
-//
-//    val colorTheme = ColorTheme(setOf(
-//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-//            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_22"))))
-//    name.color              = theme.colorOrBlack(colorTheme)
-//
-//    name.sizeSp             = 18f
-//
-//    return name.textView(context)
-//}
-//
-
 fun otherEntitiesHeaderView(numOfComponents : Int, theme : Theme, context : Context) : RelativeLayout
 {
     val layout = otherEntitiesHeaderViewLayout(context)
 
     layout.addView(otherEntitiesHeaderTitleView(theme, context))
+
+    layout.addView(entityToolbarButtonsView(theme, context))
 
     return layout
 }
@@ -1379,11 +1285,13 @@ private fun otherEntitiesHeaderViewLayout(context : Context) : RelativeLayout
     layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
     layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    layout.padding.topDp    = 12f
-    layout.padding.bottomDp = 12f
+    layout.padding.topDp    = 16f
+    layout.padding.bottomDp = 16f
 
-    layout.padding.leftDp   = 8f
-    layout.padding.rightDp  = 8f
+    layout.padding.leftDp   = 16f
+    layout.padding.rightDp  = 16f
+
+    layout.backgroundColor  = Color.WHITE
 
     return layout.relativeLayout(context)
 }
@@ -1400,7 +1308,7 @@ private fun otherEntitiesHeaderTitleView(theme : Theme, context : Context) : Tex
     name.addRule(RelativeLayout.CENTER_VERTICAL)
     name.addRule(RelativeLayout.ALIGN_PARENT_START)
 
-    name.text               = "Modules"
+    name.text               = "Books"
 
     name.font               = Font.typeface(TextFont.RobotoCondensed,
                                             TextFontStyle.Bold,
@@ -1411,7 +1319,7 @@ private fun otherEntitiesHeaderTitleView(theme : Theme, context : Context) : Tex
             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_22"))))
     name.color              = theme.colorOrBlack(colorTheme)
 
-    name.sizeSp             = 18f
+    name.sizeSp             = 19.5f
 
     return name.textView(context)
 }
@@ -1421,8 +1329,8 @@ private fun entityToolbarButtonsView(theme : Theme, context : Context) : LinearL
 {
     val layout = entityToolbarButtonsViewLayout(context)
 
-    layout.addView(entityToolbarButtonView(R.drawable.icon_sort, 24, false, theme, context))
-    layout.addView(entityToolbarButtonView(R.drawable.icon_view_agenda, 20, true, theme, context))
+    layout.addView(entityToolbarButtonView(R.drawable.icon_slider, 24, false, theme, context))
+    layout.addView(entityToolbarButtonView(R.drawable.icon_day_view, 26, true, theme, context))
 
     return layout
 }
@@ -1441,6 +1349,8 @@ private fun entityToolbarButtonsViewLayout(context : Context) : LinearLayout
     layout.addRule(RelativeLayout.ALIGN_PARENT_END)
 
     layout.orientation          = LinearLayout.HORIZONTAL
+
+    layout.gravity              = Gravity.CENTER_VERTICAL
 
     return layout.linearLayout(context)
 }
@@ -1462,7 +1372,7 @@ private fun entityToolbarButtonView(iconId : Int, iconSize : Int, addMargin : Bo
     layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
 
     if (addMargin)
-        layout.margin.leftDp    = 22f
+        layout.margin.leftDp    = 24f
 
     layout.child(iconView)
 
@@ -1507,23 +1417,22 @@ private fun entityCardViewLayout(theme : Theme, context : Context) : LinearLayou
     layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
     layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    layout.backgroundResource   = R.drawable.bg_card_flat
-//    layout.backgroundColor      = Color.WHITE
+    layout.orientation          = LinearLayout.HORIZONTAL
+
+//    layout.backgroundResource   = R.drawable.bg_card_flat
+    layout.backgroundColor      = Color.WHITE
 
     //layout.corners              = Corners(2.0, 2.0, 2.0, 2.0)
 
-    layout.gravity              = Gravity.CENTER_VERTICAL
+    layout.gravity              = Gravity.TOP
 
-    layout.padding.topDp        = 12f
+    layout.padding.topDp        = 8f
     layout.padding.bottomDp     = 12f
 
-    layout.padding.leftDp       = 8f
-    layout.padding.rightDp      = 8f
+    layout.padding.leftDp       = 16f
+    layout.padding.rightDp      = 16f
 
-//    layout.margin.leftDp        = 8f
-//    layout.margin.rightDp       = 8f
-
-    layout.margin.bottomDp      = 8f
+//    layout.margin.bottomDp      = 1f
 
     return layout.linearLayout(context)
 }
@@ -1548,28 +1457,53 @@ private fun entityCardLeftLayout(theme : Theme, context : Context) : LinearLayou
 
     layout.orientation          = LinearLayout.VERTICAL
 
+    layout.padding.topDp        = 4f
+
     return layout.linearLayout(context)
 }
 
 
 private fun entityCardImageView(theme : Theme, context : Context) : LinearLayout
 {
+    // 1 | Declarations
+    // -------------------------------------------------------------------------
+
     val layout                  = LinearLayoutBuilder()
+    val iconViewBuilder         = ImageViewBuilder()
 
-//    layout.widthDp              = 50
-//    layout.heightDp             = 50
+    // 2 | Layout
+    // -------------------------------------------------------------------------
 
-    layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
-    layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+    layout.widthDp              = 50
+    layout.heightDp             = 50
 
-    //layout.corners              = Corners(3.0,3.0,3.0,3.0)
+//    layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+//    layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    layout.backgroundResource   = R.drawable.avatar_game
+    layout.corners              = Corners(3.0,3.0,3.0,3.0)
 
-//    val colorTheme = ColorTheme(setOf(
-//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-//            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_14"))))
-//    layout.backgroundColor      = theme.colorOrBlack(colorTheme)
+    val bgColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_7"))))
+    layout.backgroundColor      = theme.colorOrBlack(bgColorTheme)
+
+    layout.gravity              = Gravity.CENTER
+
+    layout.child(iconViewBuilder)
+
+    // 2 | Icon View Builder
+    // -------------------------------------------------------------------------
+
+    iconViewBuilder.widthDp         = 30
+    iconViewBuilder.heightDp        = 30
+
+    val iconColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_22"))))
+
+    iconViewBuilder.image           = R.drawable.icon_book
+
+    iconViewBuilder.color           = theme.colorOrBlack(iconColorTheme)
 
     return layout.linearLayout(context)
 }

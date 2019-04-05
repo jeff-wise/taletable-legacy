@@ -681,6 +681,20 @@ sealed class TextFontStyle : ToDocument, SQLSerializable, Serializable
 
     }
 
+    object MediumItalic : TextFontStyle()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() = SQLText({ "medium_italic "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("medium_italic")
+
+    }
+
 
     object BoldItalic : TextFontStyle()
     {
@@ -726,6 +740,7 @@ sealed class TextFontStyle : ToDocument, SQLSerializable, Serializable
                 "regular"     -> effValue<ValueError,TextFontStyle>(TextFontStyle.Regular)
                 "italic"      -> effValue<ValueError,TextFontStyle>(TextFontStyle.Italic)
                 "medium"      -> effValue<ValueError,TextFontStyle>(TextFontStyle.Medium)
+                "medium_italic" -> effValue<ValueError,TextFontStyle>(TextFontStyle.MediumItalic)
                 "semi_bold"   -> effValue<ValueError,TextFontStyle>(TextFontStyle.SemiBold)
                 "bold"        -> effValue<ValueError,TextFontStyle>(TextFontStyle.Bold)
                 "bold_italic" -> effValue<ValueError,TextFontStyle>(TextFontStyle.BoldItalic)
