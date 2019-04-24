@@ -184,7 +184,7 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.addView(this.titleView())
 
-        layout.addView(this.summaryView())
+        // layout.addView(this.summaryView())
 
         layout.addView(this.toolbarView())
 
@@ -229,7 +229,7 @@ class ChapterUI(val chapter : BookChapter,
 
         title.text               = chapter.title().value
 
-        title.font               = Font.typeface(TextFont.Merriweather,
+        title.font               = Font.typeface(TextFont.RobotoSlab,
                                                 TextFontStyle.ExtraBold,
                                                 context)
 
@@ -238,7 +238,7 @@ class ChapterUI(val chapter : BookChapter,
         title.sizeSp             = 44f
 
         title.lineSpacingAdd     = 10f
-        title.lineSpacingMult    = 0.82f
+        title.lineSpacingMult    = 0.8f
 
         return title.textView(context)
     }
@@ -535,7 +535,7 @@ class ChapterUI(val chapter : BookChapter,
 //        label.color             = theme.colorOrBlack(labelColorTheme)
         label.color             = Color.WHITE
 
-        label.sizeSp            = 17.5f
+        label.sizeSp            = 17f
 
         return outerLayout.linearLayout(context)
     }
@@ -646,15 +646,15 @@ class ChapterUI(val chapter : BookChapter,
         summary.text                = summaryString
 
         summary.font                = Font.typeface(TextFont.RobotoCondensed,
-                                                    TextFontStyle.Regular,
+                                                    TextFontStyle.Bold,
                                                     context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
-        summary.sizeSp              = 19f
+        summary.sizeSp              = 17.7f
 
         summary.backgroundColor     = Color.WHITE
 

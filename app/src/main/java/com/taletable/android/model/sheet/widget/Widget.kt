@@ -26,7 +26,6 @@ import com.taletable.android.lib.orm.sql.SQLValue
 import com.taletable.android.lib.ui.LayoutType
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.model.book.BookReference
-import com.taletable.android.model.engine.EngineValueNumber
 import com.taletable.android.model.engine.dice.DiceRollGroup
 import com.taletable.android.model.engine.mechanic.MechanicCategoryReference
 import com.taletable.android.model.engine.procedure.Procedure
@@ -41,11 +40,16 @@ import com.taletable.android.model.engine.variable.*
 import com.taletable.android.model.entity.*
 import com.taletable.android.model.sheet.group.*
 import com.taletable.android.model.sheet.style.*
+import com.taletable.android.model.sheet.widget.list.ListWidgetDescription
+import com.taletable.android.model.sheet.widget.list.ListWidgetFormat
+import com.taletable.android.model.sheet.widget.list.ListWidgetUI
+import com.taletable.android.model.sheet.widget.number.*
 import com.taletable.android.model.sheet.widget.table.*
 import com.taletable.android.model.sheet.widget.table.cell.NumberCellValueRelation
 import com.taletable.android.model.sheet.widget.table.cell.NumberCellValueValue
 import com.taletable.android.model.sheet.widget.table.cell.TextCellValueRelation
 import com.taletable.android.model.sheet.widget.table.cell.TextCellValueValue
+import com.taletable.android.model.sheet.widget.text.*
 import com.taletable.android.rts.entity.*
 import com.taletable.android.rts.entity.sheet.*
 import com.taletable.android.util.Util
@@ -147,6 +151,7 @@ sealed class Widget : ToDocument, SheetComponent, Serializable
 }
 
 
+
 object WidgetView
 {
 
@@ -175,6 +180,8 @@ object WidgetView
         widgetFormat.elementFormat().border().right().doMaybe {
             layout.addView(this.verticalBorderView(it, entityId, context))
         }
+
+        layout.id  = Util.generateViewId()
 
         return layout
     }
@@ -2060,34 +2067,23 @@ data class MechanicWidget(private val widgetId : WidgetId,
 data class NumberWidget(val widgetId : WidgetId,
                         val format : NumberWidgetFormat,
                         val valueVariableReference : VariableReference,
-                        val insideLabelVariableReference : Maybe<VariableReference>,
+                        val labelVariableReference : Maybe<VariableReference>,
+                        val prefixVariableReference : Maybe<VariableReference>,
+                        val kind : NumberFormat,
                         val bookReference : Maybe<BookReference>)
                          : Widget()
 {
 
-    // -----------------------------------------------------------------------------------------
-    // PROPERTIES
+    // | PROPERTIES
     // -----------------------------------------------------------------------------------------
 
     var layoutId : Int? = null
 
+    var groupContext : Maybe<GroupContext> = Nothing()
 
+
+    // | CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-//    constructor(widgetId : WidgetId,
-//                format : NumberWidgetFormat,
-//                valueVariableId : VariableId,
-//                insideLabel : Maybe<NumberWidgetLabel>,
-//                bookReference: Maybe<BookReference>)
-//        : this(UUID.randomUUID(),
-//               widgetId,
-//               format,
-//               valueVariableId,
-//               insideLabel,
-//               bookReference)
-
 
     companion object : Factory<NumberWidget>
     {
@@ -2101,15 +2097,21 @@ data class NumberWidget(val widgetId : WidgetId,
                             effValue(WidgetId.random()),
                             { WidgetId.fromDocument(it) }),
                       // Format
-                      split(doc.maybeAt("format"),
-                            effValue(NumberWidgetFormat.default()),
-                            { NumberWidgetFormat.fromDocument(it) }),
+                      doc.at("format").apply { NumberWidgetFormat.fromDocument(it) },
                       // Value Variable Reference
                       doc.at("value_variable_reference") ap { VariableReference.fromDocument(it) },
-                      // Inside Label
-                      split(doc.maybeAt("inside_label_variable_reference"),
+                      // Label Variable Reference
+                      split(doc.maybeAt("label_variable_reference"),
                             effValue<ValueError,Maybe<VariableReference>>(Nothing()),
                             { apply(::Just, VariableReference.fromDocument(it)) }),
+                      // Prefix Variable Reference
+                      split(doc.maybeAt("prefix_variable_reference"),
+                            effValue<ValueError,Maybe<VariableReference>>(Nothing()),
+                            { apply(::Just, VariableReference.fromDocument(it)) }),
+                      // Kind
+                      split(doc.maybeAt("kind"),
+                            effValue(NumberFormat.default()),
+                            { NumberFormat.fromDocument(it) }),
                       // Rulebook Referenece
                       split(doc.maybeAt("book_reference"),
                             effValue<ValueError,Maybe<BookReference>>(Nothing()),
@@ -2127,8 +2129,9 @@ data class NumberWidget(val widgetId : WidgetId,
 
     override fun toDocument() = DocDict(mapOf(
         "id" to this.widgetId().toDocument(),
-        "format" to this.format().toDocument(),
-        "value_variable_reference" to this.valueVariableReference.toDocument()))
+//        "format" to this.format().toDocument(),
+        "value_variable_reference" to this.valueVariableReference.toDocument())
+    )
 
 
     // -----------------------------------------------------------------------------------------
@@ -2141,7 +2144,7 @@ data class NumberWidget(val widgetId : WidgetId,
     fun valueVariableReference() : VariableReference = this.valueVariableReference
 
 
-    fun insideLabelVariableReference() : Maybe<VariableReference> = this.insideLabelVariableReference
+    fun prefixVariableReference() : Maybe<VariableReference> = this.prefixVariableReference
 
 
     fun bookReference() : Maybe<BookReference> = this.bookReference
@@ -2151,14 +2154,30 @@ data class NumberWidget(val widgetId : WidgetId,
     // WIDGET
     // -----------------------------------------------------------------------------------------
 
-    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
-
+    override fun widgetFormat() : WidgetFormat
+    {
+        val format = this.format
+        return when (format) {
+            is NumberWidgetFormatCustom   -> format.widgetFormat
+            is NumberWidgetFormatOfficial ->
+                maybeValue(WidgetFormat.default(), format.format.widgetFormat)
+        }
+    }
 
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context): View =
-            NumberWidgetView.view(this, entityId, context, groupContext)
+                      context : Context) : View
+    {
+        val layout = numberWidgetViewGroup(this, rowLayoutType, entityId, context)
+        val view = numberWidgetView(this, entityId, context, groupContext)
+
+        this.layoutId = layout.id
+        layout.addView(view)
+
+        return layout
+    }
+
 
 
     override fun widgetId() = this.widgetId
@@ -2194,27 +2213,7 @@ data class NumberWidget(val widgetId : WidgetId,
     }
 
 
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-//    override fun onLoad() { }
-//
-//
-//    override val prodTypeObject = this
-//
-//
-//    override fun rowValue() : DB_WidgetNumberValue =
-//        RowValue5(widgetNumberTable,
-//                  PrimValue(this.widgetId),
-//                  ProdValue(this.format),
-//                  PrimValue(this.valueVariableId),
-//                  MaybePrimValue(this.insideLabel),
-//                  MaybeProdValue(this.bookReference))
-//
-
-    // -----------------------------------------------------------------------------------------
-    // SHEET COMPONENT
+    // | SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
     override fun onSheetComponentActive(entityId : EntityId, context : Context, groupContext : Maybe<GroupContext>)
@@ -2234,19 +2233,25 @@ data class NumberWidget(val widgetId : WidgetId,
     }
 
 
-    // -----------------------------------------------------------------------------------------
-    // VARIABLE
+    // | VARIABLE
     // -----------------------------------------------------------------------------------------
 
-
-    fun insideLabelValueVariable(entityId : EntityId) : AppEff<TextVariable> =
-            note<AppError,VariableReference>(this.insideLabelVariableReference, AppVoidError())
+    fun labelValueVariable(entityId : EntityId) : AppEff<TextVariable> =
+            note<AppError,VariableReference>(this.labelVariableReference, AppVoidError())
                 .apply { textVariable(it, entityId) }
 
 
+    fun labelValue(entityId : EntityId) : AppEff<String> =
+            labelValueVariable(entityId).apply { it.valueString(entityId) }
 
-    fun insideLabelValue(entityId : EntityId) : AppEff<String> =
-            insideLabelValueVariable(entityId).apply { it.valueString(entityId) }
+
+    fun prefixValueVariable(entityId : EntityId) : AppEff<TextVariable> =
+            note<AppError,VariableReference>(this.prefixVariableReference, AppVoidError())
+                .apply { textVariable(it, entityId) }
+
+
+    fun prefixValue(entityId : EntityId) : AppEff<String> =
+            prefixValueVariable(entityId).apply { it.valueString(entityId) }
 
 
     fun valueVariable(entityId : EntityId, groupContext : Maybe<GroupContext> = Nothing()) : AppEff<NumberVariable> =
@@ -2330,14 +2335,25 @@ data class NumberWidget(val widgetId : WidgetId,
         }
 
 
+
     private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
         this.layoutId?.let { layoutId ->
-            rootView.findViewById<LinearLayout>(layoutId)?.let { layout ->
-                NumberWidgetView.updateView(this, entityId, layout, context, Nothing())
+            try {
+                // Get current widget outermost layout
+                val layout = rootView.findViewById<LinearLayout>(layoutId)
+                // Get "content layout" within widget layout
+                val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
+                // Clear layout and add new version of view
+                contentLayout.removeAllViews()
+                val view = numberWidgetView(this, entityId, context, groupContext)
+                contentLayout.addView(view)
+            }
+            catch (e: TypeCastException) {
             }
         }
     }
+
 
 }
 
@@ -4502,15 +4518,14 @@ data class TableWidget(private val widgetId : WidgetId,
 data class TextWidget(val widgetId : WidgetId,
                       val format : TextWidgetFormat,
                       val valueVariableReference : VariableReference,
-                      val insideLabelVariableReference : Maybe<VariableReference>,
+                      val labelVariableReference : Maybe<VariableReference>,
                       val bookReference : Maybe<BookReference>,
                       val primaryActionWidgetId : Maybe<WidgetId>,
                       val secondaryActionWigdetId : Maybe<WidgetId>)
                        : Widget()
 {
 
-    // -----------------------------------------------------------------------------------------
-    // PROPERTIES
+    // | PROPERTIES
     // -----------------------------------------------------------------------------------------
 
     var layoutId : Int? = null
@@ -4518,8 +4533,7 @@ data class TextWidget(val widgetId : WidgetId,
     var groupContext : Maybe<GroupContext> = Nothing()
 
 
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
+    // | CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     constructor(format : TextWidgetFormat,
@@ -4545,13 +4559,11 @@ data class TextWidget(val widgetId : WidgetId,
                             effValue(WidgetId.random()),
                             { WidgetId.fromDocument(it) }),
                       // Format
-                      split(doc.maybeAt("format"),
-                            effValue(TextWidgetFormat.default()),
-                            { TextWidgetFormat.fromDocument(it) }),
+                      doc.at("format").apply { TextWidgetFormat.fromDocument(it) },
                       // Value Variable Reference
                       doc.at("value_variable_reference") ap { VariableReference.fromDocument(it) },
-                      // Inside Label
-                      split(doc.maybeAt("inside_label_variable_reference"),
+                      // Label Variable Reference
+                      split(doc.maybeAt("label_variable_reference"),
                             effValue<ValueError,Maybe<VariableReference>>(Nothing()),
                             { apply(::Just, VariableReference.fromDocument(it)) }),
                       // Book Reference
@@ -4573,44 +4585,27 @@ data class TextWidget(val widgetId : WidgetId,
     }
 
 
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
+    // | TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(
         "id" to this.widgetId().toDocument(),
-        "format" to this.format().toDocument(),
-        "value_variable_reference" to this.valueVariableReference().toDocument()
+//        "format" to this.format().toDocument(),
+        "value_variable_reference" to this.valueVariableReference.toDocument()
     ))
 
 
-    // -----------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------
-
-    fun format() : TextWidgetFormat = this.format
-
-
-    fun valueVariableReference() : VariableReference = this.valueVariableReference
-
-
-    fun insideLabelVariableReference() : Maybe<VariableReference> = this.insideLabelVariableReference
-
-
-    fun rulebookReference() : Maybe<BookReference> = this.bookReference
-
-
-    fun primaryActionWidgetId() : Maybe<WidgetId> = this.primaryActionWidgetId
-
-
-    fun secondaryActionWidgetId() : Maybe<WidgetId> = this.secondaryActionWigdetId
-
-
-    // -----------------------------------------------------------------------------------------
-    // WIDGET
+    // | WIDGET
     // -----------------------------------------------------------------------------------------
 
-    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+    override fun widgetFormat() : WidgetFormat
+    {
+        val format = this.format
+        return when (format) {
+            is TextWidgetFormatCustom   -> format.widgetFormat
+            is TextWidgetFormatOfficial -> maybeValue(WidgetFormat.default(), format.format.widgetFormat)
+        }
+    }
 
 
     override fun view(groupContext : Maybe<GroupContext>,
@@ -4618,8 +4613,13 @@ data class TextWidget(val widgetId : WidgetId,
                       entityId : EntityId,
                       context : Context) : View
     {
-        Log.d("***WIDGET", "text widget group context is: $groupContext")
-        return TextWidgetView.view(this, this.format(), rowLayoutType, entityId, context, groupContext)
+        val layout = textWidgetViewGroup(this, rowLayoutType, entityId, context)
+        val view = textWidgetView(this, entityId, context, groupContext)
+
+        this.layoutId = layout.id
+        layout.addView(view)
+
+        return layout
     }
 
 
@@ -4694,12 +4694,16 @@ data class TextWidget(val widgetId : WidgetId,
 
     private fun updateView(rootView : View, entityId : EntityId, context : Context)
     {
-        val layoutId = this.layoutId
-        if (layoutId != null)
-        {
+        this.layoutId?.let { layoutId ->
             try {
+                // Get current widget outermost layout
                 val layout = rootView.findViewById<LinearLayout>(layoutId)
-                TextWidgetView.updateView(this, entityId, layout, context, Nothing())
+                // Get "content layout" within widget layout
+                val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
+                // Clear layout and add new version of view
+                contentLayout.removeAllViews()
+                val view = textWidgetView(this, entityId, context, groupContext)
+                contentLayout.addView(view)
             }
             catch (e: TypeCastException) {
             }
@@ -4718,45 +4722,24 @@ data class TextWidget(val widgetId : WidgetId,
             is Just -> this.groupContext
             else    -> _groupContext
         }
-        return textVariable(this.valueVariableReference(),
+        return textVariable(this.valueVariableReference,
                             entityId,
                             scopeGroupContext.apply { Just(VariableNamespace(it.value)) })
     }
 
 
 
-    fun insideLabelValueVariable(entityId : EntityId) : AppEff<TextVariable> =
-            note<AppError,VariableReference>(this.insideLabelVariableReference, AppVoidError())
+    fun labelValueVariable(entityId : EntityId) : AppEff<TextVariable> =
+            note<AppError,VariableReference>(this.labelVariableReference, AppVoidError())
                 .apply { textVariable(it, entityId) }
 
 
 
-    fun insideLabelValue(entityId : EntityId) : AppEff<String> =
-            insideLabelValueVariable(entityId).apply { it.valueString(entityId) }
+    fun labelValue(entityId : EntityId) : AppEff<String> =
+            labelValueVariable(entityId).apply { it.valueString(entityId) }
 
 
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-//    override fun onLoad() { }
-//
-//
-//    override val prodTypeObject = this
-//
-//
-//    override fun rowValue() : DB_WidgetTextValue =
-//        RowValue4(widgetTextTable,
-//                  PrimValue(this.widgetId),
-//                  ProdValue(this.format),
-//                  PrimValue(this.valueVariableId),
-//                  MaybeProdValue(this.bookReference))
-//
-
-    // -----------------------------------------------------------------------------------------
-    // SHEET COMPONENT
+    // | SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
     override fun onSheetComponentActive(entityId : EntityId,
@@ -4780,9 +4763,7 @@ data class TextWidget(val widgetId : WidgetId,
         }
     }
 
-
-    // -----------------------------------------------------------------------------------------
-    // API
+    // | API
     // -----------------------------------------------------------------------------------------
 
     /**

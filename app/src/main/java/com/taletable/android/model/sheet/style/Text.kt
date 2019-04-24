@@ -297,6 +297,9 @@ sealed class NumberFormat : ToDocument, SQLSerializable, Serializable
             }
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
+
+
+        fun default() : NumberFormat = NumberFormat.Normal
     }
 
 
@@ -494,6 +497,20 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
     }
 
 
+    object RobotoSlab : TextFont()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() = SQLText({ "roboto_slab "})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("roboto_slab")
+
+    }
+
     object Merriweather : TextFont()
     {
         // SQL SERIALIZABLE
@@ -551,6 +568,7 @@ sealed class TextFont : ToDocument, SQLSerializable, Serializable
             {
                 "cabin"             -> effValue<ValueError,TextFont>(TextFont.Cabin)
                 "roboto"            -> effValue<ValueError,TextFont>(TextFont.Roboto)
+                "roboto_slab"       -> effValue<ValueError,TextFont>(TextFont.RobotoSlab)
                 "roboto_condensed"  -> effValue<ValueError,TextFont>(TextFont.RobotoCondensed)
                 "fira_sans"         -> effValue<ValueError,TextFont>(TextFont.FiraSans)
                 "merriweather"      -> effValue<ValueError,TextFont>(TextFont.Merriweather)
@@ -756,117 +774,4 @@ sealed class TextFontStyle : ToDocument, SQLSerializable, Serializable
     }
 
 }
-
-
-
-
-//
-//    public float size()
-//    {
-//        switch (this)
-//        {
-//            case SUPER_SMALL:
-//                return 3f;
-//            case VERY_SMALL:
-//                return 3.3f;
-//            case SMALL:
-//                return 3.7f;
-//            case MEDIUM_SMALL:
-//                return 4.2f;
-//            case MEDIUM:
-//                return 4.6f;
-//            case MEDIUM_LARGE:
-//                return 5f;
-//            case LARGE:
-//                return 6.2f;
-//            case VERY_LARGE:
-//                return 7.5f;
-//            case HUGE:
-//                return 9f;
-//            case GARGANTUAN:
-//                return 11;
-//            case COLOSSAL:
-//                return 13f;
-//            default:
-//                return 4.2f;
-//        }
-//    }
-
-//
-//    public Integer resourceId()
-//    {
-//        switch (this)
-//        {
-//            case THEME_VERY_LIGHT:
-//                return R.color.dark_blue_hlx_5;
-//            case THEME_LIGHT:
-//                return R.color.dark_blue_hlx_7;
-//            case THEME_MEDIUM_LIGHT:
-//                return R.color.dark_blue_hlx_9;
-//            case THEME_MEDIUM:
-//                return R.color.dark_blue_hl_2;
-//            case THEME_MEDIUM_DARK:
-//                return R.color.dark_blue_hl_4;
-//            case THEME_DARK:
-//                return R.color.dark_blue_hl_6;
-//            case THEME_VERY_DARK:
-//                return R.color.dark_blue_hl_8;
-//            case THEME_SUPER_DARK:
-//                return R.color.dark_blue_1;
-//            case THEME_BACKGROUND_LIGHT:
-//                return R.color.dark_blue_5;
-//            case THEME_BACKGROUND_MEDIUM_LIGHT:
-//                return R.color.dark_blue_6;
-//            case THEME_BACKGROUND_MEDIUM:
-//                return R.color.dark_blue_7;
-//            case THEME_BACKGROUND_MEDIUM_DARK:
-//                return R.color.dark_blue_8;
-//            case THEME_BACKGROUND_DARK:
-//                return R.color.dark_blue_9;
-//            case GOLD_VERY_LIGHT:
-//                return R.color.gold_very_light;
-//            case GOLD_LIGHT:
-//                return R.color.gold_light;
-//            case GOLD_MEDIUM_LIGHT:
-//                return R.color.gold_medium_light;
-//            case GOLD_MEDIUM:
-//                return R.color.gold_medium;
-//            case GOLD_MEDIUM_DARK:
-//                return R.color.gold_medium_dark;
-//            case GOLD_DARK:
-//                return R.color.gold_dark;
-//            case GOLD_VERY_DARK:
-//                return R.color.gold_very_dark;
-//            case PURPLE:
-//                return R.color.purple_light;
-//            case PURPLE_VERY_LIGHT:
-//                return R.color.purple_very_light;
-//            case PURPLE_LIGHT:
-//                return R.color.purple_light;
-//            case PURPLE_MEDIUM_LIGHT:
-//                return R.color.purple_medium_light;
-//            case PURPLE_MEDIUM:
-//                return R.color.purple_medium;
-//            case PURPLE_MEDIUM_DARK:
-//                return R.color.purple_medium_dark;
-//            case RED_LIGHT:
-//                return R.color.red_light;
-//            case RED_ORANGE_LIGHT:
-//                return R.color.red_orange_light;
-//            case ORANGE_LIGHT:
-//                return R.color.orange_light;
-//            case BLUE_LIGHT:
-//                return R.color.blue_light;
-//            case GREEN_VERY_LIGHT:
-//                return R.color.green_very_light;
-//            case GREEN_LIGHT:
-//                return R.color.green_light;
-//            case GREEN_MEDIUM_LIGHT:
-//                return R.color.green_medium_light;
-//            default:
-//                return R.color.dark_blue_hl_5;
-//        }
-//
-//    }
-
 

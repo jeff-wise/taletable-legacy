@@ -26,21 +26,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_12
-            size: 40
-            font_style: regular
-            font: merriweather
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 40
+              font_style: regular
+              font: merriweather
         value_variable_reference:
           type: variable_id
           variable_id: introduction_title
@@ -53,21 +55,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_12
-            size: 19
-            font_style: regular
-            font: roboto_condensed
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_12
+              size: 19
+              font_style: regular
+              font: roboto_condensed
         value_variable_reference:
           type: variable_id
           variable_id: introduction_subtitle
@@ -93,18 +97,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_introduction
@@ -130,18 +136,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_currency_content
@@ -173,21 +181,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_currency_coin_bulk_header
@@ -195,18 +205,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_currency_coin_bulk_content
@@ -254,21 +266,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_16
-            size: 19
-            font: roboto_condensed
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_16
+              size: 19
+              font: roboto_condensed
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_coin_values_header
@@ -649,18 +663,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_price_content
@@ -686,18 +702,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_item_level_content
@@ -723,18 +741,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_content
@@ -766,21 +786,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_bulk_header
@@ -788,18 +810,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_bulk_content
@@ -831,21 +855,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_bulk_limit_header
@@ -853,18 +879,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_bulk_limit_content
@@ -896,21 +924,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_encumbered_header
@@ -918,18 +948,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_encumbered_content
@@ -961,21 +993,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_bulk_values_header
@@ -983,18 +1017,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_bulk_values_content
@@ -1026,21 +1062,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_estimating_bulk_header
@@ -1048,18 +1086,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_estimating_bulk_content
@@ -1091,21 +1131,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_donning_armor_header
@@ -1113,18 +1155,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_donning_armor_content
@@ -1156,21 +1200,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_wielding_header
@@ -1178,18 +1224,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_using_items_wielding_content
@@ -1215,18 +1263,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_item_damage_content
@@ -1258,21 +1308,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_item_damage_broken_header
@@ -1280,18 +1332,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_item_damage_broken_content
@@ -1323,21 +1377,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_item_damage_object_immunities_header
@@ -1345,18 +1401,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: section_equipment_basic_rules_item_damage_object_immunities_content
@@ -1382,19 +1440,10 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_content
@@ -1426,21 +1475,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 26
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 26
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_armor_class_header
@@ -1448,19 +1499,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_armor_class_content
@@ -1492,21 +1545,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_header
@@ -1514,18 +1569,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_content
@@ -1557,21 +1614,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 26
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 26
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_bonuses_header
@@ -1579,18 +1638,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_bonuses_content
@@ -1622,21 +1683,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 26
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 26
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_dex_mod_cap_header
@@ -1644,18 +1707,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_dex_mod_cap_content
@@ -1687,21 +1752,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_check_penalty_header
@@ -1709,18 +1776,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_check_penalty_content
@@ -1752,21 +1821,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_speed_penalty_header
@@ -1774,18 +1845,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_speed_penalty_content
@@ -1817,21 +1890,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_bulk_header
@@ -1839,18 +1914,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_bulk_content
@@ -1882,21 +1959,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_armor_traits_header
@@ -1904,18 +1983,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_armor_traits_content
@@ -2085,21 +2166,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_shields_header
@@ -2107,18 +2190,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_shields_content
@@ -2150,21 +2235,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 25
-            font: garamond
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 25
+              font: garamond
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_attacking_shield_header
@@ -2172,18 +2259,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 20.5
-            font: garamond
-            font_style: regular
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 20.5
+              font: garamond
+              font_style: regular
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_statistics_attacking_shield_content
@@ -2202,7 +2291,7 @@ groups:
       padding:
         left: 16
         right: 16
-        top: 16
+        top: 20
         bottom: 20
   rows:
   - format:
@@ -2212,19 +2301,10 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_list_introduction
@@ -2389,17 +2469,19 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_blue
-            font: roboto
-            font_style: medium
-            size: 19
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue
+              font: roboto
+              font_style: medium
+              size: 19
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -2433,41 +2515,45 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-              padding:
-                right: 6
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_18
-            font: roboto
-            font_style: regular
-            size: 16
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+                padding:
+                  right: 6
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_18
+              font: roboto
+              font_style: regular
+              size: 16
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_data_ac_bonus_label
     - type: widget_number
       widget_number:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_14
-            font: roboto_condensed
-            font_style: bold
-            size: 18
-            number_format: modifier
+          type: number_widget_format_custom
+          number_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_14
+              font: roboto_condensed
+              font_style: bold
+              size: 18
+              number_format: modifier
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -2497,42 +2583,46 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-              padding:
-                left: 12
-                right: 6
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_18
-            font: roboto
-            font_style: regular
-            size: 16
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+                padding:
+                  left: 12
+                  right: 6
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_18
+              font: roboto
+              font_style: regular
+              size: 16
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_data_tac_bonus_label
     - type: widget_number
       widget_number:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_14
-            font: roboto_condensed
-            font_style: bold
-            size: 18
-            number_format: modifier
+          type: number_widget_format_custom
+          number_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_14
+              font: roboto_condensed
+              font_style: bold
+              size: 18
+              number_format: modifier
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -2562,22 +2652,24 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-              padding:
-                left: 20
-                top: 1
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_22
-            font: roboto
-            font_style: bold_italic
-            size: 17
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+                padding:
+                  left: 20
+                  top: 1
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_22
+              font: roboto
+              font_style: bold_italic
+              size: 17
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -2619,181 +2711,144 @@ groups:
       padding:
         bottom: 12
   rows:
-  - format:
-      element_format:
-        border:
-          bottom:
-            thickness: 1
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_blue_grey_5
-        horizontal_alignment: left
-        padding:
-          bottom: 16
-          top: 16
-          left: 16
-          right: 16
-    widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_12
-            font: lato
-            font_style: black
-            size: 28
-        value_variable_reference:
-          type: variable_template
-          variable_template:
-            entries:
-            - context: padded
-              variable_id: equipment_armor_shields_list_padded_name
-            - context: leather
-              variable_id: equipment_armor_shields_list_leather_name
-            - context: studded_leather
-              variable_id: equipment_armor_shields_list_studded_leather_name
-            - context: chain_shirt
-              variable_id: equipment_armor_shields_list_chain_shirt_name
-            - context: hide
-              variable_id: equipment_armor_shields_list_hide_name
-            - context: scale_mail
-              variable_id: equipment_armor_shields_list_scale_mail_name
-            - context: chain_mail
-              variable_id: equipment_armor_shields_list_chain_mail_name
-            - context: breastplate
-              variable_id: equipment_armor_shields_list_breastplate_name
-            - context: splint_mail
-              variable_id: equipment_armor_shields_list_splint_mail_name
-            - context: half_plate
-              variable_id: equipment_armor_shields_list_half_plate_name
-            - context: full_plate
-              variable_id: equipment_armor_shields_list_full_plate_name
-  - format:
-      element_format:
+#  - format:
+#      element_format:
 #        border:
 #          bottom:
 #            thickness: 1
 #            color_theme:
 #              theme_color_ids:
 #              - theme_id: light
-#                color_id: light_blue_grey_7
-        horizontal_alignment: left
-#        margins:
-#          bottom: 20
-        padding:
-          bottom: 16
-          top: 16
-          left: 16
-          right: 16
-    widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-              padding:
-                left: 0
-                right: 0
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_blue_grey_18
-            font: lato
-            font_style: regular
-            size: 18
-            element_format:
-              horizontal_alignment: left
-        value_variable_reference:
-          type: variable_template
-          variable_template:
-            entries:
-            - context: padded
-              variable_id: equipment_armor_shields_list_padded_armor_type
-            - context: leather
-              variable_id: equipment_armor_shields_list_leather_armor_type
-            - context: studded_leather
-              variable_id: equipment_armor_shields_list_studded_leather_armor_type
-            - context: chain_shirt
-              variable_id: equipment_armor_shields_list_chain_shirt_armor_type
-            - context: hide
-              variable_id: equipment_armor_shields_list_hide_armor_type
-            - context: scale_mail
-              variable_id: equipment_armor_shields_list_scale_mail_armor_type
-            - context: chain_mail
-              variable_id: equipment_armor_shields_list_chain_mail_armor_type
-            - context: breastplate
-              variable_id: equipment_armor_shields_list_breastplate_armor_type
-            - context: splint_mail
-              variable_id: equipment_armor_shields_list_splint_mail_armor_type
-            - context: half_plate
-              variable_id: equipment_armor_shields_list_half_plate_armor_type
-            - context: full_plate
-              variable_id: equipment_armor_shields_list_full_plate_armor_type
+#                color_id: light_blue_grey_5
+#        horizontal_alignment: left
+#        padding:
+#          bottom: 16
+#          top: 16
+#          left: 16
+#          right: 16
+#    widgets:
+#    - type: widget_text
+#      widget_text:
+#        format:
+#          type: text_widget_format_custom
+#          text_widget_format_custom:
+#            widget_format:
+#              element_format:
+#                horizontal_alignment: left
+#            value_format:
+#              color_theme:
+#                theme_color_ids:
+#                - theme_id: light
+#                  color_id: dark_blue_grey_12
+#              font: lato
+#              font_style: black
+#              size: 28
+#        value_variable_reference:
+#          type: variable_template
+#          variable_template:
+#            entries:
+#            - context: padded
+#              variable_id: equipment_armor_shields_list_padded_name
+#            - context: leather
+#              variable_id: equipment_armor_shields_list_leather_name
+#            - context: studded_leather
+#              variable_id: equipment_armor_shields_list_studded_leather_name
+#            - context: chain_shirt
+#              variable_id: equipment_armor_shields_list_chain_shirt_name
+#            - context: hide
+#              variable_id: equipment_armor_shields_list_hide_name
+#            - context: scale_mail
+#              variable_id: equipment_armor_shields_list_scale_mail_name
+#            - context: chain_mail
+#              variable_id: equipment_armor_shields_list_chain_mail_name
+#            - context: breastplate
+#              variable_id: equipment_armor_shields_list_breastplate_name
+#            - context: splint_mail
+#              variable_id: equipment_armor_shields_list_splint_mail_name
+#            - context: half_plate
+#              variable_id: equipment_armor_shields_list_half_plate_name
+#            - context: full_plate
+#              variable_id: equipment_armor_shields_list_full_plate_name
+#  - format:
+#      element_format:
+#        horizontal_alignment: left
+#        padding:
+#          bottom: 16
+#          top: 16
+#          left: 8
+#          right: 8
+#    widgets:
+#    - type: widget_text
+#      widget_text:
+#        format:
+#          type: text_widget_format_custom
+#          text_widget_format_custom:
+#            widget_format:
+#              element_format:
+#                width:
+#                  type: width_wrap
+#                  width_wrap: wrap
+#                padding:
+#                  left: 0
+#                  right: 0
+#            value_format:
+#              color_theme:
+#                theme_color_ids:
+#                - theme_id: light
+#                  color_id: light_blue_grey_18
+#              font: lato
+#              font_style: regular
+#              size: 18
+#              element_format:
+#                horizontal_alignment: left
+#        value_variable_reference:
+#          type: variable_template
+#          variable_template:
+#            entries:
+#            - context: padded
+#              variable_id: equipment_armor_shields_list_padded_armor_type
+#            - context: leather
+#              variable_id: equipment_armor_shields_list_leather_armor_type
+#            - context: studded_leather
+#              variable_id: equipment_armor_shields_list_studded_leather_armor_type
+#            - context: chain_shirt
+#              variable_id: equipment_armor_shields_list_chain_shirt_armor_type
+#            - context: hide
+#              variable_id: equipment_armor_shields_list_hide_armor_type
+#            - context: scale_mail
+#              variable_id: equipment_armor_shields_list_scale_mail_armor_type
+#            - context: chain_mail
+#              variable_id: equipment_armor_shields_list_chain_mail_armor_type
+#            - context: breastplate
+#              variable_id: equipment_armor_shields_list_breastplate_armor_type
+#            - context: splint_mail
+#              variable_id: equipment_armor_shields_list_splint_mail_armor_type
+#            - context: half_plate
+#              variable_id: equipment_armor_shields_list_half_plate_armor_type
+#            - context: full_plate
+#              variable_id: equipment_armor_shields_list_full_plate_armor_type
   - format:
       element_format:
         horizontal_alignment: left
         margins:
-          bottom: 6
-          left: 16
-          right: 16
+          left: 12
+          right: 12
+          top: 16
+          bottom: 16
     widgets:
     - type: widget_number
       widget_number:
+        kind: modifier
         format:
-          widget_format:
-            width: 1
-            element_format:
-              background_color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_blue_grey_2
-              height: 46
-              horizontal_alignment: left
-              padding:
-                left: 8
-                right: 8
-              width:
-                type: width_wrap
-                width_wrap: wrap
-          inside_label_format:
-            element_format:
-              position: right
-              margins:
-                left: 8
-              padding:
-                bottom: 0
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_22
-            font: lato
-            font_style: black
-            size: 22
-          value_format:
-            element_format:
-              horizontal_alignment: left
-              padding:
-                bottom: 0
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_14
-            font: lato
-            font_style: black
-            size: 22
-            number_format: modifier
-        inside_label_variable_reference:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: horizontal_box
+            widget_format:
+              element_format:
+                margins:
+                  right: 16
+        prefix_variable_reference:
           type: variable_id
           variable_id: term_armor_class_label
         value_variable_reference:
@@ -2824,52 +2879,13 @@ groups:
               variable_id: equipment_armor_shields_list_full_plate_ac_bonus
     - type: widget_number
       widget_number:
+        kind: modifier
         format:
-          widget_format:
-            width: 1
-            element_format:
-              background_color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_blue_grey_2
-              horizontal_alignment: left
-              height: 46
-              margins:
-                left: 8
-              padding:
-                left: 8
-                right: 8
-              width:
-                type: width_wrap
-                width_wrap: wrap
-          inside_label_format:
-            element_format:
-              position: right
-              margins:
-                left: 8
-              padding:
-                bottom: 0
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_22
-            font: lato
-            font_style: black
-            size: 22
-          value_format:
-            element_format:
-              horizontal_alignment: left
-              padding:
-                bottom: 0
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_14
-            font: lato
-            font_style: black
-            size: 22
-            number_format: modifier
-        inside_label_variable_reference:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: horizontal_box
+        prefix_variable_reference:
           type: variable_id
           variable_id: term_touch_armor_class_label
         value_variable_reference:
@@ -2898,127 +2914,87 @@ groups:
               variable_id: equipment_armor_shields_list_half_plate_tac_bonus
             - context: full_plate
               variable_id: equipment_armor_shields_list_full_plate_tac_bonus
+#  - format:
+#      element_format:
+#        padding:
+#          left: 8
+#          right: 8
+#    widgets:
+#    - type: widget_text
+#      widget_text:
+#        format:
+#          type: widget_format_official
+#          widget_format_official:
+#            theme: metric
+#            style: vertical_box
+#        value_variable_reference:
+#          type: variable_id
+#          variable_id: equipment_armor_shields_data_check_penalty_label
+#    - type: widget_text
+#      widget_text:
+#        format:
+#          type: text_widget_format_custom
+#          text_widget_format_custom:
+#            widget_format:
+#              element_format:
+#                background_color_theme:
+#                  theme_color_ids:
+#                  - theme_id: light
+#                    color_id: light_blue_grey_2
+#                corners:
+#                  top_left_radius: 1
+#                  top_right_radius: 1
+#                horizontal_alignment: left
+#                height: 30
+#                margins:
+#                  left: 3
+#                padding:
+#                  left: 8
+#                  top: 8
+#                  right: 8
+#                vertical_alignment: top
+#                width:
+#                  type: width_justify
+#                  width_justify: justify
+#            value_format:
+#              element_format:
+#                horizontal_alignment: left
+#              color_theme:
+#                theme_color_ids:
+#                - theme_id: light
+#                  color_id: dark_blue_grey_22
+#              size: 13
+#              font: lato
+#              font_style: bold
+#        value_variable_reference:
+#          type: variable_id
+#          variable_id: equipment_armor_shields_data_speed_penalty_label
   - format:
       element_format:
+        horizontal_alignment: left
         padding:
-          left: 16
-          right: 16
-    widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          widget_format:
-            element_format:
-              background_color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_blue_grey_2
-              corners:
-                top_left_radius: 1
-                top_right_radius: 1
-              height: 30
-              horizontal_alignment: left
-              margins:
-                right: 3
-              padding:
-                left: 6
-                top: 6
-                right: 6
-              vertical_alignment: top
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_22
-            size: 13
-            font: lato
-            font_style: bold
-        value_variable_reference:
-          type: variable_id
-          variable_id: equipment_armor_shields_data_check_penalty_label
-    - type: widget_text
-      widget_text:
-        format:
-          widget_format:
-            element_format:
-              background_color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_blue_grey_2
-              corners:
-                top_left_radius: 1
-                top_right_radius: 1
-              horizontal_alignment: left
-              height: 30
-              margins:
-                left: 3
-              padding:
-                left: 8
-                top: 8
-                right: 8
-              vertical_alignment: top
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_22
-            size: 13
-            font: lato
-            font_style: bold
-        value_variable_reference:
-          type: variable_id
-          variable_id: equipment_armor_shields_data_speed_penalty_label
-  - format:
-      element_format:
-        padding:
-          left: 16
-          right: 16
+          left: 12
+          right: 12
+          bottom: 16
     widgets:
     - type: widget_number
       widget_number:
+        kind: modifier
         format:
-          widget_format:
-            element_format:
-              background_color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_blue_grey_2
-              corners:
-                bottom_right_radius: 1
-                bottom_left_radius: 1
-              height: 40
-              horizontal_alignment: left
-              vertical_alignment: bottom
-              margins:
-                right: 3
-              padding:
-                bottom: 8
-                left: 8
-                right: 8
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            element_format:
-              horizontal_alignment: left
-              vertical_alignment: bottom
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_14
-            size: 24
-            font: lato
-            font_style: black
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: vertical_box
+            widget_format:
+              element_format:
+                margins:
+                  right: 8
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: equipment_armor_shields_data_check_penalty_label
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -3047,54 +3023,25 @@ groups:
               variable_id: equipment_armor_shields_list_full_plate_check_penalty
     - type: widget_number
       widget_number:
+        kind: modifier
         format:
-          widget_format:
-            element_format:
-              background_color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_blue_grey_2
-              corners:
-                bottom_right_radius: 1
-                bottom_left_radius: 1
-              height: 40
-              horizontal_alignment: left
-              vertical_alignment: bottom
-              margins:
-                left: 3
-              padding:
-                bottom: 8
-                left: 8
-                right: 8
-              width:
-                type: width_justify
-                width_justify: justify
-          inside_label_format:
-            element_format:
-              position: right
-              margins:
-                left: 4
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_14
-            size: 24
-            font: lato
-            font_style: black
-          value_format:
-            element_format:
-              horizontal_alignment: left
-              vertical_alignment: bottom
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_14
-            size: 24
-            font: lato
-            font_style: black
-        inside_label_variable_reference:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: vertical_box
+            widget_format:
+              element_format:
+                margins:
+                  left: 8
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
           type: variable_id
-          variable_id: term_feet_abbr
+          variable_id: equipment_armor_shields_data_speed_penalty_label
+#        inside_label_variable_reference:
+#          type: variable_id
+#          variable_id: term_feet_abbr
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -3123,163 +3070,30 @@ groups:
               variable_id: equipment_armor_shields_list_full_plate_speed_penalty
   - format:
       element_format:
+        horizontal_alignment: left
         padding:
-          top: 6
-          left: 16
-          right: 16
-    widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          widget_format:
-            element_format:
-              background_color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_blue_grey_2
-              corners:
-                top_left_radius: 1
-                top_right_radius: 1
-              height: 30
-              margins:
-                right: 3
-              padding:
-                left: 8
-                top: 8
-                right: 8
-              horizontal_alignment: left
-              vertical_alignment: top
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_22
-            size: 13
-            font: lato
-            font_style: bold
-        value_variable_reference:
-          type: variable_id
-          variable_id: equipment_armor_shields_data_dex_mod_cap_bonus_label
-    - type: widget_text
-      widget_text:
-        format:
-          widget_format:
-            element_format:
-              background_color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_blue_grey_2
-              corners:
-                top_left_radius: 1
-                top_right_radius: 1
-              horizontal_alignment: left
-              height: 30
-              margins:
-                left: 3
-              padding:
-                left: 8
-                top: 8
-                right: 8
-              vertical_alignment: top
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_22
-            size: 13
-            font: lato
-            font_style: bold
-        value_variable_reference:
-          type: variable_id
-          variable_id: equipment_armor_shields_data_bulk_label
-#    - type: widget_text
-#      widget_text:
-#        format:
-#          widget_format:
-#            element_format:
-#              background_color_theme:
-#                theme_color_ids:
-#                - theme_id: light
-#                  color_id: light_blue_grey_2
-#              corners:
-#                top_left_radius: 1
-#                top_right_radius: 1
-#              horizontal_alignment: left
-#              height: 30
-#              margins:
-#                left: 2
-#              padding:
-#                left: 6
-#                top: 6
-#                right: 6
-#              vertical_alignment: top
-#              width:
-#                type: width_justify
-#                width_justify: justify
-#          value_format:
-#            element_format:
-#              horizontal_alignment: left
-#            color_theme:
-#              theme_color_ids:
-#              - theme_id: light
-#                color_id: dark_grey_20
-#            size: 13
-#            font: merriweather
-#            font_style: bold
-#        value_variable_reference:
-#          type: variable_id
-#          variable_id: equipment_armor_shields_data_price_label
-  - format:
-      element_format:
-        padding:
-          left: 16
-          right: 16
+          left: 12
+          right: 12
+          bottom: 16
     widgets:
     - type: widget_number
       widget_number:
+        kind: modifier
         format:
-          widget_format:
-            element_format:
-              background_color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_blue_grey_2
-              corners:
-                bottom_right_radius: 1
-                bottom_left_radius: 1
-              height: 40
-              horizontal_alignment: left
-              vertical_alignment: bottom
-              margins:
-                right: 3
-              padding:
-                bottom: 8
-                left: 8
-                right: 8
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            element_format:
-              horizontal_alignment: left
-              vertical_alignment: bottom
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_14
-            size: 24
-            font: lato
-            font_style: black
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: vertical_box
+            widget_format:
+              element_format:
+                margins:
+                  right: 8
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: equipment_armor_shields_data_dex_mod_cap_bonus_label
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -3309,38 +3123,20 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              background_color_theme:
-                theme_color_ids:
-                - theme_id: light
-                  color_id: light_blue_grey_2
-              corners:
-                bottom_right_radius: 1
-                bottom_left_radius: 1
-              height: 40
-              horizontal_alignment: left
-              vertical_alignment: bottom
-              margins:
-                left: 3
-              padding:
-                bottom: 8
-                left: 8
-                right: 8
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            element_format:
-              horizontal_alignment: left
-              vertical_alignment: bottom
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_14
-            size: 24
-            font: lato
-            font_style: black
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: vertical_box
+            widget_format:
+              element_format:
+                margins:
+                  left: 8
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: equipment_armor_shields_data_bulk_label
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -3658,19 +3454,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 15.7
-            font: fira_sans
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 15.7
+              font: fira_sans
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_introduction
@@ -3706,17 +3504,19 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_12
-            font: roboto
-            font_style: medium
-            size: 25
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_12
+              font: roboto
+              font_style: medium
+              size: 25
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -3828,24 +3628,26 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-              padding:
-                left: 10
-                right: 10
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_blue_grey_18
-            font: roboto
-            font_style: regular
-            size: 18
-            element_format:
-              horizontal_alignment: left
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+                padding:
+                  left: 10
+                  right: 10
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_18
+              font: roboto
+              font_style: regular
+              size: 18
+              element_format:
+                horizontal_alignment: left
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -3882,42 +3684,44 @@ groups:
     - type: widget_number
       widget_number:
         format:
-          widget_format:
-            width: 1
-            element_format:
-              background_color_theme:
+          type: number_widget_format_custom
+          number_widget_format_custom:
+            widget_format:
+              width: 1
+              element_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_blue_tint_1
+                height: 40
+                padding:
+                  left: 12
+                  right: 12
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+                horizontal_alignment: left
+            inside_label_format:
+              element_format:
+                position: left
+                margins:
+                  right: 16
+              color_theme:
                 theme_color_ids:
                 - theme_id: light
-                  color_id: light_blue_tint_1
-              height: 40
-              padding:
-                left: 12
-                right: 12
-              width:
-                type: width_wrap
-                width_wrap: wrap
-              horizontal_alignment: left
-          inside_label_format:
-            element_format:
-              position: left
-              margins:
-                right: 16
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_blue_grey_5
-            font: roboto_condensed
-            font_style: bold
-            size: 20
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: white
-            font: roboto_condensed
-            font_style: bold
-            size: 20
-            number_format: modifier
+                  color_id: light_blue_grey_5
+              font: roboto_condensed
+              font_style: bold
+              size: 20
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              font: roboto_condensed
+              font_style: bold
+              size: 20
+              number_format: modifier
         inside_label_variable_reference:
           type: variable_id
           variable_id: term_armor_class_label
@@ -3950,44 +3754,46 @@ groups:
     - type: widget_number
       widget_number:
         format:
-          widget_format:
-            width: 1
-            element_format:
-              background_color_theme:
+          type: number_widget_format_custom
+          number_widget_format_custom:
+            widget_format:
+              width: 1
+              element_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: dark_blue_grey_18
+                horizontal_alignment: left
+                height: 40
+                margins:
+                  left: 4
+                padding:
+                  left: 12
+                  right: 12
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+            inside_label_format:
+              element_format:
+                position: left
+                margins:
+                  right: 16
+              color_theme:
                 theme_color_ids:
                 - theme_id: light
-                  color_id: dark_blue_grey_18
-              horizontal_alignment: left
-              height: 40
-              margins:
-                left: 4
-              padding:
-                left: 12
-                right: 12
-              width:
-                type: width_wrap
-                width_wrap: wrap
-          inside_label_format:
-            element_format:
-              position: left
-              margins:
-                right: 16
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_blue_grey_5
-            font: roboto_condensed
-            font_style: bold
-            size: 20
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: white
-            font: roboto_condensed
-            font_style: bold
-            size: 20
-            number_format: modifier
+                  color_id: light_blue_grey_5
+              font: roboto_condensed
+              font_style: bold
+              size: 20
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: white
+              font: roboto_condensed
+              font_style: bold
+              size: 20
+              number_format: modifier
         inside_label_variable_reference:
           type: variable_id
           variable_id: term_touch_armor_class_label
@@ -4025,95 +3831,101 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            width: 1
-            element_format:
-              border:
-                right:
-                  thickness: 1
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_blue_grey_5
-              horizontal_alignment: left
-              width:
-                type: width_justify
-                width_justify: justify
-              padding:
-                left: 10
-                right: 10
-              vertical_alignment: bottom
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_21
-            font: roboto
-            font_style: regular
-            size: 14
-            element_format:
-              horizontal_alignment: left
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              width: 1
+              element_format:
+                border:
+                  right:
+                    thickness: 1
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_blue_grey_5
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+                padding:
+                  left: 10
+                  right: 10
+                vertical_alignment: bottom
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_21
+              font: roboto
+              font_style: regular
+              size: 14
+              element_format:
+                horizontal_alignment: left
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_data_dex_mod_cap_bonus_label
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            width: 1
-            element_format:
-              border:
-                right:
-                  thickness: 1
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_blue_grey_5
-              horizontal_alignment: left
-              vertical_alignment: bottom
-              width:
-                type: width_justify
-                width_justify: justify
-              padding:
-                left: 10
-                right: 10
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_21
-            font: roboto
-            font_style: regular
-            size: 14
-            element_format:
-              horizontal_alignment: left
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              width: 1
+              element_format:
+                border:
+                  right:
+                    thickness: 1
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_blue_grey_5
+                horizontal_alignment: left
+                vertical_alignment: bottom
+                width:
+                  type: width_justify
+                  width_justify: justify
+                padding:
+                  left: 10
+                  right: 10
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_21
+              font: roboto
+              font_style: regular
+              size: 14
+              element_format:
+                horizontal_alignment: left
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_data_check_penalty_label
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            width: 1
-            element_format:
-              horizontal_alignment: left
-              vertical_alignment: bottom
-              width:
-                type: width_justify
-                width_justify: justify
-              padding:
-                left: 10
-                right: 10
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_21
-            font: roboto
-            font_style: regular
-            size: 14
-            element_format:
-              horizontal_alignment: left
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                vertical_alignment: bottom
+                width:
+                  type: width_justify
+                  width_justify: justify
+                padding:
+                  left: 10
+                  right: 10
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_21
+              font: roboto
+              font_style: regular
+              size: 14
+              element_format:
+                horizontal_alignment: left
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_data_speed_penalty_label
@@ -4132,33 +3944,35 @@ groups:
     - type: widget_number
       widget_number:
         format:
-          widget_format:
-            width: 1
-            element_format:
-              border:
-                right:
-                  thickness: 1
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_blue_grey_5
-              horizontal_alignment: left
-              width:
-                type: width_justify
-                width_justify: justify
-              padding:
-                top: 4
-                left: 10
-                right: 10
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_16
-            font: roboto_condensed
-            font_style: bold
-            size: 23
-            number_format: modifier
+          type: number_widget_format_custom
+          number_widget_format_custom:
+            widget_format:
+              width: 1
+              element_format:
+                border:
+                  right:
+                    thickness: 1
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_blue_grey_5
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+                padding:
+                  top: 4
+                  left: 10
+                  right: 10
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_16
+              font: roboto_condensed
+              font_style: bold
+              size: 23
+              number_format: modifier
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -4188,32 +4002,34 @@ groups:
     - type: widget_number
       widget_number:
         format:
-          widget_format:
-            width: 1
-            element_format:
-              border:
-                right:
-                  thickness: 1
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_blue_grey_5
-              horizontal_alignment: left
-              width:
-                type: width_justify
-                width_justify: justify
-              padding:
-                top: 4
-                left: 10
-                right: 10
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_16
-            font: roboto_condensed
-            font_style: bold
-            size: 23
+          type: number_widget_format_custom
+          number_widget_format_custom:
+            widget_format:
+              width: 1
+              element_format:
+                border:
+                  right:
+                    thickness: 1
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_blue_grey_5
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+                padding:
+                  top: 4
+                  left: 10
+                  right: 10
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_16
+              font: roboto_condensed
+              font_style: bold
+              size: 23
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -4246,38 +4062,40 @@ groups:
           type: variable_id
           variable_id: term_feet_abbr
         format:
-          inside_label_format:
-            element_format:
-              position: right
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_16
-            font: roboto_condensed
-            font_style: bold
-            size: 23
-          widget_format:
-            width: 1
-            element_format:
-              horizontal_alignment: left
-              width:
-                type: width_justify
-                width_justify: justify
-              padding:
-                top: 4
-                left: 10
-                right: 10
-          value_format:
-            element_format:
-              padding:
-                right: 6
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_15
-            font: roboto_condensed
-            font_style: bold
-            size: 22
+          type: number_widget_format_custom
+          number_widget_format_custom:
+            inside_label_format:
+              element_format:
+                position: right
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_16
+              font: roboto_condensed
+              font_style: bold
+              size: 23
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+                padding:
+                  top: 4
+                  left: 10
+                  right: 10
+            value_format:
+              element_format:
+                padding:
+                  right: 6
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_15
+              font: roboto_condensed
+              font_style: bold
+              size: 22
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -4312,59 +4130,63 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            width: 1
-            element_format:
-              border:
-                right:
-                  thickness: 1
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_blue_grey_5
-              horizontal_alignment: left
-              width:
-                type: width_justify
-                width_justify: justify
-              padding:
-                left: 10
-                right: 10
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_21
-            font: roboto
-            font_style: regular
-            size: 14
-            element_format:
-              horizontal_alignment: left
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              width: 1
+              element_format:
+                border:
+                  right:
+                    thickness: 1
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_blue_grey_5
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+                padding:
+                  left: 10
+                  right: 10
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_21
+              font: roboto
+              font_style: regular
+              size: 14
+              element_format:
+                horizontal_alignment: left
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_data_bulk_label
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            width: 1
-            element_format:
-              horizontal_alignment: left
-              padding:
-                left: 10
-                right: 10
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_21
-            font: roboto
-            font_style: regular
-            size: 14
-            element_format:
-              horizontal_alignment: left
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                padding:
+                  left: 10
+                  right: 10
+                width:
+                  type: width_justify
+                  width_justify: justify
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_21
+              font: roboto
+              font_style: regular
+              size: 14
+              element_format:
+                horizontal_alignment: left
         value_variable_reference:
           type: variable_id
           variable_id: equipment_armor_shields_data_price_label
@@ -4372,31 +4194,33 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            width: 1
-            element_format:
-              border:
-                right:
-                  thickness: 1
-                  color_theme:
-                    theme_color_ids:
-                    - theme_id: light
-                      color_id: light_blue_grey_5
-              horizontal_alignment: left
-              padding:
-                left: 10
-                right: 10
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_15
-            font: roboto_condensed
-            font_style: bold
-            size: 23
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              width: 1
+              element_format:
+                border:
+                  right:
+                    thickness: 1
+                    color_theme:
+                      theme_color_ids:
+                      - theme_id: light
+                        color_id: light_blue_grey_5
+                horizontal_alignment: left
+                padding:
+                  left: 10
+                  right: 10
+                width:
+                  type: width_justify
+                  width_justify: justify
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_15
+              font: roboto_condensed
+              font_style: bold
+              size: 23
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -4426,24 +4250,26 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            width: 1
-            element_format:
-              horizontal_alignment: left
-              padding:
-                left: 10
-                right: 10
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_blue_grey_15
-            font: roboto_condensed
-            font_style: bold
-            size: 23
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              width: 1
+              element_format:
+                horizontal_alignment: left
+                padding:
+                  left: 10
+                  right: 10
+                width:
+                  type: width_justify
+                  width_justify: justify
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_blue_grey_15
+              font: roboto_condensed
+              font_style: bold
+              size: 23
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -4497,21 +4323,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_attack_rolls_header
@@ -4524,19 +4352,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_attack_rolls_content
@@ -4549,21 +4379,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_mult_attack_penalty_header
@@ -4576,19 +4408,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_mult_attack_penalty_content
@@ -4601,21 +4435,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_unarmed_attacks_header
@@ -4628,19 +4464,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_unarmed_attacks_content
@@ -4653,21 +4491,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_damage_rolls_header
@@ -4680,19 +4520,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_damage_rolls_content
@@ -4705,21 +4547,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_critical_hits_header
@@ -4732,19 +4576,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_critical_hits_content
@@ -4757,21 +4603,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_improvised_weapons_header
@@ -4784,19 +4632,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_improvised_weapons_content
@@ -4809,21 +4659,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_selecting_weapons_header
@@ -4836,19 +4688,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_selecting_weapons_content
@@ -4879,19 +4733,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_content
@@ -4904,21 +4760,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_damage_header
@@ -4931,19 +4789,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_damage_content
@@ -4956,21 +4816,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_range_header
@@ -4983,19 +4845,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_range_content
@@ -5008,21 +4872,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_reload_header
@@ -5035,19 +4901,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_reload_content
@@ -5060,21 +4928,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_ammunition_header
@@ -5087,19 +4957,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_ammunition_content
@@ -5112,21 +4984,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_hands_header
@@ -5139,19 +5013,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_hands_content
@@ -5164,21 +5040,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_group_header
@@ -5191,19 +5069,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 16
-            font: merriweather
-            font_style: light
-            line_spacing: 1.3
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 16
+              font: merriweather
+              font_style: light
+              line_spacing: 1.3
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_group_content
@@ -5235,19 +5115,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.5
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.5
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_statistics_weapon_traits_content
@@ -5417,17 +5299,19 @@ groups:
                 - type: widget_text
                   widget_text:
                     format:
-                      value_format:
-                        element_format:
-                          horizontal_alignment: left
-                        color_theme:
-                          theme_color_ids:
-                          - theme_id: light
-                            color_id: dark_grey_8
-                        size: 15.5
-                        font: merriweather
-                        font_style: light
-                        line_spacing: 1.35
+                      type: text_widget_format_custom
+                      text_widget_format_custom:
+                        value_format:
+                          element_format:
+                            horizontal_alignment: left
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: light
+                              color_id: dark_grey_8
+                          size: 15.5
+                          font: merriweather
+                          font_style: light
+                          line_spacing: 1.35
                     value_variable_reference:
                       type: variable_template
                       variable_template:
@@ -5523,19 +5407,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.5
-            font: merriweather
-            font_style: light
-            line_spacing: 1.37
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.5
+              font: merriweather
+              font_style: light
+              line_spacing: 1.37
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_crit_spec_effects_content
@@ -5669,19 +5555,21 @@ groups:
                 - type: widget_text
                   widget_text:
                     format:
-                      value_format:
-                        element_format:
-                          horizontal_alignment: left
-                        color_theme:
-                          theme_color_ids:
-                          - theme_id: dark
-                            color_id: light_grey_20
-                          - theme_id: light
-                            color_id: dark_grey_8
-                        size: 15.5
-                        font: merriweather
-                        font_style: light
-                        line_spacing: 1.35
+                      type: text_widget_format_custom
+                      text_widget_format_custom:
+                        value_format:
+                          element_format:
+                            horizontal_alignment: left
+                          color_theme:
+                            theme_color_ids:
+                            - theme_id: dark
+                              color_id: light_grey_20
+                            - theme_id: light
+                              color_id: dark_grey_8
+                          size: 15.5
+                          font: merriweather
+                          font_style: light
+                          line_spacing: 1.35
                     value_variable_reference:
                       type: variable_template
                       variable_template:
@@ -5739,19 +5627,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 17
-            font: roboto
-            font_style: medium
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 17
+              font: roboto
+              font_style: medium
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_data_melee_weapons
@@ -5780,19 +5670,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 17
-            font: roboto
-            font_style: medium
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 17
+              font: roboto
+              font_style: medium
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_data_ranged_weapons
@@ -5818,19 +5710,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_list_simple_weapons_introduction
@@ -5856,19 +5750,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_list_martial_weapons_introduction
@@ -5894,19 +5790,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_list_exotic_weapons_introduction
@@ -6071,17 +5969,19 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_blue
-            font: roboto
-            font_style: medium
-            size: 19
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue
+              font: roboto
+              font_style: medium
+              size: 19
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -6221,41 +6121,45 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-              padding:
-                right: 6
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_18
-            font: roboto
-            font_style: regular
-            size: 16
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+                padding:
+                  right: 6
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_18
+              font: roboto
+              font_style: regular
+              size: 16
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_data_damage_label
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_14
-            font: roboto_condensed
-            font_style: bold
-            size: 18
-            number_format: modifier
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_14
+              font: roboto_condensed
+              font_style: bold
+              size: 18
+              number_format: modifier
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -6391,22 +6295,24 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-              padding:
-                left: 20
-                top: 1
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_22
-            font: roboto
-            font_style: bold_italic
-            size: 17
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+                padding:
+                  left: 20
+                  top: 1
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_22
+              font: roboto
+              font_style: bold_italic
+              size: 17
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -6594,17 +6500,19 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_blue
-            font: roboto
-            font_style: medium
-            size: 19
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue
+              font: roboto
+              font_style: medium
+              size: 19
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -6638,41 +6546,45 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-              padding:
-                right: 6
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_18
-            font: roboto
-            font_style: regular
-            size: 16
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+                padding:
+                  right: 6
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_18
+              font: roboto
+              font_style: regular
+              size: 16
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_data_damage_label
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_14
-            font: roboto_condensed
-            font_style: bold
-            size: 18
-            number_format: modifier
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_14
+              font: roboto_condensed
+              font_style: bold
+              size: 18
+              number_format: modifier
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -6702,43 +6614,47 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-              margins:
-                left: 20
-              padding:
-                right: 6
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_18
-            font: roboto
-            font_style: regular
-            size: 16
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+                margins:
+                  left: 20
+                padding:
+                  right: 6
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_18
+              font: roboto
+              font_style: regular
+              size: 16
         value_variable_reference:
           type: variable_id
           variable_id: equipment_weapons_data_range
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_14
-            font: roboto_condensed
-            font_style: bold
-            size: 18
-            number_format: modifier
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_14
+              font: roboto_condensed
+              font_style: bold
+              size: 18
+              number_format: modifier
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -6768,22 +6684,24 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              width:
-                type: width_wrap
-                width_wrap: wrap
-              padding:
-                left: 20
-                top: 1
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_22
-            font: roboto
-            font_style: bold_italic
-            size: 17
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                width:
+                  type: width_wrap
+                  width_wrap: wrap
+                padding:
+                  left: 20
+                  top: 1
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_22
+              font: roboto
+              font_style: bold_italic
+              size: 17
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -8692,19 +8610,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: equipment_gear_content
@@ -8733,19 +8653,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: equipment_gear_statistics_content
@@ -8775,21 +8697,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_gear_statistics_price_header
@@ -8797,19 +8721,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: equipment_gear_statistics_price_content
@@ -8839,21 +8765,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_gear_statistics_bulk_header
@@ -8861,19 +8789,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: equipment_gear_statistics_bulk_content
@@ -8903,21 +8833,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: equipment_gear_statistics_hands_header
@@ -8925,19 +8857,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: equipment_gear_statistics_hands_content
@@ -8966,19 +8900,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: equipment_gear_list_adventuring_gear_introduction
@@ -9025,20 +8961,22 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: light_blue
-            font: roboto
-            font_style: medium
-            size: 19
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue
+              font: roboto
+              font_style: medium
+              size: 19
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -9056,22 +8994,24 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: right
-              padding:
-                right: 0
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_20
-            font: roboto
-            font_style: medium
-            size: 17
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: right
+                padding:
+                  right: 0
+                width:
+                  type: width_justify
+                  width_justify: justify
+            value_format:
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_20
+              font: roboto
+              font_style: medium
+              size: 17
         value_variable_reference:
           type: variable_template
           variable_template:

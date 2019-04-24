@@ -45,7 +45,7 @@ val palette = mutableListOf(
         ThemeColor(ColorId.Theme("light_blue_grey_6"), "#E4E6EA"),
         ThemeColor(ColorId.Theme("light_blue_grey_7"), "#E0E3EB"),
         ThemeColor(ColorId.Theme("light_blue_grey_8"), "#DCDFE2"),
-        ThemeColor(ColorId.Theme("light_blue_grey_9"), "#D7DCDF"),
+        ThemeColor(ColorId.Theme("light_blue_grey_9"), "#D7DAE2"),
         ThemeColor(ColorId.Theme("light_blue_grey_10"), "#D3D5D9"),
         ThemeColor(ColorId.Theme("light_blue_grey_11"), "#CFD2D5"),
         ThemeColor(ColorId.Theme("light_blue_grey_12"), "#CBCDD1"),

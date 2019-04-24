@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_theme_light_blue_grey_7"
+    android:background="@color/light_theme_light_blue_grey_9"
     android:id="@+id/coordinator_layout" >
 
     <com.google.android.material.appbar.AppBarLayout
@@ -191,16 +191,11 @@
                 <TextView
                     android:id="@+id/session_count_view"
                     android:layout_gravity="start"
-                    android:textSize="17sp"
-                    android:textColor="@color/white"
+                    android:textSize="19sp"
+                    android:textColor="@color/light_theme_dark_blue_grey_20"
                     android:text="@string/plus_one"
-                    android:background="@drawable/bg_session_count"
                     android:gravity="center"
                     android:layout_marginEnd="16dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"
                     android:layout_width="wrap_content"
@@ -232,11 +227,13 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_session_add_button"
                 android:layout_gravity="bottom|end"
+                android:visibility="gone"
                 android:layout_marginBottom="16dp"
                 android:src="@drawable/ic_fab_add"
                 android:elevation="6dp"
                 android:layout_marginEnd="16dp">
             </ImageButton>
+
         </FrameLayout>
 
 

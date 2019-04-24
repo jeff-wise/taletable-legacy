@@ -1,5 +1,5 @@
 
-package com.taletable.android.model.sheet.widget
+package com.taletable.android.model.sheet.widget.list
 
 
 import android.content.Context
@@ -42,6 +42,9 @@ import com.taletable.android.model.engine.value.ValueReference
 import com.taletable.android.model.engine.value.ValueSetId
 import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.style.*
+import com.taletable.android.model.sheet.widget.ListWidget
+import com.taletable.android.model.sheet.widget.WidgetFormat
+import com.taletable.android.model.sheet.widget.WidgetView
 import com.taletable.android.model.theme.ColorId
 import com.taletable.android.model.theme.ColorTheme
 import com.taletable.android.model.theme.ThemeColorId
@@ -114,7 +117,7 @@ data class ListWidgetFormat(val widgetFormat : WidgetFormat,
                            { WidgetFormat.fromDocument(it) }),
                      // View Type
                      split(doc.maybeAt("view_type"),
-                           effValue<ValueError,ListViewType>(defaultViewType()),
+                           effValue<ValueError, ListViewType>(defaultViewType()),
                            { ListViewType.fromDocument(it) }),
                      // List Format
                      split(doc.maybeAt("list_format"),
@@ -159,16 +162,16 @@ data class ListWidgetFormat(val widgetFormat : WidgetFormat,
 
 
         fun default() = ListWidgetFormat(defaultWidgetFormat(),
-                                         defaultViewType(),
-                                         defaultListFormat(),
-                                         defaultItemFormat(),
-                                         defaultItemInactiveFormat(),
-                                         defaultItemText(),
-                                         defaultDescriptionFormat(),
-                                         defaultTitleBarFormat(),
-                                         defaultTitleFormat(),
-                                         defaultEditButtonFormat(),
-                                         defaultConstraintFormat())
+                defaultViewType(),
+                defaultListFormat(),
+                defaultItemFormat(),
+                defaultItemInactiveFormat(),
+                defaultItemText(),
+                defaultDescriptionFormat(),
+                defaultTitleBarFormat(),
+                defaultTitleFormat(),
+                defaultEditButtonFormat(),
+                defaultConstraintFormat())
     }
 
 
@@ -268,8 +271,8 @@ data class ListWidgetConstraintFormat(val textFormat : TextFormat,
 
 
         fun default() = ListWidgetConstraintFormat(defaultTextFormat(),
-                                                   defaultFailTextFormat(),
-                                                   defaultMessage())
+                defaultFailTextFormat(),
+                defaultMessage())
     }
 
 
@@ -370,11 +373,11 @@ sealed class ListViewType : ToDocument, SQLSerializable, Serializable
         {
             is DocText -> when (doc.text)
             {
-                "paragraph_commas"   -> effValue<ValueError,ListViewType>(ListViewType.ParagraphCommas)
-                "rows"               -> effValue<ValueError,ListViewType>(ListViewType.Rows)
-                "rows_simple_editor" -> effValue<ValueError,ListViewType>(ListViewType.RowsSimpleEditor)
-                "pool"               -> effValue<ValueError,ListViewType>(ListViewType.Pool)
-                else                 -> effError<ValueError,ListViewType>(
+                "paragraph_commas"   -> effValue<ValueError, ListViewType>(ParagraphCommas)
+                "rows"               -> effValue<ValueError, ListViewType>(Rows)
+                "rows_simple_editor" -> effValue<ValueError, ListViewType>(RowsSimpleEditor)
+                "pool"               -> effValue<ValueError, ListViewType>(Pool)
+                else                 -> effError<ValueError, ListViewType>(
                                             UnexpectedValue("ListViewType", doc.text, doc.path))
             }
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
@@ -634,10 +637,10 @@ class ListWidgetUI(val listWidget : ListWidget,
 
     fun listView() : View = when (listWidget.format().viewType())
     {
-        is ListViewType.ParagraphCommas  -> inlineView()
-        is ListViewType.Rows             -> rowsView(ListWidgetEditType.Advanced)
+        is ListViewType.ParagraphCommas -> inlineView()
+        is ListViewType.Rows -> rowsView(ListWidgetEditType.Advanced)
         is ListViewType.RowsSimpleEditor -> rowsView(ListWidgetEditType.Simple)
-        is ListViewType.Pool             -> poolView()
+        is ListViewType.Pool -> poolView()
     }
 
 
@@ -1175,7 +1178,7 @@ class ListWidgetUI(val listWidget : ListWidget,
 
         layout.onClick          = View.OnClickListener {
             when (editType) {
-                is ListWidgetEditType.Simple   -> this.openSubsetEditDialog()
+                is ListWidgetEditType.Simple -> this.openSubsetEditDialog()
                 is ListWidgetEditType.Advanced -> this.toggleEditMode()
             }
 

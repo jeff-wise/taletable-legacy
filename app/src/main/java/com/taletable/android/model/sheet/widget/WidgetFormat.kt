@@ -3,10 +3,6 @@ package com.taletable.android.model.sheet.widget
 
 
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue3
-import com.taletable.android.lib.orm.schema.PrimValue
-import com.taletable.android.lib.orm.schema.ProdValue
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.asSQLValue
 import com.taletable.android.model.sheet.group.RowColumn
@@ -15,10 +11,13 @@ import com.taletable.android.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
+import lulo.value.ValueError
 import lulo.value.ValueParser
+import maybe.Just
+import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
-import java.util.*
 
 
 
@@ -46,7 +45,7 @@ data class WidgetFormat(val width : WidgetWidth,
         private fun defaultElementFormat() = ElementFormat(Position.Top,
                                                            Nothing(),
                                                            Height.Wrap,
-                                                           Width.Justify,
+                                                           Width.Wrap,
                                                            Spacing.default(),
                                                            Spacing.default(),
                                                            ColorTheme.transparent,
@@ -147,4 +146,101 @@ data class WidgetWidth(val value : Int) : ToDocument, SQLSerializable, Serializa
 
 }
 
+
+
+
+/**
+ * Widget Theme
+ */
+sealed class WidgetOfficialTheme : ToDocument, Serializable
+{
+
+    // | CASES
+    // -----------------------------------------------------------------------------------------
+
+    object Metric : WidgetOfficialTheme() {
+        override fun toDocument() = DocText("metric")
+    }
+
+    // | CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
+    {
+        fun fromDocument(doc : SchemaDoc) : ValueParser<WidgetOfficialTheme> = when (doc) {
+            is DocText -> when (doc.text) {
+                "metric" -> effValue<ValueError,WidgetOfficialTheme>(WidgetOfficialTheme.Metric)
+                else     -> effError<ValueError,WidgetOfficialTheme>(
+                                UnexpectedValue("WidgetOfficialTheme", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+}
+
+
+/**
+ * Widget Style
+ */
+data class WidgetStyle(val value : String) : ToDocument, Serializable
+{
+
+    // | CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<WidgetStyle>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<WidgetStyle> = when (doc) {
+            is DocText -> effValue(WidgetStyle(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+    // | TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+}
+
+
+
+
+data class OfficialWidgetFormat(
+    val theme : WidgetOfficialTheme,
+    val style : WidgetStyle,
+    val widgetFormat : Maybe<WidgetFormat>
+)
+{
+
+    // | CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<OfficialWidgetFormat>
+    {
+
+        /**
+         * Read from Lulo format.
+         */
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<OfficialWidgetFormat> = when (doc)
+        {
+            is DocDict -> {
+                apply(::OfficialWidgetFormat,
+                      // Official Theme
+                      doc.at("theme").apply { WidgetOfficialTheme.fromDocument(it) },
+                      // Widget Style
+                      doc.at("style").apply { WidgetStyle.fromDocument(it) },
+                      // Widget Format
+                      split(doc.maybeAt("widget_format"),
+                            effValue<ValueError, Maybe<WidgetFormat>>(Nothing()),
+                            { apply(::Just, WidgetFormat.fromDocument(it)) })
+                      )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+}
 

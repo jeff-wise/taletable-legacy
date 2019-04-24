@@ -29,33 +29,25 @@
             android:name=".activity.home.HomeActivity"
             android:label="Tale Table"
             android:theme="@style/Theme.TTMaterial" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".activity.session.SessionActivity"
-            android:label="@string/title_activity_sheet"
-            android:theme="@style/AppTheme.NoActionBar" >
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
 
+        <activity
+            android:name=".activity.session.SessionActivity"
+            android:label="@string/title_activity_sheet"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
 
         <activity
             android:name=".activity.entity.engine.valueset.ValueSetsActivity"
-            android:label="Value Sets"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.session.SessionListActivity"
-            android:label="Value Sets"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.session.EntityTypeListActivity"
             android:label="Value Sets"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -116,31 +108,9 @@
             android:label="Game"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
-
-        <activity
-            android:name=".activity.session.GamesListActivity"
-            android:label="Games"
-            android:theme="@style/AppTheme.NoActionBar">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
-        <activity
-            android:name=".activity.session.NewSessionActivity"
-            android:label="Open Session"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.session.SavedSessionListActivity"
             android:label="Saved Sessions"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.nav.SheetNavigationActivity"
-            android:label="Sheets"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.nav.GameNavigationActivity"
-            android:label="Games"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.sheet.procedure.RunProcedureActivity"

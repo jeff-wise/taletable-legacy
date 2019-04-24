@@ -1914,7 +1914,7 @@ val widgetTableRowTable =
 //
 //typealias DB_WidgetTextValue =
 //    RowValue3<PrimValue<WidgetId>,
-//              ProdValue<TextWidgetFormat>,
+//              ProdValue<TextWidgetFormatCustom>,
 //              PrimValue<VariableId>>
 
 

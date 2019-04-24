@@ -21,19 +21,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: classes_introduction
@@ -59,19 +61,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: classes_entries_introduction

@@ -1656,13 +1656,19 @@ types:
         custom_type: variable_reference
       presence: required
       description: The value variable reference.
-    - name: inside_label_variable_reference
+    - name: label_variable_reference
+      type:
+        type: custom_type
+        custom_type: variable_reference
+      presence: optional
+      description: The value variable reference.
+    - name: prefix_variable_reference
       type:
         type: custom_type
         custom_type: variable_reference
       presence: optional
       description: The inside label variable reference.
-    - name: outside_label_variable_reference
+    - name: postfix_variable_reference
       type:
         type: custom_type
         custom_type: variable_reference
@@ -1674,10 +1680,28 @@ types:
         custom_type: book_reference
       presence: optional
       description: A rulebook reference.
-- type: product_type
-  product_type:
+    - name: kind
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: >
+        True if the text is underlined.
+- type: sum_type
+  sum_type:
     name: number_widget_format
     label: Number Widget Format
+    description: Number widget format.
+    group: 'Widget: Number'
+    cases:
+    - type: number_widget_format_custom
+      description: A literal number.
+    - type: widget_format_official
+      description: A literal number.
+- type: product_type
+  product_type:
+    name: number_widget_format_custom
+    label: Custom Number Widget Format
     description: >
       Number Widget formatting options.
     group: 'Widget: Number'
@@ -1688,91 +1712,33 @@ types:
         custom_type: widget_format
       presence: optional
       description: >
-        Standard widget formatting options.
-    - name: height
-      type:
-        type: custom_type
-        custom_type: height
-      presence: optional
-      description: >
-        Widget height.
-    - name: inside_label_format
+        The standard widget formatting options.
+    - name: label_format
       type:
         type: custom_type
         custom_type: text_format
       presence: optional
       description: >
-        Inside label format.
-    - name: outside_label_format
-      type:
-        type: custom_type
-        custom_type: text_format
-      presence: optional
-      description: >
-        Outside label position.
+        Value format.
     - name: value_format
       type:
         type: custom_type
         custom_type: text_format
       presence: optional
       description: >
-        Outside label position.
-    - name: description_style
-      type:
-        type: custom_type
-        custom_type: text_style
-      presence: optional
-      description: >
-        Description text style.
-    - name: value_prefix
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        Value prefix.
-    - name: value_prefix_format
+        Value format.
+    - name: prefix_format
       type:
         type: custom_type
         custom_type: text_format
       presence: optional
-      description: >
-        Value prefix.
-    - name: value_postfix
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        Value postfix.
-    - name: value_postfix_format
+      description: Inside label formatting options.
+    - name: postfix_format
       type:
         type: custom_type
         custom_type: text_format
       presence: optional
-      description: >
-        Value prefix.
-    - name: value_separator
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        Base value separator.
-    - name: value_separator_style
-      type:
-        type: custom_type
-        custom_type: text_style
-      presence: optional
-      description: >
-        Base value separator style.
-    - name: number_format
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: >
-        The number format.
+      description: Outside label formatting options.
 - type: product_type
   product_type:
     name: widget_option
@@ -3637,7 +3603,7 @@ types:
         custom_type: variable_reference
       presence: required
       description: The value variable reference.
-    - name: inside_label_variable_reference
+    - name: label_variable_reference
       type:
         type: custom_type
         custom_type: variable_reference
@@ -3661,10 +3627,21 @@ types:
         custom_type: widget_id
       presence: optional
       description: Primary action widget id.
-- type: product_type
-  product_type:
+- type: sum_type
+  sum_type:
     name: text_widget_format
     label: Text Widget Format
+    description: Text widget format.
+    group: 'Widget: Text'
+    cases:
+    - type: text_widget_format_custom
+      description: A literal number.
+    - type: widget_format_official
+      description: A literal number.
+- type: product_type
+  product_type:
+    name: text_widget_format_custom
+    label: Custom Text Widget Format
     description: >
       Text Widget formatting options.
     group: 'Widget: Text'
@@ -3676,6 +3653,13 @@ types:
       presence: optional
       description: >
         The standard widget formatting options.
+    - name: label_format
+      type:
+        type: custom_type
+        custom_type: text_format
+      presence: optional
+      description: >
+        Value format.
     - name: value_format
       type:
         type: custom_type
@@ -3683,13 +3667,13 @@ types:
       presence: optional
       description: >
         Value format.
-    - name: inside_label_format
+    - name: prefix_format
       type:
         type: custom_type
         custom_type: text_format
       presence: optional
       description: Inside label formatting options.
-    - name: outside_label_format
+    - name: postfix_format
       type:
         type: custom_type
         custom_type: text_format
@@ -4059,6 +4043,31 @@ types:
       description: The icon width x height.
 - type: product_type
   product_type:
+    name: widget_format_official
+    label: Official widget format
+    description: Official widget format.
+    group: Style
+    fields:
+    - name: theme
+      type: 
+        type: custom_type
+        custom_type: widget_theme_official
+      presence: required
+      description: The theme.
+    - name: style
+      type:
+        type: custom_type
+        custom_type: widget_style
+      presence: required
+      description: The style.
+    - name: widget_format
+      type:
+        type: custom_type
+        custom_type: widget_format
+      presence: optional
+      description: The style.
+- type: product_type
+  product_type:
     name: icon_size
     label: Icon Size
     description: The icon width x height.
@@ -4285,6 +4294,24 @@ types:
       prim_type: string
     constraints:
     - option_widget_view_type_set
+- type: primitive_type
+  primitive_type:
+    name: widget_theme_official
+    label: Official widget hteme
+    description: Official widget theme
+    group: Style
+    base_type:
+      type: prim_type
+      prim_type: string
+- type: primitive_type
+  primitive_type:
+    name: widget_style
+    label: Widget style
+    description: Widget style
+    group: Style
+    base_type:
+      type: prim_type
+      prim_type: string
 - type: primitive_type
   primitive_type:
     name: quote_widget_view_type

@@ -366,15 +366,15 @@ class BookUI(val book : Book,
         summary.text                = summaryString
 
         summary.font                = Font.typeface(TextFont.RobotoCondensed,
-                                                    TextFontStyle.Regular,
+                                                    TextFontStyle.Bold,
                                                     context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
-        summary.sizeSp              = 19f
+        summary.sizeSp              = 17.7f
 
         summary.backgroundColor     = Color.WHITE
 
@@ -461,7 +461,7 @@ class BookUI(val book : Book,
         layout.padding.leftDp   = 15f
         layout.padding.rightDp  = 15f
         //layout.padding.topDp    = 6f
-        layout.padding.bottomDp = 32f
+        layout.padding.bottomDp = 20f
 
         return layout.linearLayout(context)
     }
@@ -481,7 +481,7 @@ class BookUI(val book : Book,
 
         title.text                  = book.bookInfo().title.value
 
-        title.font                  = Font.typeface(TextFont.Merriweather,
+        title.font                  = Font.typeface(TextFont.RobotoSlab,
                                                     TextFontStyle.ExtraBold,
                                                     context)
 
@@ -490,7 +490,7 @@ class BookUI(val book : Book,
         title.sizeSp                = 54f
 
         title.lineSpacingAdd        = 10f
-        title.lineSpacingMult       = 0.82f
+        title.lineSpacingMult       = 0.77f
 
         return title.textView(context)
     }
@@ -520,13 +520,13 @@ class BookUI(val book : Book,
 
         subtitleViewBuilder.textSpan            = builder
 
-        subtitleViewBuilder.font                = Font.typeface(TextFont.Merriweather,
+        subtitleViewBuilder.font                = Font.typeface(TextFont.RobotoSlab,
                                                                 TextFontStyle.ExtraBold,
                                                                 context)
 
         subtitleViewBuilder.color               = Color.WHITE
 
-        subtitleViewBuilder.sizeSp              = 26f
+        subtitleViewBuilder.sizeSp              = 22f
 
         subtitleViewBuilder.lineSpacingAdd      = 10f
         subtitleViewBuilder.lineSpacingMult     = 0.85f
@@ -542,12 +542,12 @@ class BookUI(val book : Book,
         title.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        title.margin.topDp      = 24f
+        title.margin.topDp      = 44f
 
         title.text              = book.summary()
 
         title.font              = Font.typeface(TextFont.Merriweather,
-                                                TextFontStyle.Light,
+                                                TextFontStyle.Regular,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
@@ -556,10 +556,10 @@ class BookUI(val book : Book,
         title.color              = theme.colorOrBlack(colorTheme)
 //        title.color             = Color.WHITE
 
-        title.sizeSp             = 16f
+        title.sizeSp             = 15.5f
 
         title.lineSpacingAdd      = 4f
-        title.lineSpacingMult     = 1.05f
+        title.lineSpacingMult     = 1f
 
         return title.textView(context)
     }

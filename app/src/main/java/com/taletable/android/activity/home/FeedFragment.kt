@@ -21,7 +21,7 @@ import com.taletable.android.model.feed.*
 import com.taletable.android.model.sheet.group.*
 import com.taletable.android.model.sheet.style.*
 import com.taletable.android.model.sheet.widget.TextWidget
-import com.taletable.android.model.sheet.widget.TextWidgetFormat
+import com.taletable.android.model.sheet.widget.text.TextWidgetFormatCustom
 import com.taletable.android.model.sheet.widget.WidgetFormat
 import com.taletable.android.model.theme.ColorId
 import com.taletable.android.model.theme.ColorTheme
@@ -168,7 +168,7 @@ class FeedFragment : Fragment()
                    .withFontStyle(TextFontStyle.Bold)
                    .withElementFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left))
         val titleTextWidgetFormat =
-                TextWidgetFormat(
+                TextWidgetFormatCustom(
                         WidgetFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left)),
                         titleTextFormat)
         val titleTextWidget = TextWidget(titleTextWidgetFormat,
@@ -182,7 +182,7 @@ class FeedFragment : Fragment()
                     .withFontStyle(TextFontStyle.Regular)
                    .withElementFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left))
         val descriptionTextWidgetFormat =
-                    TextWidgetFormat(
+                TextWidgetFormatCustom(
                         WidgetFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left)),
                         descriptionTextFormat)
         val descriptionTextWidget = TextWidget(descriptionTextWidgetFormat,
@@ -245,7 +245,7 @@ class FeedFragment : Fragment()
                    .withFontStyle(TextFontStyle.Bold)
                    .withElementFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left))
         val titleTextWidgetFormat =
-                TextWidgetFormat(
+                TextWidgetFormatCustom(
                         WidgetFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left)),
                         titleTextFormat)
         val titleTextWidget = TextWidget(titleTextWidgetFormat,
@@ -259,7 +259,7 @@ class FeedFragment : Fragment()
                    .withFontStyle(TextFontStyle.Regular)
                    .withElementFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left))
         val descriptionTextWidgetFormat =
-                    TextWidgetFormat(
+                TextWidgetFormatCustom(
                         WidgetFormat(ElementFormat.default().withHorizontalAlignment(Alignment.Left)),
                         descriptionTextFormat)
         val descriptionTextWidget = TextWidget(descriptionTextWidgetFormat,

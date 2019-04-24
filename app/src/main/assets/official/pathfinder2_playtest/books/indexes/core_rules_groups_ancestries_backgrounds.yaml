@@ -14,26 +14,17 @@ groups:
       padding:
         left: 16
         right: 16
-        top: 24
+        top: 20
         bottom: 20
   rows:
   - widgets:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_introduction
@@ -59,19 +50,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_hit_points_content
@@ -97,19 +90,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.7
+              font: merriweather
+              font_style: regular
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_size_content
@@ -135,19 +130,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_speed_content
@@ -173,19 +170,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_ability_boosts_content
@@ -211,19 +210,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_ability_flaw_content
@@ -249,19 +250,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_languages_content
@@ -287,19 +290,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_traits_content
@@ -325,19 +330,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_special_abilities_content
@@ -363,19 +370,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_adventurers_content
@@ -407,20 +416,22 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
-            paragraph_spacing: 24
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
+              paragraph_spacing: 24
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_feats_content
@@ -433,21 +444,23 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_heritage_feats_header
@@ -455,19 +468,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_8
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_8
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_heritage_feats_content
@@ -493,20 +508,22 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_6
-            size: 15.7
-            font: merriweather
-            font_style: light
-            line_spacing: 1.35
-            paragraph_spacing: 24
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_6
+              size: 15.7
+              font: merriweather
+              font_style: light
+              line_spacing: 1.35
+              paragraph_spacing: 24
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -550,19 +567,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: term_ability_boosts
@@ -622,19 +641,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: term_ability_flaw
@@ -694,19 +715,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: term_languages
@@ -766,19 +789,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: term_bonus_languages
@@ -786,20 +811,22 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_16
-            size: 16
-            font: merriweather
-            font_style: regular
-            line_spacing: 1.3
-            paragraph_spacing: 24
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_16
+              size: 16
+              font: merriweather
+              font_style: regular
+              line_spacing: 1.3
+              paragraph_spacing: 24
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -826,19 +853,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: term_traits
@@ -898,19 +927,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: term_darkvision
@@ -918,20 +949,22 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_16
-            size: 16
-            font: merriweather
-            font_style: regular
-            line_spacing: 1.3
-            paragraph_spacing: 24
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_16
+              size: 16
+              font: merriweather
+              font_style: regular
+              line_spacing: 1.3
+              paragraph_spacing: 24
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -958,19 +991,21 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              horizontal_alignment: left
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: term_unburdened
@@ -978,20 +1013,22 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: dark
-                color_id: light_grey_20
-              - theme_id: light
-                color_id: dark_grey_16
-            size: 16
-            font: merriweather
-            font_style: regular
-            line_spacing: 1.3
-            paragraph_spacing: 24
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: dark
+                  color_id: light_grey_20
+                - theme_id: light
+                  color_id: dark_grey_16
+              size: 16
+              font: merriweather
+              font_style: regular
+              line_spacing: 1.3
+              paragraph_spacing: 24
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -1030,106 +1067,112 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              background_color_theme:
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_grey_2
+                corners:
+                  top_left_radius: 1
+                  top_right_radius: 1
+                margins:
+                  right: 2
+                padding:
+                  left: 4
+                  top: 4
+                  right: 4
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
                 theme_color_ids:
                 - theme_id: light
-                  color_id: light_grey_2
-              corners:
-                top_left_radius: 1
-                top_right_radius: 1
-              margins:
-                right: 2
-              padding:
-                left: 4
-                top: 4
-                right: 4
-              horizontal_alignment: left
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_20
-            size: 15
-            font: merriweather
-            font_style: bold
+                  color_id: dark_grey_20
+              size: 15
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: term_hit_points
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              background_color_theme:
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_grey_2
+                corners:
+                  top_left_radius: 1
+                  top_right_radius: 1
+                horizontal_alignment: left
+                margins:
+                  left: 2
+                  right: 2
+                padding:
+                  left: 4
+                  top: 4
+                  right: 4
+                width:
+                  type: width_justify
+                  width_justify: justify
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
                 theme_color_ids:
                 - theme_id: light
-                  color_id: light_grey_2
-              corners:
-                top_left_radius: 1
-                top_right_radius: 1
-              horizontal_alignment: left
-              margins:
-                left: 2
-                right: 2
-              padding:
-                left: 4
-                top: 4
-                right: 4
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_20
-            size: 15
-            font: merriweather
-            font_style: bold
+                  color_id: dark_grey_20
+              size: 15
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: term_size
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              background_color_theme:
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_grey_2
+                corners:
+                  top_left_radius: 1
+                  top_right_radius: 1
+                horizontal_alignment: left
+                margins:
+                  left: 2
+                padding:
+                  left: 4
+                  top: 4
+                  right: 4
+                width:
+                  type: width_justify
+                  width_justify: justify
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
                 theme_color_ids:
                 - theme_id: light
-                  color_id: light_grey_2
-              corners:
-                top_left_radius: 1
-                top_right_radius: 1
-              horizontal_alignment: left
-              margins:
-                left: 2
-              padding:
-                left: 4
-                top: 4
-                right: 4
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_20
-            size: 15
-            font: merriweather
-            font_style: bold
+                  color_id: dark_grey_20
+              size: 15
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_id
           variable_id: term_speed
@@ -1141,37 +1184,39 @@ groups:
     - type: widget_number
       widget_number:
         format:
-          widget_format:
-            element_format:
-              background_color_theme:
+          type: number_widget_format_custom
+          number_widget_format_custom:
+            widget_format:
+              element_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_grey_2
+                corners:
+                  bottom_right_radius: 1
+                  bottom_left_radius: 1
+                height: 38
+                horizontal_alignment: left
+                vertical_alignment: bottom
+                margins:
+                  right: 2
+                padding:
+                  bottom: 4
+                  left: 4
+                  right: 4
+                width:
+                  type: width_justify
+                  width_justify: justify
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
                 theme_color_ids:
                 - theme_id: light
-                  color_id: light_grey_2
-              corners:
-                bottom_right_radius: 1
-                bottom_left_radius: 1
-              height: 38
-              horizontal_alignment: left
-              vertical_alignment: bottom
-              margins:
-                right: 2
-              padding:
-                bottom: 4
-                left: 4
-                right: 4
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 24
-            font: merriweather
-            font_style: bold
+                  color_id: dark_grey_10
+              size: 24
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -1191,38 +1236,40 @@ groups:
     - type: widget_text
       widget_text:
         format:
-          widget_format:
-            element_format:
-              background_color_theme:
+          type: text_widget_format_custom
+          text_widget_format_custom:
+            widget_format:
+              element_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_grey_2
+                corners:
+                  bottom_right_radius: 1
+                  bottom_left_radius: 1
+                height: 38
+                horizontal_alignment: left
+                vertical_alignment: bottom
+                margins:
+                  left: 2
+                  right: 2
+                padding:
+                  bottom: 4
+                  left: 4
+                  right: 4
+                width:
+                  type: width_justify
+                  width_justify: justify
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
                 theme_color_ids:
                 - theme_id: light
-                  color_id: light_grey_2
-              corners:
-                bottom_right_radius: 1
-                bottom_left_radius: 1
-              height: 38
-              horizontal_alignment: left
-              vertical_alignment: bottom
-              margins:
-                left: 2
-                right: 2
-              padding:
-                bottom: 4
-                left: 4
-                right: 4
-              width:
-                type: width_justify
-                width_justify: justify
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 20
-            font: merriweather
-            font_style: bold
+                  color_id: dark_grey_10
+              size: 20
+              font: merriweather
+              font_style: bold
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -1242,49 +1289,51 @@ groups:
     - type: widget_number
       widget_number:
         format:
-          widget_format:
-            element_format:
-              background_color_theme:
+          type: number_widget_format_custom
+          number_widget_format_custom:
+            widget_format:
+              element_format:
+                background_color_theme:
+                  theme_color_ids:
+                  - theme_id: light
+                    color_id: light_grey_2
+                corners:
+                  bottom_right_radius: 1
+                  bottom_left_radius: 1
+                height: 38
+                horizontal_alignment: left
+                vertical_alignment: bottom
+                margins:
+                  left: 2
+                padding:
+                  bottom: 4
+                  left: 4
+                  right: 4
+                width:
+                  type: width_justify
+                  width_justify: justify
+            inside_label_format:
+              element_format:
+                position: right
+                margins:
+                  left: 4
+              color_theme:
                 theme_color_ids:
                 - theme_id: light
-                  color_id: light_grey_2
-              corners:
-                bottom_right_radius: 1
-                bottom_left_radius: 1
-              height: 38
-              horizontal_alignment: left
-              vertical_alignment: bottom
-              margins:
-                left: 2
-              padding:
-                bottom: 4
-                left: 4
-                right: 4
-              width:
-                type: width_justify
-                width_justify: justify
-          inside_label_format:
-            element_format:
-              position: right
-              margins:
-                left: 4
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
-          value_format:
-            element_format:
-              horizontal_alignment: left
-            color_theme:
-              theme_color_ids:
-              - theme_id: light
-                color_id: dark_grey_10
-            size: 22
-            font: merriweather
-            font_style: bold
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
+            value_format:
+              element_format:
+                horizontal_alignment: left
+              color_theme:
+                theme_color_ids:
+                - theme_id: light
+                  color_id: dark_grey_10
+              size: 22
+              font: merriweather
+              font_style: bold
         inside_label_variable_reference:
           type: variable_id
           variable_id: term_feet_abbr

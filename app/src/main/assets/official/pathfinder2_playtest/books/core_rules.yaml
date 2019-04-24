@@ -1778,7 +1778,7 @@ chapters:
   sections:
 cards:
 - id: '48f84443-778f-4ab6-ae1d-2e36936eced2'
-  name: 'Padded [Armor]'
+  name: 'Padded Armor'
   content_ids:
   - equipment_armor_shields_armor_list_light_armor_padded_card
   search_data:
@@ -1788,7 +1788,7 @@ cards:
         keyword: 'padded'
         weight: 1
 - id: '94bc902c-2370-413b-9987-6f299165122e'
-  name: 'Leather [Armor]'
+  name: 'Leather Armor'
   content_ids:
   - equipment_armor_shields_armor_list_light_armor_leather_card
   search_data:
@@ -1798,7 +1798,7 @@ cards:
         keyword: 'leather'
         weight: 1
 - id: '42cc94b6-b363-4573-ac0c-2e92876781f3'
-  name: 'Studded Leather [Armor]'
+  name: 'Studded Leather'
   content_ids:
   - equipment_armor_shields_armor_list_light_armor_studded_leather_card
   search_data:
@@ -1808,7 +1808,7 @@ cards:
         keyword: 'studded leather'
         weight: 1
 - id: 'fc292d8a-1e81-4a22-af8a-8c5c67a31cf9'
-  name: 'Chain Shirt [Armor]'
+  name: 'Chain Shirt'
   content_ids:
   - equipment_armor_shields_armor_list_light_armor_chain_shirt_card
   search_data:
