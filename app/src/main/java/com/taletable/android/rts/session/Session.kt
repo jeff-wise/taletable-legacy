@@ -99,6 +99,25 @@ suspend fun activateSession(loader : Session, context : Context)
 }
 
 
+//fun entityViewList(context : Context) : List<Any>
+//{
+//    val viewList : MutableList<Any> = mutableListOf()
+//
+//    var otherEntities : MutableList<PersistedEntity> = mutableListOf()
+//
+//    entityManifest(context).doMaybe { manifest ->
+//
+//        this.entityIds.forEach { entityId ->
+//            manifest.persistedEntity(entityId).doMaybe { otherEntities.add(it) }
+//        }
+//    }
+//
+//    viewList.add(SessionListHeader())
+//    viewList.addAll(otherEntities)
+//
+//    return viewList
+//}
+
 
 /**
  * Session

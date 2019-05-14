@@ -188,11 +188,11 @@ data class ColumnAdded(val tableName : String,
 
 data class BeginTranscation(val modelName : String) : ORMEvent()
 {
-    override fun eventMessage() : String = "Start of transaction to saveSheet '$modelName'"
+    override fun eventMessage() : String = "ParentStart of transaction to saveSheet '$modelName'"
 
 
     override fun prettyEventMessage() : String = """
-            |Start Of Transaction:
+            |ParentStart Of Transaction:
             |   ProdType Name: $modelName
             """.trimMargin()
 }

@@ -3394,7 +3394,6 @@ variables:
       text_literal: >-
         You spent your early days in a religious monastery or cloister. You may have traveled out into the world to spread the message of your religion or because you cast away the teachings of your faith, but deep inside you’ll always carry the lessons you learned.
 
-
         Choose two ability boosts. One must be to Constitution or Wisdom, and one is a free ability boost.
 
         You gain the Student of the Canon skill feat, and you’re trained in the Lore skill corresponding to your deity (such as Desna Lore or Sarenrae Lore).
@@ -3416,9 +3415,7 @@ variables:
       text_literal: >-
         In a circus or on the streets, you earned your pay by performing as an acrobat. You might have turned to adventuring when the money dried up, or when you learned to put skills to better use.
 
-
         Choose two ability boosts. One must be to Strength or Dexterity, and one is a free ability boost.
-
 
         You gain the Steady Balance skill feat, and you’re trained in the Circus Lore skill.
 - type: variable_text
@@ -3439,9 +3436,7 @@ variables:
       text_literal: >-
         You have always felt a connection to animals, and it was only a small leap to learn to train them. As you travel, you continuously encounter different creatures, befriending them along the way.
 
-
         Choose two ability boosts. One must be to Wisdom or Charisma, and one is a free ability boost.
-
 
         You gain the Train Animal skill feat, and you’re trained in the Animal Lore skill.
 - type: variable_text
@@ -3462,9 +3457,7 @@ variables:
       text_literal: >-
         You have five specialties: hefting barrels, polishing steins, drinking, drinking, and drinking. You ran or worked in a bar, where you learned how to hold your liquor and rowdily socialize.
 
-
         Choose two ability boosts. One must be to Constitution or Charisma, and one is a free ability boost.
-
 
         You gain the Hobnobber skill feat, and you’re trained in the Alcohol Lore skill.
 - type: variable_text
@@ -3485,9 +3478,7 @@ variables:
       text_literal: >-
         You were a blacksmith or a blacksmith’s apprentice, and during countless hours toiling at the forge, you learned how to smith armor and weapons. Perhaps you worked hard each day and dreamed of adventure each night, or perhaps the adventuring life was thrust upon you by a pivotal event.
 
-
         Choose two ability boosts. One must be to Strength or Intelligence, and one is a free ability boost.
-
 
         You gain the Specialty Crafting skill feat for blacksmithing, and you’re trained in the Smithing Lore skill.
 - type: variable_text
@@ -3508,9 +3499,7 @@ variables:
       text_literal: >-
         As an unscrupulous independent or as a member of an underworld organization, you lived a life of crime. You might have become an adventurer to seek redemption, to escape the law, or simply to get access to bigger and better loot.
 
-
         Choose two ability boosts. One must be to Dexterity or Intelligence, and one is a free ability boost.
-
 
         You gain the Experienced Smuggler skill feat, and you’re trained in the Underworld Lore skill.
 - type: variable_text
@@ -3531,9 +3520,7 @@ variables:
       text_literal: >-
         Through an education in the arts or sheer, dogged practice, you learned to entertain crowds. You might have been an actor, a dancer, a musician, a magician, or any other sort of performer.
 
-
         Choose two ability boosts. One must be to Dexterity or Charisma, and one is a free ability boost.
-
 
         You gain the Fascinating Performance skill feat, and you’re trained in the Entertainment Lore skill.
 - type: variable_text
@@ -3554,9 +3541,7 @@ variables:
       text_literal: >-
         With a strong back and an understanding of seasonal cycles, you tilled the land and tended crops. Your farm could have been razed by invaders, you could have lost the family tying you to the land, or you might have simply tired of the drudgery, but at some point you became an adventurer.
 
-
         Choose two ability boosts. One must be to Constitution or Wisdom, and one is a free ability boost.
-
 
         You gain the Assurance skill feat with Athletics, and you’re trained in the Farming Lore skill.
 - type: variable_text
@@ -3577,9 +3562,7 @@ variables:
       text_literal: >-
         The bloody games of the arena taught you the art of combat. Before you attained true fame, you departed—or escaped—the arena to explore the world. Your skill at drawing both blood and a crowd’s attention pay off in a new adventuring life.
 
-
         Choose two ability boosts. One must be to Strength or Charisma, and one is a free ability boost.
-
 
         You gain the Fascinating Performance skill feat, and you’re trained in the Gladiatorial Lore skill.
 - type: variable_text
@@ -3600,9 +3583,7 @@ variables:
       text_literal: >-
         You stalk and take down animals and other creatures of the wild. Skinning animals, harvesting their flesh, and cooking them were also part of your training, all of which can give you useful resources while you adventure.
 
-
         Choose two ability boosts. One must be to Dexterity or Wisdom, and one is a free ability boost.
-
 
         You gain the Survey Wildlife skill feat, and you’re trained in the Hunting Lore skill.
 - type: variable_text
@@ -3623,9 +3604,7 @@ variables:
       text_literal: >-
         You have spent years performing arduous physical labor, perhaps against your will. It was a difficult life, but you somehow survived. You may have embraced adventuring as an easier method to make your way in the world, or you might adventure under someone else’s command.
 
-
         Choose two ability boosts. One must be to Strength or Constitution, and one is a free ability boost.
-
 
         You gain the Robust Recovery skill feat, and you’re trained in the Labor Lore skill.
 - type: variable_text
@@ -3646,9 +3625,7 @@ variables:
       text_literal: >-
         In a dusty shop, market stall, or merchant caravan, you bartered wares for coin and trade goods. The skills you picked up still apply in the adventuring life, in which a deal on a suit of armor could save your life.
 
-
         Choose two ability boosts. One must be to Intelligence or Charisma, and one is a free ability boost.
-
 
         You gain the Bargain Hunter skill feat, and you’re trained in the Mercantile Lore skill.
 - type: variable_text
@@ -3669,9 +3646,7 @@ variables:
       text_literal: >-
         To the common folk, the life of a noble seems one of idyllic luxury, but growing up as a noble or member of the aspiring gentry, you know the reality: a noble’s lot is obligation and intrigue. Whether you seek to escape your duties by adventuring or to thereby better your station, you have traded silks and pageantry for an adventurer’s life.
 
-
         Choose two ability boosts. One must be to Intelligence or Charisma, and one is a free ability boost.
-
 
         You gain the Courtly Graces skill feat, and you’re trained in the Nobility Lore skill.
 - type: variable_text
@@ -3694,7 +3669,6 @@ variables:
 
         Choose two ability boosts. One must be to Constitution or Wisdom, and one is a free ability boost.
 
-
         You gain the Assurance skill feat with Survival, and you’re trained in a Lore skill related to one terrain you traveled in (such as Desert Lore or Swamp Lore).
 - type: variable_text
   variable_text:
@@ -3714,14 +3688,12 @@ variables:
       text_literal: >-
         You heard the call of the sea from a young age. Perhaps you signed onto a merchant’s vessel, joined the navy, or even fell in with a crew of pirates and scallywags.
 
-
         Choose two ability boosts. One must be to Strength or Dexterity, and one is a free ability boost.
-
 
         You gain the Underwater Marauder skill feat, and you’re trained in the Sailing Lore skill.
 - type: variable_text
   variable_text:
-    id: ancestries_backgrounds_background_list_scholor_name
+    id: ancestries_backgrounds_background_list_scholar_name
     label: 'Ancestries and Backgrounds > Background List > Scholar > Name'
     description: 'Ancestries and Backgrounds > Background List > Scholar > Name'
     value:
@@ -3729,7 +3701,7 @@ variables:
       text_literal: 'Scholar'
 - type: variable_text
   variable_text:
-    id: ancestries_backgrounds_background_list_scholor_description
+    id: ancestries_backgrounds_background_list_scholar_description
     label: 'Ancestries and Backgrounds > Background List > Scholar > Description'
     description: 'Ancestries and Backgrounds > Background List > Scholar > Description'
     value:
@@ -3758,9 +3730,7 @@ variables:
       text_literal: >-
         You called the wilderness home as you hunted game, found trails, and guided travelers. Your wanderlust could have called you to the adventuring life, or perhaps you were serving as a scout for soldiers and found you liked battle.
 
-
         Choose two ability boosts. One must be to Dexterity or Wisdom, and one is a free ability boost.
-
 
         You gain the Forager skill feat, and you’re trained in the Scouting Lore skill.
 - type: variable_text
@@ -3781,9 +3751,7 @@ variables:
       text_literal: >-
         You eked out a living by picking pockets on the streets of a major city, never knowing where you’d find your next meal. While some folk adventure for the glory, you adventure as a means of survival.
 
-
         Choose two ability boosts. One must be to Dexterity or Intelligence, and one is a free ability boost.
-
 
         You gain the Pickpocket skill feat, and you’re trained in the Underworld Lore skill.
 - type: variable_text
@@ -3804,9 +3772,7 @@ variables:
       text_literal: >-
         As a warrior in a tribe or a member of a militia or army, you waded into battle in your younger days. You might have wanted to break out from the regimented structure of these forces, or could have always been as independent a warrior as you are now.
 
-
         Choose two ability boosts. One must be to Strength or Constitution, and one is a free ability boost.
-
 
         You gain the Quick Repair skill feat, and you’re trained in the Warfare Lore skill.
 - type: variable_text
@@ -3818,11 +3784,15 @@ variables:
       type: text_literal
       text_literal: >-
         Your character’s ancestry section states which languages she speaks at 1st level. Having an Intelligence score of 14 or higher also grants one additional language, which you can choose from the list presented in your character’s ancestry entry and from those available from your region or ethnicity.
-
-        The languages presented in this section are grouped according to how commonly they are found throughout the Inner Sea region. Languages that are common are regularly found in most places, even among those who aren’t native speakers. Languages that are uncommon are most frequently spoken by native speakers, but they are also spoken by certain scholars and others interested in those associated cultures.
-
-        Pathfinder also includes Druidic, which is a secret language. Druidic is not available to characters who are not druids, and druids are prohibited from teaching the language to nondruids, as described further on page 81.
-
+- type: variable_text
+  variable_text:
+    id: ancestries_backgrounds_languages_list_description
+    label: 'Ancestries and Backgrounds > Languages > Description'
+    description: 'Ancestries and Backgrounds > Languages > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The languages presented in this section are grouped according to how common they are. Languages that are common are regularly found in most places, even among those who aren’t native speakers. Languages that are uncommon are most frequently spoken by native speakers, but they are also spoken by certain scholars and others interested in those associated cultures.
 
         It is, of course, possible for your character to learn languages later in her adventuring career. The Multilingual feat (see page 169), for example, grants two new languages that can be chosen from the languages listed in the common and uncommon tables below. Other abilities and effects might grant access to common or uncommon languages as detailed in their descriptions.
 - type: variable_text
@@ -3843,9 +3813,7 @@ variables:
       text_literal: >-
         Your character might use sign language instead of spoken language. This is especially common for a character who is deaf or hard of hearing or who can’t speak. In this case, your character can communicate using the sign languages associated with the languages she selects, as well as being able to read and write the written forms of those languages.
 
-
         When you first choose your character’s languages, you must decide whether she knows the sign language versions of all of her languages or their spoken versions. If you choose sign language instead of spoken language, your character receives Read Lips (see page 170) as a bonus feat. However, if your character is unable to speak, that feat may not convey the ability to speak. A deaf or hard of hearing character can’t use hearing as an imprecise sense (see page 301). Should your character lose or gain her sense of hearing during the game, she can spend downtime retraining her languages from spoken to signed or vice versa. If you’re playing a hearing character who would know one or more sign languages as a result of her backstory (for example, a hearing character with a deaf parent), you may get Sign Language (see page 171) as a bonus feat at the GM’s discretion.
-
 
         Sign languages typically require both hands to convey more than basic concepts, and they require direct visual attention to understand. Since they are quiet, they are ideal for infiltrations in exploration mode, but the required attention makes them extremely difficult to understand in combat. Much as a character can’t engage in complex spoken dialogue while swinging a sword, a character can’t communicate a hefty amount of information in sign language during combat, but simple concepts such as designating a target, mocking a foe, or signaling an ally to look out can be conveyed through signs as easily as shouted words. Using sign language in some situations, such as areas of low visibility, can be tricky—just as it can be difficult to communicate verbally in a noisy environment.
 - type: variable_text

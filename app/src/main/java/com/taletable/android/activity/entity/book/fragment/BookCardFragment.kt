@@ -18,6 +18,7 @@ import com.taletable.android.R
 import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.book.*
+import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
@@ -125,7 +126,7 @@ class BookCardUI(val book : Book,
     {
         val layout = this.viewLayout()
 
-        layout.addView(blankHeaderView())
+        //layout.addView(blankHeaderView())
 
         //val mainView = blankMainView()
 
@@ -344,6 +345,8 @@ class BookCardUI(val book : Book,
             }
         }
 
+        cardLayout.addView(cardFooterView())
+
         scrollView.addView(cardLayout)
 
         return scrollView
@@ -366,7 +369,7 @@ class BookCardUI(val book : Book,
 
         scrollView.margin.leftDp    = 8f
         scrollView.margin.rightDp   = 8f
-        scrollView.margin.topDp     = -40f
+        scrollView.margin.topDp     = 16f
 
         return scrollView.scrollView(context)
     }
@@ -381,10 +384,23 @@ class BookCardUI(val book : Book,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.padding.bottomDp  = 70f
+        layout.padding.bottomDp = 70f
         layout.margin.bottomDp  = 10f
 
         return layout.linearLayout(context)
     }
 
+    private fun cardFooterView() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.heightDp         = 4
+
+        layout.corners          = Corners(0.0, 0.0, 4.0, 4.0)
+
+        layout.backgroundColor  = Color.WHITE
+
+        return layout.linearLayout(context)
+    }
 }

@@ -5483,6 +5483,52 @@ variables:
         You can select this feat more than once, each time you select it, you become trained in additional weapons as appropriate (first all simple weapons, then all martial weapons, then one exotic weapon each additional time).
 - type: variable_text
   variable_text:
+    id: skills_rules_introduction
+    label: 'Skills > Rules > Introduction'
+    description: 'Skills > Rules > Introduction'
+    value:
+      type: text_literal
+      text_literal: >-
+        While your ability scores represent your raw talent and potential, skills represent your training and experience. Each skill is a broad grouping of several different uses, and each is keyed to one of your ability scores. In this chapter, you’ll learn about skills; their scope; and the actions, activities, free actions, and reactions they grant.
+- type: variable_text
+  variable_text:
+    id: skills_rules_uses_header
+    label: 'Skills > Rules > Uses > Header'
+    description: 'Skills > Rules > Uses > Header'
+    value:
+      type: text_literal
+      text_literal: 'Skill Uses'
+- type: variable_text
+  variable_text:
+    id: skills_rules_uses_content
+    label: 'Skills > Rules > Uses > Content'
+    description: 'Skills > Rules > Uses > Content'
+    value:
+      type: text_literal
+      text_literal: >-
+        The actions, activities, free actions, and reactions you can perform with a given skill are sorted into those you can use untrained and those that require you to be at least trained in the skill, as shown on Table 4–1: Skills, Key Abilities, and Uses. The untrained and trained uses of each skill appear in separate sections within the skill’s description.
+
+        Anyone can use a skill’s untrained uses unless some circumstance, condition, or effect bars them from doing so. You can use trained uses only if you’re at least trained in that skill and no circumstance, condition, or effect bars you from that use. Sometimes using a skill in a specific situation might require you to have a higher proficiency rank than what is listed on the table. For instance, even though a high-level barbarian untrained in Arcana could reliably use Arcana to Recall Knowledge regarding the breath weapons of the various colors of dragons, the GM might decide that Recalling Knowledge about the deeper theories behind magical energy of a dragon’s breath weapon might be something beyond the scope of the barbarian’s largely utilitarian and anecdotal knowledge about how to fight dragons. The GM decides whether a task requires a particular proficiency rank, from trained all the way up to legendary.
+
+        As you advance in level, you’ll gain a type of general feat called a skill feat, which often grants you a new use of a skill. Skill feats always have the skill trait. These feats appear in Chapter 5.
+- type: variable_text
+  variable_text:
+    id: skills_rules_key_ability_header
+    label: 'Skills > Rules > Key Ability > Header'
+    description: 'Skills > Rules > Key Ability > Header'
+    value:
+      type: text_literal
+      text_literal: 'Key Ability'
+- type: variable_text
+  variable_text:
+    id: skills_rules_key_ability_header
+    label: 'Skills > Rules > Key Ability > Header'
+    description: 'Skills > Rules > Key Ability > Header'
+    value:
+      type: text_literal
+      text_literal: 'Key Ability'
+- type: variable_text
+  variable_text:
     id: skills_index_acrobatics_header
     label: 'Skills > Index > Acrobatics > Header'
     description: 'Skills > Index > Acrobatics > Header'
@@ -5498,6 +5544,14 @@ variables:
       type: text_literal
       text_literal: >-
         Acrobatics measures your ability to perform physical feats that require balance, coordination, and grace. You can perform the following uses of Acrobatics even if you are untrained in the skill.
+- type: variable_text
+  variable_text:
+    id: skills_index_acrobatics_balance_name
+    label: 'Skills > Index > Acrobatics > Balance > Name'
+    description: 'Skills > Index > Acrobatics > Balance > Name'
+    value:
+      type: text_literal
+      text_literal: 'Balance'
 - type: variable_text
   variable_text:
     id: skills_index_acrobatics_balance_actions
@@ -6027,7 +6081,7 @@ variables:
       text_literal: 'Borrow an Arcane Spell'
 - type: variable_text
   variable_text:
-    id: skills_index_arcana_borrow_arcana_spell_actions
+    id: skills_index_arcana_borrow_arcane_spell_actions
     label: 'Skills > Index > Arcana > Borrow an Arcane Spell > Actions'
     description: 'Skills > Index > Arcana > Borrow an Arcane Spell > Actions'
     value:
@@ -8743,7 +8797,7 @@ variables:
       text_literal: 'Perform'
 - type: variable_text
   variable_text:
-    id: skills_index_performance_peform_actions
+    id: skills_index_performance_perform_actions
     label: 'Skills > Index > Performance > Perform > Actions'
     description: 'Skills > Index > Performance > Perform > Actions'
     value:

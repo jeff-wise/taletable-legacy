@@ -5,8 +5,10 @@ package com.taletable.android.model.sheet.group
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.PaintDrawable
 import android.util.Log
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +37,7 @@ import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
+
 
 
 /**
@@ -196,6 +199,9 @@ data class GroupRow(private val format : GroupRowFormat,
 
         if (this.format().hasColumns().value)
         {
+
+            Log.d("***GROUP ROW", "has columns ")
+
             val colIndiceSet = this.widgets().map { it.widgetFormat().column() }
             val largestColIndex = colIndiceSet.max()
 
@@ -205,7 +211,7 @@ data class GroupRow(private val format : GroupRowFormat,
             else {
                 val colToLayout : MutableMap<Int,LinearLayout> = mutableMapOf()
                 colIndiceSet.forEach {
-                    colToLayout.put(it, this.widgetsColumnLayout(context))
+                    colToLayout.put(it, this.widgetsColumnLayout(it, context))
                 }
 
                 this.widgets().forEach {
@@ -229,9 +235,9 @@ data class GroupRow(private val format : GroupRowFormat,
     }
 
 
-    private fun widgetsColumnLayout(context : Context) : LinearLayout
+    private fun widgetsColumnLayout(column : Int, context : Context) : LinearLayout
     {
-        val layout = LinearLayoutBuilder()
+        val layout              = LinearLayoutBuilder()
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
@@ -239,7 +245,18 @@ data class GroupRow(private val format : GroupRowFormat,
         layout.width            = 0
         layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
 
-//        layout.gravity          = Gravity.START
+        if (this.format().elementFormat().justification == Justification.SpaceBetween)
+        {
+            Log.d("***GROUP ROW", "setting justification")
+            when (column) {
+                1 -> {
+                    layout.gravity = Gravity.START
+                }
+                2 -> {
+                    layout.gravity = Gravity.END
+                }
+            }
+        }
 
         return layout.linearLayout(context)
     }

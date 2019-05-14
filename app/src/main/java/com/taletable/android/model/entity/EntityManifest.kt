@@ -109,6 +109,8 @@ data class EntityManifest(val persistedEntities : List<PersistedEntity>)
     fun persistedEntity(entityId : EntityId) : Maybe<PersistedEntity> =
             maybe(this.entityById[entityId])
 
+
+
 }
 
 

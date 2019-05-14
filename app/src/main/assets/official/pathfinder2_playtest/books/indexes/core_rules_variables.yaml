@@ -63,6 +63,14 @@ variables:
       text_literal: 'Ability Boosts'
 - type: variable_text
   variable_text:
+    id: term_traits_label
+    label: 'Term > Traits'
+    description: 'Term > Traits'
+    value:
+      type: text_literal
+      text_literal: 'Traits'
+- type: variable_text
+  variable_text:
     id: term_ability_flaw
     label: 'Term > Ability Flaw'
     description: 'Term > Ability Flaw'
@@ -79,12 +87,52 @@ variables:
       text_literal: 'Bonus Languages'
 - type: variable_text
   variable_text:
+    id: term_bulk
+    label: 'Term > Bulk'
+    description: 'Term > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'Bulk'
+- type: variable_text
+  variable_text:
+    id: term_damage
+    label: 'Term > Damage'
+    description: 'Term > Damage'
+    value:
+      type: text_literal
+      text_literal: 'Damage'
+- type: variable_text
+  variable_text:
     id: term_darkvision
     label: 'Term > Darkvision'
     description: 'Term > Darkvision'
     value:
       type: text_literal
       text_literal: 'Darkvision'
+- type: variable_text
+  variable_text:
+    id: term_group
+    label: 'Term > Group'
+    description: 'Term > Group'
+    value:
+      type: text_literal
+      text_literal: 'Group'
+- type: variable_text
+  variable_text:
+    id: term_hands
+    label: 'Term > Hands'
+    description: 'Term > Hands'
+    value:
+      type: text_literal
+      text_literal: 'Hands'
+- type: variable_text
+  variable_text:
+    id: term_hp
+    label: 'Term > HP'
+    description: 'Term > HP'
+    value:
+      type: text_literal
+      text_literal: 'HP'
 - type: variable_text
   variable_text:
     id: term_hit_points
@@ -101,6 +149,14 @@ variables:
     value:
       type: text_literal
       text_literal: 'Languages'
+- type: variable_text
+  variable_text:
+    id: term_price
+    label: 'Term > Price'
+    description: 'Term > Price'
+    value:
+      type: text_literal
+      text_literal: 'Price'
 - type: variable_text
   variable_text:
     id: term_size

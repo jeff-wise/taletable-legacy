@@ -317,7 +317,7 @@ import com.taletable.android.model.theme.official.officialAppThemeLight
 //        labelView.width             = LinearLayout.LayoutParams.WRAP_CONTENT
 //        labelView.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 //
-//        labelView.text              = "Start a New Session"
+//        labelView.text              = "ParentStart a New Session"
 //
 //        labelView.font              = Font.typeface(TextFont.RobotoCondensed,
 //                                                    TextFontStyle.Bold,

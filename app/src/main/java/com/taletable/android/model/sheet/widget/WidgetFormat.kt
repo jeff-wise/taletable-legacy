@@ -52,6 +52,7 @@ data class WidgetFormat(val width : WidgetWidth,
                                                            Corners.default(),
                                                            Border.default(),
                                                            Elevation.default(),
+                                                           Justification.ParentStart,
                                                            Alignment.Center,
                                                            VerticalAlignment.Middle)
 

@@ -173,10 +173,10 @@ val bookSectionTable =
            "title",
            "subsections")
 
-typealias DB_BookSectionValue =
-    RowValue3<PrimValue<BookSectionId>,
-              PrimValue<BookSectionTitle>,
-              CollValue<BookSubsection>>
+//typealias DB_BookSectionValue =
+//    RowValue3<PrimValue<BookSectionId>,
+//              PrimValue<BookSectionTitle>,
+//              CollValue<BookSubsection>>
 
 
 // BOOK SECTION > FORMAT

@@ -134,8 +134,9 @@ class BookUI(val book : Book,
 
         layout.addView(this.metadataView())
 
-
         layout.addView(this.chapterListView())
+
+        layout.addView(this.otherDataView())
 
         return scrollView
     }
@@ -253,7 +254,7 @@ class BookUI(val book : Book,
     {
         val layout = this.chapterListViewLayout()
 
-        layout.addView(this.chapterHeaderView())
+        layout.addView(this.chapterHeaderView("Chapters"))
 
         book.chapters().forEach {
             layout.addView(this.chapterSummaryView(it))
@@ -276,7 +277,7 @@ class BookUI(val book : Book,
     }
 
 
-    private fun chapterHeaderView() : TextView
+    private fun chapterHeaderView(label : String) : TextView
     {
         val headerViewBuilder               = TextViewBuilder()
 
@@ -293,7 +294,7 @@ class BookUI(val book : Book,
         headerViewBuilder.addRule(RelativeLayout.ALIGN_PARENT_START)
         headerViewBuilder.addRule(RelativeLayout.CENTER_VERTICAL)
 
-        headerViewBuilder.text              = "Chapters"
+        headerViewBuilder.text              = label
 
 
         headerViewBuilder.font          = Font.typeface(TextFont.RobotoCondensed,
@@ -302,10 +303,10 @@ class BookUI(val book : Book,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_18"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_18"))))
         headerViewBuilder.color         = theme.colorOrBlack(colorTheme)
 
-        headerViewBuilder.sizeSp              = 17f
+        headerViewBuilder.sizeSp              = 17.7f
 
         return headerViewBuilder.textView(context)
 
@@ -365,16 +366,16 @@ class BookUI(val book : Book,
 
         summary.text                = summaryString
 
-        summary.font                = Font.typeface(TextFont.RobotoCondensed,
-                                                    TextFontStyle.Bold,
+        summary.font                = Font.typeface(TextFont.Roboto,
+                                                    TextFontStyle.Medium,
                                                     context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_14"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
-        summary.sizeSp              = 17.7f
+        summary.sizeSp              = 17.5f
 
         summary.backgroundColor     = Color.WHITE
 
@@ -487,10 +488,10 @@ class BookUI(val book : Book,
 
         title.color                 = Color.WHITE
 
-        title.sizeSp                = 54f
+        title.sizeSp                = 60f
 
         title.lineSpacingAdd        = 10f
-        title.lineSpacingMult       = 0.77f
+        title.lineSpacingMult       = 0.75f
 
         return title.textView(context)
     }
@@ -506,7 +507,7 @@ class BookUI(val book : Book,
         // Format for
 
         val forColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_14"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_14"))))
         val forColor = theme.colorOrBlack(forColorTheme)
         val colorSpan = ForegroundColorSpan(forColor)
         builder.setSpan(colorSpan, 0, 4, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
@@ -526,7 +527,7 @@ class BookUI(val book : Book,
 
         subtitleViewBuilder.color               = Color.WHITE
 
-        subtitleViewBuilder.sizeSp              = 22f
+        subtitleViewBuilder.sizeSp              = 21f
 
         subtitleViewBuilder.lineSpacingAdd      = 10f
         subtitleViewBuilder.lineSpacingMult     = 0.85f
@@ -546,17 +547,17 @@ class BookUI(val book : Book,
 
         title.text              = book.summary()
 
-        title.font              = Font.typeface(TextFont.Merriweather,
+        title.font              = Font.typeface(TextFont.RobotoSlab,
                                                 TextFontStyle.Regular,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_8"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_8"))))
         title.color              = theme.colorOrBlack(colorTheme)
 //        title.color             = Color.WHITE
 
-        title.sizeSp             = 15.5f
+        title.sizeSp             = 18f
 
         title.lineSpacingAdd      = 4f
         title.lineSpacingMult     = 1f
@@ -569,15 +570,28 @@ class BookUI(val book : Book,
     {
         val layout = metadataViewLayout()
 
+        layout.addView(chapterHeaderView("Written by"))
+
         layout.addView(authorsView())
 
-        layout.addView(lastEditView())
-//
-//        layout.addView(moreInfoView())
+        layout.addView(dividerView())
 
         return layout
     }
 
+
+    private fun otherDataView() : LinearLayout
+    {
+        val layout = metadataViewLayout()
+
+        layout.addView(chapterHeaderView("Last edited on"))
+
+        layout.addView(lastEditView())
+
+        layout.addView(dividerView())
+
+        return layout
+    }
 
 
     private fun metadataViewLayout() : LinearLayout
@@ -589,16 +603,12 @@ class BookUI(val book : Book,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-//        val bgColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_13"))))
-//        layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
+        layout.backgroundColor  = Color.WHITE
 
-
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
-        layout.padding.topDp    = 16f
-        layout.padding.bottomDp = 16f
+//        layout.padding.leftDp   = 8f
+//        layout.padding.rightDp  = 8f
+        //layout.padding.topDp    = 16f
+        //layout.padding.bottomDp = 16f
 
         return layout.linearLayout(context)
     }
@@ -625,12 +635,12 @@ class BookUI(val book : Book,
 
 
         //layout.backgroundColor  = Color.WHITE
-        layout.backgroundResource  = R.drawable.bg_card_flat
+        //layout.backgroundResource  = R.drawable.bg_card_flat
 
         layout.padding.topDp    = 16f
         layout.padding.bottomDp = 16f
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
+        layout.padding.leftDp   = 16f
+        layout.padding.rightDp  = 16f
 
 
         layout.child(icon)
@@ -695,12 +705,12 @@ class BookUI(val book : Book,
 
 
         //layout.backgroundColor  = Color.WHITE
-        layout.backgroundResource  = R.drawable.bg_card_flat
+        //layout.backgroundResource  = R.drawable.bg_card_flat
 
         layout.padding.topDp    = 16f
         layout.padding.bottomDp = 16f
-        layout.padding.leftDp   = 8f
-        layout.padding.rightDp  = 8f
+        layout.padding.leftDp   = 16f
+        layout.padding.rightDp  = 16f
 
         layout.child(icon)
               .child(label)
@@ -746,75 +756,17 @@ class BookUI(val book : Book,
     // | Search Button View
     // -----------------------------------------------------------------------------------------
 
-    private fun searchButtonView() : LinearLayout
+    private fun dividerView() : LinearLayout
     {
-        // 1 | Declarations
-        // -------------------------------------------------------------------------------------
-
         val layout              = LinearLayoutBuilder()
-        val icon                = ImageViewBuilder()
-        val label               = TextViewBuilder()
-
-        // 2 | Layout
-        // -------------------------------------------------------------------------------------
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.heightDp         = 1
 
-        layout.gravity          = Gravity.CENTER_VERTICAL
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-
-        layout.backgroundColor  = Color.WHITE
-
-        layout.padding.topDp    = 20f
-        layout.padding.bottomDp = 20f
-        layout.padding.leftDp   = 16f
-        layout.padding.rightDp  = 16f
-
-        layout.margin.bottomDp  = 1f
-
-        layout.onClick          = View.OnClickListener {
-            sessionActivity.setSearchView(book.bookId)
-        }
-
-        layout.child(icon)
-              .child(label)
-
-        // 3 | Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.widthDp            = 21
-        icon.heightDp           = 21
-
-        icon.image              = R.drawable.icon_search
-
-        val iconColorTheme = ColorTheme(setOf(
+        val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_18"))))
-        icon.color              = theme.colorOrBlack(iconColorTheme)
-
-        icon.margin.rightDp     = 16f
-
-        // 3 | Label
-        // -------------------------------------------------------------------------------------
-
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        label.textId            = R.string.search_book
-
-        label.font              = Font.typeface(TextFont.Roboto,
-                                                TextFontStyle.Regular,
-                                                context)
-
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_18"))))
-        label.color              = theme.colorOrBlack(iconColorTheme)
-
-        label.sizeSp            = 18f
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
+        layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
 
         return layout.linearLayout(context)
     }

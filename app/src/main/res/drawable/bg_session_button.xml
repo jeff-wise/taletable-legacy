@@ -5,11 +5,15 @@
     android:shape="rectangle">
 
     <solid
-        android:color="@color/light_theme_dark_blue_grey_12">
+        android:color="@color/light_theme_light_blue_grey_3">
     </solid>
 
     <corners
         android:radius="6dp" >
     </corners>
+
+    <size
+        android:height="40dp"
+        android:width="40dp" />
 
 </shape>

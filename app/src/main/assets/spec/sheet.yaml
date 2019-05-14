@@ -977,7 +977,7 @@ types:
       type:
         type: custom_type
         custom_type: expander_widget_format
-      presence: optional
+      presence: required
       description: >
         The expander widget formatting options.
     - name: label_variable_reference
@@ -1012,10 +1012,21 @@ types:
         custom_type: variable_reference
       presence: optional
       description: Checkbox variable reference.
-- type: product_type
-  product_type:
+- type: sum_type
+  sum_type:
     name: expander_widget_format
     label: Expander Widget Format
+    description: Expander widget format.
+    group: 'Widget: Expander'
+    cases:
+    - type: expander_widget_format_custom
+      description: A literal number.
+    - type: widget_format_official
+      description: A literal number.
+- type: product_type
+  product_type:
+    name: expander_widget_format_custom
+    label: Expander Widget Format Custom
     description: >
       Expander Widget formatting options.
     group: 'Widget: Expander'
@@ -1238,9 +1249,15 @@ types:
       type: 
         type: custom_type
         custom_type: list_widget_format
-      presence: optional
+      presence: required
       description: >
         The list widget formatting options.
+    - name: label_variable_reference
+      type:
+        type: custom_type
+        custom_type: variable_reference
+      presence: optional
+      description: The value variable reference.
     - name: values_variable_reference
       type:
         type: custom_type
@@ -1265,10 +1282,21 @@ types:
         custom_type: book_reference
       presence: optional
       description: Book reference.
-- type: product_type
-  product_type:
+- type: sum_type
+  sum_type:
     name: list_widget_format
     label: List Widget Format
+    description: List widget format.
+    group: 'Widget: List'
+    cases:
+    - type: list_widget_format_custom
+      description: A literal number.
+    - type: widget_format_official
+      description: A literal number.
+- type: product_type
+  product_type:
+    name: list_widget_format_custom
+    label: List Widget Format Custom
     description: >
       List Widget formatting options.
     group: 'Widget: List'
@@ -3816,6 +3844,12 @@ types:
         prim_type: number
       presence: optional
       description: >
+    - name: justification
+      type:
+        type: custom_type
+        custom_type: justification
+      presence: optional
+      description: Justification.
     - name: horizontal_alignment
       type:
         type: custom_type
@@ -4144,6 +4178,17 @@ types:
       prim_type: string
     constraints:
     - numeric_editor_type_set
+- type: primitive_type
+  primitive_type:
+    name: justification
+    label: Justification
+    description: Justification
+    group: Style
+    base_type:
+      type: prim_type
+      prim_type: string
+    constraints:
+    - justification_set
 - type: primitive_type
   primitive_type:
     name: horizontal_alignment
@@ -4504,6 +4549,14 @@ constraints:
     set:
     - value: sword
     - value: shield
+- type: constraint_string_one_of
+  constraint_string_one_of:
+    name: justification_set
+    label: Justification Set
+    description: Justification type
+    set:
+    - value: parent_start
+    - value: space_between
 - type: constraint_string_one_of
   constraint_string_one_of:
     name: numeric_editor_type_set

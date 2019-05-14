@@ -990,9 +990,11 @@ class EntityState(val entityId : EntityId,
 //                     .apply { effValue<AppError,Set<Variable>>(relatedVariables(it)) }
             }
             is VariableTemplate -> {
+//                Log.d("***ENTITY STATE", "template context: $context")
                 when (context) {
                     is Just    -> {
                         val mVariableId = variableReference.variableId(context.value.value)
+//                        Log.d("***ENTITY STATE", "template variable id: $mVariableId")
                         when (mVariableId) {
                             is Just    -> variables(mVariableId.value, context)
                             is Nothing -> effValue(setOf())

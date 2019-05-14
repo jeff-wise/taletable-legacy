@@ -22,6 +22,19 @@ import java.io.Serializable
  */
 sealed class Position : ToDocument, SQLSerializable, Serializable
 {
+    object Default : Position()
+    {
+        // SQL SERIALIZABLE
+        // -------------------------------------------------------------------------------------
+
+        override fun asSQLValue() : SQLValue = SQLText({"default"})
+
+        // TO DOCUMENT
+        // -------------------------------------------------------------------------------------
+
+        override fun toDocument() = DocText("default")
+
+    }
 
     object Left : Position()
     {
@@ -97,6 +110,7 @@ sealed class Position : ToDocument, SQLSerializable, Serializable
                 "top"    -> effValue<ValueError,Position>(Position.Top)
                 "right"  -> effValue<ValueError,Position>(Position.Right)
                 "bottom" -> effValue<ValueError,Position>(Position.Bottom)
+                "default" -> effValue<ValueError,Position>(Position.Default)
                 else     -> effError<ValueError,Position>(
                                     UnexpectedValue("Corners", doc.text, doc.path))
             }
@@ -139,6 +153,7 @@ sealed class Position : ToDocument, SQLSerializable, Serializable
         is Right  -> LinearLayout.HORIZONTAL
         is Bottom -> LinearLayout.VERTICAL
         is Left   -> LinearLayout.HORIZONTAL
+        is Default   -> LinearLayout.VERTICAL
     }
 
 }

@@ -14,6 +14,7 @@ import effect.effValue
 import effect.split
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import maybe.Just
@@ -32,8 +33,10 @@ data class BookSection(val sectionId : BookSectionId,
                        val introduction : List<BookContentId>,
                        val conclusion : List<BookContentId>,
                        val group: Maybe<BookSectionGroup>,
+                       val position : Maybe<BookSectionEntryPosition>,
                        val format : BookSectionFormat,
-                       val subsections : MutableList<BookSubsection>)
+                       val subsections : MutableList<BookSubsection>,
+                       val entries : List<BookSectionEntry>)
                         : ToDocument, Serializable
 {
 
@@ -70,6 +73,10 @@ data class BookSection(val sectionId : BookSectionId,
                       split(doc.maybeAt("group"),
                             effValue<ValueError,Maybe<BookSectionGroup>>(Nothing()),
                             { apply(::Just, BookSectionGroup.fromDocument(it)) }),
+                      // Position
+                      split(doc.maybeAt("entry_position"),
+                            effValue<ValueError,Maybe<BookSectionEntryPosition>>(Nothing()),
+                            { apply(::Just, BookSectionEntryPosition.fromDocument(it)) }),
                       // Format
                       split(doc.maybeAt("format"),
                             effValue(BookSectionFormat.default()),
@@ -77,7 +84,11 @@ data class BookSection(val sectionId : BookSectionId,
                       // Subsections
                       split(doc.maybeList("subsections"),
                             effValue(mutableListOf()),
-                            { it.mapMut { BookSubsection.fromDocument(it) } })
+                            { it.mapMut { BookSubsection.fromDocument(it) } }),
+                      // Entries
+                      split(doc.maybeList("entries"),
+                              effValue(listOf()),
+                              { it.map { BookSectionEntry.fromDocument(it) } })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -367,3 +378,158 @@ data class BookSectionGroup(val value : String) : ToDocument, Serializable
 
 }
 
+
+/**
+ * Section Entry Position
+ */
+data class BookSectionEntryPosition(val value : Int) : ToDocument, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<BookSectionEntryPosition>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookSectionEntryPosition> = when (doc)
+        {
+            is DocNumber -> effValue(BookSectionEntryPosition(doc.number.toInt()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocNumber(this.value.toDouble())
+
+}
+
+
+sealed class BookSectionEntry()
+{
+    // | CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<BookSectionEntry>
+    {
+        override fun fromDocument(doc : SchemaDoc): ValueParser<BookSectionEntry> =
+            when (doc.case())
+            {
+                "book_section_entry_simple"     -> BookSectionEntrySimple.fromDocument(doc) as ValueParser<BookSectionEntry>
+                "book_section_entry_card_group" -> BookSectionEntryCardGroup.fromDocument(doc) as ValueParser<BookSectionEntry>
+                "book_section_entry_card"       -> BookSectionEntryCard.fromDocument(doc) as ValueParser<BookSectionEntry>
+                "book_section_entry_group"      -> BookSectionEntryGroup.fromDocument(doc) as ValueParser<BookSectionEntry>
+                else                 -> {
+                    effError(UnknownCase(doc.case(), doc.path))
+                }
+            }
+    }
+
+}
+
+
+data class BookSectionEntrySimple(val subsectionId : BookSubsectionId) : BookSectionEntry()
+{
+
+    companion object : Factory<BookSectionEntrySimple>
+    {
+
+        override fun fromDocument(doc: SchemaDoc)
+                : ValueParser<BookSectionEntrySimple> = when (doc)
+        {
+            is DocDict -> {
+                apply(::BookSectionEntrySimple,
+                      // Subsection Id
+                      doc.at("subsection_id").apply { BookSubsectionId.fromDocument(it) }
+                )
+            }
+            else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+    }
+
+}
+
+
+data class BookSectionEntryCard(
+        val entryContent : BookContentId) : BookSectionEntry()
+{
+
+    companion object : Factory<BookSectionEntryCard>
+    {
+
+        override fun fromDocument(doc: SchemaDoc)
+                : ValueParser<BookSectionEntryCard> = when (doc)
+        {
+            is DocDict -> {
+                apply(::BookSectionEntryCard,
+                      // Entry Content
+                      doc.at("entry_content").apply { BookContentId.fromDocument(it) }
+                )
+            }
+            else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+    }
+
+}
+
+
+data class BookSectionEntryCardGroup(
+        val title : String,
+        val cardEntries : List<BookContentId>) : BookSectionEntry()
+{
+
+    companion object : Factory<BookSectionEntryCardGroup>
+    {
+
+        override fun fromDocument(doc: SchemaDoc)
+                : ValueParser<BookSectionEntryCardGroup> = when (doc)
+        {
+            is DocDict -> {
+                apply(::BookSectionEntryCardGroup,
+                      // Group Title
+                      doc.text("title"),
+                      // Subsections
+                      split(doc.maybeList("card_entries"),
+                            effValue(listOf()),
+                            { it.map { BookContentId.fromDocument(it) } })
+                )
+            }
+            else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+    }
+
+}
+
+
+data class BookSectionEntryGroup(
+        val title : String,
+        val entries : List<BookSectionEntry>) : BookSectionEntry()
+{
+
+    companion object : Factory<BookSectionEntryGroup>
+    {
+
+        override fun fromDocument(doc: SchemaDoc)
+                : ValueParser<BookSectionEntryGroup> = when (doc)
+        {
+            is DocDict -> {
+                apply(::BookSectionEntryGroup,
+                      // Group Title
+                      doc.text("title"),
+                      // Entries
+                      split(doc.maybeList("entries"),
+                            effValue(listOf()),
+                            { it.map { BookSectionEntry.fromDocument(it) } })
+                )
+            }
+            else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+    }
+
+}

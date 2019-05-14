@@ -31,6 +31,7 @@ data class ElementFormat(private val position : Position,
                          private val corners : Corners,
                          private val border : Border,
                          private val elevation : Elevation,
+                         val justification : Justification,
                          private val alignment : Alignment,
                          private val verticalAlignment : VerticalAlignment)
                            : ToDocument, Serializable
@@ -42,7 +43,7 @@ data class ElementFormat(private val position : Position,
     companion object : Factory<ElementFormat>
     {
 
-        private fun defaultPosition()             = Position.Top
+        private fun defaultPosition()             = Position.Default
         private fun defaultElementStyle()         = Nothing<ElementStyle>()
         private fun defaultHeight()               = Height.Wrap
         private fun defaultWidth()                = Width.Wrap
@@ -100,6 +101,10 @@ data class ElementFormat(private val position : Position,
                       split(doc.maybeAt("elevation"),
                             effValue(defaultElevation()),
                             { Elevation.fromDocument(it) }),
+                      // Justification
+                      split(doc.maybeAt("justification"),
+                            effValue<ValueError,Justification>(Justification.ParentStart),
+                            { Justification.fromDocument(it) }),
                       // Alignment
                       split(doc.maybeAt("horizontal_alignment"),
                             effValue<ValueError,Alignment>(defaultAlignment()),
@@ -124,6 +129,7 @@ data class ElementFormat(private val position : Position,
                                       defaultCorners(),
                                       defaultBorder(),
                                       defaultElevation(),
+                                      Justification.ParentStart,
                                       defaultAlignment(),
                                       defaultVerticalAlignment())
 
@@ -195,27 +201,28 @@ data class ElementFormat(private val position : Position,
 
     // UPDATE > Margins
     // -----------------------------------------------------------------------------------------
-
-    fun withTopMargin(topMargin : Double) : ElementFormat
-    {
-        val newMargins = Spacing(topMargin,
-                                 this.margins.right,
-                                 this.margins.bottom,
-                                 this.margins.left)
-
-        return ElementFormat(this.position,
-                             this.style,
-                             this.height,
-                             this.width,
-                             this.padding,
-                             newMargins,
-                             this.backgroundColorTheme,
-                             this.corners,
-                             this.border,
-                             this.elevation,
-                             this.alignment,
-                             this.verticalAlignment)
-    }
+//
+//    fun withTopMargin(topMargin : Double) : ElementFormat
+//    {
+//        val newMargins = Spacing(topMargin,
+//                                 this.margins.right,
+//                                 this.margins.bottom,
+//                                 this.margins.left)
+//
+//        return ElementFormat(this.position,
+//                             this.style,
+//                             this.height,
+//                             this.width,
+//                             this.padding,
+//                             newMargins,
+//                             this.backgroundColorTheme,
+//                             this.corners,
+//                             this.border,
+//                             this.elevation,
+//                             this.justification,
+//                             this.alignment,
+//                             this.verticalAlignment)
+//    }
 
 
     fun withRightMargin(rightMargin : Double) : ElementFormat
@@ -235,6 +242,7 @@ data class ElementFormat(private val position : Position,
                              this.corners,
                              this.border,
                              this.elevation,
+                             this.justification,
                              this.alignment,
                              this.verticalAlignment)
     }
@@ -257,31 +265,32 @@ data class ElementFormat(private val position : Position,
                              this.corners,
                              this.border,
                              this.elevation,
+                             this.justification,
                              this.alignment,
                              this.verticalAlignment)
     }
 
 
-    fun withBottomMargin(bottomMargin : Double) : ElementFormat
-    {
-        val newMargins = Spacing(this.margins.top,
-                                 this.margins.right,
-                                 bottomMargin,
-                                 this.margins.left)
-
-        return ElementFormat(this.position,
-                             this.style,
-                             this.height,
-                             this.width,
-                             this.padding,
-                             newMargins,
-                             this.backgroundColorTheme,
-                             this.corners,
-                             this.border,
-                             this.elevation,
-                             this.alignment,
-                             this.verticalAlignment)
-    }
+//    fun withBottomMargin(bottomMargin : Double) : ElementFormat
+//    {
+//        val newMargins = Spacing(this.margins.top,
+//                                 this.margins.right,
+//                                 bottomMargin,
+//                                 this.margins.left)
+//
+//        return ElementFormat(this.position,
+//                             this.style,
+//                             this.height,
+//                             this.width,
+//                             this.padding,
+//                             newMargins,
+//                             this.backgroundColorTheme,
+//                             this.corners,
+//                             this.border,
+//                             this.elevation,
+//                             this.alignment,
+//                             this.verticalAlignment)
+//    }
 
 
 
@@ -305,6 +314,7 @@ data class ElementFormat(private val position : Position,
                              this.corners,
                              this.border,
                              this.elevation,
+                             this.justification,
                              this.alignment,
                              this.verticalAlignment)
     }
@@ -327,6 +337,7 @@ data class ElementFormat(private val position : Position,
                              this.corners,
                              this.border,
                              this.elevation,
+                             this.justification,
                              this.alignment,
                              this.verticalAlignment)
     }
@@ -347,6 +358,7 @@ data class ElementFormat(private val position : Position,
                              this.corners,
                              this.border,
                              this.elevation,
+                             this.justification,
                              alignment,
                              this.verticalAlignment)
     }

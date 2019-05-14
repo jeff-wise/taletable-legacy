@@ -664,12 +664,12 @@ data class BookSettings(override val id : UUID,
 data class BookContent(private val id : BookContentId,
                        private val title : BookContentTitle,
                        private val context : Maybe<GroupContext>,
+                       private val bookReference : Maybe<BookReference>,
                        private val groupReferences : List<GroupReference>)
                         : ToDocument, Serializable
 {
 
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
+    // | CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     companion object : Factory<BookContent>
@@ -687,6 +687,10 @@ data class BookContent(private val id : BookContentId,
                       split(doc.maybeAt("context"),
                             effValue<ValueError,Maybe<GroupContext>>(Nothing()),
                             { apply(::Just, GroupContext.fromDocument(it)) }),
+                      // Book Reference
+                      split(doc.maybeAt("book_reference"),
+                            effValue<ValueError,Maybe<BookReference>>(Nothing()),
+                            { apply(::Just, BookReference.fromDocument(it)) }),
                       // Group References
                       doc.list("group_references") apply {
                           it.map { doc -> GroupReference.fromDocument(doc) } }
@@ -697,8 +701,7 @@ data class BookContent(private val id : BookContentId,
     }
 
 
-    // -----------------------------------------------------------------------------------------
-    // TO DOCUMENT
+    // | TO DOCUMENT
     // -----------------------------------------------------------------------------------------
 
     override fun toDocument() = DocDict(mapOf(

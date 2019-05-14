@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.*
 import android.widget.*
-import androidx.core.content.ContextCompat.startActivity
 import com.taletable.android.R
 import com.taletable.android.activity.sheet.page.PagePagerAdapter
 import com.taletable.android.lib.ui.*
@@ -206,9 +205,7 @@ class SessionActivity : AppCompatActivity()
                     Log.d("***SHEET ACTVITIY", "active session found: ${activeSession.value}")
                 }
                 else -> {
-                    Log.d("***SHEET ACTVITIY", "No active session")
                     this.sessionLoader(sessionId).doMaybe {
-                        Log.d("***SHEET ACTVITIY", "Loading session: $it")
                         loadSession(it)
                     }
                 }
@@ -220,13 +217,13 @@ class SessionActivity : AppCompatActivity()
     private fun loadSession(sessionLoader : Session)
     {
         this.bottomSheetBehavior?.let {
-            Log.d("***SHEET ACTVITIY", "set bottom sheet behavior to expanded")
             it.state = BottomSheetBehavior.STATE_EXPANDED
             // TODO use global scope? use view model? use activity scope??
             val context = this
             GlobalScope.launch(Dispatchers.Main) {
                 openSession(sessionLoader, context)
             }
+            this.entityListRecyclerViewAdapter?.items = sessionLoader.entityViewList(this)
         }
     }
 
@@ -810,11 +807,6 @@ fun activeSessionRecyclerView(session : Session,
 
     recyclerView.layoutManager      = LinearLayoutManager(context)
 
-//    recyclerView.adapter            = ActiveSessionRecyclerViewAdapter(theme, context)
-
-//    recyclerView.padding.leftDp     = 8f
-//    recyclerView.padding.rightDp    = 8f
-
     val dividerColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
@@ -1059,16 +1051,16 @@ private fun otherEntitiesHeaderTitleView(theme : Theme, context : Context) : Tex
 
     name.text               = "Books"
 
-    name.font               = Font.typeface(TextFont.RobotoCondensed,
-                                            TextFontStyle.Bold,
+    name.font               = Font.typeface(TextFont.Roboto,
+                                            TextFontStyle.Medium,
                                             context)
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_22"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_10"))))
     name.color              = theme.colorOrBlack(colorTheme)
 
-    name.sizeSp             = 19.5f
+    name.sizeSp             = 23f
 
     return name.textView(context)
 }
@@ -1078,8 +1070,8 @@ private fun entityToolbarButtonsView(theme : Theme, context : Context) : LinearL
 {
     val layout = entityToolbarButtonsViewLayout(context)
 
-    layout.addView(entityToolbarButtonView(R.drawable.icon_slider, 24, false, theme, context))
-    layout.addView(entityToolbarButtonView(R.drawable.icon_day_view, 26, true, theme, context))
+    layout.addView(entityToolbarButtonView(R.drawable.icon_slider, 20, false, theme, context))
+    layout.addView(entityToolbarButtonView(R.drawable.icon_plus_sign, 28, true, theme, context))
 
     return layout
 }
@@ -1120,8 +1112,12 @@ private fun entityToolbarButtonView(iconId : Int, iconSize : Int, addMargin : Bo
     layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
     layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
 
+    layout.backgroundResource   = R.drawable.bg_session_button
+
+    layout.gravity              = Gravity.CENTER
+
     if (addMargin)
-        layout.margin.leftDp    = 24f
+        layout.margin.leftDp    = 4f
 
     layout.child(iconView)
 
@@ -1135,7 +1131,7 @@ private fun entityToolbarButtonView(iconId : Int, iconSize : Int, addMargin : Bo
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_18"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
     iconView.color              = theme.colorOrBlack(colorTheme)
 
     return layout.linearLayout(context)
@@ -1254,7 +1250,7 @@ private fun entityCardImageView(theme : Theme, context : Context) : LinearLayout
 
     val iconColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_22"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
 
     iconViewBuilder.image           = R.drawable.icon_book
 
@@ -1285,8 +1281,8 @@ private fun entityCardRightLayout(theme : Theme, context : Context) : LinearLayo
 
     layout.orientation          = LinearLayout.VERTICAL
 
-    layout.margin.leftDp        = 12f
-    layout.margin.rightDp       = 12f
+    layout.margin.leftDp        = 16f
+    //layout.margin.rightDp       = 12f
 
     return layout.linearLayout(context)
 }
@@ -1314,7 +1310,7 @@ private fun entityCardNameView(theme : Theme,
     name.color              = theme.colorOrBlack(colorTheme)
     // name.color              = Color.WHITE
 
-    name.sizeSp             = 17.7f
+    name.sizeSp             = 18f
 
     return name.textView(context)
 }
@@ -1337,10 +1333,10 @@ private fun entityCardSummaryView(theme : Theme,
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
     summary.color            = theme.colorOrBlack(colorTheme)
 
-    summary.sizeSp           = 16f
+    summary.sizeSp           = 16.5f
 
     return summary.textView(context)
 }

@@ -181,6 +181,12 @@ types:
         prim_type: string
       presence: optional
       description: The context.
+    - name: book_reference
+      type:
+        type: custom_type
+        custom_type: book_reference
+      presence: optional
+      description: Book Reference
     - name: group_references
       type:
         type: custom_coll_type
@@ -280,6 +286,12 @@ types:
         custom_coll_type: book_section
       presence: required
       description: The chapters
+    - name: entries
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_chapter_entry
+      presence: optional
+      description: The sub sections.
 - type: product_type
   product_type:
     name: book_section
@@ -318,6 +330,12 @@ types:
         prim_type: string
       presence: optional
       description: A group.
+    - name: entry_position
+      type:
+        type: prim_type
+        prim_type: number
+      presence: optional
+      description: The position in the chapter listing.
     - name: format
       type:
         type: custom_type
@@ -328,6 +346,12 @@ types:
       type:
         type: custom_coll_type
         custom_coll_type: book_subsection
+      presence: optional
+      description: The sub sections.
+    - name: entries
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_section_entry
       presence: optional
       description: The sub sections.
 - type: product_type
@@ -390,12 +414,6 @@ types:
         prim_type: string
       presence: required
       description: The subsection title.
-    - name: group
-      type:
-        type: prim_type
-        prim_type: string
-      presence: optional
-      description: A group.
     - name: subtitle
       type:
         type: prim_type
@@ -408,6 +426,223 @@ types:
         custom_coll_type: book_content_id 
       presence: optional
       description: A brief description of the game rules.
+    - name: entries
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_subsection_entry
+      presence: optional
+      description: The sub sections.
+- type: sum_type
+  sum_type:
+    name: book_chapter_entry
+    label: Book Chapter Entry
+    description: Book Chapter entry.
+    group: Book Reference
+    cases:
+    - type: book_chapter_entry_simple
+      description: Section
+    - type: book_chapter_entry_card_group 
+      description: Book reference chapter.
+    - type: book_chapter_entry_card
+      description: Book reference chapter.
+    - type: book_chapter_entry_group 
+      description: Book reference chapter.
+- type: product_type
+  product_type:
+    name: book_chapter_entry_simple
+    label: Book Chatper Entry Simple 
+    description: Book Chatper Entry Simple 
+    group: 'book'
+    type: product
+    fields:
+    - name: section_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The section.
+- type: product_type
+  product_type:
+    name: book_chapter_entry_card
+    label: Book Chapter Entry Card
+    description: Book Chapter Entry Card
+    group: 'book'
+    type: product
+    fields:
+    - name: entry_content
+      type:
+        type: custom_type
+        custom_type: book_content_id
+      presence: required
+      description: The content.
+- type: product_type
+  product_type:
+    name: book_chapter_entry_card_group
+    label: Book Chapter Entry Card Group 
+    description: Book Chapter Entry Card Group 
+    group: 'book'
+    type: product
+    fields:
+    - name: title
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The section.
+    - name: card_entries
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_content_id
+      presence: required
+      description: The cards.
+- type: product_type
+  product_type:
+    name: book_chapter_entry_group
+    label: Book Chapter Entry Group 
+    description: Book Chapter Entry Group 
+    group: 'book'
+    type: product
+    fields:
+    - name: title
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The section title.
+    - name: entries
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_chapter_entry
+      presence: required
+      description: The entries.
+- type: sum_type
+  sum_type:
+    name: book_section_entry
+    label: Book Section Entry
+    description: Book section entry.
+    group: Book Reference
+    cases:
+    - type: book_section_entry_simple
+      description: Subsection
+    - type: book_section_entry_card_group 
+      description: Book reference chapter.
+    - type: book_section_entry_card
+      description: Book reference chapter.
+    - type: book_section_entry_group 
+      description: Book reference chapter.
+- type: product_type
+  product_type:
+    name: book_section_entry_simple
+    label: Book section Entry Simple 
+    description: Book section Entry Simple 
+    group: 'book'
+    type: product
+    fields:
+    - name: subsection_id
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The subsection.
+- type: product_type
+  product_type:
+    name: book_section_entry_card_group
+    label: Book section Entry Card Group 
+    description: Book section Entry Card Group 
+    group: 'book'
+    type: product
+    fields:
+    - name: title
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The subsection.
+    - name: card_entries
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_content_id
+      presence: required
+      description: The cards.
+- type: product_type
+  product_type:
+    name: book_section_entry_card
+    label: Book section Entry Card
+    description: Book section Entry Card
+    group: 'book'
+    type: product
+    fields:
+    - name: entry_content
+      type:
+        type: custom_type
+        custom_type: book_content_id
+      presence: required
+      description: The content
+- type: product_type
+  product_type:
+    name: book_section_entry_group
+    label: Book section Entry Group 
+    description: Book Section Entry Group 
+    group: 'book'
+    type: product
+    fields:
+    - name: title
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The subsection.
+    - name: entries
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_section_entry
+      presence: required
+      description: The entries.
+- type: sum_type
+  sum_type:
+    name: book_subsection_entry
+    label: Book Subsection Entry
+    description: Book Subsection entry.
+    group: Book Reference
+    cases:
+    - type: book_subsection_entry_card_group 
+      description: Book reference chapter.
+    - type: book_subsection_entry_card
+      description: Book reference chapter.
+- type: product_type
+  product_type:
+    name: book_subsection_entry_card_group
+    label: Book Subsection Entry Card Group 
+    description: Book Subsection Entry Card Group 
+    group: 'book'
+    type: product
+    fields:
+    - name: title
+      type:
+        type: prim_type
+        prim_type: string
+      presence: required
+      description: The subsection.
+    - name: card_entries
+      type:
+        type: custom_coll_type
+        custom_coll_type: book_content_id
+      presence: required
+      description: The cards.
+- type: product_type
+  product_type:
+    name: book_subsection_entry_card
+    label: Book Subsection Entry Card
+    description: Book Subsection Entry Card
+    group: 'book'
+    type: product
+    fields:
+    - name: entry_content
+      type:
+        type: custom_type
+        custom_type: book_content_id
+      presence: required
+      description: The content
 - type: product_type
   product_type:
     name: book_card

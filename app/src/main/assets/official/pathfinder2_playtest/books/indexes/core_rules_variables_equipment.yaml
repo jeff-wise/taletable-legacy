@@ -9,7 +9,6 @@ variables:
       text_literal: >-
         Your character starts out with 150 silver pieces (sp) to spend on any common items from this chapter. Items with an uncommon rarity can only be bought with special access or GM permission. If you’re playing a spellcaster and want to buy magic items (like potions, scrolls, or holy water) or an alchemist and want to buy alchemical items, your GM can give you permission to buy those, and she will tell you which items you can choose from and how much they cost.
 
-
         Once you’ve purchased your starting items, there are three main ways to gain new items and equipment: you can find them during an adventure, make them with the Crafting skill, or purchase them from a merchant.
 - type: variable_text
   variable_text:
@@ -241,7 +240,7 @@ variables:
     description: Section Equipment Basic rules coin values header
     value:
       type: text_literal
-      text_literal: 'COIN VALUES'
+      text_literal: 'Coin Values'
 - type: variable_text
   variable_text:
     id: section_equipment_basic_rules_coin_values_table_title
@@ -275,7 +274,8 @@ variables:
     value:
       type: text_literal
       text_literal: >-
-        Your Armor Class (AC) measures how well you can defend against attacks. Your Touch Armor Class (TAC) protects against attacks that need only to touch you. Your Armor Class equals 10 plus your Dexterity modifier (up to your armor’s Dexterity modifier cap) plus your proficiency modifier for any armor or shield you are using plus the armor’s item bonus to AC. If you’re using both armor and a shield, apply the lower of the two proficiency modifiers. If you’re not wearing armor, substitute your proficiency in unarmored defense. Your Touch Armor Class uses the same calculation, except you add your armor’s item bonus to TAC instead of its bonus to AC. Some spells, magic item, and abilities give your character a bonus or penalty to AC. These also apply to TAC unless stated otherwise. - type: variable_text
+        Your Armor Class (AC) measures how well you can defend against attacks. Your Touch Armor Class (TAC) protects against attacks that need only to touch you. Your Armor Class equals 10 plus your Dexterity modifier (up to your armor’s Dexterity modifier cap) plus your proficiency modifier for any armor or shield you are using plus the armor’s item bonus to AC. If you’re using both armor and a shield, apply the lower of the two proficiency modifiers. If you’re not wearing armor, substitute your proficiency in unarmored defense. Your Touch Armor Class uses the same calculation, except you add your armor’s item bonus to TAC instead of its bonus to AC. Some spells, magic item, and abilities give your character a bonus or penalty to AC. These also apply to TAC unless stated otherwise.
+- type: variable_text
   variable_text:
     id: equipment_armor_shields_statistics_header
     label: Equipment > Armor and Shields > Armor Statistics header
@@ -412,7 +412,6 @@ variables:
       text_literal: >-
         A shield requires the use of one of your hands. It grants its bonuses to AC and TAC only if you use an action to Raise a Shield. This grants the shield’s bonuses to AC and TAC as a circumstance bonus until your next turn starts. The shield’s check penalty applies whenever you’re wielding the shield, regardless of whether the shield is raised.
 
-
         While you have a shield raised, you can use the Shield Block reaction to reduce damage you take by the shield’s Hardness (3 for wooden shields or 5 for steel).
 - type: variable_text
   variable_text:
@@ -431,7 +430,6 @@ variables:
       type: text_literal
       text_literal: >-
         If you attack with a shield, treat it like an attack with an improvised weapon (see page 178). This deals the heavy shield bash damage or light shield bash damage (as appropriate to the shield’s type) listed on Table 6–5: Martial Melee Weapons on page 180.
-
 
         If you want to reliably use your shield to attack, you need to buy and attach a shield boss or shield spikes to the shield. These work like other weapons, and can even be etched with runes (see page 370).
 - type: variable_text
@@ -825,6 +823,7 @@ variables:
     id: equipment_armor_shields_list_leather_traits
     label: Equipment > Armor and Shields > Armor List > Leather > Traits
     description: Equipment > Armor and Shields > Armor List > Leather > Traits
+    value_set_id: armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -906,6 +905,7 @@ variables:
     id: equipment_armor_shields_list_studded_leather_traits
     label: Equipment > Armor and Shields > Armor List > Studded Leather > Traits
     description: Equipment > Armor and Shields > Armor List > Studded Leather > Traits
+    value_set_id: armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -987,10 +987,11 @@ variables:
     id: equipment_armor_shields_list_chain_shirt_traits
     label: Equipment > Armor and Shields > Armor List > Chain Shirt > Traits
     description: Equipment > Armor and Shields > Armor List > Chain Shirt > Traits
+    value_set_id: armor_traits
     value:
       type: text_list_literal
       text_list_literal:
-      - none
+      - noisy
 - type: variable_text
   variable_text:
     id: equipment_armor_shields_list_hide_name
@@ -1068,6 +1069,7 @@ variables:
     id: equipment_armor_shields_list_hide_traits
     label: Equipment > Armor and Shields > Armor List > Hide > Traits
     description: Equipment > Armor and Shields > Armor List > Hide > Traits
+    value_set_id: armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -1149,6 +1151,7 @@ variables:
     id: equipment_armor_shields_list_scale_mail_traits
     label: Equipment > Armor and Shields > Armor List > Scale Mail > Traits
     description: Equipment > Armor and Shields > Armor List > Scale Mail > Traits
+    value_set_id: armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -1230,6 +1233,7 @@ variables:
     id: equipment_armor_shields_list_chain_mail_traits
     label: Equipment > Armor and Shields > Armor List > Chain Mail > Traits
     description: Equipment > Armor and Shields > Armor List > Chain Mail > Traits
+    value_set_id: armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -1311,6 +1315,7 @@ variables:
     id: equipment_armor_shields_list_breastplate_traits
     label: Equipment > Armor and Shields > Armor List > Breastplate > Traits
     description: Equipment > Armor and Shields > Armor List > Breastplate > Traits
+    value_set_id: armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -1392,6 +1397,7 @@ variables:
     id: equipment_armor_shields_list_splint_mail_traits
     label: Equipment > Armor and Shields > Armor List > Splint Mail > Traits
     description: Equipment > Armor and Shields > Armor List > Splint Mail > Traits
+    value_set_id: armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -1473,6 +1479,7 @@ variables:
     id: equipment_armor_shields_list_half_plate_traits
     label: Equipment > Armor and Shields > Armor List > Half Plate > Traits
     description: Equipment > Armor and Shields > Armor List > Half Plate > Traits
+    value_set_id: armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -1554,6 +1561,7 @@ variables:
     id: equipment_armor_shields_list_full_plate_traits
     label: Equipment > Armor and Shields > Armor List > Full Plate > Traits
     description: Equipment > Armor and Shields > Armor List > Full Plate > Traits
+    value_set_id: armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -6947,7 +6955,6 @@ variables:
       text_literal: >-
         When the result of your attack roll with a weapon or unarmed attack is equal to or exceeds your target’s AC, roll the weapon or unarmed attack’s damage die to determine the damage you deal. If you’re making a melee attack, you add your Strength modifier to the damage. Ranged weapons usually use only the weapon’s damage die, though weapons with the propulsive trait sometimes add half your Strength modifier, and thrown weapons add your full Strength modifier.
 
-
         Magic weapons add one or more weapon damage dice to your damage roll. These extra dice are the same die size as the weapon’s damage die.
 - type: variable_text
   variable_text:
@@ -6966,7 +6973,6 @@ variables:
       type: text_literal
       text_literal: >-
         When you make an attack and roll a natural 20 (the number on the die is 20), or if the result of your attack exceeds the target’s AC by 10, this is called a critical success (also known as a critical hit).
-
 
         If you critically succeed at a Strike, your attack deals double damage (see page 293). This damage doubling applies only on Strikes. Other attacks, such as spells or some uses of the Athletics skill, describe the specific effects that occur when their outcomes are critical successes.
 - type: variable_text
@@ -7074,7 +7080,6 @@ variables:
       text_literal: >-
         Ranged weapons indicate how many Interact actions it takes to reload them. This can be 0 if drawing ammunition and firing the weapon are part of the same action. If an item takes 2 or more actions to reload, the GM determines whether you can spend those actions out of sequence or if they must be performed together as an activity.
 
-
         An item with an entry of “—” must be drawn to be thrown, which usually takes an Interact action just like drawing any other weapon. Reloading and drawing a thrown weapon both require a free hand. When you spend the last action required to reload a weapon you’re holding, as part of that action, you can place your hands in the grip necessary to wield the weapon normally.
 - type: variable_text
   variable_text:
@@ -7111,9 +7116,7 @@ variables:
       text_literal: >-
         Some weapons require one hand to use, and others require two. A few items, such as a bow, list 1+ for its hands entry. You can hold such a weapon in one hand, but the process of shooting it requires using another hand to retrieve, prepare, and shoot a piece of ammunition. This means you can do other things with your other hand while holding the bow in one hand without spending an action to change your grip, but you must free up your other hand in order to shoot. For example, you could shoot an arrow with your first action, use an Interact action to open a door with your second action, then shoot another arrow ^with your third action. You’re considered to be wielding a 1+ weapon as long as you’re holding it in one hand and also have a hand free.
 
-
         Weapons that require two hands typically deal more damage. Some weapons that use one hand have the two-hand trait, causing them to deal a different weapon damage die when used in two hands.
-
 
         In addition, some abilities require you to be wielding a weapon in two hands. You meet this requirement as long as you hold the weapon in two hands, even if it doesn’t actually require two hands or have the two-hand trait.
 - type: variable_text
@@ -8061,7 +8064,7 @@ variables:
       text_literal: 'Tools used by those trained in specific professions or skills.'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_alchemists_tools_header
+    id: equipment_gear_index_alchemists_tools_header
     label: 'Equipment > Gear > Descriptions > Alchemist''s Tools > Header'
     description: 'Equipment > Gear > Descriptions > Alchemist''s Tools > Header'
     value:
@@ -8069,7 +8072,7 @@ variables:
       text_literal: 'Alchemist''s Tools'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_alchemists_tools_content
+    id: equipment_gear_index_alchemists_tools_content
     label: 'Equipment > Gear > Descriptions > Alchemist''s Tools > Content'
     description: 'Equipment > Gear > Descriptions > Alchemist''s Tools > Content'
     value:
@@ -8078,7 +8081,7 @@ variables:
         These beakers and chemicals can be used to set up a mobile alchemical laboratory. Expert-quality alchemist’s tools give a +1 item bonus to Crafting checks to create alchemical items, and master-quality ones give a +2 item bonus.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_artisans_tools_header
+    id: equipment_gear_index_artisans_tools_name
     label: 'Equipment > Gear > Descriptions > Artisan''s Tools > Header'
     description: 'Equipment > Gear > Descriptions > Artisan''s Tools > Header'
     value:
@@ -8086,7 +8089,7 @@ variables:
       text_literal: 'Artisan''s Tools'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_artisans_tools_content
+    id: equipment_gear_index_artisans_tools_content
     label: 'Equipment > Gear > Descriptions > Artisan''s Tools > Content'
     description: 'Equipment > Gear > Descriptions > Artisan''s Tools > Content'
     value:
@@ -8095,100 +8098,116 @@ variables:
         You can create items from raw materials using artisan’s tools. This involves using the Crafting skill to Craft the items. Expert artisan’s tools give you a +1 item bonus to the check, and master tools give you a +2 item bonus. Different sets might be needed for different kinds of work, as determined by the GM; for example, blacksmith’s tools differ from woodworker’s tools.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_backpack_name
-    label: 'Equipment > Gear > Descriptions > Backpack > Name'
-    description: 'Equipment > Gear > Descriptions > Backpack > Name'
+    id: equipment_gear_index_backpack_name
+    label: 'Equipment > Gear > Index > Backpack > Name'
+    description: 'Equipment > Gear > Index > Backpack > Name'
     value:
       type: text_literal
       text_literal: 'Backpack'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_backpack_content
-    label: 'Equipment > Gear > Descriptions > Backpack > Content'
-    description: 'Equipment > Gear > Descriptions > Backpack > Content'
+    id: equipment_gear_index_backpack_description
+    label: 'Equipment > Gear > Index > Backpack > Description'
+    description: 'Equipment > Gear > Index > Backpack > Description'
     value:
       type: text_literal
       text_literal: >-
         A backpack can hold up to 4 Bulk worth of items. If you are carrying or stowing a backpack rather than wearing it on your back, it has light Bulk instead of negligible.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_backpack_price
-    label: 'Equipment > Gear > Descriptions > Backpack > Price'
-    description: 'Equipment > Gear > Descriptions > Backpack > Price'
+    id: equipment_gear_index_backpack_price
+    label: 'Equipment > Gear > Index > Backpack > Price'
+    description: 'Equipment > Gear > Index > Backpack > Price'
     value:
       type: text_literal
       text_literal: '1 sp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_basic_crafters_book_header
-    label: 'Equipment > Gear > Descriptions > Basic Crafter''s Book > Header'
-    description: 'Equipment > Gear > Descriptions > Basic Crafter''s Book > Header'
+    id: equipment_gear_index_backpack_hands
+    label: 'Equipment > Gear > Index > Backpack > Hands'
+    description: 'Equipment > Gear > Index > Backpack > Hands'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_backpack_bulk
+    label: 'Equipment > Gear > Index > Backpack > Bulk'
+    description: 'Equipment > Gear > Index > Backpack > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_basic_crafters_book_name
+    label: 'Equipment > Gear > Index > Basic Crafter''s Book > Header'
+    description: 'Equipment > Gear > Index > Basic Crafter''s Book > Header'
     value:
       type: text_literal
       text_literal: 'Basic Crafter''s Book'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_basic_crafters_book_content
-    label: 'Equipment > Gear > Descriptions > Basic Crafter''s Book > Content'
-    description: 'Equipment > Gear > Descriptions > Basic Crafter''s Book > Content'
+    id: equipment_gear_index_basic_crafters_book_content
+    label: 'Equipment > Gear > Index > Basic Crafter''s Book > Content'
+    description: 'Equipment > Gear > Index > Basic Crafter''s Book > Content'
     value:
       type: text_literal
       text_literal: >-
         This book contains the formulas (see page 188) for all the common items in this chapter.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_bedroll_name
-    label: 'Equipment > Gear > Descriptions > Bedroll > Name'
-    description: 'Equipment > Gear > Descriptions > Bedroll > Name'
+    id: equipment_gear_index_bedroll_name
+    label: 'Equipment > Gear > Index > Bedroll > Name'
+    description: 'Equipment > Gear > Index > Bedroll > Name'
     value:
       type: text_literal
       text_literal: 'Bedroll'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_bedroll_price
-    label: 'Equipment > Gear > Descriptions > Bedroll > Price'
-    description: 'Equipment > Gear > Descriptions > Bedroll > Price'
+    id: equipment_gear_index_bedroll_price
+    label: 'Equipment > Gear > Index > Bedroll > Price'
+    description: 'Equipment > Gear > Index > Bedroll > Price'
     value:
       type: text_literal
       text_literal: '1 cp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_beltpouch_name
-    label: 'Equipment > Gear > Descriptions > Belt Pouch > Name'
-    description: 'Equipment > Gear > Descriptions > Belt Pouch > Name'
+    id: equipment_gear_index_beltpouch_name
+    label: 'Equipment > Gear > Index > Belt Pouch > Name'
+    description: 'Equipment > Gear > Index > Belt Pouch > Name'
     value:
       type: text_literal
       text_literal: 'Belt Pouch'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_beltpouch_price
-    label: 'Equipment > Gear > Descriptions > Belt Pouch > Price'
-    description: 'Equipment > Gear > Descriptions > Belt Pouch > Price'
+    id: equipment_gear_index_beltpouch_price
+    label: 'Equipment > Gear > Index > Belt Pouch > Price'
+    description: 'Equipment > Gear > Index > Belt Pouch > Price'
     value:
       type: text_literal
       text_literal: '4 cp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_beltpouch_content
-    label: 'Equipment > Gear > Descriptions > Belt Pouch > Content'
-    description: 'Equipment > Gear > Descriptions > Belt Pouch > Content'
+    id: equipment_gear_index_beltpouch_content
+    label: 'Equipment > Gear > Index > Belt Pouch > Content'
+    description: 'Equipment > Gear > Index > Belt Pouch > Content'
     value:
       type: text_literal
       text_literal: >-
         A belt pouch can hold up to 4 items of light Bulk.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_caltrops_header
-    label: 'Equipment > Gear > Descriptions > Caltrops > Header'
-    description: 'Equipment > Gear > Descriptions > Caltrops > Header'
+    id: equipment_gear_index_caltrops_name
+    label: 'Equipment > Gear > Index > Caltrops > Name'
+    description: 'Equipment > Gear > Index > Caltrops > Name'
     value:
       type: text_literal
       text_literal: 'Caltrops'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_caltrops_content
-    label: 'Equipment > Gear > Descriptions > Caltrops > Content'
-    description: 'Equipment > Gear > Descriptions > Caltrops > Content'
+    id: equipment_gear_index_caltrops_content
+    label: 'Equipment > Gear > Index > Caltrops > Content'
+    description: 'Equipment > Gear > Index > Caltrops > Content'
     value:
       type: text_literal
       text_literal: >-
@@ -8198,389 +8217,693 @@ variables:
         Deployed caltrops can be salvaged to be used again if no creatures took damage from them. Otherwise, enough caltrops are ruined that they can’t be salvaged.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_candle_header
-    label: 'Equipment > Gear > Descriptions > Candle > Header'
-    description: 'Equipment > Gear > Descriptions > Candle > Header'
+    id: equipment_gear_index_candle_name
+    label: 'Equipment > Gear > Index > Candle > Header'
+    description: 'Equipment > Gear > Index > Candle > Header'
     value:
       type: text_literal
       text_literal: 'Candle'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_candle_content
-    label: 'Equipment > Gear > Descriptions > Candle > Content'
-    description: 'Equipment > Gear > Descriptions > Candle > Content'
+    id: equipment_gear_index_candle_price
+    label: 'Equipment > Gear > Index > Candle > Price'
+    description: 'Equipment > Gear > Index > Candle > Price'
+    value:
+      type: text_literal
+      text_literal: '1 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_chain_name
+    label: 'Equipment > Gear > Index > Chain > Name'
+    description: 'Equipment > Gear > Index > Chain > Name'
+    value:
+      type: text_literal
+      text_literal: 'Chain'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_chain_price
+    label: 'Equipment > Gear > Index > Chain > Price'
+    description: 'Equipment > Gear > Index > Chain > Price'
+    value:
+      type: text_literal
+      text_literal: '40 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_chalk_name
+    label: 'Equipment > Gear > Index > Chalk > Name'
+    description: 'Equipment > Gear > Index > Chalk > Name'
+    value:
+      type: text_literal
+      text_literal: 'Chalk'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_chalk_price
+    label: 'Equipment > Gear > Index > Chalk > Price'
+    description: 'Equipment > Gear > Index > Chalk > Price'
+    value:
+      type: text_literal
+      text_literal: '1 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_candle_content
+    label: 'Equipment > Gear > Index > Candle > Content'
+    description: 'Equipment > Gear > Index > Candle > Content'
     value:
       type: text_literal
       text_literal: 'A lit candle sheds dim light in a 5-foot radius.'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_chest_header
-    label: 'Equipment > Gear > Descriptions > Chest > Header'
-    description: 'Equipment > Gear > Descriptions > Chest > Header'
+    id: equipment_gear_index_chest_name
+    label: 'Equipment > Gear > Index > Chest > Header'
+    description: 'Equipment > Gear > Index > Chest > Header'
     value:
       type: text_literal
       text_literal: 'Chest'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_chest_content
-    label: 'Equipment > Gear > Descriptions > Chest > Content'
-    description: 'Equipment > Gear > Descriptions > Chest > Content'
+    id: equipment_gear_index_chest_price
+    label: 'Equipment > Gear > Index > Chest > Price'
+    description: 'Equipment > Gear > Index > Chest > Price'
+    value:
+      type: text_literal
+      text_literal: '6 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_chest_content
+    label: 'Equipment > Gear > Index > Chest > Content'
+    description: 'Equipment > Gear > Index > Chest > Content'
     value:
       type: text_literal
       text_literal: 'A wooden chest can hold up to 8 Bulk worth of items.'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_climbing_kit_header
-    label: 'Equipment > Gear > Descriptions > Climbing Kit > Header'
-    description: 'Equipment > Gear > Descriptions > Climbing Kit > Header'
+    id: equipment_gear_index_climbing_kit_name
+    label: 'Equipment > Gear > Index > Climbing Kit > Header'
+    description: 'Equipment > Gear > Index > Climbing Kit > Header'
     value:
       type: text_literal
       text_literal: 'Climbing Kit'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_climbing_kit_content
-    label: 'Equipment > Gear > Descriptions > Climbing Kit > Content'
-    description: 'Equipment > Gear > Descriptions > Climbing Kit > Content'
+    id: equipment_gear_index_climbing_kit_content
+    label: 'Equipment > Gear > Index > Climbing Kit > Content'
+    description: 'Equipment > Gear > Index > Climbing Kit > Content'
     value:
       type: text_literal
       text_literal: >-
         This satchel includes 50 feet of hemp rope, some pulleys, a dozen pitons, a hammer, a grappling hook, and one set of crampons. Climbing kits allow you to attach yourself to the wall you’re climbing, moving half as quickly as usual (minimum 5 feet) but letting you attempt a DC 5 flat check whenever you critically fail to prevent a fall. You gain a +1 item bonus to Athletics checks to Climb while utilizing an expert climbing kit. A single kit has only enough materials for one climber; each climber needs their own kit.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_clothing_header
-    label: 'Equipment > Gear > Descriptions > Clothing > Header'
-    description: 'Equipment > Gear > Descriptions > Clothing > Header'
+    id: equipment_gear_index_clothing_ordinary_name
+    label: 'Equipment > Gear > Index > Clothing: Ordinary > Header'
+    description: 'Equipment > Gear > Index > Clothing: Ordinary > Header'
     value:
       type: text_literal
-      text_literal: 'Clothing'
+      text_literal: 'Clothing - Ordinary'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_clothing_content
-    label: 'Equipment > Gear > Descriptions > Clothing > Content'
-    description: 'Equipment > Gear > Descriptions > Clothing > Content'
+    id: equipment_gear_index_clothing_ordinary_price
+    label: 'Equipment > Gear > Index > Clothing: Ordinary > Price'
+    description: 'Equipment > Gear > Index > Clothing: Ordinary > Price'
+    value:
+      type: text_literal
+      text_literal: '1 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_clothing_fine_name
+    label: 'Equipment > Gear > Index > Clothing: Fine > Name'
+    description: 'Equipment > Gear > Index > Clothing: Fine > Name'
+    value:
+      type: text_literal
+      text_literal: 'Clothing - Fine'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_clothing_fine_price
+    label: 'Equipment > Gear > Index > Clothing: Fine > Price'
+    description: 'Equipment > Gear > Index > Clothing: Fine > Price'
+    value:
+      type: text_literal
+      text_literal: '20 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_clothing_winter_name
+    label: 'Equipment > Gear > Index > Clothing: Winter > Name'
+    description: 'Equipment > Gear > Index > Clothing: Winter > Name'
+    value:
+      type: text_literal
+      text_literal: 'Clothing - Winter'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_clothing_winter_price
+    label: 'Equipment > Gear > Index > Clothing: Winter > Price'
+    description: 'Equipment > Gear > Index > Clothing: Winter > Price'
+    value:
+      type: text_literal
+      text_literal: '4 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_clothing_content
+    label: 'Equipment > Gear > Index > Clothing > Content'
+    description: 'Equipment > Gear > Index > Clothing > Content'
     value:
       type: text_literal
       text_literal: >-
         Ordinary clothing is functional and decently tailored, such as peasant garb, monk’s robes, traveler’s attire, or work clothes. Fine clothing suits a noble or royal, made with expensive fabrics, precious metals, and intricate patterns. Winter clothing grants a +1 item bonus to Survival checks to Survive in the Wild when enduring cold.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_compass_header
-    label: 'Equipment > Gear > Descriptions > Compass > Header'
-    description: 'Equipment > Gear > Descriptions > Compass > Header'
+    id: equipment_gear_index_compass_name
+    label: 'Equipment > Gear > Index > Compass > Header'
+    description: 'Equipment > Gear > Index > Compass > Header'
     value:
       type: text_literal
       text_literal: 'Compass'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_compass_content
-    label: 'Equipment > Gear > Descriptions > Compass > Content'
-    description: 'Equipment > Gear > Descriptions > Compass > Content'
+    id: equipment_gear_index_compass_price
+    label: 'Equipment > Gear > Index > Compass > Price'
+    description: 'Equipment > Gear > Index > Compass > Price'
+    value:
+      type: text_literal
+      text_literal: '10 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_compass_content
+    label: 'Equipment > Gear > Index > Compass > Content'
+    description: 'Equipment > Gear > Index > Compass > Content'
     value:
       type: text_literal
       text_literal: >-
         A compass gives you a +1 item bonus to Survival checks to navigate, provided you’re in a location with uniform magnetic fields.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_crowbar_expert_header
-    label: 'Equipment > Gear > Descriptions > Crowbar, Expert > Header'
-    description: 'Equipment > Gear > Descriptions > Crowbar, Expert > Header'
+    id: equipment_gear_index_cookware_name
+    label: 'Equipment > Gear > Index > Cookware > Name'
+    description: 'Equipment > Gear > Index > Cookware > Name'
+    value:
+      type: text_literal
+      text_literal: 'Cookware'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_cookware_price
+    label: 'Equipment > Gear > Index > Cookware > Price'
+    description: 'Equipment > Gear > Index > Cookware > Price'
+    value:
+      type: text_literal
+      text_literal: '10 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_crowbar_expert_name
+    label: 'Equipment > Gear > Index > Crowbar, Expert > Header'
+    description: 'Equipment > Gear > Index > Crowbar, Expert > Header'
     value:
       type: text_literal
       text_literal: 'Crowbar, Expert'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_crowbar_expert_content
-    label: 'Equipment > Gear > Descriptions > Crowbar, Expert > Content'
-    description: 'Equipment > Gear > Descriptions > Crowbar, Expert > Content'
+    id: equipment_gear_index_crowbar_expert_content
+    label: 'Equipment > Gear > Index > Crowbar, Expert > Content'
+    description: 'Equipment > Gear > Index > Crowbar, Expert > Content'
     value:
       type: text_literal
       text_literal: >-
         This item grants you a +1 item bonus to Athletics checks to Break Open anything that can be pried open.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_disguise_kit_header
-    label: 'Equipment > Gear > Descriptions > Disguise Kit > Header'
-    description: 'Equipment > Gear > Descriptions > Disguise Kit > Header'
+    id: equipment_gear_index_disguise_kit_name
+    label: 'Equipment > Gear > Index > Disguise Kit > Header'
+    description: 'Equipment > Gear > Index > Disguise Kit > Header'
     value:
       type: text_literal
       text_literal: 'Disguise Kit'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_disguise_kit_content
-    label: 'Equipment > Gear > Descriptions > Disguise Kit > Content'
-    description: 'Equipment > Gear > Descriptions > Disguise Kit > Content'
+    id: equipment_gear_index_disguise_kit_content
+    label: 'Equipment > Gear > Index > Disguise Kit > Content'
+    description: 'Equipment > Gear > Index > Disguise Kit > Content'
     value:
       type: text_literal
       text_literal: >-
         This small wooden box contains cosmetics, false facial hair, spirit gum, and a few simple wigs. You usually need a disguise kit to set up a disguise in order to Impersonate someone using the Deception skill. A disguise kit of expert quality adds a +1 item bonus to relevant checks, and a master disguise kit adds a +2 item bonus. If you’ve crafted a large number of disguises, you can replenish your cosmetics supply with replacement cosmetics of a level of quality that matches that of your disguise kit.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_fishing_tackle_header
-    label: 'Equipment > Gear > Descriptions > Fishing Tackle > Header'
-    description: 'Equipment > Gear > Descriptions > Fishing Tackle > Header'
+    id: equipment_gear_index_fishing_tackle_name
+    label: 'Equipment > Gear > Index > Fishing Tackle > Header'
+    description: 'Equipment > Gear > Index > Fishing Tackle > Header'
     value:
       type: text_literal
       text_literal: 'Fishing Tackle'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_fishing_tackle_content
-    label: 'Equipment > Gear > Descriptions > Fishing Tackle > Content'
-    description: 'Equipment > Gear > Descriptions > Fishing Tackle > Content'
+    id: equipment_gear_index_fishing_tackle_content
+    label: 'Equipment > Gear > Index > Fishing Tackle > Content'
+    description: 'Equipment > Gear > Index > Fishing Tackle > Content'
     value:
       type: text_literal
       text_literal: >-
         This kit include a collapsible fishing pole, fishhooks, line, lures, and a fishing net. Expert-quality fishing tackle grants a +1 item bonus to checks to fish.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_flint_steel_header
-    label: 'Equipment > Gear > Descriptions > Flint and Steel > Header'
-    description: 'Equipment > Gear > Descriptions > Flint and Steel > Header'
+    id: equipment_gear_index_flint_steel_name
+    label: 'Equipment > Gear > Index > Flint and Steel > Name'
+    description: 'Equipment > Gear > Index > Flint and Steel > Name'
     value:
       type: text_literal
       text_literal: 'Flint and Steel'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_flint_steel_content
-    label: 'Equipment > Gear > Descriptions > Flint and Steel > Content'
-    description: 'Equipment > Gear > Descriptions > Flint and Steel > Content'
+    id: equipment_gear_index_flint_steel_price
+    label: 'Equipment > Gear > Index > Flint and Steel > Price'
+    description: 'Equipment > Gear > Index > Flint and Steel > Price'
+    value:
+      type: text_literal
+      text_literal: '5 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_flint_steel_content
+    label: 'Equipment > Gear > Index > Flint and Steel > Content'
+    description: 'Equipment > Gear > Index > Flint and Steel > Content'
     value:
       type: text_literal
       text_literal: >-
         Flint and steel are useful in creating a fire if you have the time to catch a spark, though using them is typically too time-consuming to be possible during an encounter. Even in ideal conditions, using flint and steel to light a flame requires at least 3 actions, and often significantly longer.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_formula_book_header
-    label: 'Equipment > Gear > Descriptions > Formula Book > Header'
-    description: 'Equipment > Gear > Descriptions > Formula Book > Header'
+    id: equipment_gear_index_formula_book_name
+    label: 'Equipment > Gear > Index > Formula Book > Header'
+    description: 'Equipment > Gear > Index > Formula Book > Header'
     value:
       type: text_literal
       text_literal: 'Formula Book'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_formula_book_content
-    label: 'Equipment > Gear > Descriptions > Formula Book > Content'
-    description: 'Equipment > Gear > Descriptions > Formula Book > Content'
+    id: equipment_gear_index_formula_book_content
+    label: 'Equipment > Gear > Index > Formula Book > Content'
+    description: 'Equipment > Gear > Index > Formula Book > Content'
     value:
       type: text_literal
       text_literal: >-
         A formula book holds formulas necessary to make items other than the common equipment from this chapter. Each formula book can hold the formulas for up to 100 different items. Formulas can also appear on parchment sheets, tablets, and almost any other medium, and there’s no need for you to copy them into a specific book as long as you can reference them.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_healers_tools_header
-    label: 'Equipment > Gear > Descriptions > Healer''s Tools > Header'
-    description: 'Equipment > Gear > Descriptions > Healer''s Tools > Header'
+    id: equipment_gear_index_grappling_hook_name
+    label: 'Equipment > Gear > Index > Grappling Hook > Name'
+    description: 'Equipment > Gear > Index > Grappling Hook > Name'
+    value:
+      type: text_literal
+      text_literal: 'Grappling Hook'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_grappling_hook_price
+    label: 'Equipment > Gear > Index > Grappling Hook > Price'
+    description: 'Equipment > Gear > Index > Grappling Hook > Price'
+    value:
+      type: text_literal
+      text_literal: '1 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_hammer_name
+    label: 'Equipment > Gear > Index > Hammer > Name'
+    description: 'Equipment > Gear > Index > Hammer > Name'
+    value:
+      type: text_literal
+      text_literal: 'Hammer'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_hammer_price
+    label: 'Equipment > Gear > Index > Hammer > Price'
+    description: 'Equipment > Gear > Index > Hammer > Price'
+    value:
+      type: text_literal
+      text_literal: '1 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_healers_tools_name
+    label: 'Equipment > Gear > Index > Healer''s Tools > Header'
+    description: 'Equipment > Gear > Index > Healer''s Tools > Header'
     value:
       type: text_literal
       text_literal: 'Healer''s Tools'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_healers_tools_content
-    label: 'Equipment > Gear > Descriptions > Healer''s Tools > Content'
-    description: 'Equipment > Gear > Descriptions > Healer''s Tools > Content'
+    id: equipment_gear_index_healers_tools_content
+    label: 'Equipment > Gear > Index > Healer''s Tools > Content'
+    description: 'Equipment > Gear > Index > Healer''s Tools > Content'
     value:
       type: text_literal
       text_literal: >-
         This kit of bandages, herbs, and suturing tools is necessary for Medicine checks to Administer First Aid, Treat a Disease, or Treat a Poison. Expert-quality healer’s tools provide a +1 item bonus to such checks.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_holly_mistletoe_header
-    label: 'Equipment > Gear > Descriptions > Holly and Mistletoe > Header'
-    description: 'Equipment > Gear > Descriptions > Holly and Mistletoe > Header'
+    id: equipment_gear_index_holly_mistletoe_name
+    label: 'Equipment > Gear > Index > Holly and Mistletoe > Header'
+    description: 'Equipment > Gear > Index > Holly and Mistletoe > Header'
     value:
       type: text_literal
       text_literal: 'Holly and Mistletoe'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_holly_mistletoe_content
-    label: 'Equipment > Gear > Descriptions > Holly and Mistletoe > Content'
-    description: 'Equipment > Gear > Descriptions > Holly and Mistletoe > Content'
+    id: equipment_gear_index_holly_mistletoe_price
+    label: 'Equipment > Gear > Index > Holly and Mistletoe > Price'
+    description: 'Equipment > Gear > Index > Holly and Mistletoe > Price'
+    value:
+      type: text_literal
+      text_literal: '0'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_holly_mistletoe_content
+    label: 'Equipment > Gear > Index > Holly and Mistletoe > Content'
+    description: 'Equipment > Gear > Index > Holly and Mistletoe > Content'
     value:
       type: text_literal
       text_literal: >-
         Plants of supernatural significance provide a divine focus for some primal spellcasters, such as druids, to use certain abilities and cast some spells. A bundle of holly and mistletoe must be held in one hand to use it.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_lantern_header
-    label: 'Equipment > Gear > Descriptions > Lantern > Header'
-    description: 'Equipment > Gear > Descriptions > Lantern > Header'
+    id: equipment_gear_index_hourglass_name
+    label: 'Equipment > Gear > Index > Hourglass > Name'
+    description: 'Equipment > Gear > Index > Hourglass > Name'
     value:
       type: text_literal
-      text_literal: 'Lantern'
+      text_literal: 'Hourglass'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_lantern_content
-    label: 'Equipment > Gear > Descriptions > Lantern > Content'
-    description: 'Equipment > Gear > Descriptions > Lantern > Content'
+    id: equipment_gear_index_hourglass_price
+    label: 'Equipment > Gear > Index > Hourglass > Price'
+    description: 'Equipment > Gear > Index > Hourglass > Price'
+    value:
+      type: text_literal
+      text_literal: '25 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_ladder_name
+    label: 'Equipment > Gear > Index > Ladder > Name'
+    description: 'Equipment > Gear > Index > Ladder > Name'
+    value:
+      type: text_literal
+      text_literal: 'Ladder'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_ladder_price
+    label: 'Equipment > Gear > Index > Ladder > Price'
+    description: 'Equipment > Gear > Index > Ladder > Price'
+    value:
+      type: text_literal
+      text_literal: '3 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_lantern_bulls_eye_name
+    label: 'Equipment > Gear > Index > Lantern: Bull''s eye > Name'
+    description: 'Equipment > Gear > Index > Lantern Bull''s eye > Name'
+    value:
+      type: text_literal
+      text_literal: 'Lantern - Bull''s eye'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_lantern_bulls_eye_price
+    label: 'Equipment > Gear > Index > Lantern: Bull''s eye > Price'
+    description: 'Equipment > Gear > Index > Lantern Bull''s eye > Price'
+    value:
+      type: text_literal
+      text_literal: '10 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_lantern_content
+    label: 'Equipment > Gear > Index > Lantern > Content'
+    description: 'Equipment > Gear > Index > Lantern > Content'
     value:
       type: text_literal
       text_literal: >-
         A lantern sheds bright light and requires 1 pint of oil to function for 6 hours. A bull’s-eye lantern emits its light in a 60-foot cone. A hooded lantern sheds light in a 30-foot radius and is equipped with shutters, which you can close to block the light. Closing or opening the shutters takes an Interact action and requires you to have one hand free.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_lock_header
-    label: 'Equipment > Gear > Descriptions > Lock > Header'
-    description: 'Equipment > Gear > Descriptions > Lock > Header'
+    id: equipment_gear_index_lantern_hooded_name
+    label: 'Equipment > Gear > Index > Lantern: Hooded > Name'
+    description: 'Equipment > Gear > Index > Lantern: Hooded > Name'
+    value:
+      type: text_literal
+      text_literal: 'Lantern - Hooded'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_lantern_hooded_price
+    label: 'Equipment > Gear > Index > Lantern: Hooded > Price'
+    description: 'Equipment > Gear > Index > Lantern: Hooded > Price'
+    value:
+      type: text_literal
+      text_literal: '7 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_lock_name
+    label: 'Equipment > Gear > Index > Lock > Header'
+    description: 'Equipment > Gear > Index > Lock > Header'
     value:
       type: text_literal
       text_literal: 'Lock'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_lock_content
-    label: 'Equipment > Gear > Descriptions > Lock > Content'
-    description: 'Equipment > Gear > Descriptions > Lock > Content'
+    id: equipment_gear_index_lock_content
+    label: 'Equipment > Gear > Index > Lock > Content'
+    description: 'Equipment > Gear > Index > Lock > Content'
     value:
       type: text_literal
       text_literal: >-
         Picking a standard lock requires three successful DC 20 Thievery checks. An expert-quality lock requires four successes at DC 25, and a master lock requires five successes at DC 30.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_magnifying_glass_expert_header
-    label: 'Equipment > Gear > Descriptions > Magnifying Glass, Expert > Header'
-    description: 'Equipment > Gear > Descriptions > Magnifying Glass, Expert > Header'
+    id: equipment_gear_index_magnifying_glass_expert_name
+    label: 'Equipment > Gear > Index > Magnifying Glass, Expert > Header'
+    description: 'Equipment > Gear > Index > Magnifying Glass, Expert > Header'
     value:
       type: text_literal
       text_literal: 'Magnifyin Glass, Expert'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_magnifying_glass_expert_content
-    label: 'Equipment > Gear > Descriptions > Magnifying Glass, Expert > Content'
-    description: 'Equipment > Gear > Descriptions > Magnifying Glass, Expert > Content'
+    id: equipment_gear_index_magnifying_glass_expert_content
+    label: 'Equipment > Gear > Index > Magnifying Glass, Expert > Content'
+    description: 'Equipment > Gear > Index > Magnifying Glass, Expert > Content'
     value:
       type: text_literal
       text_literal: >-
         This handheld lens gives you a +1 item bonus to Perception checks to notice minute details of documents, fabric, and the like.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_manacles_header
-    label: 'Equipment > Gear > Descriptions > Manacles > Header'
-    description: 'Equipment > Gear > Descriptions > Manacles > Header'
+    id: equipment_gear_index_manacles_name
+    label: 'Equipment > Gear > Index > Manacles > Header'
+    description: 'Equipment > Gear > Index > Manacles > Header'
     value:
       type: text_literal
       text_literal: 'Manacles'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_manacles_content
-    label: 'Equipment > Gear > Descriptions > Manacles > Content'
-    description: 'Equipment > Gear > Descriptions > Manacles > Content'
+    id: equipment_gear_index_manacles_content
+    label: 'Equipment > Gear > Index > Manacles > Content'
+    description: 'Equipment > Gear > Index > Manacles > Content'
     value:
       type: text_literal
       text_literal: >-
         Binding a creature in manacles requires one successful touch attack to bind each wrist or ankle. A creature is normally untrained with manacle touch attacks. A two- legged creature with its legs bound is hampered 15, and a two-handed creature with its wrists bound has to succeed at a DC 5 flat check any time it uses a manipulate action or else that action fails. A creature bound to a stationary object is immobile. For creatures with more or fewer limbs, the GM determines what effect manacles have, if any. Freeing a creature from manacles requires three successful DC 22 Thievery checks to Pick the Lock. Expert-quality manacles require four successes at DC 27, and master- quality manacles require five successes at DC 32.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_material_component_pouch_header
-    label: 'Equipment > Gear > Descriptions > Material Component Pouch > Header'
-    description: 'Equipment > Gear > Descriptions > Material Component Pouch > Header'
+    id: equipment_gear_index_material_component_pouch_name
+    label: 'Equipment > Gear > Index > Material Component Pouch > Header'
+    description: 'Equipment > Gear > Index > Material Component Pouch > Header'
     value:
       type: text_literal
       text_literal: 'Material Component Pouch'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_material_component_pouch_content
-    label: 'Equipment > Gear > Descriptions > Material Component Pouch > Content'
-    description: 'Equipment > Gear > Descriptions > Material Component Pouch > Content'
+    id: equipment_gear_index_material_component_pouch_price
+    label: 'Equipment > Gear > Index > Material Component Pouch > Price'
+    description: 'Equipment > Gear > Index > Material Component Pouch > Price'
+    value:
+      type: text_literal
+      text_literal: '5 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_material_component_pouch_content
+    label: 'Equipment > Gear > Index > Material Component Pouch > Content'
+    description: 'Equipment > Gear > Index > Material Component Pouch > Content'
     value:
       type: text_literal
       text_literal: >-
         This pouch contains material components for those spells that require them. Though the components are used up over time, you can refill spent components during your daily preparations.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_musical_instrument_header
-    label: 'Equipment > Gear > Descriptions > Musical Instrument > Header'
-    description: 'Equipment > Gear > Descriptions > Musical Instrument > Header'
+    id: equipment_gear_index_merchants_scale_name
+    label: 'Equipment > Gear > Index > Merchant''s Scale > Name'
+    description: 'Equipment > Gear > Index > Merchant''s Scale > Name'
+    value:
+      type: text_literal
+      text_literal: 'Merchant''s Scale'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_merchants_scale_price
+    label: 'Equipment > Gear > Index > Merchant''s Scale > Price'
+    description: 'Equipment > Gear > Index > Merchant''s Scale > Price'
+    value:
+      type: text_literal
+      text_literal: '2 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_mirror_name
+    label: 'Equipment > Gear > Index > Mirror > Name'
+    description: 'Equipment > Gear > Index > Mirror > Name'
+    value:
+      type: text_literal
+      text_literal: 'Mirror'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_mirror_price
+    label: 'Equipment > Gear > Index > Mirror > Price'
+    description: 'Equipment > Gear > Index > Mirror > Price'
+    value:
+      type: text_literal
+      text_literal: '10 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_mug_name
+    label: 'Equipment > Gear > Index > Mug > Name'
+    description: 'Equipment > Gear > Index > Mug > Name'
+    value:
+      type: text_literal
+      text_literal: 'Mug'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_mug_price
+    label: 'Equipment > Gear > Index > Mug > Price'
+    description: 'Equipment > Gear > Index > Mug > Price'
+    value:
+      type: text_literal
+      text_literal: '1 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_musical_instrument_name
+    label: 'Equipment > Gear > Index > Musical Instrument > Header'
+    description: 'Equipment > Gear > Index > Musical Instrument > Header'
     value:
       type: text_literal
       text_literal: 'Musical Instrument'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_musical_instrument_content
-    label: 'Equipment > Gear > Descriptions > Musical Instrument > Content'
-    description: 'Equipment > Gear > Descriptions > Musical Instrument > Content'
+    id: equipment_gear_index_musical_instrument_content
+    label: 'Equipment > Gear > Index > Musical Instrument > Content'
+    description: 'Equipment > Gear > Index > Musical Instrument > Content'
     value:
       type: text_literal
       text_literal: >-
         Handheld instruments include bagpipes, a small set of chimes, small drums, fiddles and viols, flutes and recorders, small harps, lutes, trumpets, and similar-sized instruments. The GM might rule that an especially large handheld instrument (like a tuba) has greater Bulk. Heavy instruments such as large drums, a full set of chimes, and keyboard instruments are less portable, and generally need to be stationary while played. An expert instrument gives a +1 item bonus to Performance checks using that instrument, and a master instrument gives a +2 item bonus.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_oil_header
-    label: 'Equipment > Gear > Descriptions > Oil > Header'
-    description: 'Equipment > Gear > Descriptions > Oil > Header'
+    id: equipment_gear_index_oil_name
+    label: 'Equipment > Gear > Index > Oil > Header'
+    description: 'Equipment > Gear > Index > Oil > Header'
     value:
       type: text_literal
       text_literal: 'Oil'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_oil_content
-    label: 'Equipment > Gear > Descriptions > Oil > Content'
-    description: 'Equipment > Gear > Descriptions > Oil > Content'
+    id: equipment_gear_index_oil_price
+    label: 'Equipment > Gear > Index > Oil > Price'
+    description: 'Equipment > Gear > Index > Oil > Price'
+    value:
+      type: text_literal
+      text_literal: '1 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_oil_content
+    label: 'Equipment > Gear > Index > Oil > Content'
+    description: 'Equipment > Gear > Index > Oil > Content'
     value:
       type: text_literal
       text_literal: >-
         You can use oil to fuel lanterns, but you can also set a pint of oil aflame and throw it. You must first spend an Interact action preparing the oil, then throw it with another action as a ranged touch attack. If you hit, it splatters on the creature or in a single 5-foot square you target. You must succeed at a DC 10 flat check for the oil to ignite successfully when it hits. If the oil ignites, the target takes 1d6 fire damage.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_piton_header
-    label: 'Equipment > Gear > Descriptions > Piton > Header'
-    description: 'Equipment > Gear > Descriptions > Piton > Header'
+    id: equipment_gear_index_piton_name
+    label: 'Equipment > Gear > Index > Piton > Header'
+    description: 'Equipment > Gear > Index > Piton > Header'
     value:
       type: text_literal
       text_literal: 'Piton'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_piton_content
-    label: 'Equipment > Gear > Descriptions > Piton > Content'
-    description: 'Equipment > Gear > Descriptions > Piton > Content'
+    id: equipment_gear_index_piton_price
+    label: 'Equipment > Gear > Index > Piton > Price'
+    description: 'Equipment > Gear > Index > Piton > Price'
+    value:
+      type: text_literal
+      text_literal: '1 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_piton_content
+    label: 'Equipment > Gear > Index > Piton > Content'
+    description: 'Equipment > Gear > Index > Piton > Content'
     value:
       type: text_literal
       text_literal: >-
         These small spikes can be used as anchors to make climbing easier. To affix a piton, you must hold it in one hand and use a hammer to drive it in with your other hand.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_religious_symbol_header
-    label: 'Equipment > Gear > Descriptions > Religious Symbol > Header'
-    description: 'Equipment > Gear > Descriptions > Religious Symbol > Header'
+    id: equipment_gear_index_rations_name
+    label: 'Equipment > Gear > Index > Rations > Name'
+    description: 'Equipment > Gear > Index > Rations > Name'
+    value:
+      type: text_literal
+      text_literal: 'Rations (1 day)'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_rations_price
+    label: 'Equipment > Gear > Index > Rations > Price'
+    description: 'Equipment > Gear > Index > Rations > Price'
+    value:
+      type: text_literal
+      text_literal: '5 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_religious_symbol_name
+    label: 'Equipment > Gear > Index > Religious Symbol > Header'
+    description: 'Equipment > Gear > Index > Religious Symbol > Header'
     value:
       type: text_literal
       text_literal: 'Religious Symbol'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_religious_symbol_content
-    label: 'Equipment > Gear > Descriptions > Religious Symbol > Content'
-    description: 'Equipment > Gear > Descriptions > Religious Symbol > Content'
+    id: equipment_gear_index_religious_symbol_content
+    label: 'Equipment > Gear > Index > Religious Symbol > Content'
+    description: 'Equipment > Gear > Index > Religious Symbol > Content'
     value:
       type: text_literal
       text_literal: >-
         This piece of wood or silver is emblazoned with an image representing a deity. Some divine spellcasters, such as clerics, can use a religious symbol of their deity as a divine focus to use certain abilities and cast some spells. A religious symbol must be held in one hand to use it.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_religious_text_header
-    label: 'Equipment > Gear > Descriptions > Religious Text > Header'
-    description: 'Equipment > Gear > Descriptions > Religious Text > Header'
+    id: equipment_gear_index_religious_text_name
+    label: 'Equipment > Gear > Index > Religious Text > Header'
+    description: 'Equipment > Gear > Index > Religious Text > Header'
     value:
       type: text_literal
       text_literal: 'Religious Text'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_religious_text_content
-    label: 'Equipment > Gear > Descriptions > Religious Text > Content'
-    description: 'Equipment > Gear > Descriptions > Religious Text > Content'
+    id: equipment_gear_index_religious_text_content
+    label: 'Equipment > Gear > Index > Religious Text > Content'
+    description: 'Equipment > Gear > Index > Religious Text > Content'
     value:
       type: text_literal
       text_literal: >-
         This manuscript contains scripture of a particular religion. Some divine spellcasters, such as clerics, can use a religious text as a divine focus to use certain abilities and cast some spells. A religious text must be held in one hand to use it.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_repair_kit_header
-    label: 'Equipment > Gear > Descriptions > Repair Kit > Header'
-    description: 'Equipment > Gear > Descriptions > Repair Kit > Header'
+    id: equipment_gear_index_repair_kit_name
+    label: 'Equipment > Gear > Index > Repair Kit > Header'
+    description: 'Equipment > Gear > Index > Repair Kit > Header'
     value:
       type: text_literal
       text_literal: 'Repair Kit'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_repair_kit_content
-    label: 'Equipment > Gear > Descriptions > Repair Kit > Content'
-    description: 'Equipment > Gear > Descriptions > Repair Kit > Content'
+    id: equipment_gear_index_repair_kit_content
+    label: 'Equipment > Gear > Index > Repair Kit > Content'
+    description: 'Equipment > Gear > Index > Repair Kit > Content'
     value:
       type: text_literal
       text_literal: >-
@@ -8595,15 +8918,15 @@ variables:
       text_literal: 'Rope'
 - type: variable_text
   variable_text:
-    id: equipment_gear_list_rope_hemp_name
-    label: 'Equipment > Gear > List > Rope: Hemp > Name'
-    description: 'Equipment > Gear > List > Rope: Hemp > Name'
+    id: equipment_gear_index_rope_hemp_name
+    label: 'Equipment > Gear > Index > Rope: Hemp > Name'
+    description: 'Equipment > Gear > Index > Rope: Hemp > Name'
     value:
       type: text_literal
-      text_literal: 'Hemp Rope'
+      text_literal: 'Rope - Hemp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_list_rope_hemp_price
+    id: equipment_gear_index_rope_hemp_price
     label: 'Equipment > Gear > List > Rope: Hemp > Price'
     description: 'Equipment > Gear > List > Rope: Hemp > Price'
     value:
@@ -8611,15 +8934,15 @@ variables:
       text_literal: '1 sp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_list_rope_silk_name
-    label: 'Equipment > Gear > List > Rope: Silk > Name'
-    description: 'Equipment > Gear > List > Rope: Silk > Name'
+    id: equipment_gear_index_rope_silk_name
+    label: 'Equipment > Gear > Index > Rope: Silk > Name'
+    description: 'Equipment > Gear > Index > Rope: Silk > Name'
     value:
       type: text_literal
-      text_literal: 'Silk Rope'
+      text_literal: 'Rope - Silk'
 - type: variable_text
   variable_text:
-    id: equipment_gear_list_rope_silk_price
+    id: equipment_gear_index_rope_silk_price
     label: 'Equipment > Gear > List > Rope: Silk > Price'
     description: 'Equipment > Gear > List > Rope: Silk > Price'
     value:
@@ -8627,211 +8950,339 @@ variables:
       text_literal: '10 sp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_sack_header
-    label: 'Equipment > Gear > Descriptions > Sack > Header'
-    description: 'Equipment > Gear > Descriptions > Sack > Header'
+    id: equipment_gear_index_sack_name
+    label: 'Equipment > Gear > Index > Sack > Header'
+    description: 'Equipment > Gear > Index > Sack > Header'
     value:
       type: text_literal
-      text_literal: 'Sack'
+      text_literal: 'Sack (5)'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_sack_content
-    label: 'Equipment > Gear > Descriptions > Sack > Content'
-    description: 'Equipment > Gear > Descriptions > Sack > Content'
+    id: equipment_gear_index_sack_price
+    label: 'Equipment > Gear > Index > Sack > Price'
+    description: 'Equipment > Gear > Index > Sack > Price'
+    value:
+      type: text_literal
+      text_literal: '1 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_sack_content
+    label: 'Equipment > Gear > Index > Sack > Content'
+    description: 'Equipment > Gear > Index > Sack > Content'
     value:
       type: text_literal
       text_literal: >-
         A sack can hold up to 8 Bulk worth of items. A sack containing 2 Bulk or less can be worn on the body, usually tucked into a belt. You can carry a sack with one hand, but you must use two hands to transfer items in and out.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_saddlebags_header
-    label: 'Equipment > Gear > Descriptions > Saddlebags > Header'
-    description: 'Equipment > Gear > Descriptions > Saddlebags > Header'
+    id: equipment_gear_index_saddlebags_name
+    label: 'Equipment > Gear > Index > Saddlebags > Header'
+    description: 'Equipment > Gear > Index > Saddlebags > Header'
     value:
       type: text_literal
       text_literal: 'Saddlebags'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_saddlebags_content
-    label: 'Equipment > Gear > Descriptions > Saddlebags > Content'
-    description: 'Equipment > Gear > Descriptions > Saddlebags > Content'
+    id: equipment_gear_index_saddlebags_price
+    label: 'Equipment > Gear > Index > Saddlebags > Price'
+    description: 'Equipment > Gear > Index > Saddlebags > Price'
+    value:
+      type: text_literal
+      text_literal: '2 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_saddlebags_content
+    label: 'Equipment > Gear > Index > Saddlebags > Content'
+    description: 'Equipment > Gear > Index > Saddlebags > Content'
     value:
       type: text_literal
       text_literal: >-
         Saddlebags come in a pair. Each can hold up to 3 Bulk worth of items. The Bulk value given is for saddlebags worn by a mount. If you are carrying or stowing saddlebags, they counts as 1 Bulk instead of light Bulk.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_satchel_header
-    label: 'Equipment > Gear > Descriptions > Satchel > Header'
-    description: 'Equipment > Gear > Descriptions > Satchel > Header'
+    id: equipment_gear_index_satchel_name
+    label: 'Equipment > Gear > Index > Satchel > Header'
+    description: 'Equipment > Gear > Index > Satchel > Header'
     value:
       type: text_literal
       text_literal: 'Satchel'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_satchel_content
-    label: 'Equipment > Gear > Descriptions > Satchel > Content'
-    description: 'Equipment > Gear > Descriptions > Satchel > Content'
+    id: equipment_gear_index_satchel_price
+    label: 'Equipment > Gear > Index > Satchel > Price'
+    description: 'Equipment > Gear > Index > Satchel > Price'
+    value:
+      type: text_literal
+      text_literal: '1 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_satchel_content
+    label: 'Equipment > Gear > Index > Satchel > Content'
+    description: 'Equipment > Gear > Index > Satchel > Content'
     value:
       type: text_literal
       text_literal: >-
         A satchel can hold up to 2 Bulk worth of items. If you are carrying or stowing a satchel rather than wearing it over your shoulder, it counts as light Bulk instead of negligible.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_scroll_case_header
-    label: 'Equipment > Gear > Descriptions > Scroll Case > Header'
-    description: 'Equipment > Gear > Descriptions > Scroll Case > Header'
+    id: equipment_gear_index_scroll_case_name
+    label: 'Equipment > Gear > Index > Scroll Case > Header'
+    description: 'Equipment > Gear > Index > Scroll Case > Header'
     value:
       type: text_literal
       text_literal: 'Scroll Case'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_scroll_case_content
-    label: 'Equipment > Gear > Descriptions > Scroll Case > Content'
-    description: 'Equipment > Gear > Descriptions > Scroll Case > Content'
+    id: equipment_gear_index_scroll_case_price
+    label: 'Equipment > Gear > Index > Scroll Case > Price'
+    description: 'Equipment > Gear > Index > Scroll Case > Price'
+    value:
+      type: text_literal
+      text_literal: '1 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_scroll_case_content
+    label: 'Equipment > Gear > Index > Scroll Case > Content'
+    description: 'Equipment > Gear > Index > Scroll Case > Content'
     value:
       type: text_literal
       text_literal: >-
         Scrolls, maps, and other rolled documents are stored in scroll cases for safe transport.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_sheath_header
-    label: 'Equipment > Gear > Descriptions > Sheath > Header'
-    description: 'Equipment > Gear > Descriptions > Sheath > Header'
+    id: equipment_gear_index_sheath_name
+    label: 'Equipment > Gear > Index > Sheath > Header'
+    description: 'Equipment > Gear > Index > Sheath > Header'
     value:
       type: text_literal
       text_literal: 'Sheath'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_sheath_content
-    label: 'Equipment > Gear > Descriptions > Sheath > Content'
-    description: 'Equipment > Gear > Descriptions > Sheath > Content'
+    id: equipment_gear_index_sheath_price
+    label: 'Equipment > Gear > Index > Sheath > Price'
+    description: 'Equipment > Gear > Index > Sheath > Price'
+    value:
+      type: text_literal
+      text_literal: '1 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_sheath_content
+    label: 'Equipment > Gear > Index > Sheath > Content'
+    description: 'Equipment > Gear > Index > Sheath > Content'
     value:
       type: text_literal
       text_literal: >-
         A sheath or scabbard lets you easily carry a weapon on your person.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_signal_whistle_header
-    label: 'Equipment > Gear > Descriptions > Signal Whistle > Header'
-    description: 'Equipment > Gear > Descriptions > Signal Whistle > Header'
+    id: equipment_gear_index_signal_whistle_name
+    label: 'Equipment > Gear > Index > Signal Whistle > Header'
+    description: 'Equipment > Gear > Index > Signal Whistle > Header'
     value:
       type: text_literal
       text_literal: 'Signal Whistle'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_signal_whistle_content
-    label: 'Equipment > Gear > Descriptions > Signal Whistle > Content'
-    description: 'Equipment > Gear > Descriptions > Signal Whistle > Content'
+    id: equipment_gear_index_signal_whistle_price
+    label: 'Equipment > Gear > Index > Signal Whistle > Price'
+    description: 'Equipment > Gear > Index > Signal Whistle > Price'
+    value:
+      type: text_literal
+      text_literal: '8 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_signal_whistle_content
+    label: 'Equipment > Gear > Index > Signal Whistle > Content'
+    description: 'Equipment > Gear > Index > Signal Whistle > Content'
     value:
       type: text_literal
       text_literal: >-
         When sounded, a signal whistle can be heard clearly up to half a mile away in open country.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_snare_kit_header
-    label: 'Equipment > Gear > Descriptions > Snare Kit > Header'
-    description: 'Equipment > Gear > Descriptions > Snare Kit > Header'
+    id: equipment_gear_index_snare_kit_name
+    label: 'Equipment > Gear > Index > Snare Kit > Header'
+    description: 'Equipment > Gear > Index > Snare Kit > Header'
     value:
       type: text_literal
       text_literal: 'Snare Kit'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_snare_kit_content
-    label: 'Equipment > Gear > Descriptions > Snare Kit > Content'
-    description: 'Equipment > Gear > Descriptions > Snare Kit > Content'
+    id: equipment_gear_index_snare_kit_content
+    label: 'Equipment > Gear > Index > Snare Kit > Content'
+    description: 'Equipment > Gear > Index > Snare Kit > Content'
     value:
       type: text_literal
       text_literal: >-
         This kit contains tools and ingredients for creating snares. A snare kit allows you to Craft snares using the Crafting skill. An expert snare kit gives you a +1 item bonus to the check and a master kit gives you a +2 item bonus.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_spellbook_header
-    label: 'Equipment > Gear > Descriptions > Spellbook > Header'
-    description: 'Equipment > Gear > Descriptions > Spellbook > Header'
+    id: equipment_gear_index_spellbook_name
+    label: 'Equipment > Gear > Index > Spellbook > Header'
+    description: 'Equipment > Gear > Index > Spellbook > Header'
     value:
       type: text_literal
       text_literal: 'Spellbook'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_spellbook_content
-    label: 'Equipment > Gear > Descriptions > Spellbook > Content'
-    description: 'Equipment > Gear > Descriptions > Spellbook > Content'
+    id: equipment_gear_index_spellbook_content
+    label: 'Equipment > Gear > Index > Spellbook > Content'
+    description: 'Equipment > Gear > Index > Spellbook > Content'
     value:
       type: text_literal
       text_literal: >-
         A spellbook holds the written knowledge necessary to learn and prepare various spells, a necessity for wizards and a useful luxury for other spellcasters looking to discover additional spells. Each spellbook can hold up to 100 spells. The Price listed is for a blank spellbook.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_spyglass_header
-    label: 'Equipment > Gear > Descriptions > Spyglass > Header'
-    description: 'Equipment > Gear > Descriptions > Spyglass > Header'
+    id: equipment_gear_index_spyglass_name
+    label: 'Equipment > Gear > Index > Spyglass > Header'
+    description: 'Equipment > Gear > Index > Spyglass > Header'
     value:
       type: text_literal
       text_literal: 'Spyglass'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_spyglass_content
-    label: 'Equipment > Gear > Descriptions > Spyglass > Content'
-    description: 'Equipment > Gear > Descriptions > Spyglass > Content'
+    id: equipment_gear_index_spyglass_content
+    label: 'Equipment > Gear > Index > Spyglass > Content'
+    description: 'Equipment > Gear > Index > Spyglass > Content'
     value:
       type: text_literal
       text_literal: >-
         A typical spyglass lets you see things eight times farther than normal. A spyglass of expert quality adds a +1 item bonus to Perception checks to notice details at a distance.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_tack_header
-    label: 'Equipment > Gear > Descriptions > Tack > Header'
-    description: 'Equipment > Gear > Descriptions > Tack > Header'
+    id: equipment_gear_index_tack_name
+    label: 'Equipment > Gear > Index > Tack > Header'
+    description: 'Equipment > Gear > Index > Tack > Header'
     value:
       type: text_literal
       text_literal: 'Tack'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_tack_content
-    label: 'Equipment > Gear > Descriptions > Tack > Content'
-    description: 'Equipment > Gear > Descriptions > Tack > Content'
+    id: equipment_gear_index_tack_price
+    label: 'Equipment > Gear > Index > Tack > Price'
+    description: 'Equipment > Gear > Index > Tack > Price'
+    value:
+      type: text_literal
+      text_literal: '40 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_tack_content
+    label: 'Equipment > Gear > Index > Tack > Content'
+    description: 'Equipment > Gear > Index > Tack > Content'
     value:
       type: text_literal
       text_literal: >-
         Tack includes all the gear required to outfit a riding animal, including a saddle, bit and bridle, and stirrups if necessary. Especially large or oddly shaped animals might require specialty saddles. These can be more expensive or hard to find, as determined by the GM. The Bulk value given is for worn tack. If carried, the Bulk increases to 2.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_ten_foot_pole_header
-    label: 'Equipment > Gear > Descriptions > Ten-Foot Pole > Header'
-    description: 'Equipment > Gear > Descriptions > Ten-Foot Pole > Header'
+    id: equipment_gear_index_ten_foot_pole_name
+    label: 'Equipment > Gear > Index > Ten-Foot Pole > Header'
+    description: 'Equipment > Gear > Index > Ten-Foot Pole > Header'
     value:
       type: text_literal
       text_literal: 'Ten-Foot Pole'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_ten_foot_pole_content
-    label: 'Equipment > Gear > Descriptions > Ten-Foot Pole > Content'
-    description: 'Equipment > Gear > Descriptions > Ten-Foot Pole > Content'
+    id: equipment_gear_index_ten_foot_pole_price
+    label: 'Equipment > Gear > Index > Ten-Foot Pole > Price'
+    description: 'Equipment > Gear > Index > Ten-Foot Pole > Price'
+    value:
+      type: text_literal
+      text_literal: '1 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_ten_foot_pole_content
+    label: 'Equipment > Gear > Index > Ten-Foot Pole > Content'
+    description: 'Equipment > Gear > Index > Ten-Foot Pole > Content'
     value:
       type: text_literal
       text_literal: >-
         When wielding this long pole, you can use Seek to search a square up to 10 feet away. The pole is not sturdy enough to use as a weapon.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_thieves_tools_header
-    label: 'Equipment > Gear > Descriptions > Thieves'' Tools > Header'
-    description: 'Equipment > Gear > Descriptions > Thieves'' Tools > Header'
+    id: equipment_gear_index_tent_pup_name
+    label: 'Equipment > Gear > Index > Tent: Pup > Name'
+    description: 'Equipment > Gear > Index > Tent: Pup > Name'
+    value:
+      type: text_literal
+      text_literal: 'Tent - Pup'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_tent_pup_price
+    label: 'Equipment > Gear > Index > Tent: Pup > Price'
+    description: 'Equipment > Gear > Index > Tent: Pup > Price'
+    value:
+      type: text_literal
+      text_literal: '8 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_tent_four_person_name
+    label: 'Equipment > Gear > Index > Tent: Four Person > Name'
+    description: 'Equipment > Gear > Index > Tent: Four Person > Name'
+    value:
+      type: text_literal
+      text_literal: 'Tent - Four Person'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_tent_four_person_price
+    label: 'Equipment > Gear > Index > Tent: Four Person > Price'
+    description: 'Equipment > Gear > Index > Tent: Four Person > Price'
+    value:
+      type: text_literal
+      text_literal: '50 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_tent_pavilion_name
+    label: 'Equipment > Gear > Index > Tent: Pavilion > Name'
+    description: 'Equipment > Gear > Index > Tent: Pavilion > Name'
+    value:
+      type: text_literal
+      text_literal: 'Tent - Pavilion'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_tent_pavilion_price
+    label: 'Equipment > Gear > Index > Tent: Pavilion > Price'
+    description: 'Equipment > Gear > Index > Tent: Pavilion > Price'
+    value:
+      type: text_literal
+      text_literal: '400 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_thieves_tools_name
+    label: 'Equipment > Gear > Index > Thieves'' Tools > Header'
+    description: 'Equipment > Gear > Index > Thieves'' Tools > Header'
     value:
       type: text_literal
       text_literal: 'Thieves'' Tools'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_thieves_tools_content
-    label: 'Equipment > Gear > Descriptions > Thieves'' Tools > Content'
-    description: 'Equipment > Gear > Descriptions > Thieves'' Tools > Content'
+    id: equipment_gear_index_thieves_tools_content
+    label: 'Equipment > Gear > Index > Thieves'' Tools > Content'
+    description: 'Equipment > Gear > Index > Thieves'' Tools > Content'
     value:
       type: text_literal
       text_literal: >-
         You need thieves’ tools to Pick Locks or Disable Devices (of some types) using the Thievery skill. Thieves’ tools of expert quality add a +1 item bonus to checks to Pick Locks and Disable Devices, and master thieves’ tools add a +2 item bonus. Replacement picks are necessary when your tools break as a result of a critical failure on a Thievery check.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_tool_header
+    id: equipment_gear_index_waterskin_name
+    label: 'Equipment > Gear > Index > Waterskin > Name'
+    description: 'Equipment > Gear > Index > Waterskin > Name'
+    value:
+      type: text_literal
+      text_literal: 'Waterskin'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_waterskin_price
+    label: 'Equipment > Gear > Index > Waterskin > Price'
+    description: 'Equipment > Gear > Index > Waterskin > Price'
+    value:
+      type: text_literal
+      text_literal: '5 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_tool_name
     label: 'Equipment > Gear > Descriptions > Tool > Header'
     description: 'Equipment > Gear > Descriptions > Tool > Header'
     value:
@@ -8839,7 +9290,7 @@ variables:
       text_literal: 'Tool'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_tool_content
+    id: equipment_gear_index_tool_content
     label: 'Equipment > Gear > Descriptions > Tool > Content'
     description: 'Equipment > Gear > Descriptions > Tool > Content'
     value:
@@ -8848,7 +9299,7 @@ variables:
         This entry is a catchall for basic hand tools that don’t have a specific adventuring purpose. A hoe, shovel, or sledgehammer is a long tool, and a hand drill, ice hook, or trowel is a short tool. A tool can usually be used as an improvised weapon, dealing 1d4 damage for a short tool or 1d6 for a long tool. The GM determines the damage type that’s appropriate or adjusts the damage if needed.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_torch_header
+    id: equipment_gear_index_torch_name
     label: 'Equipment > Gear > Descriptions > Torch > Header'
     description: 'Equipment > Gear > Descriptions > Torch > Header'
     value:
@@ -8856,7 +9307,15 @@ variables:
       text_literal: 'Torch'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_torch_content
+    id: equipment_gear_index_torch_price
+    label: 'Equipment > Gear > Index > Torch > Price'
+    description: 'Equipment > Gear > Index > Torch > Price'
+    value:
+      type: text_literal
+      text_literal: '1 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_torch_content
     label: 'Equipment > Gear > Descriptions > Torch > Content'
     description: 'Equipment > Gear > Descriptions > Torch > Content'
     value:
@@ -8865,7 +9324,7 @@ variables:
         A torch sheds bright light in a 20-foot radius. It can be used as an improvised weapon that deals 1d4 bludgeoning damage plus 1 fire damage.
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_vial_header
+    id: equipment_gear_index_vial_name
     label: 'Equipment > Gear > Descriptions > Vial > Header'
     description: 'Equipment > Gear > Descriptions > Vial > Header'
     value:
@@ -8873,7 +9332,15 @@ variables:
       text_literal: 'Vial'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_vial_content
+    id: equipment_gear_index_vial_price
+    label: 'Equipment > Gear > Index > Vial > Price'
+    description: 'Equipment > Gear > Index > Vial > Price'
+    value:
+      type: text_literal
+      text_literal: '5 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_vial_content
     label: 'Equipment > Gear > Descriptions > Vial > Content'
     description: 'Equipment > Gear > Descriptions > Vial > Content'
     value:
@@ -8881,7 +9348,7 @@ variables:
       text_literal: 'A simple glass vial holds up to 1 ounce of liquid.'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_writing_set_header
+    id: equipment_gear_index_writing_set_name
     label: 'Equipment > Gear > Descriptions > Writing Set > Header'
     description: 'Equipment > Gear > Descriptions > Writing Set > Header'
     value:
@@ -8889,7 +9356,7 @@ variables:
       text_literal: 'Writing Set'
 - type: variable_text
   variable_text:
-    id: equipment_gear_descriptions_writing_set_content
+    id: equipment_gear_index_writing_set_content
     label: 'Equipment > Gear > Descriptions > Writing Set > Content'
     description: 'Equipment > Gear > Descriptions > Writing Set > Content'
     value:
@@ -9016,7 +9483,6 @@ variables:
       text_literal: >-
         You can use the Craft downtime activity (see page 148) to improve the quality of an item up to your proficiency rank in the Crafting skill. For this purpose, the Price equals the difference in Price between the two qualities. Upgrading an expert-quality chain shirt to master quality, for example, uses a Price of 3,250 sp. This requires you to have master Crafting and to provide 1,625 sp worth of raw materials to start the process.
 
-
         Nonmagical items might decrease in quality over a long period of neglect or after extended use, but they can be restored in the same way as improving an item.
 - type: variable_text
   variable_text:
@@ -9035,7 +9501,6 @@ variables:
       type: text_literal
       text_literal: >-
         Weapons and armor must be expert quality or better to be made into a magic item. Quality determines the maximum bonus and number of properties the weapon or armor can have. The full rules for magic items begin on page 376.
-
 
         Magic items are always assumed to be the minimum level of quality for their bonus unless noted otherwise, and the quality cost is included in the item’s Price. Rarely, an item will be of a higher quality than the bonus would indicate, with its Price increased by the difference in quality. A +1 legendary longsword, for example, would cost 64,650 sp more than an ordinary +1 longsword (which would normally be crafted at an expert level).
 - type: variable_text
@@ -9066,13 +9531,12 @@ variables:
 - type: variable_text
   variable_text:
     id: equipment_items_sizes_content
-    label: 'Equipment > Items and Sizes > Conent'
+    label: 'Equipment > Items and Sizes > Content'
     description: 'Equipment > Items and Sizes > Content'
     value:
       type: text_literal
       text_literal: >-
         The Bulk rules in this chapter are made for Small and Medium creatures, and similarly the items are sized for creatures of those sizes. Large or larger creatures can carry more, and Tiny creatures can carry less. Their Bulk limits are multiplied, as noted on the table below.
-
 
         In most cases, the only creatures of sizes other than Small or Medium are monsters under the GM control, in which case you probably won’t need to track Bulk carefully. These rules for Bulk limits mainly come up when a group tries to load up a mount or animal companion, and the rules for items of different sizes apply when the characters defeat a big creature that has gear, like a fire giant.
 - type: variable_text
@@ -9110,12 +9574,9 @@ variables:
       text_literal: >-
         Creatures of sizes other than Small or Medium need items appropriate to their size. These items have different Bulk, and possibly a different Price. The table below provides the differences. Items that are always built for creatures of a certain size (such as the barding on page 189) already include any necessary adjustments.
 
-
         For example, a morningstar has a Price of 10 sp and 1 Bulk, so one made for a Huge creature has a Price of 40 sp and 4 Bulk. One made for a Tiny creature still costs 10 sp (due to its intricacy) and has 1/2 Bulk, which converts to light Bulk. A torch costs 1 cp and has light Bulk, so a torch made for a Huge creature costs 4 cp and has 2 Bulk, and one made for a Tiny creature costs 1 cp and has negligible Bulk.
 
-
         A Tiny creature or one that’s Large or larger counts items of different Bulk in a special way, as described on above. This means these creatures can usually wear and carry about the same amount of gear as a Medium creature if the equipment is appropriately sized.
-
 
         The Price adjustment applies only to the Price of the item itself. Prices for magic items and alchemical items mostly come from their magic or alchemical properties. The Price of an item made from special materials is calculated based on the item’s Bulk, after adjusting the Bulk for the item’s size. See Chapter 11 for more  information.
 - type: variable_content_reference
@@ -9986,4 +10447,479 @@ variables:
           book_reference_card:
             book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
             card_id: '91b47cb0-c8a4-4ffd-a5ae-ba9d96a5b219'
-
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_backpack
+    label: 'Reference > Card > Gear > Backpack'
+    description: 'Reference > Card > Gear > Backpack'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'f6de6a22-c23b-44cb-9234-1fec9b04e57d'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_bedroll
+    label: 'Reference > Card > Gear > Bedroll'
+    description: 'Reference > Card > Gear > Bedroll'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'e25e66a1-3296-4993-8697-d1a3a6f6479a'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_beltpouch
+    label: 'Reference > Card > Gear > Beltpouch'
+    description: 'Reference > Card > Gear > Beltpouch'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '4555e9de-e74d-4e2f-b43a-f98043d3c3adj'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_candle
+    label: 'Reference > Card > Gear > Candle'
+    description: 'Reference > Card > Gear > Candle'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '7b58c928-f941-43c2-b3a6-9d4749931148'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_chain
+    label: 'Reference > Card > Gear > Chain'
+    description: 'Reference > Card > Gear > Chain'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '4ebd330f-7fc7-4997-bfe9-172419b956a1'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_chalk
+    label: 'Reference > Card > Gear > Chalk'
+    description: 'Reference > Card > Gear > Chalk'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'a9275da3-167d-4b52-a022-f728f6ba5ea6'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_chest
+    label: 'Reference > Card > Gear > Chest'
+    description: 'Reference > Card > Gear > Chest'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'a8ffa66d-9094-4fa5-97b4-5042c0b5fdbd'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_clothing_ordinary
+    label: 'Reference > Card > Gear > Clothing: Ordinary'
+    description: 'Reference > Card > Gear > Clothing: Ordinary'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '1c5f6fe0-ade3-4c6d-82f1-12469db82a5f'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_clothing_fine
+    label: 'Reference > Card > Gear > Clothing: Fine'
+    description: 'Reference > Card > Gear > Clothing: Fine'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '6fbd0f75-e1c9-44a3-a1b6-abd38cf2dfe7'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_clothing_winter
+    label: 'Reference > Card > Gear > Clothing: Winter'
+    description: 'Reference > Card > Gear > Clothing: Winter'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '60660485-d64e-4fc8-b8d1-4a1fd336399b'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_compass
+    label: 'Reference > Card > Gear > Compass'
+    description: 'Reference > Card > Gear > Compass'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'e1569c78-2b8d-4bbe-98a7-194ac45acc92'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_cookware
+    label: 'Reference > Card > Gear > Cookware'
+    description: 'Reference > Card > Gear > Cookware'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'eae246f0-b8a0-4330-a4da-a65026ea68ec'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_flint_steel
+    label: 'Reference > Card > Gear > Flint and Steel'
+    description: 'Reference > Card > Gear > Flint and Steel'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '0325e415-a494-4ca3-b916-adacb995ec12'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_grappling_hook
+    label: 'Reference > Card > Gear > Grappling Hook'
+    description: 'Reference > Card > Gear > Grappling Hook'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'c04f1c30-1695-406a-b863-953245fe1746'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_hammer
+    label: 'Reference > Card > Gear > Hammer'
+    description: 'Reference > Card > Gear > Hammer'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '2fb6b88b-dd2a-4d90-abdb-6cfc7972973b'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_holly_mistletoe
+    label: 'Reference > Card > Gear > Holly and Mistletoe'
+    description: 'Reference > Card > Gear > Holly and Mistletoe'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'c285cf6c-89eb-4080-a889-ebd7ef1b5662'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_hourglass
+    label: 'Reference > Card > Gear > Hourglass'
+    description: 'Reference > Card > Gear > Hourglass'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '81263722-3dc4-43af-8379-c3537fa986dd'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_ladder
+    label: 'Reference > Card > Gear > Ladder'
+    description: 'Reference > Card > Gear > Ladder'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '9b516106-4a8d-4944-bcb9-a5c014d854c7'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_lantern_bulls_eye
+    label: 'Reference > Card > Gear > Lantern: Bull''s Eye'
+    description: 'Reference > Card > Gear > Lantern: Bull''s Eye'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'a0f2d2e0-3333-4cd5-848b-37d49008c512'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_lantern_hooded
+    label: 'Reference > Card > Gear > Lantern: Hooded'
+    description: 'Reference > Card > Gear > Lantern: Hooded'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '6a0b2db9-31bc-49f7-957e-e1f97031a57e'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_material_component_pouch
+    label: 'Reference > Card > Gear > Material Component Pouch'
+    description: 'Reference > Card > Gear > Material Component Pouch'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '0a023f41-91cb-4ae2-a765-5e2710c897d9'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_merchants_scale
+    label: 'Reference > Card > Gear > Merchant''s Scale'
+    description: 'Reference > Card > Gear > Merchant''s Scale'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '593e95a3-76f3-4779-b0f5-92f98803fce0'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_mirror
+    label: 'Reference > Card > Gear > Mirror'
+    description: 'Reference > Card > Gear > Mirror'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '81cc5253-bc3c-42e2-a621-c5c6ebb2c5f9'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_mug
+    label: 'Reference > Card > Gear > Mug'
+    description: 'Reference > Card > Gear > Mug'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '3bc25c9f-fe7c-42df-be41-ac974a71f6b7'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_oil
+    label: 'Reference > Card > Gear > Oil'
+    description: 'Reference > Card > Gear > Oil'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '55872796-d305-43ea-bd19-30360e67f20c'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_piton
+    label: 'Reference > Card > Gear > Piton'
+    description: 'Reference > Card > Gear > Piton'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'c7dac7fe-540c-4868-bc54-f5b67343349a'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_rations
+    label: 'Reference > Card > Gear > Rations'
+    description: 'Reference > Card > Gear > Rations'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '4ff362f4-cf4c-4660-bed9-66120d00664e'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_rope_silk
+    label: 'Reference > Card > Gear > Rope: Silk'
+    description: 'Reference > Card > Gear > Rope: Silk'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'e82565e1-32e3-479b-9c41-ffca0f15ef93'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_rope_hemp
+    label: 'Reference > Card > Gear > Rope: Hemp'
+    description: 'Reference > Card > Gear > Rope: Hemp'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '2a50cc4b-28b9-4f9b-82cf-3f8a677b5e46'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_sack
+    label: 'Reference > Card > Gear > Sack'
+    description: 'Reference > Card > Gear > Sack'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'd964c588-8b41-4d66-a63c-d0fa765df7a2'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_saddlebags
+    label: 'Reference > Card > Gear > Saddlebags'
+    description: 'Reference > Card > Gear > Saddlebags'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '2e2b7fe9-fd04-48e6-9935-1e31fed2d54a'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_satchel
+    label: 'Reference > Card > Gear > Satchel'
+    description: 'Reference > Card > Gear > Satchel'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '821f2408-a1e9-4c35-a9f0-c5833152fe3e'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_scroll_case
+    label: 'Reference > Card > Gear > Scroll Case'
+    description: 'Reference > Card > Gear > Scroll Case'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '211c6f93-5ba1-4f0d-8d8d-7dc66a9f0d1a'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_sheath
+    label: 'Reference > Card > Gear > Sheath'
+    description: 'Reference > Card > Gear > Sheath'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '020572e8-c6ff-4d04-a0ec-85f946cf2026'

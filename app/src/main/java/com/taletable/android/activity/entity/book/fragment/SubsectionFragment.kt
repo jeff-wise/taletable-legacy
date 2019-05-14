@@ -24,10 +24,10 @@ import com.taletable.android.model.theme.*
 import com.taletable.android.model.theme.official.officialThemeLight
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.book
-import com.taletable.android.rts.entity.colorOrBlack
 import com.taletable.android.rts.entity.groups
 import maybe.Just
-
+import maybe.filterJust
+import kotlin.text.Typography.section
 
 
 /**
@@ -176,6 +176,8 @@ class SubsectionUI(val subsection : BookSubsection,
         cardLayout.addView(this.floatingBarView())
 
         cardLayout.addView(this.contentView(subsection.bodyContent(book)))
+
+        cardLayout.addView(this.entriesView())
 
         scrollView.addView(cardLayout)
 
@@ -561,6 +563,57 @@ class SubsectionUI(val subsection : BookSubsection,
 
         return layout.linearLayout(context)
     }
+
+
+    // VIEWS > Entry List
+    // -----------------------------------------------------------------------------------------
+
+    private fun entriesView() : LinearLayout
+    {
+        val layout = this.entriesViewLayout()
+
+        subsection.entries.forEach {
+            addEntry(it, layout)
+        }
+
+        return layout
+    }
+
+
+    private fun addEntry(entry : BookSubsectionEntry, layout : LinearLayout)
+    {
+        when (entry)
+        {
+            is BookSubsectionEntryCard -> {
+                book.content(entry.entryContent).doMaybe {
+                    layout.addView(entryContentView(it, entityId, context))
+                }
+            }
+            is BookSubsectionEntryCardGroup -> {
+                val contentList = entry.cardEntries.map { book.content(it) }.filterJust()
+                layout.addView(entryExpanderView(entry.title, theme, contentList, entityId, context))
+            }
+        }
+    }
+
+
+    private fun entriesViewLayout() : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation          = LinearLayout.VERTICAL
+
+        val bgColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_7"))))
+        layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
+
+        return layout.linearLayout(context)
+    }
+
 
 }
 

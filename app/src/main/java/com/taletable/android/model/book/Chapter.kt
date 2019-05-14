@@ -12,6 +12,7 @@ import effect.effValue
 import effect.split
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
 import maybe.Just
@@ -29,7 +30,8 @@ data class BookChapter(val chapterId : BookChapterId,
                        val title : BookChapterTitle,
                        val summary : Maybe<BookChapterSummary>,
                        val content : List<BookContentId>,
-                       val sections : MutableList<BookSection>)
+                       val sections : MutableList<BookSection>,
+                       val entries : List<BookChapterEntry>)
                         : ToDocument, Serializable
 {
 
@@ -67,8 +69,12 @@ data class BookChapter(val chapterId : BookChapterId,
                             { it.map { BookContentId.fromDocument(it) } }),
                       // Sections
                       doc.list("sections") apply {
-                          it.mapMut { BookSection.fromDocument(it) }
-                      })
+                          it.mapMut { BookSection.fromDocument(it) } },
+                      // Entries
+                      split(doc.maybeList("entries"),
+                            effValue(listOf()),
+                            { it.map { BookChapterEntry.fromDocument(it) } })
+                      )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -217,3 +223,107 @@ data class BookChapterSummary(val value : String) : ToDocument, Serializable
 }
 
 
+
+
+
+sealed class BookChapterEntry()
+{
+    // | CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<BookChapterEntry>
+    {
+        override fun fromDocument(doc : SchemaDoc): ValueParser<BookChapterEntry> =
+            when (doc.case())
+            {
+                "book_chapter_entry_simple"     -> BookChapterEntrySimple.fromDocument(doc) as ValueParser<BookChapterEntry>
+                "book_chapter_entry_card_group" -> BookChapterEntryCardGroup.fromDocument(doc) as ValueParser<BookChapterEntry>
+                "book_chapter_entry_group"      -> BookChapterEntryGroup.fromDocument(doc) as ValueParser<BookChapterEntry>
+                else                 -> {
+                    effError(UnknownCase(doc.case(), doc.path))
+                }
+            }
+    }
+
+}
+
+
+data class BookChapterEntrySimple(val sectionId : BookSectionId) : BookChapterEntry()
+{
+
+    companion object : Factory<BookChapterEntrySimple>
+    {
+
+        override fun fromDocument(doc: SchemaDoc)
+                : ValueParser<BookChapterEntrySimple> = when (doc)
+        {
+            is DocDict -> {
+                apply(::BookChapterEntrySimple,
+                      // Subsection Id
+                      doc.at("section_id").apply { BookSectionId.fromDocument(it) }
+                )
+            }
+            else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+    }
+
+}
+
+
+data class BookChapterEntryCardGroup(
+        val title : String,
+        val cardEntries : List<BookContentId>) : BookChapterEntry()
+{
+
+    companion object : Factory<BookChapterEntryCardGroup>
+    {
+
+        override fun fromDocument(doc: SchemaDoc)
+                : ValueParser<BookChapterEntryCardGroup> = when (doc)
+        {
+            is DocDict -> {
+                apply(::BookChapterEntryCardGroup,
+                      // Group Title
+                      doc.text("title"),
+                      // Subsections
+                      split(doc.maybeList("card_entries"),
+                            effValue(listOf()),
+                            { it.map { BookContentId.fromDocument(it) } })
+                )
+            }
+            else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+    }
+
+}
+
+
+data class BookChapterEntryGroup(
+        val title : String,
+        val entries : List<BookChapterEntry>) : BookChapterEntry()
+{
+
+    companion object : Factory<BookChapterEntryGroup>
+    {
+
+        override fun fromDocument(doc: SchemaDoc)
+                : ValueParser<BookChapterEntryGroup> = when (doc)
+        {
+            is DocDict -> {
+                apply(::BookChapterEntryGroup,
+                      // Group Title
+                      doc.text("title"),
+                      // Entries
+                      split(doc.maybeList("entries"),
+                            effValue(listOf()),
+                            { it.map { BookChapterEntry.fromDocument(it) } })
+                )
+            }
+            else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+    }
+
+}
