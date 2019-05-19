@@ -86,7 +86,7 @@ suspend fun activateSession(loader : Session, context : Context)
 
         entityLoadResult.doMaybe {
 //            Log.d("***SESSION", "loaded: $entityLoadResult")
-            Router.send(MessageSessionEntityLoaded(SessionLoadUpdate(index + 1, numberOfLoaders)))
+            Router.send(MessageSessionEntityLoaded(SessionLoadUpdate(index + 1, numberOfLoaders, it.entityId)))
             entityLoadResults.add(it)
         }
     }
@@ -262,7 +262,8 @@ data class Session(val sessionId : SessionId,
 
 
 data class SessionLoadUpdate(val entityLoadNumber : Int,
-                             val totalEntities : Int) : Serializable
+                             val totalEntities : Int,
+                             val entityId : EntityId) : Serializable
 
 
 //data class SessionRecord(val sessionId : SessionId,

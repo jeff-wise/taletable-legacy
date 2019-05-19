@@ -12,13 +12,21 @@ groups:
         - theme_id: light
           color_id: white
       padding:
-        top: 16
-        bottom: 16
         left: 16
         right: 16
   rows:
   - format:
       element_format:
+        padding:
+          top: 16
+          bottom: 16
+        border:
+          bottom:
+            thickness: 1
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_5
         horizontal_alignment: left
         justification: space_between
     widgets:
@@ -334,3 +342,59 @@ groups:
               variable_id: skills_index_thievery_disable_device_actions
             - context: thievery_pick_lock
               variable_id: skills_index_thievery_pick_lock_actions
+## ---------------------------------------------------------------------------------------------
+## | Ability Card
+## ---------------------------------------------------------------------------------------------
+- id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+  name: 'Ability Card'
+  summary: 'Ability Card'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        bottom: 12
+  rows:
+#  - format:
+#      element_format:
+#        horizontal_alignment: left
+#        margins:
+#          left: 12
+#          right: 12
+#          top: 16
+#          bottom: 16
+#    widgets:
+#    - type: widget_number
+#      widget_number:
+#        kind: modifier
+#        format:
+#          type: widget_format_official
+#          widget_format_official:
+#            theme: metric
+#            style: horizontal_box
+#            widget_format:
+#              element_format:
+#                margins:
+#                  right: 16
+#        prefix_variable_reference:
+#          type: variable_id
+#          variable_id: term_armor_class_label
+#        value_variable_reference:
+#          type: variable_tag
+#          variable_tag: armor_ac_bonus
+#    - type: widget_number
+#      widget_number:
+#        kind: modifier
+#        format:
+#          type: widget_format_official
+#          widget_format_official:
+#            theme: metric
+#            style: horizontal_box
+#        prefix_variable_reference:
+#          type: variable_id
+#          variable_id: term_touch_armor_class_label
+#        value_variable_reference:
+#          type: variable_tag
+#          variable_tag: armor_tac_bonus

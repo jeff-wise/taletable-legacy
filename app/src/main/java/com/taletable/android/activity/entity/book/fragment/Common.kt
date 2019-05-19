@@ -40,19 +40,21 @@ fun entryExpanderView(
         theme : Theme,
         contentList : List<BookContent>,
         entityId : EntityId,
-        context : Context
+        context : Context,
+        isInline : Boolean = false
 ) : LinearLayout
 {
     val layout = entryExpanderViewLayout(context)
 
     val headerView = entryExpanderHeaderView(title, theme, context)
-    val contentLayout = entryExpanderContentlayout(context)
+    val contentLayout = entryExpanderContentlayout(isInline, context)
 
     var isOpen = false
 
     val openDrawable = ContextCompat.getDrawable(context, R.drawable.icon_chevron_down_light)
     val closedDrawable = ContextCompat.getDrawable(context, R.drawable.icon_chevron_up_light)
 
+    var hasViews = false
 
     val labelClosedColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
@@ -66,7 +68,7 @@ fun entryExpanderView(
 
     headerView.setOnClickListener {
         isOpen = if (isOpen) {
-            contentLayout.removeAllViews()
+            contentLayout.visibility = View.GONE
             headerView.findViewById<ImageView>(R.id.icon_view)?.let {
                 it.setImageDrawable(closedDrawable)
             }
@@ -75,15 +77,22 @@ fun entryExpanderView(
 //            }
             false
         } else {
-            contentList.forEach { content ->
-                groups(content.groupReferences(), entityId).forEach {
-                    val groupContext = when (content.context()) {
-                        is Just -> content.context()
-                        is Nothing -> it.groupContext
+            contentLayout.visibility = View.VISIBLE
+
+            if (!hasViews) {
+                contentList.forEach { content ->
+                    groups(content.groupReferences(), entityId).forEach {
+                        val groupContext = when (content.context()) {
+                            is Just -> content.context()
+                            is Nothing -> it.groupContext
+                        }
+                        contentLayout.addView(it.group.view(entityId, context, groupContext))
                     }
-                    contentLayout.addView(it.group.view(entityId, context, groupContext))
                 }
+
+                hasViews = true
             }
+
             headerView.findViewById<ImageView>(R.id.icon_view)?.let {
                 it.setImageDrawable(openDrawable)
             }
@@ -113,6 +122,7 @@ private fun entryExpanderViewLayout(context : Context) : LinearLayout
     layoutBuilder.orientation       = LinearLayout.VERTICAL
 
     layoutBuilder.margin.bottomDp   = 1f
+
 
     return layoutBuilder.linearLayout(context)
 }
@@ -146,6 +156,7 @@ private fun entryExpanderHeaderView(
     layoutBuilder.padding.rightDp   = 16f
 
     layoutBuilder.backgroundColor   = Color.WHITE
+
 
     layoutBuilder.child(labelViewBuilder)
                  .child(iconViewBuilder)
@@ -200,14 +211,24 @@ private fun entryExpanderHeaderView(
 /**
  * Entry Expander Content Layout
  */
-private fun entryExpanderContentlayout(context : Context) : LinearLayout
+private fun entryExpanderContentlayout(isInline : Boolean, context : Context) : LinearLayout
 {
     val layoutBuilder           = LinearLayoutBuilder()
 
     layoutBuilder.width         = LinearLayout.LayoutParams.MATCH_PARENT
     layoutBuilder.height        = LinearLayout.LayoutParams.WRAP_CONTENT
 
+    layoutBuilder.visibility = View.GONE
+
     layoutBuilder.orientation   = LinearLayout.VERTICAL
+
+    layoutBuilder.backgroundColor   = Color.WHITE
+
+    if (isInline) {
+        layoutBuilder.padding.leftDp = 16f
+        layoutBuilder.padding.rightDp = 16f
+        layoutBuilder.padding.bottomDp = 16f
+    }
 
     return layoutBuilder.linearLayout(context)
 }
@@ -495,4 +516,6 @@ private fun entryContentViewLayout(context : Context) : LinearLayout
 
     return layoutBuilder.linearLayout(context)
 }
+
+
 

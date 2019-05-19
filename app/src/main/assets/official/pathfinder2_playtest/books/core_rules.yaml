@@ -1068,6 +1068,489 @@ content:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
+- id: skills_acrobatics_balance_card
+  title: 'Skills > Acrobatics > Balance > Card'
+  context: acrobatics_balance
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_acrobatics_escape_card
+  title: 'Skills > Acrobatics > Escape > Card'
+  context: acrobatics_escape
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_acrobatics_grab_edge_card
+  title: 'Skills > Acrobatics > Grab Edge > Card'
+  context: acrobatics_grab_edge
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_acrobatics_maintain_balance_card
+  title: 'Skills > Acrobatics > Maintain Balance > Card'
+  context: acrobatics_maintain_balance
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_acrobatics_squeeze_card
+  title: 'Skills > Acrobatics > Squeeze > Card'
+  context: acrobatics_squeeze
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_acrobatics_tumble_through_card
+  title: 'Skills > Acrobatics > Tumble Through > Card'
+  context: acrobatics_tumble_through
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_acrobatics_maneuver_in_flight_card
+  title: 'Skills > Acrobatics > Maneuver in Flight > Card'
+  context: acrobatics_maneuver_in_flight
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_arcana_recall_knowledge_card
+  title: 'Skills > Arcana > Recall Knowledge > Card'
+  context: arcana_recall_knowledge
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_arcana_borrow_arcane_spell_card
+  title: 'Skills > Arcana > Borrow an Arcane Spell > Card'
+  context: arcana_borrow_arcane_spell
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_arcana_identify_magic_card
+  title: 'Skills > Arcana > Identify Magic > Card'
+  context: arcana_identify_magic
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_arcana_learn_arcane_spell_card
+  title: 'Skills > Arcana > Learn an Arcane Spell > Card'
+  context: arcana_learn_arcane_spell
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_arcana_read_magic_card
+  title: 'Skills > Arcana > Read Magic > Card'
+  context: arcana_read_magic
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_athletics_break_grapple_card
+  title: 'Skills > Athletics > Break Grapple > Card'
+  context: athletics_break_grapple
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_athletics_break_open_card
+  title: 'Skills > Athletics > Break Open > Card'
+  context: athletics_break_open
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_athletics_climb_card
+  title: 'Skills > Athletics > Climb > Card'
+  context: athletics_climb
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_athletics_grapple_card
+  title: 'Skills > Athletics > Grapple > Card'
+  context: athletics_grapple
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_athletics_high_jump_card
+  title: 'Skills > Athletics > High Jump > Card'
+  context: athletics_high_jump
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_athletics_long_jump_card
+  title: 'Skills > Athletics > Long Jump > Card'
+  context: athletics_long_jump
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_athletics_shove_card
+  title: 'Skills > Athletics > Shove > Card'
+  context: athletics_shove
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_athletics_swim_card
+  title: 'Skills > Athletics > Swim > Card'
+  context: athletics_swim
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_athletics_trip_card
+  title: 'Skills > Athletics > Trip > Card'
+  context: athletics_trip
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_athletics_disarm_card
+  title: 'Skills > Athletics > Disarm > Card'
+  context: athletics_disarm
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_crafting_repair_card
+  title: 'Skills > Crafting > Repair > Card'
+  context: crafting_repair
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_crafting_craft_card
+  title: 'Skills > Crafting > Craft > Card'
+  context: crafting_craft
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_crafting_identify_alchemy_card
+  title: 'Skills > Crafting > Identify Alchemy > Card'
+  context: crafting_identify_alchemy
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_deception_create_diversion_card
+  title: 'Skills > Deception > Create a Diversion > Card'
+  context: deception_create_diversion
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_deception_impersonate_card
+  title: 'Skills > Deception > Impersonate > Card'
+  context: deception_impersonate
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_deception_lie_card
+  title: 'Skills > Deception > Lie > Card'
+  context: deception_lie
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_deception_feint_card
+  title: 'Skills > Deception > Feint > Card'
+  context: deception_feint
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_diplomacy_gather_information_card
+  title: 'Skills > Diplomacy > Gather Information > Card'
+  context: diplomacy_gather_information
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_diplomacy_make_impression_card
+  title: 'Skills > Diplomacy > Make Impression > Card'
+  context: diplomacy_make_impression
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_diplomacy_request_card
+  title: 'Skills > Diplomacy > Request > Card'
+  context: diplomacy_request
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_intimidation_demoralize_card
+  title: 'Skills > Intimidation > Demoralize > Card'
+  context: intimidation_demoralize
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_intimidation_coerce_card
+  title: 'Skills > Intimidation > Coerce > Card'
+  context: intimidation_coerce
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_lore_recall_knowledge_card
+  title: 'Skills > Lore > Recall Knowledge > Card'
+  context: lore_recall_knowledge
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_lore_practice_trade_card
+  title: 'Skills > Lore > Practice a Trade > Card'
+  context: lore_practice_trade
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_medicine_administer_first_aid_card
+  title: 'Skills > Medicine > Administer First Aid > Card'
+  context: medicine_administer_first_aid
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_medicine_treat_disease_card
+  title: 'Skills > Medicine > Treat Disease > Card'
+  context: medicine_treat_disease
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_medicine_treat_poison_card
+  title: 'Skills > Medicine > Treat Poison > Card'
+  context: medicine_treat_poison
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_nature_command_animal_card
+  title: 'Skills > Nature > Command Animal > Card'
+  context: nature_command_animal
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_nature_handle_animal_card
+  title: 'Skills > Nature > Handle an Animal > Card'
+  context: nature_handle_animal
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_nature_recall_knowledge_card
+  title: 'Skills > Nature > Recall Knowledge > Card'
+  context: nature_recall_knowledge
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_nature_identify_magic_card
+  title: 'Skills > Nature > Identify Magic > Card'
+  context: nature_identify_magic
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_nature_learn_primal_spell_card
+  title: 'Skills > Nature > Learn Primal Spell > Card'
+  context: nature_learn_primal_spell
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_occultism_recall_knowledge_card
+  title: 'Skills > Occultism > Recall Knowledge > Card'
+  context: occultism_recall_knowledge
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_occultism_identify_magic_card
+  title: 'Skills > Occultism > Identify Magic > Card'
+  context: occultism_identify_magic
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_occultism_learn_occult_spell_card
+  title: 'Skills > Occultism > Learn an Occult Spell > Card'
+  context: occultism_learn_occult_spell
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_occultism_read_esoterica_card
+  title: 'Skills > Occultism > Read Esoterica > Card'
+  context: occultism_read_esoterica
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_performance_perform_card
+  title: 'Skills > Performance > Perform > Card'
+  context: performance_perform
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_performance_stage_performance_card
+  title: 'Skills > Performance > Stage a Performance > Card'
+  context: performance_stage_performance
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_religion_recall_knowledge_card
+  title: 'Skills > Religion > Recall Knolwedge > Card'
+  context: religion_recall_knowledge
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_religion_identify_magic_card
+  title: 'Skills > Religion > Identify Magic > Card'
+  context: religion_identify_magic
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_religion_learn_divine_spell_card
+  title: 'Skills > Religion > Learn a Divine Spell > Card'
+  context: religion_learn_divine_spell
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_religion_read_scripture_card
+  title: 'Skills > Religion > Read Scripture > Card'
+  context: religion_read_scripture
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_society_recall_knowledge_card
+  title: 'Skills > Society > Recall Knowledge > Card'
+  context: society_recall_knowledge
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_society_subsist_streets_card
+  title: 'Skills > Society > Subsist on the Streets > Card'
+  context: society_subsist_streets
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_society_create_forgery_card
+  title: 'Skills > Society > Create Forgery > Card'
+  context: society_create_forgery
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_society_decipher_writing_card
+  title: 'Skills > Society > Decipher Writing > Card'
+  context: society_decipher_writing
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_stealth_conceal_object_card
+  title: 'Skills > Stealth > Conceal an Object > Card'
+  context: stealth_conceal_object
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_stealth_hide_card
+  title: 'Skills > Stealth > Hide > Card'
+  context: stealth_hide
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_stealth_sneak_card
+  title: 'Skills > Stealth > Sneak > Card'
+  context: stealth_sneak
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_survival_sense_direction_card
+  title: 'Skills > Survival > Sense Direction > Card'
+  context: survival_sense_direction
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_survival_survive_wild_card
+  title: 'Skills > Survival > Survive in the Wild > Card'
+  context: survival_survive_wild
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_survival_cover_tracks_card
+  title: 'Skills > Survival > Cover Tracks > Card'
+  context: survival_cover_tracks
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_survival_track_card
+  title: 'Skills > Survival > Track > Card'
+  context: survival_track
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_thievery_palm_object_card
+  title: 'Skills > Thievery > Palm an Object > Card'
+  context: thievery_palm_object
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_thievery_steal_object_card
+  title: 'Skills > Thievery > Steal an Object > Card'
+  context: thievery_steal_object
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_thievery_disable_device_card
+  title: 'Skills > Thievery > Disable a Device > Card'
+  context: thievery_disable_device
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: skills_thievery_pick_lock_card
+  title: 'Skills > Thievery > Pick a Lock> Card'
+  context: thievery_pick_lock
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: classes_introduction
   title: 'Classes > Introduction'
   group_references:
@@ -1315,84 +1798,84 @@ content:
       group_id: 'c07d32a1-dd59-4c35-a1d4-512954b0d65e'
 - id: equipment_armor_shields_armor_list_light_armor_padded_card
   title: 'Card: Padded Armor'
-  context: padded
+  context: armor_padded
   group_references:
   - value:
       type: group_id
       group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
 - id: equipment_armor_shields_armor_list_light_armor_leather_card
   title: 'Card: Leather Armor'
-  context: leather
+  context: armor_leather
   group_references:
   - value:
       type: group_id
       group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
 - id: equipment_armor_shields_armor_list_light_armor_studded_leather_card
   title: 'Card: Studded Leather Armor'
-  context: studded_leather
+  context: armor_studded_leather
   group_references:
   - value:
       type: group_id
       group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
 - id: equipment_armor_shields_armor_list_light_armor_chain_shirt_card
   title: 'Card: Chain Shirt Armor'
-  context: chain_shirt
+  context: armor_chain_shirt
   group_references:
   - value:
       type: group_id
       group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
 - id: equipment_armor_shields_armor_list_medium_armor_hide_card
   title: 'Card: Hide Armor'
-  context: hide
+  context: armor_hide
   group_references:
   - value:
       type: group_id
       group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
 - id: equipment_armor_shields_armor_list_medium_armor_scale_mail_card
   title: 'Card: Scale Mail'
-  context: scale_mail
+  context: armor_scale_mail
   group_references:
   - value:
       type: group_id
       group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
 - id: equipment_armor_shields_armor_list_medium_armor_chain_mail_card
   title: 'Card: Chain Mail'
-  context: chain_mail
+  context: armor_chain_mail
   group_references:
   - value:
       type: group_id
       group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
 - id: equipment_armor_shields_armor_list_medium_armor_breastplate_card
   title: 'Card: Breastplate'
-  context: breastplate
+  context: armor_breastplate
   group_references:
   - value:
       type: group_id
       group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
 - id: equipment_armor_shields_armor_list_medium_armor_splint_mail_card
   title: 'Card: Splint Mail'
-  context: splint_mail
+  context: armor_splint_mail
   group_references:
   - value:
       type: group_id
       group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
 - id: equipment_armor_shields_armor_list_heavy_armor_splint_mail_card
   title: 'Card: Splint Mail'
-  context: splint_mail
+  context: armor_splint_mail
   group_references:
   - value:
       type: group_id
       group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
 - id: equipment_armor_shields_armor_list_heavy_armor_half_plate_card
   title: 'Card: Half Plate'
-  context: half_plate
+  context: armor_half_plate
   group_references:
   - value:
       type: group_id
       group_id: 'd8b9e3d0-951b-4fa9-a028-31d132374d9e'
 - id: equipment_armor_shields_armor_list_heavy_armor_full_plate_card
   title: 'Card: Full Plate'
-  context: full_plate
+  context: armor_full_plate
   group_references:
   - value:
       type: group_id
@@ -1716,198 +2199,327 @@ content:
   - value:
       type: group_id
       group_id: '65619095-2a8f-42b2-8f42-74c0715d5e21'
-- id: equipment_weapons_traits
-  title: 'Weapon Traits'
+- id: equipment_weapons_traits_index_agile_card
+  title: 'Card: Weapon Trait > Agile'
+  context: weapon_trait_agile
   group_references:
   - value:
       type: group_id
-      group_id: '6e70a89b-1d3e-4d2e-9840-ef36332b3453'
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_attached_card
+  title: 'Card: Weapon Trait > Attached'
+  context: weapon_trait_attached
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: agile
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_backstabber_card
+  title: 'Card: Weapon Trait > Backstabber'
+  context: weapon_trait_backstabber
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: attached
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_backswing_card
+  title: 'Card: Weapon Trait > Backswing'
+  context: weapon_trait_backswing
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: backstabber
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_charge_card
+  title: 'Card: Weapon Trait > Charge'
+  context: weapon_trait_charge
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: backswing
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_deadly_card
+  title: 'Card: Weapon Trait > Deadly'
+  context: weapon_trait_deadly
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: charge
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_disarm_card
+  title: 'Card: Weapon Trait > Disarm'
+  context: weapon_trait_disarm
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: deadly
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_dwarf_card
+  title: 'Card: Weapon Trait > Dwarf'
+  context: weapon_trait_dwarf
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: disarm
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_elf_card
+  title: 'Card: Weapon Trait > Elf'
+  context: weapon_trait_elf
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: dwarf
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_fatal_card
+  title: 'Card: Weapon Trait > Fatal'
+  context: weapon_trait_fatal
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: elf
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_finesse_card
+  title: 'Card: Weapon Trait > Finesse'
+  context: weapon_trait_finesse
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: fatal
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_forceful_card
+  title: 'Card: Weapon Trait > Forceful'
+  context: weapon_trait_forceful
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: finesse
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_free_hand_card
+  title: 'Card: Weapon Trait > Free Hand'
+  context: weapon_trait_free_hand
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: forceful
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_gnome_card
+  title: 'Card: Weapon Trait > Gnome'
+  context: weapon_trait_gnome
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: freehand
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_goblin_card
+  title: 'Card: Weapon Trait > Goblin'
+  context: weapon_trait_goblin
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: gnome
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_halfling_card
+  title: 'Card: Weapon Trait > Halfling'
+  context: weapon_trait_halfling
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: goblin
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_monk_card
+  title: 'Card: Weapon Trait > Monk'
+  context: weapon_trait_monk
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: halfling
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_nonlethal_card
+  title: 'Card: Weapon Trait > Nonlethal'
+  context: weapon_trait_nonlethal
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: monk
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_orc_card
+  title: 'Card: Weapon Trait > Orc'
+  context: weapon_trait_orc
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: nonlethal
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_parry_card
+  title: 'Card: Weapon Trait > Parry'
+  context: weapon_trait_parry
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: orc
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_propulsive_card
+  title: 'Card: Weapon Trait > Propulsive'
+  context: weapon_trait_propulsive
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: parry
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_reach_card
+  title: 'Card: Weapon Trait > Reach'
+  context: weapon_trait_reach
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: propulsive
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_shove_card
+  title: 'Card: Weapon Trait > Shove'
+  context: weapon_trait_shove
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: reach
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_sweep_card
+  title: 'Card: Weapon Trait > Sweep'
+  context: weapon_trait_sweep
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: shove
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_thrown_card
+  title: 'Card: Weapon Trait > Thrown'
+  context: weapon_trait_thrown
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: sweep
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_trip_card
+  title: 'Card: Weapon Trait > Trip'
+  context: weapon_trait_trip
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: thrown
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_twin_card
+  title: 'Card: Weapon Trait > Twin'
+  context: weapon_trait_twin
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: trip
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_two_hand_card
+  title: 'Card: Weapon Trait > Two-hand'
+  context: weapon_trait_two_hand
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: twin
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_unarmed_card
+  title: 'Card: Weapon Trait > Unarmed'
+  context: weapon_trait_unarmed
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: twohand
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_versatile_card
+  title: 'Card: Weapon Trait > Versatile'
+  context: weapon_trait_versatile
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: unarmed
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_traits_index_volley_card
+  title: 'Card: Weapon Trait > Volley'
+  context: weapon_trait_volley
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: versatile
+      group_id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+- id: equipment_weapons_crit_spec_index_axe_card
+  title: 'Card: Weapon Critical Specialization > Axe'
+  context: weapon_crit_spec_axe
+  group_references:
   - value:
       type: group_id
-      group_id: 'c6dee08f-dd78-47fa-9289-56c2882d2f82'
-    group_context: volley
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+- id: equipment_weapons_crit_spec_index_bow_card
+  title: 'Card: Weapon Critical Specialization > Bow'
+  context: weapon_crit_spec_bow
+  group_references:
+  - value:
+      type: group_id
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+- id: equipment_weapons_crit_spec_index_brawling_card
+  title: 'Card: Weapon Critical Specialization > Brawling'
+  context: weapon_crit_spec_brawling
+  group_references:
+  - value:
+      type: group_id
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+- id: equipment_weapons_crit_spec_index_club_card
+  title: 'Card: Weapon Critical Specialization > Club'
+  context: weapon_crit_spec_club
+  group_references:
+  - value:
+      type: group_id
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+- id: equipment_weapons_crit_spec_index_dart_card
+  title: 'Card: Weapon Critical Specialization > Dart'
+  context: weapon_crit_spec_dart
+  group_references:
+  - value:
+      type: group_id
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+- id: equipment_weapons_crit_spec_index_flail_card
+  title: 'Card: Weapon Critical Specialization > Flail'
+  context: weapon_crit_spec_flail
+  group_references:
+  - value:
+      type: group_id
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+- id: equipment_weapons_crit_spec_index_hammer_card
+  title: 'Card: Weapon Critical Specialization > Hammer'
+  context: weapon_crit_spec_hammer
+  group_references:
+  - value:
+      type: group_id
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+- id: equipment_weapons_crit_spec_index_knife_card
+  title: 'Card: Weapon Critical Specialization > Knife'
+  context: weapon_crit_spec_knife
+  group_references:
+  - value:
+      type: group_id
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+- id: equipment_weapons_crit_spec_index_pick_card
+  title: 'Card: Weapon Critical Specialization > Pick'
+  context: weapon_crit_spec_pick
+  group_references:
+  - value:
+      type: group_id
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+- id: equipment_weapons_crit_spec_index_polearm_card
+  title: 'Card: Weapon Critical Specialization > Polearm'
+  context: weapon_crit_spec_polearm
+  group_references:
+  - value:
+      type: group_id
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+- id: equipment_weapons_crit_spec_index_shield_card
+  title: 'Card: Weapon Critical Specialization > Shield'
+  context: weapon_crit_spec_shield
+  group_references:
+  - value:
+      type: group_id
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+- id: equipment_weapons_crit_spec_index_sling_card
+  title: 'Card: Weapon Critical Specialization > Sling'
+  context: weapon_crit_spec_sling
+  group_references:
+  - value:
+      type: group_id
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+- id: equipment_weapons_crit_spec_index_spear_card
+  title: 'Card: Weapon Critical Specialization > Spear'
+  context: weapon_crit_spec_spear
+  group_references:
+  - value:
+      type: group_id
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+- id: equipment_weapons_crit_spec_index_sword_card
+  title: 'Card: Weapon Critical Specialization > Sword'
+  context: weapon_crit_spec_sword
+  group_references:
+  - value:
+      type: group_id
+      group_id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
 - id: equipment_weapons_crit_specialization_effects
   title: 'Critical Specialization Effects'
   group_references:
   - value:
       type: group_id
       group_id: '83bd3f42-089c-421a-9e73-461c89fb03b0'
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: axe
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: bow
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: brawling
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: club
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: dart
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: flail
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: hammer
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: knife
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: pick
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: polearm
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: shield
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: sling
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: spear
-  - value:
-      type: group_id
-      group_id: 'cc6e6011-9ab7-4721-b261-d9feeac88a95'
-    group_context: sword
 - id: subsection_weapon_properties
   title: 'Weapon Properties'
   group_references:
@@ -3533,28 +4145,292 @@ chapters:
     title: 'Class Features'
   - id: classes_index_alchemist
     title: 'Alchemist'
+    entries:
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_alchemist_overview
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_alchemist_being
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_alchemist_features
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_alchemist_feats
+    subsections:
+    - id: classes_alchemist_overview
+      title: 'Overview'
+    - id: classes_alchemist_being
+      title: 'Being an Alchemist'
+    - id: classes_alchemist_features
+      title: 'Class Features'
+    - id: classes_alchemist_feats
+      title: 'Feats'
   - id: classes_index_barbarian
     title: 'Barbarian'
+    entries:
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_barbarian_overview
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_barbarian_being
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_barbarian_features
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_barbarian_feats
+    subsections:
+    - id: classes_barbarian_overview
+      title: 'Overview'
+    - id: classes_barbarian_being
+      title: 'Being a Barbarian'
+    - id: classes_barbarian_features
+      title: 'Class Features'
+    - id: classes_barbarian_feats
+      title: 'Feats'
   - id: classes_index_bard
     title: 'Bard'
+    entries:
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_bard_overview
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_bard_being
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_bard_features
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_bard_feats
+    subsections:
+    - id: classes_bard_overview
+      title: 'Overview'
+    - id: classes_bard_being
+      title: 'Being a Bard'
+    - id: classes_bard_features
+      title: 'Class Features'
+    - id: classes_bard_feats
+      title: 'Feats'
   - id: classes_index_cleric
     title: 'Cleric'
+    entries:
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_cleric_overview
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_cleric_being
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_cleric_features
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_cleric_feats
+    subsections:
+    - id: classes_cleric_overview
+      title: 'Overview'
+    - id: classes_cleric_being
+      title: 'Being a Cleric'
+    - id: classes_cleric_features
+      title: 'Class Features'
+    - id: classes_cleric_feats
+      title: 'Feats'
   - id: classes_index_druid
     title: 'Druid'
+    entries:
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_druid_overview
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_druid_being
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_druid_features
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_druid_feats
+    subsections:
+    - id: classes_druid_overview
+      title: 'Overview'
+    - id: classes_druid_being
+      title: 'Being a Druid'
+    - id: classes_druid_features
+      title: 'Class Features'
+    - id: classes_druid_feats
+      title: 'Feats'
   - id: classes_index_fighter
     title: 'Fighter'
+    entries:
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_fighter_overview
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_fighter_being
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_fighter_features
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_fighter_feats
+    subsections:
+    - id: classes_fighter_overview
+      title: 'Overview'
+    - id: classes_fighter_being
+      title: 'Being a Fighter'
+    - id: classes_fighter_features
+      title: 'Class Features'
+    - id: classes_fighter_feats
+      title: 'Feats'
   - id: classes_index_monk
     title: 'Monk'
+    entries:
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_monk_overview
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_monk_being
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_monk_features
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_monk_feats
+    subsections:
+    - id: classes_monk_overview
+      title: 'Overview'
+    - id: classes_monk_being
+      title: 'Being a Monk'
+    - id: classes_monk_features
+      title: 'Class Features'
+    - id: classes_monk_feats
+      title: 'Feats'
   - id: classes_index_paladin
     title: 'Paladin'
+    entries:
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_paladin_overview
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_paladin_being
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_paladin_features
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_paladin_feats
+    subsections:
+    - id: classes_paladin_overview
+      title: 'Overview'
+    - id: classes_paladin_being
+      title: 'Being a Paladin'
+    - id: classes_paladin_features
+      title: 'Class Features'
+    - id: classes_paladin_feats
+      title: 'Feats'
   - id: classes_index_ranger
     title: 'Ranger'
+    entries:
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_ranger_overview
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_ranger_being
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_ranger_features
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_ranger_feats
+    subsections:
+    - id: classes_ranger_overview
+      title: 'Overview'
+    - id: classes_ranger_being
+      title: 'Being a Ranger'
+    - id: classes_ranger_features
+      title: 'Class Features'
+    - id: classes_ranger_feats
+      title: 'Feats'
   - id: classes_index_rogue
     title: 'Rogue'
+    entries:
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_rogue_overview
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_rogue_being
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_rogue_features
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_rogue_feats
+    subsections:
+    - id: classes_rogue_overview
+      title: 'Overview'
+    - id: classes_rogue_being
+      title: 'Being a Rogue'
+    - id: classes_rogue_features
+      title: 'Class Features'
+    - id: classes_rogue_feats
+      title: 'Feats'
   - id: classes_index_sorcerer
     title: 'Sorcerer'
+    entries:
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_sorcerer_overview
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_sorcerer_being
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_sorcerer_features
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_sorcerer_feats
+    subsections:
+    - id: classes_sorcerer_overview
+      title: 'Overview'
+    - id: classes_sorcerer_being
+      title: 'Being a Sorcerer'
+    - id: classes_sorcerer_features
+      title: 'Class Features'
+    - id: classes_sorcerer_feats
+      title: 'Feats'
   - id: classes_index_wizard
     title: 'Wizard'
+    entries:
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_wizard_overview
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_wizard_being
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_wizard_features
+    - type: book_section_entry_simple
+      book_section_entry_simple:
+        subsection_id: classes_wizard_feats
+    subsections:
+    - id: classes_wizard_overview
+      title: 'Overview'
+    - id: classes_wizard_being
+      title: 'Being a Wizard'
+    - id: classes_wizard_features
+      title: 'Class Features'
+    - id: classes_wizard_feats
+      title: 'Feats'
 - id: skills
   title: 'Skills'
   summary: 'The skills in the game and rules for using them.'
@@ -4352,10 +5228,150 @@ chapters:
       - equipment_weapons_statistics
     - id: equipment_weapons_traits
       title: 'Weapon Traits'
+      entries:
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'c57aabaf-28cb-45ff-b17a-d2192df4f28f'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'edc85dbf-e6d9-4489-9e11-e30384e1f988'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '2429cb55-5291-4518-9023-b2d6354fbc98'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '038b35ed-c969-4b52-aec7-c121fbc0d31b'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'bb3fa669-77b4-4806-a3cd-b7084552886b'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'c8d5a40f-ef7d-4fb8-9dfb-f45e36dd59a7'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'e36066b5-3b64-4378-bbb5-b5b36add42fa'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '7e1e2391-1c4d-4835-93cf-93ca144c35b5'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'a104a007-b21a-433c-9ad5-f54f32bcd476'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'c921bb75-06fe-4632-8c86-1d58a31d3aec'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '563e7dbf-bb3f-410c-907a-50be0fc70ff9'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'd3ddc555-01c8-4289-b9d4-718ceb42bb24'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '480b771c-91cb-4acc-a9d5-bf83e75029c2'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '82b4a071-0549-4daf-8aec-8d9b7356f81f'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '825e1ac3-cfa6-468e-ae89-1f3069d507fb'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '32c1b0d7-7e9b-406b-ae9f-500a74cf2730'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '172205a6-9a19-4923-bcc0-04dfa8285987'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '106353ba-b358-49c0-8000-86ab53421964'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '5f6cecec-a1d0-4d62-a18e-7daeb576323b'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '26cca395-6a90-48f8-bd2e-ac94d759f102'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'e9a064bd-dc91-4d87-8059-da0ec943924e'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'b895b675-f1e6-4d7a-a021-d408b03b3c3d'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'd376780a-dbe9-4e06-a7cf-7e6190a3d091'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '3d3cec7b-efc5-455b-b57a-2ffca5b34a10'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '6c26a50b-d006-46ac-b8d0-36034c93d154'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '7ebf01f3-a0d4-4e64-9c21-511c2453585c'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '2e515b58-a275-4357-b610-8a167671a351'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '626be552-4ab7-4a41-897d-ccc25a9cc350'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '99dd31c3-4f34-4c4a-ba37-9849d964a347'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '2ce9afc4-e6a1-4069-b9d6-4e4fbe521c4e'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'f5237989-2971-413a-8f23-d83394a87b94'
       body:
       - equipment_weapons_traits
     - id: equipment_weapons_crit_spec_effects
       title: 'Critical Specialization Effects'
+      entries:
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'b11331bf-cb86-4d25-ae66-38050653e0c9'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'dbd15cbb-cdaa-4d95-955b-e2b259648940'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: 'eb368229-6151-44d1-99cb-ebba19e05238'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '31fbba4a-39f0-4868-9284-138db605a420'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '7edd5c33-0241-4a9d-9e28-f71897aed171'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '3654f6d9-7591-4591-b63b-612cab83be31'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '508c947d-f5a8-4470-a3ff-0f8043ccc067'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '80b5c37e-a659-4133-8df8-996a4c981293'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '4b75ddc6-13aa-46f7-970c-e5b7f53dbcd2'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '7436c75c-967a-448e-8199-e916f770ccc5'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '535a9cc1-7d9e-4ea8-b1a2-57080571516a'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '4911cc34-af7e-43d1-937d-eb7a2bfe32a3'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '6d4a8990-1fbe-470f-904b-971e1fa91091'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '36288865-048f-4a04-8751-70b5d3e78478'
+      - type: book_subsection_entry_card_inline_expandable
+        book_subsection_entry_card_inline_expandable:
+          card_id: '36288865-048f-4a04-8751-70b5d3e78478'
       body:
       - equipment_weapons_crit_specialization_effects
   - id: equipment_gear
@@ -4698,472 +5714,190 @@ cards:
   name: 'Fist'
   content_ids:
   - equipment_weapons_list_fist_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'fist'
-        weight: 1
 - id: 'eb972ce0-772a-4428-8c7e-6da7f3be93f7'
   name: 'Gauntlet'
   content_ids:
   - equipment_weapons_list_gauntlet_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'gauntlet'
-        weight: 1
 - id: '8bbc7dab-c9ba-436a-82c7-ec955352b1d5'
   name: 'Light Mace'
   content_ids:
   - equipment_weapons_list_light_mace_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'light mace'
-        weight: 1
 - id: '1da2039e-aeed-4c03-9f6d-c2f7b839b9ae'
   name: 'Longspear'
   content_ids:
   - equipment_weapons_list_longspear_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'longspear'
-        weight: 1
 - id: '7e448a95-d5c5-4c09-8e87-01445aeb9af6'
   name: 'Mace'
   content_ids:
   - equipment_weapons_list_mace_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'mace'
-        weight: 1
 - id: '917e1652-db35-4635-95c8-067803deafd1'
   name: 'Morningstar'
   content_ids:
   - equipment_weapons_list_morningstar_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'morningstar'
-        weight: 1
 - id: 'df5c8c66-5f9e-47b4-bc0b-cb894a407d9c'
   name: 'Sickle'
   content_ids:
   - equipment_weapons_list_sickle_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'sickle'
-        weight: 1
 - id: '29dc8d40-7d66-4b11-ab2a-8b3ef8a1b810'
   name: 'Spear'
   content_ids:
   - equipment_weapons_list_spear_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'spear'
-        weight: 1
 - id: 'b5028958-623f-4fff-a43c-d8c6f708263b'
   name: 'Spiked Gauntlet'
   content_ids:
   - equipment_weapons_list_spiked_gauntlet_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'spiked gauntlet'
-        weight: 1
 - id: 'd0bf439e-9409-449a-bdf7-9cb7e0a9b554'
   name: 'Spiked Staff'
   content_ids:
   - equipment_weapons_list_spiked_staff_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'spiked staff'
-        weight: 1
 - id: 'c7251c9c-a80b-41d9-9743-229fdde9000a'
   name: 'Bastard Sword'
   content_ids:
   - equipment_weapons_list_bastard_sword_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'bastard sword'
-        weight: 1
 - id: 'eceb92b6-b912-4264-aa60-05d503ef09e7'
   name: 'Battle axe'
   content_ids:
   - equipment_weapons_list_battle_axe_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'battle axe'
-        weight: 1
 - id: '1b348c08-b2a4-4cdd-8a8d-fe141e279770'
   name: 'Bo Staff'
   content_ids:
   - equipment_weapons_list_bo_staff_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'bo staff'
-        weight: 1
 - id: '5828d9b3-1946-47d3-9919-7e282c01f68b'
   name: 'Falchion'
   content_ids:
   - equipment_weapons_list_falchion_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'falchion'
-        weight: 1
 - id: '3a1723ee-d645-4d30-8ff7-96b0232e5ab7'
   name: 'Flail'
   content_ids:
   - equipment_weapons_list_flail_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'flail'
-        weight: 1
 - id: 'f6d39280-8179-43be-aea1-e1f0cff14fe2'
   name: 'Glaive'
   content_ids:
   - equipment_weapons_list_glaive_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'glaive'
-        weight: 1
 - id: 'cb98d5e7-a4f4-4c53-b799-7b1a4a1c550c'
   name: 'Greataxe'
   content_ids:
   - equipment_weapons_list_greataxe_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'greataxe'
-        weight: 1
 - id: '25dfec85-9379-46a6-9044-100bb9592060'
   name: 'Greatclub'
   content_ids:
   - equipment_weapons_list_greatclub_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'great club'
-        weight: 1
 - id: 'c34a98a9-99e6-4f2e-94b6-ec53f3eec72e'
   name: 'Greatpick'
   content_ids:
   - equipment_weapons_list_greatpick_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'greatpick'
-        weight: 1
 - id: '7de6a014-9e70-4567-925e-2ca5a5e0702d'
   name: 'Greatsword'
   content_ids:
   - equipment_weapons_list_greatsword_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'greatsword'
-        weight: 1
 - id: 'fcbe3a48-544c-48fc-b963-65b727f7548e'
   name: 'Guisarme'
   content_ids:
   - equipment_weapons_list_guisarme_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'guisarme'
-        weight: 1
 - id: '2507439d-e0f7-45a5-be96-7c5fd9503818'
   name: 'Halberd'
   content_ids:
   - equipment_weapons_list_halberd_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'halberd'
-        weight: 1
 - id: 'f06ea162-9827-4f59-af7e-e597214ecd63'
   name: 'Hatchet'
   content_ids:
   - equipment_weapons_list_hatchet_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'hatchet'
-        weight: 1
 - id: '8a2b4045-ddfb-4e95-99e4-c8de68069687'
   name: 'Heavy Shield Bash'
   content_ids:
   - equipment_weapons_list_heavy_shield_bash_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'heavy shield bash'
-        weight: 1
 - id: '34daab25-80ae-4060-b82a-cb708f3d8b64'
   name: 'Heavy Shield Boss'
   content_ids:
   - equipment_weapons_list_heavy_shield_boss_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'heavy shield boss'
-        weight: 1
 - id: 'df36c3e7-f3e8-4b5c-a6fa-0c47bf59014a'
   name: 'Heavy Shield Spikes'
   content_ids:
   - equipment_weapons_list_heavy_shield_spikes_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'heavy shield spikes'
-        weight: 1
 - id: '15778114-6eea-4301-a575-17b775b9fb4d'
   name: 'Lance'
   content_ids:
   - equipment_weapons_list_lance_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'lance'
-        weight: 1
 - id: 'c891b368-d1b3-4824-9530-a0e906591d51'
   name: 'Light Hammer'
   content_ids:
   - equipment_weapons_list_light_hammer_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'light hammer'
-        weight: 1
 - id: '72f21b84-b97a-473f-9ddb-900a215d219e'
   name: 'Light Pick'
   content_ids:
   - equipment_weapons_list_light_pick_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'light pick'
-        weight: 1
 - id: 'da47e7af-49dc-44f9-a254-59fda5e6be02'
   name: 'Light Shield Bash'
   content_ids:
   - equipment_weapons_list_light_shield_bash_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'light shield bash'
-        weight: 1
 - id: '025c7016-d89f-4073-8938-a0f4a1ccb53f'
   name: 'Light Shield Boss'
   content_ids:
   - equipment_weapons_list_light_shield_boss_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'light shield boss'
-        weight: 1
 - id: 'a709433e-c445-4660-94cf-c7b1efc2e7b4'
   name: 'Light Shield Spikes'
   content_ids:
   - equipment_weapons_list_light_shield_spikes_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'light shield spikes'
-        weight: 1
 - id: '5724e980-36c0-481c-b881-bd14ba4db1fb'
   name: 'Longsword'
   content_ids:
   - equipment_weapons_list_longsword_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'longsword'
-        weight: 1
 - id: '3ffcf903-f601-4c25-ad44-95c67568cf3f'
   name: 'Main Gauche'
   content_ids:
   - equipment_weapons_list_main_gauche_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'main_gauche'
-        weight: 1
 - id: 'a4b3c65e-2c50-46f7-84fc-bd63716f22c6'
   name: 'Maul'
   content_ids:
   - equipment_weapons_list_maul_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'maul'
-        weight: 1
 - id: '74f20c8e-be8f-4747-8d48-5b87a665c486'
   name: 'Pick'
   content_ids:
   - equipment_weapons_list_pick_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'pick'
-        weight: 1
 - id: '479b03f6-9ee7-4127-a00c-d78b0ee6eb3d'
   name: 'Ranseur'
   content_ids:
   - equipment_weapons_list_ranseur_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'ranseur'
-        weight: 1
 - id: '982fea26-d9a0-4545-8e29-6d12be4bc4a5'
   name: 'Rapier'
   content_ids:
   - equipment_weapons_list_rapier_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'rapier'
-        weight: 1
 - id: 'a1a18340-d5b3-4fe7-997a-00c4df1844dc'
   name: 'Sap'
   content_ids:
   - equipment_weapons_list_sap_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'sap'
-        weight: 1
 - id: 'dc2a16a9-1cc5-47ed-bab7-8129a66e9c74'
   name: 'Scimitar'
   content_ids:
   - equipment_weapons_list_scimitar_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'scimitar'
-        weight: 1
 - id: 'fbb688ac-3c58-40eb-a004-ff8d2173c03f'
   name: 'Scythe'
   content_ids:
   - equipment_weapons_list_scythe_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'scythe'
-        weight: 1
 - id: '75f091d9-b5ec-410e-b7fe-b9a26a6adfde'
   name: 'Shortsword'
   content_ids:
   - equipment_weapons_list_shortsword_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'shortsword'
-        weight: 1
 - id: '37978eb2-639f-4a06-af4d-b58dddaebcfb'
   name: 'Starknife'
   content_ids:
   - equipment_weapons_list_starknife_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'starknife'
-        weight: 1
 - id: 'cd0728b2-6ce0-4b0a-8a48-f929a48b9957'
   name: 'Trident'
   content_ids:
   - equipment_weapons_list_trident_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'trident'
-        weight: 1
 - id: 'bb4a489d-48a7-4327-8bbe-4a461ccace7f'
   name: 'War Flail'
   content_ids:
   - equipment_weapons_list_war_flail_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'war flail'
-        weight: 1
 - id: 'afe87026-2b0f-48a7-9df7-c2cf3baef1b6'
   name: 'Warhammer'
   content_ids:
   - equipment_weapons_list_warhammer_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'warhammer'
-        weight: 1
 - id: '91b47cb0-c8a4-4ffd-a5ae-ba9d96a5b219'
   name: 'Whip'
   content_ids:
   - equipment_weapons_list_whip_card
-  search_data:
-    attributes:
-    - type: search_data_attribute_keyword
-      search_data_attribute_keyword:
-        keyword: 'whip'
-        weight: 1
 - id: 'f6de6a22-c23b-44cb-9234-1fec9b04e57d'
   name: 'Backpack'
   content_ids:
@@ -5336,4 +6070,455 @@ cards:
   name: 'Waterskin'
   content_ids:
   - equipment_gear_index_waterskin_card
-
+- id: 'c57aabaf-28cb-45ff-b17a-d2192df4f28f'
+  name: 'Agile'
+  content_ids:
+  - equipment_weapons_traits_index_agile_card
+- id: 'edc85dbf-e6d9-4489-9e11-e30384e1f988'
+  name: 'Attached'
+  content_ids:
+  - equipment_weapons_traits_index_attached_card
+- id: '2429cb55-5291-4518-9023-b2d6354fbc98'
+  name: 'Backstabber'
+  content_ids:
+  - equipment_weapons_traits_index_backstabber_card
+- id: '038b35ed-c969-4b52-aec7-c121fbc0d31b'
+  name: 'Backswing'
+  content_ids:
+  - equipment_weapons_traits_index_backswing_card
+- id: 'bb3fa669-77b4-4806-a3cd-b7084552886b'
+  name: 'Charge'
+  content_ids:
+  - equipment_weapons_traits_index_charge_card
+- id: 'c8d5a40f-ef7d-4fb8-9dfb-f45e36dd59a7'
+  name: 'Deadly'
+  content_ids:
+  - equipment_weapons_traits_index_deadly_card
+- id: 'e36066b5-3b64-4378-bbb5-b5b36add42fa'
+  name: 'Disarm'
+  content_ids:
+  - equipment_weapons_traits_index_disarm_card
+- id: '7e1e2391-1c4d-4835-93cf-93ca144c35b5'
+  name: 'Dwarf'
+  content_ids:
+  - equipment_weapons_traits_index_dwarf_card
+- id: 'a104a007-b21a-433c-9ad5-f54f32bcd476'
+  name: 'Elf'
+  content_ids:
+  - equipment_weapons_traits_index_elf_card
+- id: 'c921bb75-06fe-4632-8c86-1d58a31d3aec'
+  name: 'Fatal'
+  content_ids:
+  - equipment_weapons_traits_index_fatal_card
+- id: '563e7dbf-bb3f-410c-907a-50be0fc70ff9'
+  name: 'Finesse'
+  content_ids:
+  - equipment_weapons_traits_index_finesse_card
+- id: 'd3ddc555-01c8-4289-b9d4-718ceb42bb24'
+  name: 'Forceful'
+  content_ids:
+  - equipment_weapons_traits_index_forceful_card
+- id: '480b771c-91cb-4acc-a9d5-bf83e75029c2'
+  name: 'Free-Hand'
+  content_ids:
+  - equipment_weapons_traits_index_free_hand_card
+- id: '82b4a071-0549-4daf-8aec-8d9b7356f81f'
+  name: 'Gnome'
+  content_ids:
+  - equipment_weapons_traits_index_gnome_card
+- id: '825e1ac3-cfa6-468e-ae89-1f3069d507fb'
+  name: 'Goblin'
+  content_ids:
+  - equipment_weapons_traits_index_goblin_card
+- id: '32c1b0d7-7e9b-406b-ae9f-500a74cf2730'
+  name: 'Halfling'
+  content_ids:
+  - equipment_weapons_traits_index_halfling_card
+- id: '172205a6-9a19-4923-bcc0-04dfa8285987'
+  name: 'Monk'
+  content_ids:
+  - equipment_weapons_traits_index_monk_card
+- id: '106353ba-b358-49c0-8000-86ab53421964'
+  name: 'Nonlethal'
+  content_ids:
+  - equipment_weapons_traits_index_nonlethal_card
+- id: '5f6cecec-a1d0-4d62-a18e-7daeb576323b'
+  name: 'Orc'
+  content_ids:
+  - equipment_weapons_traits_index_orc_card
+- id: '26cca395-6a90-48f8-bd2e-ac94d759f102'
+  name: 'Parry'
+  content_ids:
+  - equipment_weapons_traits_index_parry_card
+- id: 'e9a064bd-dc91-4d87-8059-da0ec943924e'
+  name: 'Propulsive'
+  content_ids:
+  - equipment_weapons_traits_index_propulsive_card
+- id: 'b895b675-f1e6-4d7a-a021-d408b03b3c3d'
+  name: 'Reach'
+  content_ids:
+  - equipment_weapons_traits_index_reach_card
+- id: 'd376780a-dbe9-4e06-a7cf-7e6190a3d091'
+  name: 'Shove'
+  content_ids:
+  - equipment_weapons_traits_index_shove_card
+- id: '3d3cec7b-efc5-455b-b57a-2ffca5b34a10'
+  name: 'Sweep'
+  content_ids:
+  - equipment_weapons_traits_index_sweep_card
+- id: '6c26a50b-d006-46ac-b8d0-36034c93d154'
+  name: 'Thrown'
+  content_ids:
+  - equipment_weapons_traits_index_thrown_card
+- id: '7ebf01f3-a0d4-4e64-9c21-511c2453585c'
+  name: 'Trip'
+  content_ids:
+  - equipment_weapons_traits_index_trip_card
+- id: '2e515b58-a275-4357-b610-8a167671a351'
+  name: 'Twin'
+  content_ids:
+  - equipment_weapons_traits_index_twin_card
+- id: '626be552-4ab7-4a41-897d-ccc25a9cc350'
+  name: 'Two-Hand'
+  content_ids:
+  - equipment_weapons_traits_index_two_hand_card
+- id: '99dd31c3-4f34-4c4a-ba37-9849d964a347'
+  name: 'Unarmed'
+  content_ids:
+  - equipment_weapons_traits_index_unarmed_card
+- id: '2ce9afc4-e6a1-4069-b9d6-4e4fbe521c4e'
+  name: 'Versatile'
+  content_ids:
+  - equipment_weapons_traits_index_versatile_card
+- id: 'f5237989-2971-413a-8f23-d83394a87b94'
+  name: 'Volley'
+  content_ids:
+  - equipment_weapons_traits_index_volley_card
+- id: 'b11331bf-cb86-4d25-ae66-38050653e0c9'
+  name: 'Axe'
+  content_ids:
+  - equipment_weapons_crit_spec_index_axe_card
+- id: 'dbd15cbb-cdaa-4d95-955b-e2b259648940'
+  name: 'Bow'
+  content_ids:
+  - equipment_weapons_crit_spec_index_bow_card
+- id: 'eb368229-6151-44d1-99cb-ebba19e05238'
+  name: 'Brawling'
+  content_ids:
+  - equipment_weapons_crit_spec_index_brawling_card
+- id: '31fbba4a-39f0-4868-9284-138db605a420'
+  name: 'Club'
+  content_ids:
+  - equipment_weapons_crit_spec_index_club_card
+- id: '7edd5c33-0241-4a9d-9e28-f71897aed171'
+  name: 'Dart'
+  content_ids:
+  - equipment_weapons_crit_spec_index_dart_card
+- id: '3654f6d9-7591-4591-b63b-612cab83be31'
+  name: 'Flail'
+  content_ids:
+  - equipment_weapons_crit_spec_index_flail_card
+- id: '508c947d-f5a8-4470-a3ff-0f8043ccc067'
+  name: 'Hammer'
+  content_ids:
+  - equipment_weapons_crit_spec_index_hammer_card
+- id: '80b5c37e-a659-4133-8df8-996a4c981293'
+  name: 'Knife'
+  content_ids:
+  - equipment_weapons_crit_spec_index_knife_card
+- id: '4b75ddc6-13aa-46f7-970c-e5b7f53dbcd2'
+  name: 'Pick'
+  content_ids:
+  - equipment_weapons_crit_spec_index_pick_card
+- id: '7436c75c-967a-448e-8199-e916f770ccc5'
+  name: 'Polearm'
+  content_ids:
+  - equipment_weapons_crit_spec_index_polearm_card
+- id: '535a9cc1-7d9e-4ea8-b1a2-57080571516a'
+  name: 'Shield'
+  content_ids:
+  - equipment_weapons_crit_spec_index_shield_card
+- id: '4911cc34-af7e-43d1-937d-eb7a2bfe32a3'
+  name: 'Sling'
+  content_ids:
+  - equipment_weapons_crit_spec_index_sling_card
+- id: '6d4a8990-1fbe-470f-904b-971e1fa91091'
+  name: 'Spear'
+  content_ids:
+  - equipment_weapons_crit_spec_index_spear_card
+- id: '36288865-048f-4a04-8751-70b5d3e78478'
+  name: 'Sword'
+  content_ids:
+  - equipment_weapons_crit_spec_index_sword_card
+- id: '30a77cf2-fcf2-424c-92dd-db739ea207bd'
+  name: 'Balance'
+  content_ids:
+  - skills_acrobatics_balance_card
+- id: 'd60d32c6-f225-45d8-9508-14efef3b6f2d'
+  name: 'Escape'
+  content_ids:
+  - skills_acrobatics_escape_card
+- id: '1471fe85-e98b-431c-8c41-19177a9fb7a6'
+  name: 'Grab Edge'
+  content_ids:
+  - skills_acrobatics_grab_edge_card
+- id: '95eb3b10-d958-4806-a312-3637e187872e'
+  name: 'Maintain Balance'
+  content_ids:
+  - skills_acrobatics_maintain_balance_card
+- id: '2d39c181-22f8-4023-b831-1109fcb0db96'
+  name: 'Squeeze'
+  content_ids:
+  - skills_acrobatics_squeeze_card
+- id: 'ee984144-3866-4b9f-8208-2f5cf877afc7'
+  name: 'Tumble Through'
+  content_ids:
+  - skills_acrobatics_tumble_through_card
+- id: 'ca5136d6-1a62-46f8-acf5-33c9d26acdfe'
+  name: 'Recall Knowledge'
+  content_ids:
+  - skills_arcana_recall_knowledge_card
+- id: 'f9a7b3bc-742c-457d-8ec1-07f34690d657'
+  name: 'Borrow an Arcane Spell'
+  content_ids:
+  - skills_arcana_borrow_arcane_spell_card
+- id: 'e41e61d6-723b-4893-a3bf-7ade77897c1c'
+  name: 'Identify Magic'
+  content_ids:
+  - skills_arcana_identify_magic_card
+- id: 'd5910b55-ac7c-45c1-b079-82a82462ec1c'
+  name: 'Learn an Arcane Spell'
+  content_ids:
+  - skills_arcana_learn_arcane_spell_card
+- id: 'dd0b936b-b641-4755-8570-a8c52b837992'
+  name: 'Read Magic'
+  content_ids:
+  - skills_arcana_read_magic_card
+- id: 'd782f0f4-3279-4000-9080-84d363755727'
+  name: 'Break Grapple'
+  content_ids:
+  - skills_athletics_break_grapple_card
+- id: 'ab3bdf9d-1552-49d3-856f-713f94d1785e'
+  name: 'Break Open'
+  content_ids:
+  - skills_athletics_break_open_card
+- id: '0a6bac16-fe67-4cc6-be7e-ce5b12061a0a'
+  name: 'Climb'
+  content_ids:
+  - skills_athletics_climb_card
+- id: 'e531a5f9-e6a9-48ff-9bd9-e77a7b22ef61'
+  name: 'Grapple'
+  content_ids:
+  - skills_athletics_grapple_card
+- id: '43dfdde9-cfae-4dea-830f-30e20b818070'
+  name: 'High Jump'
+  content_ids:
+  - skills_athletics_high_jump_card
+- id: '8c807130-7d4c-4d7d-a42e-3733c4c7a938'
+  name: 'Long Jump'
+  content_ids:
+  - skills_athletics_long_jump_card
+- id: '483f1c1c-8605-4589-86e8-b2b7a35f0e7a'
+  name: 'Shove'
+  content_ids:
+  - skills_athletics_shove_card
+- id: '9dae7150-7b28-45cf-90c9-91d7e6ca99ce'
+  name: 'Swim'
+  content_ids:
+  - skills_athletics_swim_card
+- id: '1df0fe2a-4d75-45c7-919d-d4d6a92bb665'
+  name: 'Trip'
+  content_ids:
+  - skills_athletics_trip_card
+- id: '23c0b8c5-917e-4a6e-b4d0-f51e2d279643'
+  name: 'Disarm'
+  content_ids:
+  - skills_athletics_disarm_card
+- id: '2c46cf8d-42ff-4c9c-b64b-2d15de7bfc36'
+  name: 'Repair'
+  content_ids:
+  - skills_crafting_repair_card
+- id: '2a2b2688-b966-4f55-8b1a-39e5a7829931'
+  name: 'Craft'
+  content_ids:
+  - skills_crafting_craft_card
+- id: '9ab65e14-9cf9-409a-9f20-b170635edad8'
+  name: 'Identify Alchemy'
+  content_ids:
+  - skills_crafting_identify_alchemy_card
+- id: '8ca6d3bb-f889-4b5c-a96a-b80adee2a5da'
+  name: 'Create a Diversion'
+  content_ids:
+  - skills_deception_create_diversion_card
+- id: 'da22b70b-6d2e-4376-a70e-b9409024df1c'
+  name: 'Impersonate'
+  content_ids:
+  - skills_deception_impersonate_card
+- id: '7e3fa757-f9ea-4a99-ac4e-411da43a8894'
+  name: 'Lie'
+  content_ids:
+  - skills_deception_lie_card
+- id: '62d0fd6f-6e96-48a7-b7fe-3772bf69cc60'
+  name: 'Feint'
+  content_ids:
+  - skills_deception_feint_card
+- id: '66a94ba9-b9c7-489f-adf1-1a95080a035b'
+  name: 'Gather Information'
+  content_ids:
+  - skills_diplomacy_gather_information_card
+- id: '3efc4bbf-3899-4fb3-b81c-6f0bddf9d47d'
+  name: 'Make an Impression'
+  content_ids:
+  - skills_diplomacy_make_impression_card
+- id: 'bfbf364b-bb52-4496-b235-8890b60eb826'
+  name: 'Request'
+  content_ids:
+  - skills_diplomacy_request_card
+- id: '05d97f77-4bbc-4e20-a260-3c1158e0d02e'
+  name: 'Demoralize'
+  content_ids:
+  - skills_intimidation_demoralize_card
+- id: '5063327e-5e62-4fc9-9cfb-8fb93091cbe9'
+  name: 'Coerce'
+  content_ids:
+  - skills_intimidation_coerce_card
+- id: 'fc330944-fcf4-4c9d-a9a6-b6bb8815d1b6'
+  name: 'Recall Knowledge'
+  content_ids:
+  - skills_lore_recall_knowledge_card
+- id: '890a8147-7fac-4dfc-9627-dd9ca50b7410'
+  name: 'Practice a Trade'
+  content_ids:
+  - skills_lore_practice_trade_card
+- id: '7ccf2425-921e-4f33-b4fc-1122e70c8c27'
+  name: 'Administer First Aid'
+  content_ids:
+  - skills_medicine_administer_first_aid_card
+- id: '92f7f2b3-a554-43f9-bff5-91033c4b66ae'
+  name: 'Treat Disease'
+  content_ids:
+  - skills_medicine_treat_disease_card
+- id: '3da5b1fa-667e-49ca-9852-6f5377a5b77b'
+  name: 'Treat Poison'
+  content_ids:
+  - skills_medicine_treat_poison_card
+- id: '84caa098-df0d-40ea-a478-530ee8593768'
+  name: 'Command an Animal'
+  content_ids:
+  - skills_nature_command_animal_card
+- id: 'd77f5a00-8efb-4004-8a6d-4ce4f1b88146'
+  name: 'Handle an Animal'
+  content_ids:
+  - skills_nature_handle_animal_card
+- id: '4cee18af-9dae-4714-9fe8-a0fc807ffa0c'
+  name: 'Recall Knowledge'
+  content_ids:
+  - skills_nature_recall_knowledge_card
+- id: '951b5605-d2c7-467d-b17a-746ad432f1a5'
+  name: 'Identify Magic'
+  content_ids:
+  - skills_nature_identify_magic_card
+- id: 'be8b1839-e944-4282-bc14-7fa7337c5341'
+  name: 'Learn a Primal Spell'
+  content_ids:
+  - skills_nature_learn_primal_spell_card
+- id: '7cc397d6-f561-467c-9e7f-b75c00780746'
+  name: 'Recall Knowledge'
+  content_ids:
+  - skills_occultism_recall_knowledge_card
+- id: 'e5b1964c-da49-4466-8579-9238a3a30236'
+  name: 'Identify Magic'
+  content_ids:
+  - skills_occultism_identify_magic_card
+- id: 'e99dc900-ddf9-43d5-9e7d-42acea0ee43d'
+  name: 'Learn an Occult Spell'
+  content_ids:
+  - skills_occultism_learn_occult_spell_card
+- id: '2beed33d-b2a9-4243-a5df-af31e726ab3c'
+  name: 'Read Esoterica'
+  content_ids:
+  - skills_occultism_read_esoterica_card
+- id: '434f61f9-eef0-4472-8941-c923b7dd19dc'
+  name: 'Perform'
+  content_ids:
+  - skills_performance_perform_card
+- id: 'a8c2278b-5d10-4691-a9d5-987e0ad19f34'
+  name: 'Stage a Performance'
+  content_ids:
+  - skills_performance_stage_performance_card
+- id: 'dcdd0a86-3771-4095-826b-061fe5dd236c'
+  name: 'Recall Knowledge'
+  content_ids:
+  - skills_religion_recall_knowledge_card
+- id: '663183f2-4980-41c3-99fa-5bc6a6b8f2b5'
+  name: 'Identify Magic'
+  content_ids:
+  - skills_religion_identify_magic_card
+- id: 'ed1ce5cc-599b-4b98-8106-35b22f130ed4'
+  name: 'Learn a Divine Spell'
+  content_ids:
+  - skills_religion_learn_divine_spell_card
+- id: '9489e9f6-8f9d-4cb6-925e-b3c777cd078e'
+  name: 'Read Scripture'
+  content_ids:
+  - skills_religion_read_scripture_card
+- id: '53556a29-e82a-4927-8b0f-8f86f7da7f90'
+  name: 'Recall Knowledge'
+  content_ids:
+  - skills_society_recall_knowledge_card
+- id: 'd60a8a33-f5df-4aa9-bbe2-220a28becbf2'
+  name: 'Subsist on the Streets'
+  content_ids:
+  - skills_society_subsist_streets_card
+- id: 'b98b2624-a34a-4021-8fe9-0548da88b493'
+  name: 'Create Forgery'
+  content_ids:
+  - skills_society_create_forgery_card
+- id: '609e5dcd-6bca-407d-8d8f-bf11621c6a99'
+  name: 'Decipher Writing'
+  content_ids:
+  - skills_society_decipher_writing_card
+- id: 'ccbef1fc-6fc2-4594-be4f-2a5133c0aea8'
+  name: 'Conceal an Object'
+  content_ids:
+  - skills_stealth_conceal_object_card
+- id: 'fdb46800-ce7d-4c7b-9933-6fab0a08d729'
+  name: 'Hide'
+  content_ids:
+  - skills_stealth_hide_card
+- id: '57b81dc5-6d4e-4463-be98-6d4ad553c6ee'
+  name: 'Sneak'
+  content_ids:
+  - skills_stealth_sneak_card
+- id: '133c5533-5aab-456d-9207-5a5ff9571378'
+  name: 'Sense Direction'
+  content_ids:
+  - skills_survival_sense_direction_card
+- id: '15d60a25-fa72-4a60-ae15-fb2ce56c9c52'
+  name: 'Survive in the Wild'
+  content_ids:
+  - skills_survival_survive_wild_card
+- id: 'b0a9beb8-f2ae-4877-99fa-ae83d9bf686d'
+  name: 'Cover Tracks'
+  content_ids:
+  - skills_survival_cover_tracks_card
+- id: '7311bd2c-e58b-4bd5-8d06-458aaa103e07'
+  name: 'Track'
+  content_ids:
+  - skills_survival_track_card
+- id: 'f9aece60-9693-4083-8ef8-1e1de3ae9c1a'
+  name: 'Palm an Object'
+  content_ids:
+  - skills_thievery_palm_object_card
+- id: '3f7b50c4-80e8-4ddf-94fd-fbe1929ce125'
+  name: 'Steal an Object'
+  content_ids:
+  - skills_thievery_steal_object_card
+- id: '94424b1a-8d79-4a52-ad43-9ff5ffcc1639'
+  name: 'Disable a Device'
+  content_ids:
+  - skills_thievery_disable_device_card
+- id: '8a4b6a14-8f46-4d31-ab68-85f17c1d3159'
+  name: 'Pick a Lock'
+  content_ids:
+  - skills_thievery_pick_lock_card

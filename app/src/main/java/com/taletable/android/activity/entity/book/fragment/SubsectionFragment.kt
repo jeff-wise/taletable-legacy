@@ -593,6 +593,12 @@ class SubsectionUI(val subsection : BookSubsection,
                 val contentList = entry.cardEntries.map { book.content(it) }.filterJust()
                 layout.addView(entryExpanderView(entry.title, theme, contentList, entityId, context))
             }
+            is BookSubsectionEntryCardInlineExpandable -> {
+                book.card(entry.cardId).doMaybe { card ->
+                    val contentList = card.contentIds.map { book.content(it) }.filterJust()
+                    layout.addView(entryExpanderView(card.name.value, theme, contentList, entityId, context, true))
+                }
+            }
         }
     }
 

@@ -99,6 +99,7 @@
     <string name="pinned">Pinned</string>
 
     <string name="edit_mode">Edit Mode</string>
+    <string name="edit_session">Edit Session</string>
     <string name="edit_rules">Edit Rules</string>
     <string name="save_sheet">Save Sheet</string>
     <string name="edit_state">Edit State</string>

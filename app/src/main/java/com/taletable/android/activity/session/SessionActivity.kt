@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.*
 import android.widget.*
-import com.taletable.android.R
 import com.taletable.android.activity.sheet.page.PagePagerAdapter
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.sheet.Sheet
@@ -43,7 +42,6 @@ import com.taletable.android.model.campaign.Campaign
 import com.taletable.android.model.entity.PersistedEntity
 import com.taletable.android.model.game.Game
 import com.taletable.android.model.session.sessionManifest
-import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.theme.official.officialAppThemeLight
 import com.taletable.android.rts.session.*
 import com.taletable.android.util.SimpleDividerItemDecoration
@@ -54,7 +52,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import maybe.Maybe
 import java.util.*
-
+import com.taletable.android.R
+import com.taletable.android.model.sheet.style.Corners
+import com.taletable.android.util.Util
+import fr.castorflex.android.circularprogressbar.CircularProgressDrawable
 
 
 object SheetActivityGlobal
@@ -81,6 +82,9 @@ object SheetActivityRequest
 
 }
 
+
+
+val loaderViewIds : MutableMap<EntityId,Int> = mutableMapOf()
 
 
 /**
@@ -142,7 +146,7 @@ class SessionActivity : AppCompatActivity()
         // (1) Set Content View
         // -------------------------------------------------------------------------------------
 
-        setContentView(R.layout.activity_session)
+        setContentView(com.taletable.android.R.layout.activity_session)
 
         // (2) Read Parameters (or saved state)
         // -------------------------------------------------------------------------------------
@@ -150,8 +154,8 @@ class SessionActivity : AppCompatActivity()
         if (this.intent.hasExtra("session_id"))
             this.sessionId = this.intent.getSerializableExtra("session_id") as SessionId
 
-        if (savedInstanceState != null)
-            this.sessionId = savedInstanceState.getSerializable("session_id") as SessionId
+//        if (savedInstanceState != null)
+//            this.sessionId = savedInstanceState.getSerializable("session_id") as SessionId
 
         // Test session
         if (this.sessionId == null) {
@@ -202,7 +206,10 @@ class SessionActivity : AppCompatActivity()
             val activeSession = activeSession()
             when (activeSession) {
                 is Just -> {
-                    Log.d("***SHEET ACTVITIY", "active session found: ${activeSession.value}")
+                    val session = activeSession.value
+                    Log.d("***SHEET ACTIVITY", "active session found: ${activeSession.value}")
+                    setEntityActive(session.mainEntityId)
+                    this.entityListRecyclerViewAdapter?.items = session.entityViewList(this)
                 }
                 else -> {
                     this.sessionLoader(sessionId).doMaybe {
@@ -255,6 +262,7 @@ class SessionActivity : AppCompatActivity()
             val updateAmount = bar.progress + (72 / sessionLoadUpdate.totalEntities)
             bar.progress = updateAmount
         }
+
     }
 
 
@@ -288,6 +296,12 @@ class SessionActivity : AppCompatActivity()
             is MessageSessionEntityLoaded ->
             {
                 this.updateLoadProgress(message.update)
+
+                loaderViewIds[message.update.entityId]?.let {
+                    findViewById<ProgressBar>(it)?.let {
+                        it.visibility =  View.GONE
+                    }
+                }
             }
             is MessageSessionLoaded ->
             {
@@ -302,14 +316,11 @@ class SessionActivity : AppCompatActivity()
                     this.entityListRecyclerViewAdapter?.items = session.entityViewList(this)
                 }
 
-                findViewById<FrameLayout>(R.id.session_loader_container)?.let {
+                findViewById<FrameLayout>(com.taletable.android.R.id.session_loader_container)?.let {
                     it.visibility = View.GONE
                 }
 
-                findViewById<FrameLayout>(R.id.bottom_sheet_toolbar)?.let {
-                    it.visibility = View.VISIBLE
-                    it.addView(bottomSheetToolbarView(officialAppThemeLight, this))
-                }
+
             }
         }
     }
@@ -317,7 +328,7 @@ class SessionActivity : AppCompatActivity()
 
     private fun initializeViews()
     {
-        val nameView = this.findViewById(R.id.entity_name) as TextView?
+        val nameView = this.findViewById(com.taletable.android.R.id.entity_name) as TextView?
         nameView?.typeface = Font.typeface(TextFont.Roboto, TextFontStyle.Medium, this)
 
 //        val categoryView = this.findViewById(R.id.entity_category) as TextView?
@@ -327,9 +338,9 @@ class SessionActivity : AppCompatActivity()
 
         this.pagePagerAdapter = pagePagerAdapter
 
-        this.viewPager = this.findViewById<ViewPager>(R.id.view_pager)
+        this.viewPager = this.findViewById<ViewPager>(com.taletable.android.R.id.view_pager)
 
-        this.bottomSheet = this.findViewById<LinearLayout>(R.id.bottom_sheet)
+        this.bottomSheet = this.findViewById<LinearLayout>(com.taletable.android.R.id.bottom_sheet)
         this.bottomSheetBehavior = BottomSheetBehavior.from(this.bottomSheet)
 
         if (this.bottomSheet == null)
@@ -350,7 +361,7 @@ class SessionActivity : AppCompatActivity()
             }
         })
 
-        val tabLayout = this.findViewById<TabLayout>(R.id.tab_layout)
+        val tabLayout = this.findViewById<TabLayout>(com.taletable.android.R.id.tab_layout)
         tabLayout.setupWithViewPager(viewPager)
 
     }
@@ -360,17 +371,22 @@ class SessionActivity : AppCompatActivity()
     {
         this.sessionId?.let { this.sessionLoader(it).toNullable() }?.let { session ->
 
-            findViewById<TextView>(R.id.session_name)?.let {
+            findViewById<TextView>(com.taletable.android.R.id.session_name)?.let {
                 it.typeface = Font.typeface(TextFont.RobotoCondensed, TextFontStyle.Bold, this)
                 it.text = session.sessionName.value
             }
 
-            findViewById<TextView>(R.id.session_count_view)?.let {
-                it.typeface = Font.typeface(TextFont.RobotoCondensed, TextFontStyle.Bold, this)
-                it.text = session.entityIds.size.toString()
+            findViewById<FrameLayout>(com.taletable.android.R.id.bottom_sheet_toolbar)?.let {
+                it.visibility = View.VISIBLE
+                it.addView(bottomSheetToolbarView(officialAppThemeLight, this))
             }
 
-            findViewById<FrameLayout>(R.id.bottom_sheet_content)?.let {
+//            findViewById<TextView>(com.taletable.android.R.id.session_count_view)?.let {
+//                it.typeface = Font.typeface(TextFont.RobotoCondensed, TextFontStyle.Bold, this)
+//                it.text = session.entityIds.size.toString()
+//            }
+
+            findViewById<FrameLayout>(com.taletable.android.R.id.bottom_sheet_content)?.let {
                 val recyclerView = activeSessionRecyclerView(session, officialAppThemeLight, this)
                 val adapter = ActiveSessionRecyclerViewAdapter(officialAppThemeLight, this)
                 this.entityListRecyclerViewAdapter = adapter
@@ -385,7 +401,7 @@ class SessionActivity : AppCompatActivity()
 //                }
 //            }
 
-            findViewById<FrameLayout>(R.id.session_loader_container)?.let {
+            findViewById<FrameLayout>(com.taletable.android.R.id.session_loader_container)?.let {
                 val progressBar = openSessionProgressBar(officialAppThemeLight, this)
                 this.progressBar = progressBar
                 it.addView(progressBar)
@@ -451,7 +467,7 @@ class SessionActivity : AppCompatActivity()
 
         // TAB LAYOUT
         // -------------------------------------------------------------------------------------
-        val tabLayout = this.findViewById<CustomTabLayout>(R.id.tab_layout) as CustomTabLayout
+        val tabLayout = this.findViewById<CustomTabLayout>(com.taletable.android.R.id.tab_layout) as CustomTabLayout
 
         // Tab Layout > Background
         tabLayout.setBackgroundColor(theme.colorOrBlack(uiColors.tabBarBackgroundColorId()))
@@ -496,13 +512,13 @@ class SessionActivity : AppCompatActivity()
 
         this.entityId = entity.entityId()
 
-        val nameView = this.findViewById(R.id.entity_name) as TextView?
+        val nameView = this.findViewById(com.taletable.android.R.id.entity_name) as TextView?
         nameView?.text = entity.name()
 
 //        val categoryView = this.findViewById(R.id.entity_category) as TextView?
 //        categoryView?.text = entity.category()
 
-        val entityButtonView = this.findViewById(R.id.entity_button) as ImageButton?
+        val entityButtonView = this.findViewById(com.taletable.android.R.id.entity_button) as ImageButton?
         //entityButtonView?.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.icon_open_book))
 
         entityButtonView?.setOnClickListener {
@@ -515,12 +531,12 @@ class SessionActivity : AppCompatActivity()
             }
 
 
-            this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+            this.findViewById<HorizontalScrollView>(com.taletable.android.R.id.toolbar_nav)?.let {
                 it.visibility = View.GONE
             }
 
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.session_content, newFragment)
+            transaction.replace(com.taletable.android.R.id.session_content, newFragment)
             transaction.addToBackStack(null)
             transaction.commit()
         }
@@ -553,24 +569,24 @@ class SessionActivity : AppCompatActivity()
 
         val start = System.currentTimeMillis()
 
-        this.findViewById<TabLayout>(R.id.tab_layout)?.let {
+        this.findViewById<TabLayout>(com.taletable.android.R.id.tab_layout)?.let {
             it.visibility = View.VISIBLE
             it.setupWithViewPager(viewPager)
         }
 
-        this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+        this.findViewById<HorizontalScrollView>(com.taletable.android.R.id.toolbar_nav)?.let {
             it.visibility = View.GONE
         }
 
-        this.findViewById<LinearLayout>(R.id.session_content)?.let {
+        this.findViewById<LinearLayout>(com.taletable.android.R.id.session_content)?.let {
             it.visibility = View.GONE
         }
 
-        this.findViewById<ViewPager>(R.id.view_pager)?.let {
+        this.findViewById<ViewPager>(com.taletable.android.R.id.view_pager)?.let {
             it.visibility = View.VISIBLE
         }
 
-        this.findViewById<LinearLayout>(R.id.toolbar_bottom_padding)?.let {
+        this.findViewById<LinearLayout>(com.taletable.android.R.id.toolbar_bottom_padding)?.let {
             it.visibility = View.GONE
         }
 
@@ -587,23 +603,23 @@ class SessionActivity : AppCompatActivity()
 
     fun renderCampaign(campaign : Campaign)
     {
-        this.findViewById<TabLayout>(R.id.tab_layout)?.let {
+        this.findViewById<TabLayout>(com.taletable.android.R.id.tab_layout)?.let {
             it.visibility = View.GONE
         }
 
-        this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+        this.findViewById<HorizontalScrollView>(com.taletable.android.R.id.toolbar_nav)?.let {
             it.visibility = View.GONE
         }
 
-        this.findViewById<ViewPager>(R.id.view_pager)?.let {
+        this.findViewById<ViewPager>(com.taletable.android.R.id.view_pager)?.let {
             it.visibility = View.GONE
         }
 
-        this.findViewById<LinearLayout>(R.id.toolbar_bottom_padding)?.let {
+        this.findViewById<LinearLayout>(com.taletable.android.R.id.toolbar_bottom_padding)?.let {
             it.visibility = View.VISIBLE
         }
 
-        this.findViewById<LinearLayout>(R.id.session_content)?.let {
+        this.findViewById<LinearLayout>(com.taletable.android.R.id.session_content)?.let {
             it.visibility = View.VISIBLE
             it.removeAllViews()
             it.addView(campaignView(officialAppThemeLight, this))
@@ -613,23 +629,23 @@ class SessionActivity : AppCompatActivity()
 
     fun renderGame(game : Game)
     {
-        this.findViewById<TabLayout>(R.id.tab_layout)?.let {
+        this.findViewById<TabLayout>(com.taletable.android.R.id.tab_layout)?.let {
             it.visibility = View.GONE
         }
 
-        this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+        this.findViewById<HorizontalScrollView>(com.taletable.android.R.id.toolbar_nav)?.let {
             it.visibility = View.GONE
         }
 
-        this.findViewById<ViewPager>(R.id.view_pager)?.let {
+        this.findViewById<ViewPager>(com.taletable.android.R.id.view_pager)?.let {
             it.visibility = View.GONE
         }
 
-        this.findViewById<LinearLayout>(R.id.toolbar_bottom_padding)?.let {
+        this.findViewById<LinearLayout>(com.taletable.android.R.id.toolbar_bottom_padding)?.let {
             it.visibility = View.VISIBLE
         }
 
-        this.findViewById<LinearLayout>(R.id.session_content)?.let {
+        this.findViewById<LinearLayout>(com.taletable.android.R.id.session_content)?.let {
             it.visibility = View.VISIBLE
             it.removeAllViews()
             it.addView(gameView(officialAppThemeLight, this))
@@ -639,23 +655,23 @@ class SessionActivity : AppCompatActivity()
 
     fun renderBook(book : Book)
     {
-        this.findViewById<TabLayout>(R.id.tab_layout)?.let {
+        this.findViewById<TabLayout>(com.taletable.android.R.id.tab_layout)?.let {
             it.visibility = View.GONE
         }
 
-        this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+        this.findViewById<HorizontalScrollView>(com.taletable.android.R.id.toolbar_nav)?.let {
             it.visibility = View.VISIBLE
         }
 
-        this.findViewById<ViewPager>(R.id.view_pager)?.let {
+        this.findViewById<ViewPager>(com.taletable.android.R.id.view_pager)?.let {
             it.visibility = View.GONE
         }
 
-        this.findViewById<LinearLayout>(R.id.toolbar_bottom_padding)?.let {
+        this.findViewById<LinearLayout>(com.taletable.android.R.id.toolbar_bottom_padding)?.let {
             it.visibility = View.VISIBLE
         }
 
-        this.findViewById<LinearLayout>(R.id.session_content)?.let {
+        this.findViewById<LinearLayout>(com.taletable.android.R.id.session_content)?.let {
             it.visibility = View.VISIBLE
             it.removeAllViews()
             it.addView(gameView(officialAppThemeLight, this))
@@ -681,7 +697,7 @@ class SessionActivity : AppCompatActivity()
         val newFragment = BookSearchFragment.newInstance(bookId)
 
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.session_content, newFragment)
+        transaction.replace(com.taletable.android.R.id.session_content, newFragment)
         transaction.addToBackStack(null)
         transaction.commit()
     }
@@ -689,12 +705,12 @@ class SessionActivity : AppCompatActivity()
 
     fun setCurrentBookReference(bookReference : BookReference)
     {
-        this.findViewById<LinearLayout>(R.id.session_content)?.let {
+        this.findViewById<LinearLayout>(com.taletable.android.R.id.session_content)?.let {
             it.visibility = View.VISIBLE
             it.removeAllViews()
         }
 
-        this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+        this.findViewById<HorizontalScrollView>(com.taletable.android.R.id.toolbar_nav)?.let {
             it.visibility = View.VISIBLE
             it.removeAllViews()
         }
@@ -710,7 +726,7 @@ class SessionActivity : AppCompatActivity()
                 val newFragment = BookFragment.newInstance(bookReference.bookId())
 
                 val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.session_content, newFragment)
+                transaction.replace(com.taletable.android.R.id.session_content, newFragment)
                 transaction.addToBackStack(null)
                 transaction.commit()
             }
@@ -733,11 +749,11 @@ class SessionActivity : AppCompatActivity()
 
                 val transaction = supportFragmentManager.beginTransaction()
                 //transaction.setCustomAnimations(R.anim.activity_slide_in_right, R.anim.activity_slide_in_left)
-                transaction.replace(R.id.session_content, newFragment)
+                transaction.replace(com.taletable.android.R.id.session_content, newFragment)
                 transaction.addToBackStack(null)
                 transaction.commit()
 
-                this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+                this.findViewById<HorizontalScrollView>(com.taletable.android.R.id.toolbar_nav)?.let {
                     it.addView(navView(bookReference, officialAppThemeLight, this))
                 }
             }
@@ -748,11 +764,11 @@ class SessionActivity : AppCompatActivity()
                                                               bookReference.bookId())
 
                 val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.session_content, newFragment)
+                transaction.replace(com.taletable.android.R.id.session_content, newFragment)
                 transaction.addToBackStack(null)
                 transaction.commit()
 
-                this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+                this.findViewById<HorizontalScrollView>(com.taletable.android.R.id.toolbar_nav)?.let {
                     it.addView(navView(bookReference, officialAppThemeLight, this))
                 }
             }
@@ -764,11 +780,11 @@ class SessionActivity : AppCompatActivity()
                                                                  bookReference.bookId())
 
                 val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.session_content, newFragment)
+                transaction.replace(com.taletable.android.R.id.session_content, newFragment)
                 transaction.addToBackStack(null)
                 transaction.commit()
 
-                this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+                this.findViewById<HorizontalScrollView>(com.taletable.android.R.id.toolbar_nav)?.let {
                     it.addView(navView(bookReference, officialAppThemeLight, this))
                 }
 
@@ -778,11 +794,11 @@ class SessionActivity : AppCompatActivity()
                 val newFragment = BookCardFragment.newInstance(bookReference.bookId(), bookReference.cardId())
 
                 val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.session_content, newFragment)
+                transaction.replace(com.taletable.android.R.id.session_content, newFragment)
                 transaction.addToBackStack(null)
                 transaction.commit()
 
-                this.findViewById<HorizontalScrollView>(R.id.toolbar_nav)?.let {
+                this.findViewById<HorizontalScrollView>(com.taletable.android.R.id.toolbar_nav)?.let {
                     it.addView(navView(bookReference, officialAppThemeLight, this))
                 }
                 Log.d("***SESSION ACTIVITY", "going to book card")
@@ -813,9 +829,13 @@ fun activeSessionRecyclerView(session : Session,
     val dividerColor              = theme.colorOrBlack(dividerColorTheme)
     recyclerView.divider            = SimpleDividerItemDecoration(context, dividerColor)
 
+    recyclerView.margin.leftDp      = 16f
+    recyclerView.margin.rightDp     = 16f
+
 //    recyclerView.padding.topDp      = 6f
 
 //    recyclerView.padding.bottomDp   = 60f
+
     recyclerView.clipToPadding      = false
 
     return recyclerView.recyclerView(context)
@@ -858,7 +878,7 @@ fun bottomSheetToolbarViewLayout(context : Context, theme : Theme) : RelativeLay
     layoutBuilder.width             = LinearLayout.LayoutParams.MATCH_PARENT
     layoutBuilder.height            = LinearLayout.LayoutParams.MATCH_PARENT
 
-    layoutBuilder.padding.leftDp    = 16f
+    layoutBuilder.padding.leftDp    = 8f
     layoutBuilder.padding.rightDp   = 16f
 
 //    val colorTheme = ColorTheme(setOf(
@@ -890,6 +910,20 @@ private fun bottomSheetToolbarHomeButtonView(theme : Theme, context : Context) :
 
     layoutBuilder.orientation           = LinearLayout.HORIZONTAL
 
+//    val bgColorTheme = ColorTheme(setOf(
+//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_3"))))
+//    layoutBuilder.backgroundColor       = theme.colorOrBlack(bgColorTheme)
+
+    layoutBuilder.padding.topDp         = 8f
+    layoutBuilder.padding.bottomDp      = 5f
+    layoutBuilder.padding.leftDp        = 8f
+    layoutBuilder.padding.rightDp       = 12f
+
+//    layoutBuilder.corners               = Corners(2.0, 2.0, 2.0, 2.0)
+
+    layoutBuilder.backgroundResource    = R.drawable.bg_session_button
+
 //    layoutBuilder.layoutGravity         = Gravity.START or Gravity.CENTER_VERTICAL
 //    layoutBuilder.gravity               = Gravity.CENTER_VERTICAL
 
@@ -902,18 +936,19 @@ private fun bottomSheetToolbarHomeButtonView(theme : Theme, context : Context) :
     // 3 | Icon
     // -----------------------------------------------------------------------------------------
 
-    iconViewBuilder.widthDp             = 25
-    iconViewBuilder.heightDp            = 25
+    iconViewBuilder.widthDp             = 27
+    iconViewBuilder.heightDp            = 27
 
-    iconViewBuilder.image               = R.drawable.icon_exit
-    iconViewBuilder.scaleX              = -1f
+    iconViewBuilder.image               = R.drawable.icon_chevron_left
+    //iconViewBuilder.scaleX              = -1f
 
     val iconColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_18"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
     iconViewBuilder.color               = theme.colorOrBlack(iconColorTheme)
 
-    iconViewBuilder.margin.rightDp      = 6f
+    iconViewBuilder.margin.rightDp      = 2f
+    //iconViewBuilder.margin.topDp        = 2f
 
     // 3 | Label
     // -----------------------------------------------------------------------------------------
@@ -923,16 +958,16 @@ private fun bottomSheetToolbarHomeButtonView(theme : Theme, context : Context) :
 
     labelViewBuilder.text               = "Leave Session"
 
-    labelViewBuilder.font               = Font.typeface(TextFont.RobotoCondensed,
-                                                        TextFontStyle.Bold,
+    labelViewBuilder.font               = Font.typeface(TextFont.Roboto,
+                                                        TextFontStyle.Medium,
                                                         context)
 
     val labelColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_18"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
     labelViewBuilder.color              = theme.colorOrBlack(labelColorTheme)
 
-    labelViewBuilder.sizeSp             = 19f
+    labelViewBuilder.sizeSp             = 18f
 
     return layoutBuilder.linearLayout(context)
 }
@@ -954,6 +989,15 @@ private fun bottomSheetToolbarEditButtonView(theme : Theme, context : Context) :
     layoutBuilder.width                 = RelativeLayout.LayoutParams.WRAP_CONTENT
     layoutBuilder.height                = RelativeLayout.LayoutParams.WRAP_CONTENT
 
+    layoutBuilder.backgroundResource    = R.drawable.bg_session_button
+
+    layoutBuilder.gravity               = Gravity.CENTER
+
+    layoutBuilder.padding.leftDp        = 12f
+    layoutBuilder.padding.rightDp       = 12f
+    layoutBuilder.padding.topDp        = 8f
+    layoutBuilder.padding.bottomDp       = 8f
+
 //    layoutBuilder.orientation           = LinearLayout.HORIZONTAL
 
 //    layoutBuilder.layoutGravity         = Gravity.END or Gravity.CENTER_VERTICAL
@@ -962,8 +1006,8 @@ private fun bottomSheetToolbarEditButtonView(theme : Theme, context : Context) :
     layoutBuilder.addRule(RelativeLayout.CENTER_VERTICAL)
     layoutBuilder.addRule(RelativeLayout.ALIGN_PARENT_END)
 
-    layoutBuilder.child(iconViewBuilder)
-                 // .child(labelViewBuilder)
+    layoutBuilder//.child(iconViewBuilder)
+                 .child(labelViewBuilder)
 
     // 3 | Icon
     // -----------------------------------------------------------------------------------------
@@ -971,7 +1015,7 @@ private fun bottomSheetToolbarEditButtonView(theme : Theme, context : Context) :
     iconViewBuilder.widthDp             = 24
     iconViewBuilder.heightDp            = 24
 
-    iconViewBuilder.image               = R.drawable.icon_menu
+    iconViewBuilder.image               = com.taletable.android.R.drawable.icon_menu
 
     val iconColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
@@ -986,18 +1030,18 @@ private fun bottomSheetToolbarEditButtonView(theme : Theme, context : Context) :
     labelViewBuilder.width              = LinearLayout.LayoutParams.WRAP_CONTENT
     labelViewBuilder.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    labelViewBuilder.textId             = R.string.edit
+    labelViewBuilder.textId             = R.string.edit_session
 
-    labelViewBuilder.font               = Font.typeface(TextFont.RobotoCondensed,
-                                                        TextFontStyle.Bold,
+    labelViewBuilder.font               = Font.typeface(TextFont.Roboto,
+                                                        TextFontStyle.Medium,
                                                         context)
 
     val labelColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
     labelViewBuilder.color              = theme.colorOrBlack(labelColorTheme)
 
-    labelViewBuilder.sizeSp             = 19f
+    labelViewBuilder.sizeSp             = 17f
 
     return layoutBuilder.linearLayout(context)
 }
@@ -1025,8 +1069,8 @@ private fun otherEntitiesHeaderViewLayout(context : Context) : RelativeLayout
     layout.padding.topDp    = 16f
     layout.padding.bottomDp = 16f
 
-    layout.padding.leftDp   = 16f
-    layout.padding.rightDp  = 16f
+//    layout.padding.leftDp   = 16f
+//    layout.padding.rightDp  = 16f
 
 //    layout.margin.leftDp    = 4f
 //    layout.margin.rightDp   = 4f
@@ -1057,10 +1101,10 @@ private fun otherEntitiesHeaderTitleView(theme : Theme, context : Context) : Tex
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_10"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
     name.color              = theme.colorOrBlack(colorTheme)
 
-    name.sizeSp             = 23f
+    name.sizeSp             = 24f
 
     return name.textView(context)
 }
@@ -1070,8 +1114,8 @@ private fun entityToolbarButtonsView(theme : Theme, context : Context) : LinearL
 {
     val layout = entityToolbarButtonsViewLayout(context)
 
-    layout.addView(entityToolbarButtonView(R.drawable.icon_slider, 20, false, theme, context))
-    layout.addView(entityToolbarButtonView(R.drawable.icon_plus_sign, 28, true, theme, context))
+    layout.addView(entityToolbarButtonView(com.taletable.android.R.drawable.icon_slider, 20, false, theme, context))
+    layout.addView(entityToolbarButtonView(com.taletable.android.R.drawable.icon_plus_sign, 28, true, theme, context))
 
     return layout
 }
@@ -1157,7 +1201,7 @@ private fun entityCardViewLayout(theme : Theme, context : Context) : LinearLayou
 {
     val layout                  = LinearLayoutBuilder()
 
-    layout.id                   = R.id.entity_card_layout
+    layout.id                   = com.taletable.android.R.id.entity_card_layout
 
     layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
     layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -1174,8 +1218,8 @@ private fun entityCardViewLayout(theme : Theme, context : Context) : LinearLayou
     layout.padding.topDp        = 16f
     layout.padding.bottomDp     = 16f
 
-    layout.padding.leftDp       = 16f
-    layout.padding.rightDp      = 16f
+//    layout.padding.leftDp       = 16f
+//    layout.padding.rightDp      = 16f
 
 //    layout.margin.topDp         = 1f
 //    layout.margin.leftDp        = 4f
@@ -1212,7 +1256,52 @@ private fun entityCardLeftLayout(theme : Theme, context : Context) : LinearLayou
 }
 
 
-private fun entityCardImageView(theme : Theme, context : Context) : LinearLayout
+private fun entityCardImageView(theme : Theme, context : Context) : FrameLayout
+{
+    val layout = FrameLayout(context)
+    layout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                                                    LinearLayout.LayoutParams.WRAP_CONTENT)
+
+    layout.addView(entityCardImageImageView(theme, context))
+
+    layout.addView(entityCardImageProgressView(theme, context))
+
+    return layout
+}
+
+
+
+private fun entityCardImageProgressView(theme : Theme, context : Context) : ProgressBar
+{
+    val progressBar = ProgressBar(context)
+
+    progressBar.id = R.id.progress_bar
+
+//    val layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+//                                                FrameLayout.LayoutParams.WRAP_CONTENT)
+    val layoutParams = FrameLayout.LayoutParams(Util.dpToPixel(50f), Util.dpToPixel(50f))
+
+    progressBar.layoutParams = layoutParams
+
+
+    val colorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+    val color      = theme.colorOrBlack(colorTheme)
+
+    progressBar.indeterminateDrawable =
+            CircularProgressDrawable.Builder(context)
+                    .color(color)
+                    .sweepSpeed(0.5f)
+                    .strokeWidth(2f)
+                    .build()
+
+
+    return progressBar
+}
+
+
+private fun entityCardImageImageView(theme : Theme, context : Context) : LinearLayout
 {
     // 1 | Declarations
     // -------------------------------------------------------------------------
@@ -1236,7 +1325,7 @@ private fun entityCardImageView(theme : Theme, context : Context) : LinearLayout
 //            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_7"))))
 //    layout.backgroundColor      = theme.colorOrBlack(bgColorTheme)
 
-    layout.backgroundResource   = R.drawable.bg_session_step
+    layout.backgroundResource   = com.taletable.android.R.drawable.bg_session_step
 
     layout.gravity              = Gravity.CENTER
 
@@ -1252,7 +1341,7 @@ private fun entityCardImageView(theme : Theme, context : Context) : LinearLayout
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
 
-    iconViewBuilder.image           = R.drawable.icon_book
+    iconViewBuilder.image           = com.taletable.android.R.drawable.icon_book
 
     iconViewBuilder.color           = theme.colorOrBlack(iconColorTheme)
 
@@ -1293,14 +1382,14 @@ private fun entityCardNameView(theme : Theme,
 {
     val name                = TextViewBuilder()
 
-    name.id                 = R.id.entity_card_name
+    name.id                 = com.taletable.android.R.id.entity_card_name
 
     name.width              = LinearLayout.LayoutParams.MATCH_PARENT
     name.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
 
     name.font               = Font.typeface(TextFont.Roboto,
-                                            TextFontStyle.Bold,
+                                            TextFontStyle.Medium,
                                             context)
 
 
@@ -1322,7 +1411,7 @@ private fun entityCardSummaryView(theme : Theme,
 {
     val summary             = TextViewBuilder()
 
-    summary.id              = R.id.entity_card_summary
+    summary.id              = com.taletable.android.R.id.entity_card_summary
 
     summary.width            = LinearLayout.LayoutParams.WRAP_CONTENT
     summary.height           = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -1367,6 +1456,7 @@ class ActiveSessionRecyclerViewAdapter(val theme : Theme,
 
     var items : List<Any> = listOf()
         set(newItems) {
+            loaderViewIds.clear()
             field = newItems
             this.notifyDataSetChanged()
         }
@@ -1407,8 +1497,10 @@ class ActiveSessionRecyclerViewAdapter(val theme : Theme,
             is SessionListHeader -> {
             }
             is PersistedEntity -> {
+                val loaderViewId = Util.generateViewId()
                 val entityViewHolder = viewHolder as EntityCardViewHolder
-                entityViewHolder.setEntity(item)
+                entityViewHolder.setEntity(item, loaderViewId)
+                loaderViewIds[item.entityId] = loaderViewId
             }
         }
     }
@@ -1442,6 +1534,7 @@ class EntityCardViewHolder(itemView : View,
     var layout                  : LinearLayout? = null
     var nameView                : TextView? = null
     var summaryView             : TextView? = null
+    var progressBar             : ProgressBar? = null
 
 //    val context = sessionActivity
 
@@ -1452,14 +1545,15 @@ class EntityCardViewHolder(itemView : View,
 
     init
     {
-        this.layout             = itemView.findViewById(R.id.entity_card_layout)
-        this.nameView           = itemView.findViewById(R.id.entity_card_name)
-        this.summaryView        = itemView.findViewById(R.id.entity_card_summary)
+        this.layout             = itemView.findViewById(com.taletable.android.R.id.entity_card_layout)
+        this.nameView           = itemView.findViewById(com.taletable.android.R.id.entity_card_name)
+        this.summaryView        = itemView.findViewById(com.taletable.android.R.id.entity_card_summary)
+        this.progressBar        = itemView.findViewById(com.taletable.android.R.id.progress_bar)
     }
 
 
 
-    fun setEntity(entity : PersistedEntity)
+    fun setEntity(entity : PersistedEntity, viewId : Int)
     {
 //        this.layout?.setOnClickListener {
 //            when (entity) {
@@ -1471,6 +1565,8 @@ class EntityCardViewHolder(itemView : View,
 //                }
 //            }
 //        }
+
+        this.progressBar?.id = viewId
 
         this.nameView?.text = entity.name
         this.summaryView?.text = entity.summary
@@ -1494,12 +1590,12 @@ fun openSessionProgressBar(theme : Theme, context : Context) : ProgressBar
 {
     val bar                 = ProgressBarBuilder()
 
-    bar.id                  = R.id.progress_bar
+    bar.id                  = com.taletable.android.R.id.progress_bar
 
     bar.width               = LinearLayout.LayoutParams.MATCH_PARENT
     bar.height              = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    bar.progressDrawableId  = R.drawable.progress_bar_load_session
+    bar.progressDrawableId  = com.taletable.android.R.drawable.progress_bar_load_session
 
     val bgColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),

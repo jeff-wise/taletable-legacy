@@ -609,6 +609,8 @@ types:
       description: Book reference chapter.
     - type: book_subsection_entry_card
       description: Book reference chapter.
+    - type: book_subsection_entry_card_inline_expandable
+      description: Book reference chapter.
 - type: product_type
   product_type:
     name: book_subsection_entry_card_group
@@ -641,6 +643,20 @@ types:
       type:
         type: custom_type
         custom_type: book_content_id
+      presence: required
+      description: The content
+- type: product_type
+  product_type:
+    name: book_subsection_entry_card_inline_expandable
+    label: Book Subsection Entry Card
+    description: Book Subsection Entry Card
+    group: 'book'
+    type: product
+    fields:
+    - name: card_id
+      type:
+        type: prim_type
+        prim_type: string
       presence: required
       description: The content
 - type: product_type

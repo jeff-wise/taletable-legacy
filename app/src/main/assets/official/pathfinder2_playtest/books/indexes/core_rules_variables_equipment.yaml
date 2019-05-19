@@ -670,6 +670,9 @@ variables:
     id: equipment_armor_shields_list_padded_name
     label: Equipment > Armor and Shields > Armor List > Padded Armor > Name
     description: Equipment > Armor and Shields > Armor List > Padded Armor > Name
+    tags:
+    - armor_padded
+    - armor_name
     value:
       type: text_literal
       text_literal: 'Padded Armor'
@@ -678,6 +681,9 @@ variables:
     id: equipment_armor_shields_list_padded_armor_type
     label: Equipment > Armor and Shields > Armor List > Padded Armor > Armor Type
     description: Equipment > Armor and Shields > Armor List > Padded Armor > Armor Type
+    tags:
+    - armor_padded
+    - armor_type
     value:
       type: text_literal
       text_literal: 'Light Armor'
@@ -686,6 +692,9 @@ variables:
     id: equipment_armor_shields_list_padded_price
     label: Equipment > Armor and Shields > Armor List > Padded Armor > Price
     description: Equipment > Armor and Shields > Armor List > Padded Armor > Price
+    tags:
+    - armor_padded
+    - armor_price
     value:
       type: text_literal
       text_literal: '2 sp'
@@ -694,6 +703,9 @@ variables:
     id: equipment_armor_shields_list_padded_ac_bonus
     label: Equipment > Armor and Shields > Armor List > Padded Armor > AC Bonus
     description: Equipment > Armor and Shields > Armor List > Padded Armor > AC Bonus
+    tags:
+    - armor_padded
+    - armor_ac_bonus
     value:
       type: number_literal
       number_literal: 1
@@ -702,14 +714,20 @@ variables:
     id: equipment_armor_shields_list_padded_tac_bonus
     label: Equipment > Armor and Shields > Armor List > Padded Armor > TAC Bonus
     description: Equipment > Armor and Shields > Armor List > Padded Armor > TAC Bonus
+    tags:
+    - armor_padded
+    - armor_tac_bonus
     value:
       type: number_literal
       number_literal: 0
 - type: variable_number
   variable_number:
-    id: equipment_armor_shields_list_padded_d/ex_mod_cap
+    id: equipment_armor_shields_list_padded_dex_mod_cap
     label: Equipment > Armor and Shields > Armor List > Padded Armor > Dexterity Modifier Cap
     description: Equipment > Armor and Shields > Armor List > Padded Armor > Dexterity Modifier Cap
+    tags:
+    - armor_padded
+    - armor_dex_mod_cap
     value:
       type: number_literal
       number_literal: 5
@@ -718,6 +736,9 @@ variables:
     id: equipment_armor_shields_list_padded_check_penalty
     label: Equipment > Armor and Shields > Armor List > Padded Armor > Check Penalty
     description: Equipment > Armor and Shields > Armor List > Padded Armor > Check Penalty
+    tags:
+    - armor_padded
+    - armor_check_penalty
     value:
       type: number_literal
       number_literal: 0
@@ -726,6 +747,9 @@ variables:
     id: equipment_armor_shields_list_padded_speed_penalty
     label: Equipment > Armor and Shields > Armor List > Padded Armor > Speed Penalty
     description: Equipment > Armor and Shields > Armor List > Padded Armor > Speed Penalty
+    tags:
+    - armor_padded
+    - armor_speed_penalty
     value:
       type: number_literal
       number_literal: 0
@@ -734,6 +758,9 @@ variables:
     id: equipment_armor_shields_list_padded_bulk
     label: Equipment > Armor and Shields > Armor List > Padded Armor > Bulk
     description: Equipment > Armor and Shields > Armor List > Padded Armor > Bulk
+    tags:
+    - armor_padded
+    - armor_bulk
     value:
       type: text_literal
       text_literal: 'L'
@@ -742,6 +769,9 @@ variables:
     id: equipment_armor_shields_list_padded_traits
     label: Equipment > Armor and Shields > Armor List > Padded Armor > Traits
     description: Equipment > Armor and Shields > Armor List > Padded Armor > Traits
+    tags:
+    - armor_padded
+    - armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -751,6 +781,9 @@ variables:
     id: equipment_armor_shields_list_leather_name
     label: Equipment > Armor and Shields > Armor List > Leather > Name
     description: Equipment > Armor and Shields > Armor List > Leather > Name
+    tags:
+    - armor_leather
+    - armor_name
     value:
       type: text_literal
       text_literal: 'Leather Armor'
@@ -759,6 +792,9 @@ variables:
     id: equipment_armor_shields_list_leather_armor_type
     label: Equipment > Armor and Shields > Armor List > Leather Armor > Armor Type
     description: Equipment > Armor and Shields > Armor List > Leather Armor > Armor Type
+    tags:
+    - armor_padded
+    - armor_type
     value:
       type: text_literal
       text_literal: 'Light Armor'
@@ -767,6 +803,9 @@ variables:
     id: equipment_armor_shields_list_leather_price
     label: Equipment > Armor and Shields > Armor List > Leather > Price
     description: Equipment > Armor and Shields > Armor List > Leather > Price
+    tags:
+    - armor_padded
+    - armor_price
     value:
       type: text_literal
       text_literal: '15 sp'
@@ -775,6 +814,9 @@ variables:
     id: equipment_armor_shields_list_leather_ac_bonus
     label: Equipment > Armor and Shields > Armor List > Leather > AC Bonus
     description: Equipment > Armor and Shields > Armor List > Leather > AC Bonus
+    tags:
+    - armor_leather
+    - armor_ac_bonus
     value:
       type: number_literal
       number_literal: 1
@@ -783,6 +825,9 @@ variables:
     id: equipment_armor_shields_list_leather_tac_bonus
     label: Equipment > Armor and Shields > Armor List > Leather > TAC Bonus
     description: Equipment > Armor and Shields > Armor List > Leather > TAC Bonus
+    tags:
+    - armor_leather
+    - armor_tac_bonus
     value:
       type: number_literal
       number_literal: 0
@@ -791,6 +836,9 @@ variables:
     id: equipment_armor_shields_list_leather_dex_mod_cap
     label: Equipment > Armor and Shields > Armor List > Leather > Dexterity Modifier Cap
     description: Equipment > Armor and Shields > Armor List > Leather > Dexterity Modifier Cap
+    tags:
+    - armor_leather
+    - armor_dex_mod_cap
     value:
       type: number_literal
       number_literal: 6
@@ -799,6 +847,9 @@ variables:
     id: equipment_armor_shields_list_leather_check_penalty
     label: Equipment > Armor and Shields > Armor List > Leather > Check Penalty
     description: Equipment > Armor and Shields > Armor List > Leather > Check Penalty
+    tags:
+    - armor_leather
+    - armor_check_penalty
     value:
       type: number_literal
       number_literal: 0
@@ -807,6 +858,9 @@ variables:
     id: equipment_armor_shields_list_leather_speed_penalty
     label: Equipment > Armor and Shields > Armor List > Leather > Speed Penalty
     description: Equipment > Armor and Shields > Armor List > Leather > Speed Penalty
+    tags:
+    - armor_leather
+    - armor_speed_penalty
     value:
       type: number_literal
       number_literal: 0
@@ -815,6 +869,9 @@ variables:
     id: equipment_armor_shields_list_leather_bulk
     label: Equipment > Armor and Shields > Armor List > Leather > Bulk
     description: Equipment > Armor and Shields > Armor List > Leather > Bulk
+    tags:
+    - armor_leather
+    - armor_bulk
     value:
       type: text_literal
       text_literal: '1'
@@ -824,6 +881,9 @@ variables:
     label: Equipment > Armor and Shields > Armor List > Leather > Traits
     description: Equipment > Armor and Shields > Armor List > Leather > Traits
     value_set_id: armor_traits
+    tags:
+    - armor_leather
+    - armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -833,6 +893,9 @@ variables:
     id: equipment_armor_shields_list_studded_leather_name
     label: Equipment > Armor and Shields > Armor List > Studded Leather > Name
     description: Equipment > Armor and Shields > Armor List > Studded Leather > Name
+    tags:
+    - armor_studded_leather
+    - armor_traits
     value:
       type: text_literal
       text_literal: 'Studded Leather'
@@ -841,6 +904,9 @@ variables:
     id: equipment_armor_shields_list_studded_leather_armor_type
     label: Equipment > Armor and Shields > Armor List > Studded Leather > Armor Type
     description: Equipment > Armor and Shields > Armor List > Studded Leather > Armor Type
+    tags:
+    - armor_studded_leather
+    - armor_type
     value:
       type: text_literal
       text_literal: 'Light Armor'
@@ -849,6 +915,9 @@ variables:
     id: equipment_armor_shields_list_studded_leather_price
     label: Equipment > Armor and Shields > Armor List > Studded Leather > Price
     description: Equipment > Armor and Shields > Armor List > Studded Leather > Price
+    tags:
+    - armor_studded_leather
+    - armor_price
     value:
       type: text_literal
       text_literal: '30 sp'
@@ -857,6 +926,9 @@ variables:
     id: equipment_armor_shields_list_studded_leather_ac_bonus
     label: Equipment > Armor and Shields > Armor List > Studded Leather > AC Bonus
     description: Equipment > Armor and Shields > Armor List > Studded Leather > AC Bonus
+    tags:
+    - armor_studded_leather
+    - armor_ac_bonus
     value:
       type: number_literal
       number_literal: 2
@@ -865,6 +937,9 @@ variables:
     id: equipment_armor_shields_list_studded_leather_tac_bonus
     label: Equipment > Armor and Shields > Armor List > Studded Leather > TAC Bonus
     description: Equipment > Armor and Shields > Armor List > Studded Leather > TAC Bonus
+    tags:
+    - armor_studded_leather
+    - armor_tac_bonus
     value:
       type: number_literal
       number_literal: 0
@@ -873,6 +948,9 @@ variables:
     id: equipment_armor_shields_list_studded_leather_dex_mod_cap
     label: Equipment > Armor and Shields > Armor List > Studded Leather > Dexterity Modifier Cap
     description: Equipment > Armor and Shields > Armor List > Studded Leather > Dexterity Modifier Cap
+    tags:
+    - armor_studded_leather
+    - armor_dex_mod_cap
     value:
       type: number_literal
       number_literal: 5
@@ -881,6 +959,9 @@ variables:
     id: equipment_armor_shields_list_studded_leather_check_penalty
     label: Equipment > Armor and Shields > Armor List > Studded Leather > Check Penalty
     description: Equipment > Armor and Shields > Armor List > Studded Leather > Check Penalty
+    tags:
+    - armor_studded_leather
+    - armor_check_penalty
     value:
       type: number_literal
       number_literal: -1
@@ -889,6 +970,9 @@ variables:
     id: equipment_armor_shields_list_studded_leather_speed_penalty
     label: Equipment > Armor and Shields > Armor List > Studded Leather > Speed Penalty
     description: Equipment > Armor and Shields > Armor List > Studded Leather > Speed Penalty
+    tags:
+    - armor_studded_leather
+    - armor_speed_penalty
     value:
       type: number_literal
       number_literal: 0
@@ -897,6 +981,9 @@ variables:
     id: equipment_armor_shields_list_studded_leather_bulk
     label: Equipment > Armor and Shields > Armor List > Studded Leather > Bulk
     description: Equipment > Armor and Shields > Armor List > Studded Leather > Bulk
+    tags:
+    - armor_studded_leather
+    - armor_bulk
     value:
       type: text_literal
       text_literal: '1'
@@ -906,6 +993,9 @@ variables:
     label: Equipment > Armor and Shields > Armor List > Studded Leather > Traits
     description: Equipment > Armor and Shields > Armor List > Studded Leather > Traits
     value_set_id: armor_traits
+    tags:
+    - armor_studded_leather
+    - armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -915,6 +1005,9 @@ variables:
     id: equipment_armor_shields_list_chain_shirt_name
     label: Equipment > Armor and Shields > Armor List > Chain Shirt > Name
     description: Equipment > Armor and Shields > Armor List > Chain Shirt > Name
+    tags:
+    - armor_chain_shirt
+    - armor_name
     value:
       type: text_literal
       text_literal: 'Chain Shirt'
@@ -923,6 +1016,9 @@ variables:
     id: equipment_armor_shields_list_chain_shirt_armor_type
     label: Equipment > Armor and Shields > Armor List > Chain Shirt > Armor Type
     description: Equipment > Armor and Shields > Armor List > Chain Shirt > Armor Type
+    tags:
+    - armor_chain_shirt
+    - armor_type
     value:
       type: text_literal
       text_literal: 'Light Armor'
@@ -931,6 +1027,9 @@ variables:
     id: equipment_armor_shields_list_chain_shirt_price
     label: Equipment > Armor and Shields > Armor List > Chain Shirt > Price
     description: Equipment > Armor and Shields > Armor List > Chain Shirt > Price
+    tags:
+    - armor_chain_shirt
+    - armor_price
     value:
       type: text_literal
       text_literal: '45 sp'
@@ -939,6 +1038,9 @@ variables:
     id: equipment_armor_shields_list_chain_shirt_ac_bonus
     label: Equipment > Armor and Shields > Armor List > Studded Leather > AC Bonus
     description: Equipment > Armor and Shields > Armor List > Studded Leather > AC Bonus
+    tags:
+    - armor_chain_shirt
+    - armor_ac_bonus
     value:
       type: number_literal
       number_literal: 2
@@ -947,6 +1049,9 @@ variables:
     id: equipment_armor_shields_list_chain_shirt_tac_bonus
     label: Equipment > Armor and Shields > Armor List > Chain Shirt > TAC Bonus
     description: Equipment > Armor and Shields > Armor List > Chain Shirt > TAC Bonus
+    tags:
+    - armor_chain_shirt
+    - armor_tac_bonus
     value:
       type: number_literal
       number_literal: 1
@@ -955,6 +1060,9 @@ variables:
     id: equipment_armor_shields_list_chain_shirt_dex_mod_cap
     label: Equipment > Armor and Shields > Armor List > Chain Shirt > Dexterity Modifier Cap
     description: Equipment > Armor and Shields > Armor List > Chain Shirt > Dexterity Modifier Cap
+    tags:
+    - armor_chain_shirt
+    - armor_dex_mod_cap
     value:
       type: number_literal
       number_literal: 5
@@ -963,6 +1071,9 @@ variables:
     id: equipment_armor_shields_list_chain_shirt_check_penalty
     label: Equipment > Armor and Shields > Armor List > Chain Shirt > Check Penalty
     description: Equipment > Armor and Shields > Armor List > Chain Shirt > Check Penalty
+    tags:
+    - armor_chain_shirt
+    - armor_check_penalty
     value:
       type: number_literal
       number_literal: -1
@@ -971,6 +1082,9 @@ variables:
     id: equipment_armor_shields_list_chain_shirt_speed_penalty
     label: Equipment > Armor and Shields > Armor List > Chain Shirt > Speed Penalty
     description: Equipment > Armor and Shields > Armor List > Chain Shirt > Speed Penalty
+    tags:
+    - armor_chain_shirt
+    - armor_speed_penalty
     value:
       type: number_literal
       number_literal: 0
@@ -979,6 +1093,9 @@ variables:
     id: equipment_armor_shields_list_chain_shirt_bulk
     label: Equipment > Armor and Shields > Armor List > Chain Shirt > Bulk
     description: Equipment > Armor and Shields > Armor List > Chain Shirt > Bulk
+    tags:
+    - armor_chain_shirt
+    - armor_bulk
     value:
       type: text_literal
       text_literal: '2'
@@ -988,6 +1105,9 @@ variables:
     label: Equipment > Armor and Shields > Armor List > Chain Shirt > Traits
     description: Equipment > Armor and Shields > Armor List > Chain Shirt > Traits
     value_set_id: armor_traits
+    tags:
+    - armor_chain_shirt
+    - armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -997,6 +1117,9 @@ variables:
     id: equipment_armor_shields_list_hide_name
     label: Equipment > Armor and Shields > Armor List > Hide > Name
     description: Equipment > Armor and Shields > Armor List > Hide > Name
+    tags:
+    - armor_hide
+    - armor_name
     value:
       type: text_literal
       text_literal: 'Hide'
@@ -1005,6 +1128,9 @@ variables:
     id: equipment_armor_shields_list_hide_armor_type
     label: Equipment > Armor and Shields > Armor List > Hide > Armor Type
     description: Equipment > Armor and Shields > Armor List > Hide > Armor Type
+    tags:
+    - armor_hide
+    - armor_type
     value:
       type: text_literal
       text_literal: 'Medium Armor'
@@ -1013,6 +1139,9 @@ variables:
     id: equipment_armor_shields_list_hide_price
     label: Equipment > Armor and Shields > Armor List > Hide > Price
     description: Equipment > Armor and Shields > Armor List > Hide > Price
+    tags:
+    - armor_hide
+    - armor_price
     value:
       type: text_literal
       text_literal: '20 sp'
@@ -1021,6 +1150,9 @@ variables:
     id: equipment_armor_shields_list_hide_ac_bonus
     label: Equipment > Armor and Shields > Armor List > Hide > AC Bonus
     description: Equipment > Armor and Shields > Armor List > Hide > AC Bonus
+    tags:
+    - armor_hide
+    - armor_ac_bonus
     value:
       type: number_literal
       number_literal: 3
@@ -1029,14 +1161,20 @@ variables:
     id: equipment_armor_shields_list_hide_tac_bonus
     label: Equipment > Armor and Shields > Armor List > Hide > TAC Bonus
     description: Equipment > Armor and Shields > Armor List > Hide > TAC Bonus
+    tags:
+    - armor_hide
+    - armor_tac_bonus
     value:
       type: number_literal
       number_literal: 0
 - type: variable_number
   variable_number:
-    id: equipment_armor_shields_list_chain_shirt_dex_mod_cap
-    label: Equipment > Armor and Shields > Armor List > Chain Shirt > Dexterity Modifier Cap
-    description: Equipment > Armor and Shields > Armor List > Chain Shirt > Dexterity Modifier Cap
+    id: equipment_armor_shields_list_hide_dex_mod_cap
+    label: Equipment > Armor and Shields > Armor List > Hide > Dexterity Modifier Cap
+    description: Equipment > Armor and Shields > Armor List > Hide > Dexterity Modifier Cap
+    tags:
+    - armor_hide
+    - armor_dex_mod_cap
     value:
       type: number_literal
       number_literal: 4
@@ -1045,6 +1183,9 @@ variables:
     id: equipment_armor_shields_list_hide_check_penalty
     label: Equipment > Armor and Shields > Armor List > Hide > Check Penalty
     description: Equipment > Armor and Shields > Armor List > Hide > Check Penalty
+    tags:
+    - armor_hide
+    - armor_check_penalty
     value:
       type: number_literal
       number_literal: -3
@@ -1053,6 +1194,9 @@ variables:
     id: equipment_armor_shields_list_hide_speed_penalty
     label: Equipment > Armor and Shields > Armor List > Hide > Speed Penalty
     description: Equipment > Armor and Shields > Armor List > Hide > Speed Penalty
+    tags:
+    - armor_hide
+    - armor_speed_penalty
     value:
       type: number_literal
       number_literal: 0
@@ -1061,6 +1205,9 @@ variables:
     id: equipment_armor_shields_list_hide_bulk
     label: Equipment > Armor and Shields > Armor List > Hide > Bulk
     description: Equipment > Armor and Shields > Armor List > Hide > Bulk
+    tags:
+    - armor_hide
+    - armor_bulk
     value:
       type: text_literal
       text_literal: '2'
@@ -1070,6 +1217,9 @@ variables:
     label: Equipment > Armor and Shields > Armor List > Hide > Traits
     description: Equipment > Armor and Shields > Armor List > Hide > Traits
     value_set_id: armor_traits
+    tags:
+    - armor_hide
+    - armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -1079,6 +1229,9 @@ variables:
     id: equipment_armor_shields_list_scale_mail_name
     label: Equipment > Armor and Shields > Armor List > Scale Mail > Name
     description: Equipment > Armor and Shields > Armor List > Scale Mail > Name
+    tags:
+    - armor_scale_mail
+    - armor_name
     value:
       type: text_literal
       text_literal: 'Scale Mail'
@@ -1087,6 +1240,9 @@ variables:
     id: equipment_armor_shields_list_scale_mail_armor_type
     label: Equipment > Armor and Shields > Armor List > Scale Mail > Armor Type
     description: Equipment > Armor and Shields > Armor List > Scale Mail > Armor Type
+    tags:
+    - armor_scale_mail
+    - armor_type
     value:
       type: text_literal
       text_literal: 'Medium Armor'
@@ -1095,6 +1251,9 @@ variables:
     id: equipment_armor_shields_list_scale_mail_price
     label: Equipment > Armor and Shields > Armor List > Scale Mail > Price
     description: Equipment > Armor and Shields > Armor List > Scale Mail > Price
+    tags:
+    - armor_scale_mail
+    - armor_price
     value:
       type: text_literal
       text_literal: '35 sp'
@@ -1103,6 +1262,9 @@ variables:
     id: equipment_armor_shields_list_scale_mail_ac_bonus
     label: Equipment > Armor and Shields > Armor List > Scale Mail > AC Bonus
     description: Equipment > Armor and Shields > Armor List > Scale Mail > AC Bonus
+    tags:
+    - armor_scale_mail
+    - armor_ac_bonus
     value:
       type: number_literal
       number_literal: 3
@@ -1111,6 +1273,9 @@ variables:
     id: equipment_armor_shields_list_scale_mail_tac_bonus
     label: Equipment > Armor and Shields > Armor List > Scale Mail > TAC Bonus
     description: Equipment > Armor and Shields > Armor List > Scale Mail > TAC Bonus
+    tags:
+    - armor_scale_mail
+    - armor_tac_bonus
     value:
       type: number_literal
       number_literal: 1
@@ -1119,6 +1284,9 @@ variables:
     id: equipment_armor_shields_list_scale_mail_dex_mod_cap
     label: Equipment > Armor and Shields > Armor List > Scale Mail > Dexterity Modifier Cap
     description: Equipment > Armor and Shields > Armor List > Scale Mail > Dexterity Modifier Cap
+    tags:
+    - armor_scale_mail
+    - armor_dex_mod_cap
     value:
       type: number_literal
       number_literal: 4
@@ -1127,6 +1295,9 @@ variables:
     id: equipment_armor_shields_list_scale_mail_check_penalty
     label: Equipment > Armor and Shields > Armor List > Scale Mail > Check Penalty
     description: Equipment > Armor and Shields > Armor List > Scale Mail > Check Penalty
+    tags:
+    - armor_scale_mail
+    - armor_check_penalty
     value:
       type: number_literal
       number_literal: -2
@@ -1135,6 +1306,9 @@ variables:
     id: equipment_armor_shields_list_scale_mail_speed_penalty
     label: Equipment > Armor and Shields > Armor List > Scale Mail > Speed Penalty
     description: Equipment > Armor and Shields > Armor List > Scale Mail > Speed Penalty
+    tags:
+    - armor_scale_mail
+    - armor_speed_penalty
     value:
       type: number_literal
       number_literal: -5
@@ -1143,6 +1317,9 @@ variables:
     id: equipment_armor_shields_list_scale_mail_bulk
     label: Equipment > Armor and Shields > Armor List > Scale Mail > Bulk
     description: Equipment > Armor and Shields > Armor List > Scale Mail > Bulk
+    tags:
+    - armor_scale_mail
+    - armor_bulk
     value:
       type: text_literal
       text_literal: '2'
@@ -1152,6 +1329,9 @@ variables:
     label: Equipment > Armor and Shields > Armor List > Scale Mail > Traits
     description: Equipment > Armor and Shields > Armor List > Scale Mail > Traits
     value_set_id: armor_traits
+    tags:
+    - armor_scale_mail
+    - armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -1161,6 +1341,9 @@ variables:
     id: equipment_armor_shields_list_chain_mail_name
     label: Equipment > Armor and Shields > Armor List > Chain Mail > Name
     description: Equipment > Armor and Shields > Armor List > Chain Mail > Name
+    tags:
+    - armor_chain_mail
+    - armor_name
     value:
       type: text_literal
       text_literal: 'Chain Mail'
@@ -1169,6 +1352,9 @@ variables:
     id: equipment_armor_shields_list_chain_mail_armor_type
     label: Equipment > Armor and Shields > Armor List > Chain Mail > Armor Type
     description: Equipment > Armor and Shields > Armor List > Chain Mail > Armor Type
+    tags:
+    - armor_chain_mail
+    - armor_type
     value:
       type: text_literal
       text_literal: 'Medium Armor'
@@ -1177,6 +1363,9 @@ variables:
     id: equipment_armor_shields_list_chain_mail_price
     label: Equipment > Armor and Shields > Armor List > Chain Mail > Price
     description: Equipment > Armor and Shields > Armor List > Chain Mail > Price
+    tags:
+    - armor_chain_mail
+    - armor_price
     value:
       type: text_literal
       text_literal: '60 sp'
@@ -1185,6 +1374,9 @@ variables:
     id: equipment_armor_shields_list_chain_mail_ac_bonus
     label: Equipment > Armor and Shields > Armor List > Chain Mail > AC Bonus
     description: Equipment > Armor and Shields > Armor List > Chain Mail > AC Bonus
+    tags:
+    - armor_chain_mail
+    - armor_ac_bonus
     value:
       type: number_literal
       number_literal: 4
@@ -1193,6 +1385,9 @@ variables:
     id: equipment_armor_shields_list_chain_mail_tac_bonus
     label: Equipment > Armor and Shields > Armor List > Chain Mail > TAC Bonus
     description: Equipment > Armor and Shields > Armor List > Chain Mail > TAC Bonus
+    tags:
+    - armor_chain_mail
+    - armor_tac_bonus
     value:
       type: number_literal
       number_literal: 1
@@ -1201,6 +1396,9 @@ variables:
     id: equipment_armor_shields_list_chain_mail_dex_mod_cap
     label: Equipment > Armor and Shields > Armor List > Chain Mail > Dexterity Modifier Cap
     description: Equipment > Armor and Shields > Armor List > Chain Mail > Dexterity Modifier Cap
+    tags:
+    - armor_chain_mail
+    - armor_dex_mod_cap
     value:
       type: number_literal
       number_literal: 3
@@ -1209,6 +1407,9 @@ variables:
     id: equipment_armor_shields_list_chain_mail_check_penalty
     label: Equipment > Armor and Shields > Armor List > Chain Mail > Check Penalty
     description: Equipment > Armor and Shields > Armor List > Chain Mail > Check Penalty
+    tags:
+    - armor_chain_mail
+    - armor_check_penalty
     value:
       type: number_literal
       number_literal: -3
@@ -1217,6 +1418,9 @@ variables:
     id: equipment_armor_shields_list_chain_mail_speed_penalty
     label: Equipment > Armor and Shields > Armor List > Chain Mail > Speed Penalty
     description: Equipment > Armor and Shields > Armor List > Chain Mail > Speed Penalty
+    tags:
+    - armor_chain_mail
+    - armor_speed_penalty
     value:
       type: number_literal
       number_literal: -5
@@ -1225,6 +1429,9 @@ variables:
     id: equipment_armor_shields_list_chain_mail_bulk
     label: Equipment > Armor and Shields > Armor List > Chain Mail > Bulk
     description: Equipment > Armor and Shields > Armor List > Chain Mail > Bulk
+    tags:
+    - armor_chain_mail
+    - armor_bulk
     value:
       type: text_literal
       text_literal: '2'
@@ -1233,6 +1440,9 @@ variables:
     id: equipment_armor_shields_list_chain_mail_traits
     label: Equipment > Armor and Shields > Armor List > Chain Mail > Traits
     description: Equipment > Armor and Shields > Armor List > Chain Mail > Traits
+    tags:
+    - armor_chain_mail
+    - armor_traits
     value_set_id: armor_traits
     value:
       type: text_list_literal
@@ -1243,6 +1453,9 @@ variables:
     id: equipment_armor_shields_list_breastplate_name
     label: Equipment > Armor and Shields > Armor List > Breastplate > Name
     description: Equipment > Armor and Shields > Armor List > Breastplate > Name
+    tags:
+    - armor_breastplate
+    - armor_name
     value:
       type: text_literal
       text_literal: 'Breastplate'
@@ -1251,6 +1464,9 @@ variables:
     id: equipment_armor_shields_list_breastplate_armor_type
     label: Equipment > Armor and Shields > Armor List > Breastplate > Armor Type
     description: Equipment > Armor and Shields > Armor List > Breastplate > Armor Type
+    tags:
+    - armor_breastplate
+    - armor_type
     value:
       type: text_literal
       text_literal: 'Medium Armor'
@@ -1259,6 +1475,9 @@ variables:
     id: equipment_armor_shields_list_breastplate_price
     label: Equipment > Armor and Shields > Armor List > Breastplate > Price
     description: Equipment > Armor and Shields > Armor List > Breastplate > Price
+    tags:
+    - armor_breastplate
+    - armor_price
     value:
       type: text_literal
       text_literal: '80 sp'
@@ -1267,6 +1486,9 @@ variables:
     id: equipment_armor_shields_list_breastplate_ac_bonus
     label: Equipment > Armor and Shields > Armor List > Breastplate > AC Bonus
     description: Equipment > Armor and Shields > Armor List > Breastplate > AC Bonus
+    tags:
+    - armor_breastplate
+    - armor_ac_bonus
     value:
       type: number_literal
       number_literal: 4
@@ -1275,6 +1497,9 @@ variables:
     id: equipment_armor_shields_list_breastplate_tac_bonus
     label: Equipment > Armor and Shields > Armor List > Breastplate > TAC Bonus
     description: Equipment > Armor and Shields > Armor List > Breastplate > TAC Bonus
+    tags:
+    - armor_breastplate
+    - armor_tac_bonus
     value:
       type: number_literal
       number_literal: 2
@@ -1283,6 +1508,9 @@ variables:
     id: equipment_armor_shields_list_breastplate_dex_mod_cap
     label: Equipment > Armor and Shields > Armor List > Breastplate > Dexterity Modifier Cap
     description: Equipment > Armor and Shields > Armor List > Breastplate > Dexterity Modifier Cap
+    tags:
+    - armor_breastplate
+    - armor_dex_mod_cap
     value:
       type: number_literal
       number_literal: 3
@@ -1291,6 +1519,9 @@ variables:
     id: equipment_armor_shields_list_breastplate_check_penalty
     label: Equipment > Armor and Shields > Armor List > Breastplate > Check Penalty
     description: Equipment > Armor and Shields > Armor List > Breastplate > Check Penalty
+    tags:
+    - armor_breastplate
+    - armor_check_penalty
     value:
       type: number_literal
       number_literal: -4
@@ -1299,6 +1530,9 @@ variables:
     id: equipment_armor_shields_list_breastplate_speed_penalty
     label: Equipment > Armor and Shields > Armor List > Breastplate > Speed Penalty
     description: Equipment > Armor and Shields > Armor List > Breastplate > Speed Penalty
+    tags:
+    - armor_breastplate
+    - armor_speed_penalty
     value:
       type: number_literal
       number_literal: -5
@@ -1307,6 +1541,9 @@ variables:
     id: equipment_armor_shields_list_breastplate_bulk
     label: Equipment > Armor and Shields > Armor List > Breastplate > Bulk
     description: Equipment > Armor and Shields > Armor List > Breastplate > Bulk
+    tags:
+    - armor_breastplate
+    - armor_bulk
     value:
       type: text_literal
       text_literal: '2'
@@ -1316,6 +1553,9 @@ variables:
     label: Equipment > Armor and Shields > Armor List > Breastplate > Traits
     description: Equipment > Armor and Shields > Armor List > Breastplate > Traits
     value_set_id: armor_traits
+    tags:
+    - armor_breastplate
+    - armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -1325,6 +1565,9 @@ variables:
     id: equipment_armor_shields_list_splint_mail_name
     label: Equipment > Armor and Shields > Armor List > Splint Mail > Name
     description: Equipment > Armor and Shields > Armor List > Splint Mail > Name
+    tags:
+    - armor_splint_mail
+    - armor_name
     value:
       type: text_literal
       text_literal: 'Splint mail'
@@ -1333,6 +1576,9 @@ variables:
     id: equipment_armor_shields_list_splint_mail_armor_type
     label: Equipment > Armor and Shields > Armor List > Splint Mail > Armor Type
     description: Equipment > Armor and Shields > Armor List > Splint Mail > Armor Type
+    tags:
+    - armor_splint_mail
+    - armor_type
     value:
       type: text_literal
       text_literal: 'Heavy Armor'
@@ -1341,6 +1587,9 @@ variables:
     id: equipment_armor_shields_list_splint_mail_price
     label: Equipment > Armor and Shields > Armor List > Splint Mail > Price
     description: Equipment > Armor and Shields > Armor List > Splint Mail > Price
+    tags:
+    - armor_splint_mail
+    - armor_price
     value:
       type: text_literal
       text_literal: '125 sp'
@@ -1349,6 +1598,9 @@ variables:
     id: equipment_armor_shields_list_splint_mail_ac_bonus
     label: Equipment > Armor and Shields > Armor List > Splint Mail > AC Bonus
     description: Equipment > Armor and Shields > Armor List > Splint Mail > AC Bonus
+    tags:
+    - armor_splint_mail
+    - armor_ac_bonus
     value:
       type: number_literal
       number_literal: 5
@@ -1357,6 +1609,9 @@ variables:
     id: equipment_armor_shields_list_splint_mail_tac_bonus
     label: Equipment > Armor and Shields > Armor List > Splint Mail > TAC Bonus
     description: Equipment > Armor and Shields > Armor List > Splint Mail > TAC Bonus
+    tags:
+    - armor_splint_mail
+    - armor_tac_bonus
     value:
       type: number_literal
       number_literal: 2
@@ -1365,6 +1620,9 @@ variables:
     id: equipment_armor_shields_list_splint_mail_dex_mod_cap
     label: Equipment > Armor and Shields > Armor List > Splint Mail > Dexterity Modifier Cap
     description: Equipment > Armor and Shields > Armor List > Splint Mail > Dexterity Modifier Cap
+    tags:
+    - armor_splint_mail
+    - armor_dex_mod_cap
     value:
       type: number_literal
       number_literal: 2
@@ -1373,6 +1631,9 @@ variables:
     id: equipment_armor_shields_list_splint_mail_check_penalty
     label: Equipment > Armor and Shields > Armor List > Splint Mail > Check Penalty
     description: Equipment > Armor and Shields > Armor List > Splint Mail > Check Penalty
+    tags:
+    - armor_splint_mail
+    - armor_check_penalty
     value:
       type: number_literal
       number_literal: -3
@@ -1381,6 +1642,9 @@ variables:
     id: equipment_armor_shields_list_splint_mail_speed_penalty
     label: Equipment > Armor and Shields > Armor List > Splint Mail > Speed Penalty
     description: Equipment > Armor and Shields > Armor List > Splint Mail > Speed Penalty
+    tags:
+    - armor_splint_mail
+    - armor_speed_penalty
     value:
       type: number_literal
       number_literal: -10
@@ -1389,6 +1653,9 @@ variables:
     id: equipment_armor_shields_list_splint_mail_bulk
     label: Equipment > Armor and Shields > Armor List > Splint Mail > Bulk
     description: Equipment > Armor and Shields > Armor List > Splint Mail > Bulk
+    tags:
+    - armor_splint_mail
+    - armor_bulk
     value:
       type: text_literal
       text_literal: '3'
@@ -1398,6 +1665,9 @@ variables:
     label: Equipment > Armor and Shields > Armor List > Splint Mail > Traits
     description: Equipment > Armor and Shields > Armor List > Splint Mail > Traits
     value_set_id: armor_traits
+    tags:
+    - armor_splint_mail
+    - armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -1407,6 +1677,9 @@ variables:
     id: equipment_armor_shields_list_half_plate_name
     label: Equipment > Armor and Shields > Armor List > Half Plate > Name
     description: Equipment > Armor and Shields > Armor List > Half Plate > Name
+    tags:
+    - armor_half_plate
+    - armor_name
     value:
       type: text_literal
       text_literal: 'Half plate'
@@ -1415,6 +1688,9 @@ variables:
     id: equipment_armor_shields_list_half_plate_armor_type
     label: Equipment > Armor and Shields > Armor List > Half Plate > Armor Type
     description: Equipment > Armor and Shields > Armor List > Half Plate > Armor Type
+    tags:
+    - armor_half_plate
+    - armor_type
     value:
       type: text_literal
       text_literal: 'Heavy Armor'
@@ -1423,6 +1699,9 @@ variables:
     id: equipment_armor_shields_list_half_plate_price
     label: Equipment > Armor and Shields > Armor List > Half Plate > Price
     description: Equipment > Armor and Shields > Armor List > Half Plate > Price
+    tags:
+    - armor_half_plate
+    - armor_price
     value:
       type: text_literal
       text_literal: '175 sp'
@@ -1431,6 +1710,9 @@ variables:
     id: equipment_armor_shields_list_half_plate_ac_bonus
     label: Equipment > Armor and Shields > Armor List > Half Plate > AC Bonus
     description: Equipment > Armor and Shields > Armor List > Half Plate > AC Bonus
+    tags:
+    - armor_half_plate
+    - armor_ac_bonus
     value:
       type: number_literal
       number_literal: 5
@@ -1439,6 +1721,9 @@ variables:
     id: equipment_armor_shields_list_half_plate_tac_bonus
     label: Equipment > Armor and Shields > Armor List > Half Plate > TAC Bonus
     description: Equipment > Armor and Shields > Armor List > Half Plate > TAC Bonus
+    tags:
+    - armor_half_plate
+    - armor_tac_bonus
     value:
       type: number_literal
       number_literal: 2
@@ -1447,6 +1732,9 @@ variables:
     id: equipment_armor_shields_list_half_plate_dex_mod_cap
     label: Equipment > Armor and Shields > Armor List > Half Plate > Dexterity Modifier Cap
     description: Equipment > Armor and Shields > Armor List > Half Plate > Dexterity Modifier Cap
+    tags:
+    - armor_half_plate
+    - armor_dex_mod_cap
     value:
       type: number_literal
       number_literal: 2
@@ -1455,6 +1743,9 @@ variables:
     id: equipment_armor_shields_list_half_plate_check_penalty
     label: Equipment > Armor and Shields > Armor List > Half Plate > Check Penalty
     description: Equipment > Armor and Shields > Armor List > Half Plate > Check Penalty
+    tags:
+    - armor_half_plate
+    - armor_check_penalty
     value:
       type: number_literal
       number_literal: -4
@@ -1463,6 +1754,9 @@ variables:
     id: equipment_armor_shields_list_half_plate_speed_penalty
     label: Equipment > Armor and Shields > Armor List > Half Plate > Speed Penalty
     description: Equipment > Armor and Shields > Armor List > Half Plate > Speed Penalty
+    tags:
+    - armor_half_plate
+    - armor_speed_penalty
     value:
       type: number_literal
       number_literal: -10
@@ -1471,6 +1765,9 @@ variables:
     id: equipment_armor_shields_list_half_plate_bulk
     label: Equipment > Armor and Shields > Armor List > Half Plate > Bulk
     description: Equipment > Armor and Shields > Armor List > Half Plate > Bulk
+    tags:
+    - armor_half_plate
+    - armor_bulk
     value:
       type: text_literal
       text_literal: '3'
@@ -1480,6 +1777,9 @@ variables:
     label: Equipment > Armor and Shields > Armor List > Half Plate > Traits
     description: Equipment > Armor and Shields > Armor List > Half Plate > Traits
     value_set_id: armor_traits
+    tags:
+    - armor_half_plate
+    - armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -1489,6 +1789,9 @@ variables:
     id: equipment_armor_shields_list_full_plate_name
     label: Equipment > Armor and Shields > Armor List > Full Plate > Name
     description: Equipment > Armor and Shields > Armor List > Full Plate > Name
+    tags:
+    - armor_full_plate
+    - armor_name
     value:
       type: text_literal
       text_literal: 'Full plate'
@@ -1497,6 +1800,9 @@ variables:
     id: equipment_armor_shields_list_full_plate_armor_type
     label: Equipment > Armor and Shields > Armor List > Full Plate > Armor Type
     description: Equipment > Armor and Shields > Armor List > Full Plate > Armor Type
+    tags:
+    - armor_full_plate
+    - armor_type
     value:
       type: text_literal
       text_literal: 'Heavy Armor'
@@ -1505,6 +1811,9 @@ variables:
     id: equipment_armor_shields_list_full_plate_price
     label: Equipment > Armor and Shields > Armor List > Full Plate > Price
     description: Equipment > Armor and Shields > Armor List > Full Plate > Price
+    tags:
+    - armor_full_plate
+    - armor_price
     value:
       type: text_literal
       text_literal: '300 sp'
@@ -1513,6 +1822,9 @@ variables:
     id: equipment_armor_shields_list_full_plate_ac_bonus
     label: Equipment > Armor and Shields > Armor List > Full Plate > AC Bonus
     description: Equipment > Armor and Shields > Armor List > Full Plate > AC Bonus
+    tags:
+    - armor_full_plate
+    - armor_ac_bonus
     value:
       type: number_literal
       number_literal: 6
@@ -1521,6 +1833,9 @@ variables:
     id: equipment_armor_shields_list_full_plate_tac_bonus
     label: Equipment > Armor and Shields > Armor List > Full Plate > TAC Bonus
     description: Equipment > Armor and Shields > Armor List > Full Plate > TAC Bonus
+    tags:
+    - armor_full_plate
+    - armor_tac_bonus
     value:
       type: number_literal
       number_literal: 2
@@ -1529,6 +1844,9 @@ variables:
     id: equipment_armor_shields_list_full_plate_dex_mod_cap
     label: Equipment > Armor and Shields > Armor List > Full Plate > Dexterity Modifier Cap
     description: Equipment > Armor and Shields > Armor List > Full Plate > Dexterity Modifier Cap
+    tags:
+    - armor_full_plate
+    - armor_dex_mod_cap
     value:
       type: number_literal
       number_literal: 1
@@ -1537,6 +1855,9 @@ variables:
     id: equipment_armor_shields_list_full_plate_check_penalty
     label: Equipment > Armor and Shields > Armor List > Full Plate > Check Penalty
     description: Equipment > Armor and Shields > Armor List > Full Plate > Check Penalty
+    tags:
+    - armor_full_plate
+    - armor_check_penalty
     value:
       type: number_literal
       number_literal: -5
@@ -1545,6 +1866,9 @@ variables:
     id: equipment_armor_shields_list_full_plate_speed_penalty
     label: Equipment > Armor and Shields > Armor List > Full Plate > Speed Penalty
     description: Equipment > Armor and Shields > Armor List > Full Plate > Speed Penalty
+    tags:
+    - armor_full_plate
+    - armor_speed_penalty
     value:
       type: number_literal
       number_literal: -10
@@ -1553,6 +1877,9 @@ variables:
     id: equipment_armor_shields_list_full_plate_bulk
     label: Equipment > Armor and Shields > Armor List > Full Plate > Bulk
     description: Equipment > Armor and Shields > Armor List > Full Plate > Bulk
+    tags:
+    - armor_full_plate
+    - armor_bulk
     value:
       type: text_literal
       text_literal: '4'
@@ -1562,6 +1889,9 @@ variables:
     label: Equipment > Armor and Shields > Armor List > Full Plate > Traits
     description: Equipment > Armor and Shields > Armor List > Full Plate > Traits
     value_set_id: armor_traits
+    tags:
+    - armor_full_plate
+    - armor_traits
     value:
       type: text_list_literal
       text_list_literal:
@@ -7164,9 +7494,12 @@ variables:
       text_literal: 'Agile'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_agile_content
+    id: equipment_weapons_statistics_weapon_traits_agile_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Agile > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Agile > Content
+    tags:
+    - weapon_trait_agile
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7181,9 +7514,12 @@ variables:
       text_literal: 'Attached'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_attached_content
+    id: equipment_weapons_statistics_weapon_traits_attached_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Attached > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Attached > Content
+    tags:
+    - weapon_trait_attached
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7198,9 +7534,12 @@ variables:
       text_literal: 'Backstabber'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_backstabber_content
+    id: equipment_weapons_statistics_weapon_traits_backstabber_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Backstabber > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Backstabber > Content
+    tags:
+    - weapon_trait_backstabber
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7215,9 +7554,12 @@ variables:
       text_literal: 'Backswing'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_backswing_content
+    id: equipment_weapons_statistics_weapon_traits_backswing_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Backswing > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Backswing > Content
+    tags:
+    - weapon_trait_backswing
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7232,9 +7574,12 @@ variables:
       text_literal: 'Charge'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_charge_content
+    id: equipment_weapons_statistics_weapon_traits_charge_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Charge > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Charge > Content
+    tags:
+    - weapon_trait_charge
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7249,14 +7594,16 @@ variables:
       text_literal: 'Deadly'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_deadly_content
+    id: equipment_weapons_statistics_weapon_traits_deadly_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Deadly > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Deadly > Content
+    tags:
+    - weapon_trait_deadly
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
         On a critical hit, the weapon adds a weapon damage die of the listed size. This damage increases to two dice if the weapon is master quality and three dice if the weapon is legendary.
-
 
         For instance, a master-quality rapier deals 2d6 additional piercing damage on a critical hit.
 - type: variable_text
@@ -7269,9 +7616,12 @@ variables:
       text_literal: 'Disarm'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_disarm_content
+    id: equipment_weapons_statistics_weapon_traits_disarm_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Disarm > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Disarm > Content
+    tags:
+    - weapon_trait_disarm
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7286,9 +7636,12 @@ variables:
       text_literal: 'Dwarf'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_dwarf_content
+    id: equipment_weapons_statistics_weapon_traits_dwarf_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Dwarf > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Dwarf > Content
+    tags:
+    - weapon_trait_dwarf
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: 'People of the dwarf ancestry craft and use these weapons.'
@@ -7302,9 +7655,12 @@ variables:
       text_literal: 'Elf'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_elf_content
+    id: equipment_weapons_statistics_weapon_traits_elf_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Elf > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Elf > Content
+    tags:
+    - weapon_trait_elf
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: 'People of the elf ancestry craft and use these weapons.'
@@ -7318,9 +7674,12 @@ variables:
       text_literal: 'Fatal'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_fatal_content
+    id: equipment_weapons_statistics_weapon_traits_fatal_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Fatal > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Fatal > Content
+    tags:
+    - weapon_trait_fatal
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7335,9 +7694,12 @@ variables:
       text_literal: 'Finesse'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_finesse_content
+    id: equipment_weapons_statistics_weapon_traits_finesse_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Finesse > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Finesse > Content
+    tags:
+    - weapon_trait_finesse
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7352,9 +7714,12 @@ variables:
       text_literal: 'Forceful'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_forceful_content
+    id: equipment_weapons_statistics_weapon_traits_forceful_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Forceful > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Forceful > Content
+    tags:
+    - weapon_trait_forceful
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7369,9 +7734,12 @@ variables:
       text_literal: 'Free-Hand'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_freehand_content
+    id: equipment_weapons_statistics_weapon_traits_freehand_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Free-Hand > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Free-Hand > Content
+    tags:
+    - weapon_trait_free_hand
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7386,9 +7754,12 @@ variables:
       text_literal: 'Gnome'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_gnome_content
+    id: equipment_weapons_statistics_weapon_traits_gnome_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Gnome > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Gnome > Content
+    tags:
+    - weapon_trait_gnome
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: 'People of the gnome ancestry craft and use these weapons.'
@@ -7402,9 +7773,12 @@ variables:
       text_literal: 'Goblin'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_goblin_content
+    id: equipment_weapons_statistics_weapon_traits_goblin_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Goblin > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Goblin > Content
+    tags:
+    - weapon_trait_goblin
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: 'People of the goblin ancestry craft and use these weapons.'
@@ -7418,9 +7792,12 @@ variables:
       text_literal: 'Halfling'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_halfling_content
+    id: equipment_weapons_statistics_weapon_traits_halfling_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Halfling > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Halfling > Content
+    tags:
+    - weapon_trait_halfling
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: 'People of the halfling ancestry craft and use these weapons.'
@@ -7434,9 +7811,12 @@ variables:
       text_literal: 'Monk'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_monk_content
+    id: equipment_weapons_statistics_weapon_traits_monk_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Monk > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Monk > Content
+    tags:
+    - weapon_trait_monk
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7451,9 +7831,12 @@ variables:
       text_literal: 'Nonlethal'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_nonlethal_content
+    id: equipment_weapons_statistics_weapon_traits_nonlethal_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Nonlethal > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Nonlethal > Content
+    tags:
+    - weapon_trait_nonlethal
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7468,9 +7851,12 @@ variables:
       text_literal: 'Orc'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_orc_content
+    id: equipment_weapons_statistics_weapon_traits_orc_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Orc > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Orc > Content
+    tags:
+    - weapon_trait_orc
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: 'People of the orc ancestry craft and use these weapons.'
@@ -7484,9 +7870,12 @@ variables:
       text_literal: 'Parry'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_parry_content
+    id: equipment_weapons_statistics_weapon_traits_parry_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Parry > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Parry > Content
+    tags:
+    - weapon_trait_parry
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7501,9 +7890,12 @@ variables:
       text_literal: 'Propulsive'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_propulsive_content
+    id: equipment_weapons_statistics_weapon_traits_propulsive_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Propulsive > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Propulsive > Content
+    tags:
+    - weapon_trait_propulsive
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7518,9 +7910,12 @@ variables:
       text_literal: 'Reach'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_reach_content
+    id: equipment_weapons_statistics_weapon_traits_reach_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Reach > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Reach > Content
+    tags:
+    - weapon_trait_reach
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7535,9 +7930,12 @@ variables:
       text_literal: 'Shove'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_shove_content
+    id: equipment_weapons_statistics_weapon_traits_shove_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Shove > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Shove > Content
+    tags:
+    - weapon_trait_shove
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7552,9 +7950,12 @@ variables:
       text_literal: 'Sweep'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_sweep_content
+    id: equipment_weapons_statistics_weapon_traits_sweep_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Sweep > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Sweep > Content
+    tags:
+    - weapon_trait_sweep
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7569,9 +7970,12 @@ variables:
       text_literal: 'Thrown'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_thrown_content
+    id: equipment_weapons_statistics_weapon_traits_thrown_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Thrown > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Thrown > Content
+    tags:
+    - weapon_trait_thrown
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7586,9 +7990,12 @@ variables:
       text_literal: 'Trip'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_trip_content
+    id: equipment_weapons_statistics_weapon_traits_trip_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Trip > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Trip > Content
+    tags:
+    - weapon_trait_trip
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7603,9 +8010,12 @@ variables:
       text_literal: 'Twin'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_twin_content
+    id: equipment_weapons_statistics_weapon_traits_twin_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Twin > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Twin > Content
+    tags:
+    - weapon_trait_twin
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7620,9 +8030,12 @@ variables:
       text_literal: 'Two-Hand'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_twohand_content
+    id: equipment_weapons_statistics_weapon_traits_twohand_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Two-Hand > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Two-Hand > Content
+    tags:
+    - weapon_trait_two_hand
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7637,9 +8050,12 @@ variables:
       text_literal: 'Unarmed'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_unarmed_content
+    id: equipment_weapons_statistics_weapon_traits_unarmed_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Unarmed > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Unarmed > Content
+    tags:
+    - weapon_trait_unarmed
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7654,9 +8070,12 @@ variables:
       text_literal: 'Versatile'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_versatile_content
+    id: equipment_weapons_statistics_weapon_traits_versatile_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Versatile > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Versatile > Content
+    tags:
+    - weapon_trait_versatile
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7671,9 +8090,12 @@ variables:
       text_literal: 'Volley'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_statistics_weapon_traits_volley_content
+    id: equipment_weapons_statistics_weapon_traits_volley_description
     label: Equipment > Weapons > Statistics > Weapon Traits > Volley > Content
     description: Equipment > Weapons > Statistics > Weapon Traits > Volley > Content
+    tags:
+    - weapon_trait_volley
+    - weapon_trait_description
     value:
       type: text_literal
       text_literal: >-
@@ -7705,9 +8127,12 @@ variables:
       text_literal: 'Axe'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_axe_content
+    id: equipment_weapons_crit_spec_effects_axe_description
     label: Equipment > Weapons > Critical Specialization Effects > Axe > Content
     description: Equipment > Weapons > Critical Specialization Effects > Axe > Content
+    tags:
+    - weapon_crit_spec_axe
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: >-
@@ -7722,9 +8147,12 @@ variables:
       text_literal: 'Bow'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_bow_content
+    id: equipment_weapons_crit_spec_effects_bow_description
     label: Equipment > Weapons > Critical Specialization Effects > Bow > Content
     description: Equipment > Weapons > Critical Specialization Effects > Bow > Content
+    tags:
+    - weapon_crit_spec_bow
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: >-
@@ -7739,9 +8167,12 @@ variables:
       text_literal: 'Brawling'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_brawling_content
+    id: equipment_weapons_crit_spec_effects_brawling_description
     label: Equipment > Weapons > Critical Specialization Effects > Brawling > Content
     description: Equipment > Weapons > Critical Specialization Effects > Brawling > Content
+    tags:
+    - weapon_crit_spec_brawling
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: >-
@@ -7756,9 +8187,12 @@ variables:
       text_literal: 'Club'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_club_content
+    id: equipment_weapons_crit_spec_effects_club_description
     label: Equipment > Weapons > Critical Specialization Effects > Club > Content
     description: Equipment > Weapons > Critical Specialization Effects > Club > Content
+    tags:
+    - weapon_crit_spec_club
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: >-
@@ -7773,9 +8207,12 @@ variables:
       text_literal: 'Dart'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_dart_content
+    id: equipment_weapons_crit_spec_effects_dart_description
     label: Equipment > Weapons > Critical Specialization Effects > Dart > Content
     description: Equipment > Weapons > Critical Specialization Effects > Dart > Content
+    tags:
+    - weapon_crit_spec_dart
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: >-
@@ -7790,9 +8227,12 @@ variables:
       text_literal: 'Flail'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_flail_content
+    id: equipment_weapons_crit_spec_effects_flail_description
     label: Equipment > Weapons > Critical Specialization Effects > Flail > Content
     description: Equipment > Weapons > Critical Specialization Effects > Flail > Content
+    tags:
+    - weapon_crit_spec_flail
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: 'The target is knocke prone.'
@@ -7806,9 +8246,12 @@ variables:
       text_literal: 'Hammer'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_hammer_content
+    id: equipment_weapons_crit_spec_effects_hammer_description
     label: Equipment > Weapons > Critical Specialization Effects > Hammer > Content
     description: Equipment > Weapons > Critical Specialization Effects > Hammer > Content
+    tags:
+    - weapon_crit_spec_hammer
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: 'The target is knocked prone.'
@@ -7822,9 +8265,12 @@ variables:
       text_literal: 'Knife'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_knife_content
+    id: equipment_weapons_crit_spec_effects_knife_description
     label: Equipment > Weapons > Critical Specialization Effects > Knife > Content
     description: Equipment > Weapons > Critical Specialization Effects > Knife > Content
+    tags:
+    - weapon_crit_spec_knife
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: >-
@@ -7839,9 +8285,12 @@ variables:
       text_literal: 'Pick'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_pick_content
+    id: equipment_weapons_crit_spec_effects_pick_description
     label: Equipment > Weapons > Critical Specialization Effects > Pick > Content
     description: Equipment > Weapons > Critical Specialization Effects > Pick > Content
+    tags:
+    - weapon_crit_spec_pick
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: >-
@@ -7856,9 +8305,12 @@ variables:
       text_literal: 'Polearm'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_polearm_content
+    id: equipment_weapons_crit_spec_effects_polearm_description
     label: Equipment > Weapons > Critical Specialization Effects > Polearm > Content
     description: Equipment > Weapons > Critical Specialization Effects > Polearm > Content
+    tags:
+    - weapon_crit_spec_polearm
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: 'The target is moved 5 feet in a direction of your choice.'
@@ -7872,9 +8324,12 @@ variables:
       text_literal: 'Shield'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_shield_content
+    id: equipment_weapons_crit_spec_effects_shield_description
     label: Equipment > Weapons > Critical Specialization Effects > Shield > Content
     description: Equipment > Weapons > Critical Specialization Effects > Shield > Content
+    tags:
+    - weapon_crit_spec_shield
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: 'You knock the target back from you 5 feet.'
@@ -7888,9 +8343,12 @@ variables:
       text_literal: 'Sling'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_sling_content
+    id: equipment_weapons_crit_spec_effects_sling_description
     label: Equipment > Weapons > Critical Specialization Effects > Sling > Content
     description: Equipment > Weapons > Critical Specialization Effects > Sling > Content
+    tags:
+    - weapon_crit_spec_sling
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: >-
@@ -7905,9 +8363,12 @@ variables:
       text_literal: 'Spear'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_spear_content
+    id: equipment_weapons_crit_spec_effects_spear_description
     label: Equipment > Weapons > Critical Specialization Effects > Spear > Content
     description: Equipment > Weapons > Critical Specialization Effects > Spear > Content
+    tags:
+    - weapon_crit_spec_spear
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: >-
@@ -7922,9 +8383,12 @@ variables:
       text_literal: 'Sword'
 - type: variable_text
   variable_text:
-    id: equipment_weapons_crit_spec_effects_sword_content
+    id: equipment_weapons_crit_spec_effects_sword_description
     label: Equipment > Weapons > Critical Specialization Effects > Sword > Content
     description: Equipment > Weapons > Critical Specialization Effects > Sword > Content
+    tags:
+    - weapon_crit_spec_sword
+    - weapon_crit_spec_description
     value:
       type: text_literal
       text_literal: >-
@@ -8172,6 +8636,22 @@ variables:
       text_literal: '1 cp'
 - type: variable_text
   variable_text:
+    id: equipment_gear_index_bedroll_bulk
+    label: 'Equipment > Gear > Index > Bedroll > Bulk'
+    description: 'Equipment > Gear > Index > Bedroll > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_bedroll_hands
+    label: 'Equipment > Gear > Index > Bedroll > Hands'
+    description: 'Equipment > Gear > Index > Bedroll > Hands'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
     id: equipment_gear_index_beltpouch_name
     label: 'Equipment > Gear > Index > Belt Pouch > Name'
     description: 'Equipment > Gear > Index > Belt Pouch > Name'
@@ -8188,9 +8668,25 @@ variables:
       text_literal: '4 cp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_beltpouch_content
-    label: 'Equipment > Gear > Index > Belt Pouch > Content'
-    description: 'Equipment > Gear > Index > Belt Pouch > Content'
+    id: equipment_gear_index_beltpouch_bulk
+    label: 'Equipment > Gear > Index > Belt Pouch > Bulk'
+    description: 'Equipment > Gear > Index > Belt Pouch > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_beltpouch_hands
+    label: 'Equipment > Gear > Index > Belt Pouch > Hands'
+    description: 'Equipment > Gear > Index > Belt Pouch > Hands'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_beltpouch_description
+    label: 'Equipment > Gear > Index > Belt Pouch > Description'
+    description: 'Equipment > Gear > Index > Belt Pouch > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -8225,12 +8721,36 @@ variables:
       text_literal: 'Candle'
 - type: variable_text
   variable_text:
+    id: equipment_gear_index_candle_description
+    label: 'Equipment > Gear > Index > Candle > Description'
+    description: 'Equipment > Gear > Index > Candle > Description'
+    value:
+      type: text_literal
+      text_literal: 'A lit candle sheds dim light in a 5-foot radius.'
+- type: variable_text
+  variable_text:
     id: equipment_gear_index_candle_price
     label: 'Equipment > Gear > Index > Candle > Price'
     description: 'Equipment > Gear > Index > Candle > Price'
     value:
       type: text_literal
       text_literal: '1 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_candle_bulk
+    label: 'Equipment > Gear > Index > Candle > Bulk'
+    description: 'Equipment > Gear > Index > Candle > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_candle_hands
+    label: 'Equipment > Gear > Index > Candle > Hands'
+    description: 'Equipment > Gear > Index > Candle > Hands'
+    value:
+      type: text_literal
+      text_literal: '--'
 - type: variable_text
   variable_text:
     id: equipment_gear_index_chain_name
@@ -8249,6 +8769,22 @@ variables:
       text_literal: '40 sp'
 - type: variable_text
   variable_text:
+    id: equipment_gear_index_chain_bulk
+    label: 'Equipment > Gear > Index > Chain > Bulk'
+    description: 'Equipment > Gear > Index > Chain > Bulk'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_chain_hands
+    label: 'Equipment > Gear > Index > Chain > Hands'
+    description: 'Equipment > Gear > Index > Chain > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
     id: equipment_gear_index_chalk_name
     label: 'Equipment > Gear > Index > Chalk > Name'
     description: 'Equipment > Gear > Index > Chalk > Name'
@@ -8265,12 +8801,20 @@ variables:
       text_literal: '1 cp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_candle_content
-    label: 'Equipment > Gear > Index > Candle > Content'
-    description: 'Equipment > Gear > Index > Candle > Content'
+    id: equipment_gear_index_chalk_bulk
+    label: 'Equipment > Gear > Index > Chalk > Bulk'
+    description: 'Equipment > Gear > Index > Chalk > Bulk'
     value:
       type: text_literal
-      text_literal: 'A lit candle sheds dim light in a 5-foot radius.'
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_chalk_hands
+    label: 'Equipment > Gear > Index > Chalk > Hands'
+    description: 'Equipment > Gear > Index > Chalk > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
 - type: variable_text
   variable_text:
     id: equipment_gear_index_chest_name
@@ -8289,9 +8833,25 @@ variables:
       text_literal: '6 sp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_chest_content
-    label: 'Equipment > Gear > Index > Chest > Content'
-    description: 'Equipment > Gear > Index > Chest > Content'
+    id: equipment_gear_index_chest_bulk
+    label: 'Equipment > Gear > Index > Chest > Bulk'
+    description: 'Equipment > Gear > Index > Chest > Bulk'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_chest_hands
+    label: 'Equipment > Gear > Index > Chest > Hands'
+    description: 'Equipment > Gear > Index > Chest > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_chest_description
+    label: 'Equipment > Gear > Index > Chest > Description'
+    description: 'Equipment > Gear > Index > Chest > Description'
     value:
       type: text_literal
       text_literal: 'A wooden chest can hold up to 8 Bulk worth of items.'
@@ -8330,6 +8890,22 @@ variables:
       text_literal: '1 sp'
 - type: variable_text
   variable_text:
+    id: equipment_gear_index_clothing_ordinary_bulk
+    label: 'Equipment > Gear > Index > Clothing: Ordinary > Bulk'
+    description: 'Equipment > Gear > Index > Clothing: Ordinary > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_clothing_ordinary_hands
+    label: 'Equipment > Gear > Index > Clothing: Ordinary > Hands'
+    description: 'Equipment > Gear > Index > Clothing: Ordinary > Hands'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
     id: equipment_gear_index_clothing_fine_name
     label: 'Equipment > Gear > Index > Clothing: Fine > Name'
     description: 'Equipment > Gear > Index > Clothing: Fine > Name'
@@ -8344,6 +8920,22 @@ variables:
     value:
       type: text_literal
       text_literal: '20 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_clothing_fine_bulk
+    label: 'Equipment > Gear > Index > Clothing: Fine > Bulk'
+    description: 'Equipment > Gear > Index > Clothing: Fine > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_clothing_fine_hands
+    label: 'Equipment > Gear > Index > Clothing: Fine > Hands'
+    description: 'Equipment > Gear > Index > Clothing: Fine > Hands'
+    value:
+      type: text_literal
+      text_literal: '--'
 - type: variable_text
   variable_text:
     id: equipment_gear_index_clothing_winter_name
@@ -8362,9 +8954,25 @@ variables:
       text_literal: '4 sp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_clothing_content
-    label: 'Equipment > Gear > Index > Clothing > Content'
-    description: 'Equipment > Gear > Index > Clothing > Content'
+    id: equipment_gear_index_clothing_winter_bulk
+    label: 'Equipment > Gear > Index > Clothing: Winter > Bulk'
+    description: 'Equipment > Gear > Index > Clothing: Winter > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_clothing_winter_hands
+    label: 'Equipment > Gear > Index > Clothing: Winter > Hands'
+    description: 'Equipment > Gear > Index > Clothing: Winter > Hands'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_clothing_description
+    label: 'Equipment > Gear > Index > Clothing > Description'
+    description: 'Equipment > Gear > Index > Clothing > Descripion'
     value:
       type: text_literal
       text_literal: >-
@@ -8387,9 +8995,25 @@ variables:
       text_literal: '10 sp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_compass_content
-    label: 'Equipment > Gear > Index > Compass > Content'
-    description: 'Equipment > Gear > Index > Compass > Content'
+    id: equipment_gear_index_compass_bulk
+    label: 'Equipment > Gear > Index > Compass > Bulk'
+    description: 'Equipment > Gear > Index > Compass > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_compass_hands
+    label: 'Equipment > Gear > Index > Compass > Hands'
+    description: 'Equipment > Gear > Index > Compass > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_compass_description
+    label: 'Equipment > Gear > Index > Compass > Description'
+    description: 'Equipment > Gear > Index > Compass > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -8410,6 +9034,22 @@ variables:
     value:
       type: text_literal
       text_literal: '10 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_cookware_bulk
+    label: 'Equipment > Gear > Index > Cookware > Bulk'
+    description: 'Equipment > Gear > Index > Cookware > Bulk'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_cookware_hands
+    label: 'Equipment > Gear > Index > Cookware > Hands'
+    description: 'Equipment > Gear > Index > Cookware > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
 - type: variable_text
   variable_text:
     id: equipment_gear_index_crowbar_expert_name
@@ -8479,9 +9119,25 @@ variables:
       text_literal: '5 cp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_flint_steel_content
-    label: 'Equipment > Gear > Index > Flint and Steel > Content'
-    description: 'Equipment > Gear > Index > Flint and Steel > Content'
+    id: equipment_gear_index_flint_steel_bulk
+    label: 'Equipment > Gear > Index > Flint and Steel > Bulk'
+    description: 'Equipment > Gear > Index > Flint and Steel > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_flint_steel_hands
+    label: 'Equipment > Gear > Index > Flint and Steel > Hands'
+    description: 'Equipment > Gear > Index > Flint and Steel > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_flint_steel_description
+    label: 'Equipment > Gear > Index > Flint and Steel > Description'
+    description: 'Equipment > Gear > Index > Flint and Steel > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -8521,6 +9177,22 @@ variables:
       text_literal: '1 sp'
 - type: variable_text
   variable_text:
+    id: equipment_gear_index_grappling_hook_bulk
+    label: 'Equipment > Gear > Index > Grappling Hook > Bulk'
+    description: 'Equipment > Gear > Index > Grappling Hook > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_grappling_hook_hands
+    label: 'Equipment > Gear > Index > Grappling Hook > Hands'
+    description: 'Equipment > Gear > Index > Grappling Hook > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
     id: equipment_gear_index_hammer_name
     label: 'Equipment > Gear > Index > Hammer > Name'
     description: 'Equipment > Gear > Index > Hammer > Name'
@@ -8535,6 +9207,22 @@ variables:
     value:
       type: text_literal
       text_literal: '1 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_hammer_bulk
+    label: 'Equipment > Gear > Index > Hammer > Bulk'
+    description: 'Equipment > Gear > Index > Hammer > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_hammer_hands
+    label: 'Equipment > Gear > Index > Hammer > Hands'
+    description: 'Equipment > Gear > Index > Hammer > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
 - type: variable_text
   variable_text:
     id: equipment_gear_index_healers_tools_name
@@ -8570,9 +9258,25 @@ variables:
       text_literal: '0'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_holly_mistletoe_content
-    label: 'Equipment > Gear > Index > Holly and Mistletoe > Content'
-    description: 'Equipment > Gear > Index > Holly and Mistletoe > Content'
+    id: equipment_gear_index_holly_mistletoe_bulk
+    label: 'Equipment > Gear > Index > Holly and Mistletoe > Bulk'
+    description: 'Equipment > Gear > Index > Holly and Mistletoe > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_holly_mistletoe_hands
+    label: 'Equipment > Gear > Index > Holly and Mistletoe > Hands'
+    description: 'Equipment > Gear > Index > Holly and Mistletoe > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_holly_mistletoe_description
+    label: 'Equipment > Gear > Index > Holly and Mistletoe > Description'
+    description: 'Equipment > Gear > Index > Holly and Mistletoe > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -8595,6 +9299,22 @@ variables:
       text_literal: '25 sp'
 - type: variable_text
   variable_text:
+    id: equipment_gear_index_hourglass_bulk
+    label: 'Equipment > Gear > Index > Hourglass > Bulk'
+    description: 'Equipment > Gear > Index > Hourglass > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_hourglass_hands
+    label: 'Equipment > Gear > Index > Hourglass > Hands'
+    description: 'Equipment > Gear > Index > Hourglass > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
     id: equipment_gear_index_ladder_name
     label: 'Equipment > Gear > Index > Ladder > Name'
     description: 'Equipment > Gear > Index > Ladder > Name'
@@ -8609,6 +9329,22 @@ variables:
     value:
       type: text_literal
       text_literal: '3 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_ladder_bulk
+    label: 'Equipment > Gear > Index > Ladder > Bulk'
+    description: 'Equipment > Gear > Index > Ladder > Bulk'
+    value:
+      type: text_literal
+      text_literal: '3'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_ladder_hands
+    label: 'Equipment > Gear > Index > Ladder > Hands'
+    description: 'Equipment > Gear > Index > Ladder > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
 - type: variable_text
   variable_text:
     id: equipment_gear_index_lantern_bulls_eye_name
@@ -8627,9 +9363,25 @@ variables:
       text_literal: '10 sp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_lantern_content
-    label: 'Equipment > Gear > Index > Lantern > Content'
-    description: 'Equipment > Gear > Index > Lantern > Content'
+    id: equipment_gear_index_lantern_bulls_eye_bulk
+    label: 'Equipment > Gear > Index > Lantern: Bull''s eye > Bulk'
+    description: 'Equipment > Gear > Index > Lantern Bull''s eye > Bulk'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_lantern_bulls_eye_hands
+    label: 'Equipment > Gear > Index > Lantern: Bull''s eye > Hands'
+    description: 'Equipment > Gear > Index > Lantern Bull''s eye > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_lantern_description
+    label: 'Equipment > Gear > Index > Lantern > Description'
+    description: 'Equipment > Gear > Index > Lantern > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -8650,6 +9402,22 @@ variables:
     value:
       type: text_literal
       text_literal: '7 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_lantern_hooded_bulk
+    label: 'Equipment > Gear > Index > Lantern: Hooded > Bulk'
+    description: 'Equipment > Gear > Index > Lantern: Hooded > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_lantern_hooded_hands
+    label: 'Equipment > Gear > Index > Lantern: Hooded > Hands'
+    description: 'Equipment > Gear > Index > Lantern: Hooded > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
 - type: variable_text
   variable_text:
     id: equipment_gear_index_lock_name
@@ -8719,9 +9487,25 @@ variables:
       text_literal: '5 sp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_material_component_pouch_content
-    label: 'Equipment > Gear > Index > Material Component Pouch > Content'
-    description: 'Equipment > Gear > Index > Material Component Pouch > Content'
+    id: equipment_gear_index_material_component_pouch_bulk
+    label: 'Equipment > Gear > Index > Material Component Pouch > Bulk'
+    description: 'Equipment > Gear > Index > Material Component Pouch > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_material_component_pouch_hands
+    label: 'Equipment > Gear > Index > Material Component Pouch > Hands'
+    description: 'Equipment > Gear > Index > Material Component Pouch > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_material_component_pouch_description
+    label: 'Equipment > Gear > Index > Material Component Pouch > Description'
+    description: 'Equipment > Gear > Index > Material Component Pouch > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -8744,6 +9528,22 @@ variables:
       text_literal: '2 sp'
 - type: variable_text
   variable_text:
+    id: equipment_gear_index_merchants_scale_bulk
+    label: 'Equipment > Gear > Index > Merchant''s Scale > Bulk'
+    description: 'Equipment > Gear > Index > Merchant''s Scale > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_merchants_scale_hands
+    label: 'Equipment > Gear > Index > Merchant''s Scale > Hands'
+    description: 'Equipment > Gear > Index > Merchant''s Scale > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
     id: equipment_gear_index_mirror_name
     label: 'Equipment > Gear > Index > Mirror > Name'
     description: 'Equipment > Gear > Index > Mirror > Name'
@@ -8760,6 +9560,22 @@ variables:
       text_literal: '10 sp'
 - type: variable_text
   variable_text:
+    id: equipment_gear_index_mirror_bulk
+    label: 'Equipment > Gear > Index > Mirror > Bulk'
+    description: 'Equipment > Gear > Index > Mirror > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_mirror_hands
+    label: 'Equipment > Gear > Index > Mirror > Hands'
+    description: 'Equipment > Gear > Index > Mirror > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
     id: equipment_gear_index_mug_name
     label: 'Equipment > Gear > Index > Mug > Name'
     description: 'Equipment > Gear > Index > Mug > Name'
@@ -8774,6 +9590,22 @@ variables:
     value:
       type: text_literal
       text_literal: '1 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_mug_bulk
+    label: 'Equipment > Gear > Index > Mug > Bulk'
+    description: 'Equipment > Gear > Index > Mug > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_mug_hands
+    label: 'Equipment > Gear > Index > Mug > Hands'
+    description: 'Equipment > Gear > Index > Mug > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
 - type: variable_text
   variable_text:
     id: equipment_gear_index_musical_instrument_name
@@ -8809,9 +9641,25 @@ variables:
       text_literal: '1 cp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_oil_content
-    label: 'Equipment > Gear > Index > Oil > Content'
-    description: 'Equipment > Gear > Index > Oil > Content'
+    id: equipment_gear_index_oil_bulk
+    label: 'Equipment > Gear > Index > Oil > Bulk'
+    description: 'Equipment > Gear > Index > Oil > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_oil_hands
+    label: 'Equipment > Gear > Index > Oil > Hands'
+    description: 'Equipment > Gear > Index > Oil > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_oil_description
+    label: 'Equipment > Gear > Index > Oil > Description'
+    description: 'Equipment > Gear > Index > Oil > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -8834,9 +9682,25 @@ variables:
       text_literal: '1 cp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_piton_content
-    label: 'Equipment > Gear > Index > Piton > Content'
-    description: 'Equipment > Gear > Index > Piton > Content'
+    id: equipment_gear_index_piton_bulk
+    label: 'Equipment > Gear > Index > Piton > Bulk'
+    description: 'Equipment > Gear > Index > Piton > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_piton_hands
+    label: 'Equipment > Gear > Index > Piton > Hands'
+    description: 'Equipment > Gear > Index > Piton > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_piton_description
+    label: 'Equipment > Gear > Index > Piton > Description'
+    description: 'Equipment > Gear > Index > Piton > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -8857,6 +9721,22 @@ variables:
     value:
       type: text_literal
       text_literal: '5 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_rations_bulk
+    label: 'Equipment > Gear > Index > Rations > Bulk'
+    description: 'Equipment > Gear > Index > Rations > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_rations_hands
+    label: 'Equipment > Gear > Index > Rations > Hands'
+    description: 'Equipment > Gear > Index > Rations > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
 - type: variable_text
   variable_text:
     id: equipment_gear_index_religious_symbol_name
@@ -8910,14 +9790,6 @@ variables:
         A repair kit allows you to perform simple repairs while traveling. It contains a portable anvil, tongs, woodworking tools, a whetstone, and oils for conditioning leather and wood. You can use a repair kit to Repair items using the Crafting skill. An expert repair kit gives you a +1 item bonus to the check.
 - type: variable_text
   variable_text:
-    id: equipment_gear_list_rope_name
-    label: 'Equipment > Gear > List > Rope > Name'
-    description: 'Equipment > Gear > List > Rope > Name'
-    value:
-      type: text_literal
-      text_literal: 'Rope'
-- type: variable_text
-  variable_text:
     id: equipment_gear_index_rope_hemp_name
     label: 'Equipment > Gear > Index > Rope: Hemp > Name'
     description: 'Equipment > Gear > Index > Rope: Hemp > Name'
@@ -8932,6 +9804,22 @@ variables:
     value:
       type: text_literal
       text_literal: '1 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_rope_hemp_bulk
+    label: 'Equipment > Gear > List > Rope: Hemp > Bulk'
+    description: 'Equipment > Gear > List > Rope: Hemp > Bulk'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_rope_hemp_hands
+    label: 'Equipment > Gear > List > Rope: Hemp > Hands'
+    description: 'Equipment > Gear > List > Rope: Hemp > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
 - type: variable_text
   variable_text:
     id: equipment_gear_index_rope_silk_name
@@ -8950,6 +9838,22 @@ variables:
       text_literal: '10 sp'
 - type: variable_text
   variable_text:
+    id: equipment_gear_index_rope_silk_bulk
+    label: 'Equipment > Gear > List > Rope: Silk > Bulk'
+    description: 'Equipment > Gear > List > Rope: Silk > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_rope_silk_hands
+    label: 'Equipment > Gear > List > Rope: Silk > Hands'
+    description: 'Equipment > Gear > List > Rope: Silk > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
     id: equipment_gear_index_sack_name
     label: 'Equipment > Gear > Index > Sack > Header'
     description: 'Equipment > Gear > Index > Sack > Header'
@@ -8966,9 +9870,25 @@ variables:
       text_literal: '1 cp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_sack_content
-    label: 'Equipment > Gear > Index > Sack > Content'
-    description: 'Equipment > Gear > Index > Sack > Content'
+    id: equipment_gear_index_sack_bulk
+    label: 'Equipment > Gear > Index > Sack > Bulk'
+    description: 'Equipment > Gear > Index > Sack > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_sack_hands
+    label: 'Equipment > Gear > Index > Sack > Hands'
+    description: 'Equipment > Gear > Index > Sack > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_sack_description
+    label: 'Equipment > Gear > Index > Sack > Description'
+    description: 'Equipment > Gear > Index > Sack > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -8991,9 +9911,25 @@ variables:
       text_literal: '2 sp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_saddlebags_content
-    label: 'Equipment > Gear > Index > Saddlebags > Content'
-    description: 'Equipment > Gear > Index > Saddlebags > Content'
+    id: equipment_gear_index_saddlebags_bulk
+    label: 'Equipment > Gear > Index > Saddlebags > Bulk'
+    description: 'Equipment > Gear > Index > Saddlebags > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_saddlebags_hands
+    label: 'Equipment > Gear > Index > Saddlebags > Hands'
+    description: 'Equipment > Gear > Index > Saddlebags > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_saddlebags_description
+    label: 'Equipment > Gear > Index > Saddlebags > Description'
+    description: 'Equipment > Gear > Index > Saddlebags > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -9016,9 +9952,25 @@ variables:
       text_literal: '1 sp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_satchel_content
-    label: 'Equipment > Gear > Index > Satchel > Content'
-    description: 'Equipment > Gear > Index > Satchel > Content'
+    id: equipment_gear_index_satchel_bulk
+    label: 'Equipment > Gear > Index > Satchel > Bulk'
+    description: 'Equipment > Gear > Index > Satchel > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_satchel_hands
+    label: 'Equipment > Gear > Index > Satchel > Hands'
+    description: 'Equipment > Gear > Index > Satchel > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_satchel_description
+    label: 'Equipment > Gear > Index > Satchel > Description'
+    description: 'Equipment > Gear > Index > Satchel > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -9041,9 +9993,25 @@ variables:
       text_literal: '1 sp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_scroll_case_content
-    label: 'Equipment > Gear > Index > Scroll Case > Content'
-    description: 'Equipment > Gear > Index > Scroll Case > Content'
+    id: equipment_gear_index_scroll_case_bulk
+    label: 'Equipment > Gear > Index > Scroll Case > Bulk'
+    description: 'Equipment > Gear > Index > Scroll Case > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_scroll_case_hands
+    label: 'Equipment > Gear > Index > Scroll Case > Hands'
+    description: 'Equipment > Gear > Index > Scroll Case > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_scroll_case_description
+    label: 'Equipment > Gear > Index > Scroll Case > Description'
+    description: 'Equipment > Gear > Index > Scroll Case > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -9066,9 +10034,25 @@ variables:
       text_literal: '1 cp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_sheath_content
-    label: 'Equipment > Gear > Index > Sheath > Content'
-    description: 'Equipment > Gear > Index > Sheath > Content'
+    id: equipment_gear_index_sheath_bulk
+    label: 'Equipment > Gear > Index > Sheath > Bulk'
+    description: 'Equipment > Gear > Index > Sheath > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_sheath_hands
+    label: 'Equipment > Gear > Index > Sheath > Hands'
+    description: 'Equipment > Gear > Index > Sheath > Hands'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_sheath_description
+    label: 'Equipment > Gear > Index > Sheath > Description'
+    description: 'Equipment > Gear > Index > Sheath > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -9091,9 +10075,25 @@ variables:
       text_literal: '8 cp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_signal_whistle_content
-    label: 'Equipment > Gear > Index > Signal Whistle > Content'
-    description: 'Equipment > Gear > Index > Signal Whistle > Content'
+    id: equipment_gear_index_signal_whistle_bulk
+    label: 'Equipment > Gear > Index > Signal Whistle > Bulk'
+    description: 'Equipment > Gear > Index > Signal Whistle > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_signal_whistle_hands
+    label: 'Equipment > Gear > Index > Signal Whistle > Hands'
+    description: 'Equipment > Gear > Index > Signal Whistle > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_signal_whistle_description
+    label: 'Equipment > Gear > Index > Signal Whistle > Description'
+    description: 'Equipment > Gear > Index > Signal Whistle > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -9167,9 +10167,25 @@ variables:
       text_literal: '40 sp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_tack_content
-    label: 'Equipment > Gear > Index > Tack > Content'
-    description: 'Equipment > Gear > Index > Tack > Content'
+    id: equipment_gear_index_tack_bulk
+    label: 'Equipment > Gear > Index > Tack > Bulk'
+    description: 'Equipment > Gear > Index > Tack > Bulk'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_tack_hands
+    label: 'Equipment > Gear > Index > Tack > Hands'
+    description: 'Equipment > Gear > Index > Tack > Hands'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_tack_description
+    label: 'Equipment > Gear > Index > Tack > Description'
+    description: 'Equipment > Gear > Index > Tack > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -9192,9 +10208,25 @@ variables:
       text_literal: '1 cp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_ten_foot_pole_content
-    label: 'Equipment > Gear > Index > Ten-Foot Pole > Content'
-    description: 'Equipment > Gear > Index > Ten-Foot Pole > Content'
+    id: equipment_gear_index_ten_foot_pole_bulk
+    label: 'Equipment > Gear > Index > Ten-Foot Pole > Bulk'
+    description: 'Equipment > Gear > Index > Ten-Foot Pole > Bulk'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_ten_foot_pole_hands
+    label: 'Equipment > Gear > Index > Ten-Foot Pole > Hands'
+    description: 'Equipment > Gear > Index > Ten-Foot Pole > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_ten_foot_pole_description
+    label: 'Equipment > Gear > Index > Ten-Foot Pole > Description'
+    description: 'Equipment > Gear > Index > Ten-Foot Pole > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -9217,6 +10249,22 @@ variables:
       text_literal: '8 sp'
 - type: variable_text
   variable_text:
+    id: equipment_gear_index_tent_pup_bulk
+    label: 'Equipment > Gear > Index > Tent: Pup > Bulk'
+    description: 'Equipment > Gear > Index > Tent: Pup > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_tent_pup_hands
+    label: 'Equipment > Gear > Index > Tent: Pup > Hands'
+    description: 'Equipment > Gear > Index > Tent: Pup > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
     id: equipment_gear_index_tent_four_person_name
     label: 'Equipment > Gear > Index > Tent: Four Person > Name'
     description: 'Equipment > Gear > Index > Tent: Four Person > Name'
@@ -9233,6 +10281,22 @@ variables:
       text_literal: '50 sp'
 - type: variable_text
   variable_text:
+    id: equipment_gear_index_tent_four_person_bulk
+    label: 'Equipment > Gear > Index > Tent: Four Person > Bulk'
+    description: 'Equipment > Gear > Index > Tent: Four Person > Bulk'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_tent_four_person_hands
+    label: 'Equipment > Gear > Index > Tent: Four Person > Hands'
+    description: 'Equipment > Gear > Index > Tent: Four Person > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
+- type: variable_text
+  variable_text:
     id: equipment_gear_index_tent_pavilion_name
     label: 'Equipment > Gear > Index > Tent: Pavilion > Name'
     description: 'Equipment > Gear > Index > Tent: Pavilion > Name'
@@ -9247,6 +10311,22 @@ variables:
     value:
       type: text_literal
       text_literal: '400 sp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_tent_pavilion_bulk
+    label: 'Equipment > Gear > Index > Tent: Pavilion > Bulk'
+    description: 'Equipment > Gear > Index > Tent: Pavilion > Bulk'
+    value:
+      type: text_literal
+      text_literal: '12'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_tent_pavilion_hands
+    label: 'Equipment > Gear > Index > Tent: Pavilion > Hands'
+    description: 'Equipment > Gear > Index > Tent: Pavilion > Hands'
+    value:
+      type: text_literal
+      text_literal: '2'
 - type: variable_text
   variable_text:
     id: equipment_gear_index_thieves_tools_name
@@ -9282,6 +10362,22 @@ variables:
       text_literal: '5 cp'
 - type: variable_text
   variable_text:
+    id: equipment_gear_index_waterskin_bulk
+    label: 'Equipment > Gear > Index > Waterskin > Bulk'
+    description: 'Equipment > Gear > Index > Waterskin > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_waterskin_hands
+    label: 'Equipment > Gear > Index > Waterskin > Hands'
+    description: 'Equipment > Gear > Index > Waterskin > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
     id: equipment_gear_index_tool_name
     label: 'Equipment > Gear > Descriptions > Tool > Header'
     description: 'Equipment > Gear > Descriptions > Tool > Header'
@@ -9315,9 +10411,25 @@ variables:
       text_literal: '1 cp'
 - type: variable_text
   variable_text:
-    id: equipment_gear_index_torch_content
-    label: 'Equipment > Gear > Descriptions > Torch > Content'
-    description: 'Equipment > Gear > Descriptions > Torch > Content'
+    id: equipment_gear_index_torch_bulk
+    label: 'Equipment > Gear > Index > Torch > Bulk'
+    description: 'Equipment > Gear > Index > Torch > Bulk'
+    value:
+      type: text_literal
+      text_literal: 'L'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_torch_hands
+    label: 'Equipment > Gear > Index > Torch > Hands'
+    description: 'Equipment > Gear > Index > Torch > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_torch_description
+    label: 'Equipment > Gear > Descriptions > Torch > Description'
+    description: 'Equipment > Gear > Descriptions > Torch > Description'
     value:
       type: text_literal
       text_literal: >-
@@ -9338,6 +10450,22 @@ variables:
     value:
       type: text_literal
       text_literal: '5 cp'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_vial_bulk
+    label: 'Equipment > Gear > Index > Vial > Bulk'
+    description: 'Equipment > Gear > Index > Vial > Bulk'
+    value:
+      type: text_literal
+      text_literal: '--'
+- type: variable_text
+  variable_text:
+    id: equipment_gear_index_vial_hands
+    label: 'Equipment > Gear > Index > Vial > Hands'
+    description: 'Equipment > Gear > Index > Vial > Hands'
+    value:
+      type: text_literal
+      text_literal: '1'
 - type: variable_text
   variable_text:
     id: equipment_gear_index_vial_content
@@ -10923,3 +12051,129 @@ variables:
           book_reference_card:
             book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
             card_id: '020572e8-c6ff-4d04-a0ec-85f946cf2026'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_signal_whistle
+    label: 'Reference > Card > Gear > Signal Whistle'
+    description: 'Reference > Card > Gear > Signal Whistle'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '75f93fbd-683f-4f11-8d1d-b36081d4ab47'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_tack
+    label: 'Reference > Card > Gear > Tack'
+    description: 'Reference > Card > Gear > Tack'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'f8604981-fed4-4615-8989-a1d22ae5de0e'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_ten_foot_pole
+    label: 'Reference > Card > Gear > Ten Foot Pole'
+    description: 'Reference > Card > Gear > Ten Foot Pole'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '8bf97b3e-173b-45cd-a92a-16147515de20'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_tent_pup
+    label: 'Reference > Card > Gear > Tent: Pup'
+    description: 'Reference > Card > Gear > Tent: Pup'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'c1fba65c-e6c3-469c-a512-ec1bef485ab0'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_tent_four_person
+    label: 'Reference > Card > Gear > Tent: Four Person'
+    description: 'Reference > Card > Gear > Tent: Four Person'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '6feb3cd9-6b5f-4646-947e-60536f4e0db3'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_tent_pavilion
+    label: 'Reference > Card > Gear > Tent: Pavilion'
+    description: 'Reference > Card > Gear > Tent: Pavilion'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '4d316c53-7a7b-42f9-89d6-55e46f6ebca3'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_torch
+    label: 'Reference > Card > Gear > Torch'
+    description: 'Reference > Card > Gear > Torch'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'a1207399-e9e2-4ba4-a951-cb29017be11b'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_vial
+    label: 'Reference > Card > Gear > Vial'
+    description: 'Reference > Card > Gear > Vial'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'a96f1552-aee6-4ca5-97ee-34986ef29c65'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_gear_waterskin
+    label: 'Reference > Card > Gear > Waterskin'
+    description: 'Reference > Card > Gear > Waterskin'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '0153d057-7727-448d-903e-6f1b834fe24b'

@@ -1907,16 +1907,17 @@ groups:
       padding:
         left: 16
         right: 16
-      border:
-        top:
-          thickness: 1
-          color_theme:
-            theme_color_ids:
-            - theme_id: light
-              color_id: light_blue_grey_5
+
   rows:
   - format:
       element_format:
+        border:
+          top:
+            thickness: 1
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_5
         padding:
           top: 16
           bottom: 16
@@ -2068,394 +2069,172 @@ groups:
       padding:
         bottom: 12
   rows:
-    #  - format:
-    #      element_format:
-    #        horizontal_alignment: left
-    #        padding:
-    #          bottom: 16
-    #          top: 16
-    #          left: 8
-    #          right: 8
-    #    widgets:
-    #    - type: widget_text
-    #      widget_text:
-    #        format:
-    #          type: text_widget_format_custom
-    #          text_widget_format_custom:
-    #            widget_format:
-    #              element_format:
-    #                width:
-    #                  type: width_wrap
-    #                  width_wrap: wrap
-    #                padding:
-    #                  left: 0
-    #                  right: 0
-    #            value_format:
-    #              color_theme:
-    #                theme_color_ids:
-    #                - theme_id: light
-    #                  color_id: light_blue_grey_18
-    #              font: lato
-    #              font_style: regular
-    #              size: 18
-    #              element_format:
-    #                horizontal_alignment: left
-    #        value_variable_reference:
-    #          type: variable_template
-    #          variable_template:
-    #            entries:
-    #            - context: padded
-    #              variable_id: equipment_armor_shields_list_padded_armor_type
-    #            - context: leather
-    #              variable_id: equipment_armor_shields_list_leather_armor_type
-    #            - context: studded_leather
-    #              variable_id: equipment_armor_shields_list_studded_leather_armor_type
-    #            - context: chain_shirt
-    #              variable_id: equipment_armor_shields_list_chain_shirt_armor_type
-    #            - context: hide
-    #              variable_id: equipment_armor_shields_list_hide_armor_type
-    #            - context: scale_mail
-    #              variable_id: equipment_armor_shields_list_scale_mail_armor_type
-    #            - context: chain_mail
-    #              variable_id: equipment_armor_shields_list_chain_mail_armor_type
-    #            - context: breastplate
-    #              variable_id: equipment_armor_shields_list_breastplate_armor_type
-    #            - context: splint_mail
-    #              variable_id: equipment_armor_shields_list_splint_mail_armor_type
-    #            - context: half_plate
-    #              variable_id: equipment_armor_shields_list_half_plate_armor_type
-    #            - context: full_plate
-    #              variable_id: equipment_armor_shields_list_full_plate_armor_type
-    - format:
-        element_format:
-          horizontal_alignment: left
-          margins:
-            left: 12
-            right: 12
-            top: 16
-            bottom: 16
-      widgets:
-        - type: widget_number
-          widget_number:
-            kind: modifier
-            format:
-              type: widget_format_official
-              widget_format_official:
-                theme: metric
-                style: horizontal_box
-                widget_format:
-                  element_format:
-                    margins:
-                      right: 16
-            prefix_variable_reference:
-              type: variable_id
-              variable_id: term_armor_class_label
-            value_variable_reference:
-              type: variable_template
-              variable_template:
-                entries:
-                  - context: padded
-                    variable_id: equipment_armor_shields_list_padded_ac_bonus
-                  - context: leather
-                    variable_id: equipment_armor_shields_list_leather_ac_bonus
-                  - context: studded_leather
-                    variable_id: equipment_armor_shields_list_studded_leather_ac_bonus
-                  - context: chain_shirt
-                    variable_id: equipment_armor_shields_list_chain_shirt_ac_bonus
-                  - context: hide
-                    variable_id: equipment_armor_shields_list_hide_ac_bonus
-                  - context: scale_mail
-                    variable_id: equipment_armor_shields_list_scale_mail_ac_bonus
-                  - context: chain_mail
-                    variable_id: equipment_armor_shields_list_chain_mail_ac_bonus
-                  - context: breastplate
-                    variable_id: equipment_armor_shields_list_breastplate_ac_bonus
-                  - context: splint_mail
-                    variable_id: equipment_armor_shields_list_splint_mail_ac_bonus
-                  - context: half_plate
-                    variable_id: equipment_armor_shields_list_half_plate_ac_bonus
-                  - context: full_plate
-                    variable_id: equipment_armor_shields_list_full_plate_ac_bonus
-        - type: widget_number
-          widget_number:
-            kind: modifier
-            format:
-              type: widget_format_official
-              widget_format_official:
-                theme: metric
-                style: horizontal_box
-            prefix_variable_reference:
-              type: variable_id
-              variable_id: term_touch_armor_class_label
-            value_variable_reference:
-              type: variable_template
-              variable_template:
-                entries:
-                  - context: padded
-                    variable_id: equipment_armor_shields_list_padded_tac_bonus
-                  - context: leather
-                    variable_id: equipment_armor_shields_list_leather_tac_bonus
-                  - context: studded_leather
-                    variable_id: equipment_armor_shields_list_studded_leather_tac_bonus
-                  - context: chain_shirt
-                    variable_id: equipment_armor_shields_list_chain_shirt_tac_bonus
-                  - context: hide
-                    variable_id: equipment_armor_shields_list_hide_tac_bonus
-                  - context: scale_mail
-                    variable_id: equipment_armor_shields_list_scale_mail_tac_bonus
-                  - context: chain_mail
-                    variable_id: equipment_armor_shields_list_chain_mail_tac_bonus
-                  - context: breastplate
-                    variable_id: equipment_armor_shields_list_breastplate_tac_bonus
-                  - context: splint_mail
-                    variable_id: equipment_armor_shields_list_splint_mail_tac_bonus
-                  - context: half_plate
-                    variable_id: equipment_armor_shields_list_half_plate_tac_bonus
-                  - context: full_plate
-                    variable_id: equipment_armor_shields_list_full_plate_tac_bonus
-    - format:
-        element_format:
-          horizontal_alignment: left
-          padding:
-            left: 12
-            right: 12
-            bottom: 16
-      widgets:
-        - type: widget_number
-          widget_number:
-            kind: modifier
-            format:
-              type: widget_format_official
-              widget_format_official:
-                theme: metric
-                style: vertical_box
-                widget_format:
-                  element_format:
-                    margins:
-                      right: 8
-                    width:
-                      type: width_justify
-                      width_justify: justify
-            label_variable_reference:
-              type: variable_id
-              variable_id: equipment_armor_shields_data_check_penalty_label
-            value_variable_reference:
-              type: variable_template
-              variable_template:
-                entries:
-                  - context: padded
-                    variable_id: equipment_armor_shields_list_padded_check_penalty
-                  - context: leather
-                    variable_id: equipment_armor_shields_list_leather_check_penaly
-                  - context: studded_leather
-                    variable_id: equipment_armor_shields_list_studded_leather_check_penalty
-                  - context: chain_shirt
-                    variable_id: equipment_armor_shields_list_chain_shirt_check_penalty
-                  - context: hide
-                    variable_id: equipment_armor_shields_list_hide_check_penalty
-                  - context: scale_mail
-                    variable_id: equipment_armor_shields_list_scale_mail_check_penalty
-                  - context: chain_mail
-                    variable_id: equipment_armor_shields_list_chain_mail_check_penalty
-                  - context: breastplate
-                    variable_id: equipment_armor_shields_list_breastplate_check_penalty
-                  - context: splint_mail
-                    variable_id: equipment_armor_shields_list_splint_mail_check_penalty
-                  - context: half_plate
-                    variable_id: equipment_armor_shields_list_half_plate_check_penalty
-                  - context: full_plate
-                    variable_id: equipment_armor_shields_list_full_plate_check_penalty
-        - type: widget_number
-          widget_number:
-            kind: modifier
-            format:
-              type: widget_format_official
-              widget_format_official:
-                theme: metric
-                style: vertical_box
-                widget_format:
-                  element_format:
-                    margins:
-                      left: 8
-                    width:
-                      type: width_justify
-                      width_justify: justify
-            label_variable_reference:
-              type: variable_id
-              variable_id: equipment_armor_shields_data_speed_penalty_label
-            #        inside_label_variable_reference:
-            #          type: variable_id
-            #          variable_id: term_feet_abbr
-            value_variable_reference:
-              type: variable_template
-              variable_template:
-                entries:
-                  - context: padded
-                    variable_id: equipment_armor_shields_list_padded_speed_penalty
-                  - context: leather
-                    variable_id: equipment_armor_shields_list_leather_speed_penaly
-                  - context: studded_leather
-                    variable_id: equipment_armor_shields_list_studded_leather_speed_penalty
-                  - context: chain_shirt
-                    variable_id: equipment_armor_shields_list_chain_shirt_speed_penalty
-                  - context: hide
-                    variable_id: equipment_armor_shields_list_hide_speed_penalty
-                  - context: scale_mail
-                    variable_id: equipment_armor_shields_list_scale_mail_speed_penalty
-                  - context: chain_mail
-                    variable_id: equipment_armor_shields_list_chain_mail_speed_penalty
-                  - context: breastplate
-                    variable_id: equipment_armor_shields_list_breastplate_speed_penalty
-                  - context: splint_mail
-                    variable_id: equipment_armor_shields_list_splint_mail_speed_penalty
-                  - context: half_plate
-                    variable_id: equipment_armor_shields_list_half_plate_speed_penalty
-                  - context: full_plate
-                    variable_id: equipment_armor_shields_list_full_plate_speed_penalty
-    - format:
-        element_format:
-          horizontal_alignment: left
-          padding:
-            left: 12
-            right: 12
-            bottom: 16
-      widgets:
-        - type: widget_number
-          widget_number:
-            kind: modifier
-            format:
-              type: widget_format_official
-              widget_format_official:
-                theme: metric
-                style: vertical_box
-                widget_format:
-                  element_format:
-                    margins:
-                      right: 8
-                    width:
-                      type: width_justify
-                      width_justify: justify
-            label_variable_reference:
-              type: variable_id
-              variable_id: equipment_armor_shields_data_dex_mod_cap_bonus_label
-            value_variable_reference:
-              type: variable_template
-              variable_template:
-                entries:
-                  - context: padded
-                    variable_id: equipment_armor_shields_list_padded_dex_mod_cap
-                  - context: leather
-                    variable_id: equipment_armor_shields_list_leather_dex_mod_cap
-                  - context: studded_leather
-                    variable_id: equipment_armor_shields_list_studded_leather_dex_mod_cap
-                  - context: chain_shirt
-                    variable_id: equipment_armor_shields_list_chain_shirt_dex_mod_cap
-                  - context: hide
-                    variable_id: equipment_armor_shields_list_hide_dex_mod_cap
-                  - context: scale_mail
-                    variable_id: equipment_armor_shields_list_scale_mail_dex_mod_cap
-                  - context: chain_mail
-                    variable_id: equipment_armor_shields_list_chain_mail_dex_mod_cap
-                  - context: breastplate
-                    variable_id: equipment_armor_shields_list_breastplate_dex_mod_cap
-                  - context: splint_mail
-                    variable_id: equipment_armor_shields_list_splint_mail_dex_mod_cap
-                  - context: half_plate
-                    variable_id: equipment_armor_shields_list_half_plate_dex_mod_cap
-                  - context: full_plate
-                    variable_id: equipment_armor_shields_list_full_plate_dex_mod_cap
-        - type: widget_text
-          widget_text:
-            format:
-              type: widget_format_official
-              widget_format_official:
-                theme: metric
-                style: vertical_box
-                widget_format:
-                  element_format:
-                    margins:
-                      left: 8
-                    width:
-                      type: width_justify
-                      width_justify: justify
-            label_variable_reference:
-              type: variable_id
-              variable_id: equipment_armor_shields_data_bulk_label
-            value_variable_reference:
-              type: variable_template
-              variable_template:
-                entries:
-                  - context: padded
-                    variable_id: equipment_armor_shields_list_padded_bulk
-                  - context: leather
-                    variable_id: equipment_armor_shields_list_leather_bulk
-                  - context: studded_leather
-                    variable_id: equipment_armor_shields_list_studded_leather_bulk
-                  - context: chain_shirt
-                    variable_id: equipment_armor_shields_list_chain_shirt_bulk
-                  - context: hide
-                    variable_id: equipment_armor_shields_list_hide_bulk
-                  - context: scale_mail
-                    variable_id: equipment_armor_shields_list_scale_mail_bulk
-                  - context: chain_mail
-                    variable_id: equipment_armor_shields_list_chain_mail_bulk
-                  - context: breastplate
-                    variable_id: equipment_armor_shields_list_breastplate_bulk
-                  - context: splint_mail
-                    variable_id: equipment_armor_shields_list_splint_mail_bulk
-                  - context: half_plate
-                    variable_id: equipment_armor_shields_list_half_plate_bulk
-                  - context: full_plate
-                    variable_id: equipment_armor_shields_list_full_plate_bulk
-    - format:
-        element_format:
-          horizontal_alignment: left
-          padding:
-            left: 12
-            right: 12
-            bottom: 16
-      widgets:
-        - type: widget_list
-          widget_list:
-            format:
-              type: widget_format_official
-              widget_format_official:
-                theme: metric
-                style: rows
-                widget_format:
-                  element_format:
-                    width:
-                      type: width_justify
-                      width_justify: justify
-            label_variable_reference:
-              type: variable_id
-              variable_id: term_traits_label
-            values_variable_reference:
-              type: variable_template
-              variable_template:
-                entries:
-                  - context: padded
-                    variable_id: equipment_armor_shields_list_padded_traits
-                  - context: leather
-                    variable_id: equipment_armor_shields_list_leather_traits
-                  - context: studded_leather
-                    variable_id: equipment_armor_shields_list_studded_leather_traits
-                  - context: chain_shirt
-                    variable_id: equipment_armor_shields_list_chain_shirt_traits
-                  - context: hide
-                    variable_id: equipment_armor_shields_list_hide_traits
-                  - context: scale_mail
-                    variable_id: equipment_armor_shields_list_scale_mail_traits
-                  - context: chain_mail
-                    variable_id: equipment_armor_shields_list_chain_mail_traits
-                  - context: breastplate
-                    variable_id: equipment_armor_shields_list_breastplate_traits
-                  - context: splint_mail
-                    variable_id: equipment_armor_shields_list_splint_mail_traits
-                  - context: half_plate
-                    variable_id: equipment_armor_shields_list_half_plate_traits
-                  - context: full_plate
-                    variable_id: equipment_armor_shields_list_full_plate_traits
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          left: 12
+          right: 12
+          top: 16
+          bottom: 16
+    widgets:
+      - type: widget_number
+        widget_number:
+          kind: modifier
+          format:
+            type: widget_format_official
+            widget_format_official:
+              theme: metric
+              style: horizontal_box
+              widget_format:
+                element_format:
+                  margins:
+                    right: 16
+          prefix_variable_reference:
+            type: variable_id
+            variable_id: term_armor_class_label
+          value_variable_reference:
+            type: variable_tag
+            variable_tag: armor_ac_bonus
+      - type: widget_number
+        widget_number:
+          kind: modifier
+          format:
+            type: widget_format_official
+            widget_format_official:
+              theme: metric
+              style: horizontal_box
+          prefix_variable_reference:
+            type: variable_id
+            variable_id: term_touch_armor_class_label
+          value_variable_reference:
+            type: variable_tag
+            variable_tag: armor_tac_bonus
+  - format:
+      element_format:
+        horizontal_alignment: left
+        padding:
+          left: 12
+          right: 12
+          bottom: 16
+    widgets:
+      - type: widget_number
+        widget_number:
+          kind: modifier
+          format:
+            type: widget_format_official
+            widget_format_official:
+              theme: metric
+              style: vertical_box
+              widget_format:
+                element_format:
+                  margins:
+                    right: 8
+                  width:
+                    type: width_justify
+                    width_justify: justify
+          label_variable_reference:
+            type: variable_id
+            variable_id: equipment_armor_shields_data_check_penalty_label
+          value_variable_reference:
+            type: variable_tag
+            variable_tag: armor_check_penalty
+      - type: widget_number
+        widget_number:
+          kind: modifier
+          format:
+            type: widget_format_official
+            widget_format_official:
+              theme: metric
+              style: vertical_box
+              widget_format:
+                element_format:
+                  margins:
+                    left: 8
+                  width:
+                    type: width_justify
+                    width_justify: justify
+          label_variable_reference:
+            type: variable_id
+            variable_id: equipment_armor_shields_data_speed_penalty_label
+          value_variable_reference:
+            type: variable_tag
+            variable_tag: armor_speed_penalty
+  - format:
+      element_format:
+        horizontal_alignment: left
+        padding:
+          left: 12
+          right: 12
+          bottom: 16
+    widgets:
+      - type: widget_number
+        widget_number:
+          kind: modifier
+          format:
+            type: widget_format_official
+            widget_format_official:
+              theme: metric
+              style: vertical_box
+              widget_format:
+                element_format:
+                  margins:
+                    right: 8
+                  width:
+                    type: width_justify
+                    width_justify: justify
+          label_variable_reference:
+            type: variable_id
+            variable_id: equipment_armor_shields_data_dex_mod_cap_bonus_label
+          value_variable_reference:
+            type: variable_tag
+            variable_tag: armor_dex_mod_cap
+      - type: widget_text
+        widget_text:
+          format:
+            type: widget_format_official
+            widget_format_official:
+              theme: metric
+              style: vertical_box
+              widget_format:
+                element_format:
+                  margins:
+                    left: 8
+                  width:
+                    type: width_justify
+                    width_justify: justify
+          label_variable_reference:
+            type: variable_id
+            variable_id: equipment_armor_shields_data_bulk_label
+          value_variable_reference:
+            type: variable_tag
+            variable_tag: armor_bulk
+  - format:
+      element_format:
+        horizontal_alignment: left
+        padding:
+          left: 12
+          right: 12
+          bottom: 16
+    widgets:
+      - type: widget_list
+        widget_list:
+          format:
+            type: widget_format_official
+            widget_format_official:
+              theme: metric
+              style: rows
+              widget_format:
+                element_format:
+                  width:
+                    type: width_justify
+                    width_justify: justify
+          label_variable_reference:
+            type: variable_id
+            variable_id: term_traits_label
+          values_variable_reference:
+            type: variable_tag
+            variable_tag: armor_traits
 #    - type: widget_text
 #      widget_text:
 #        format:
@@ -5767,8 +5546,204 @@ groups:
           type: variable_template
           variable_template:
             entries:
+            - context: gear_alchemists_tools
+              variable_id: equipment_gear_index_alchemists_tools_price
+            - context: gear_alchemists_tools_expert
+              variable_id: equipment_gear_index_alchemists_tools_expert_price
+            - context: gear_alchemists_tools_master
+              variable_id: equipment_gear_index_alchemists_tools_master_price
+            - context: gear_artisans_tools
+              variable_id: equipment_gear_index_artisans_tools_price
+            - context: gear_artisans_tools_expert
+              variable_id: equipment_gear_index_artisans_tools_expert_price
+            - context: gear_artisans_tools_master
+              variable_id: equipment_gear_index_artisans_tools_master_price
             - context: gear_backpack
               variable_id: equipment_gear_index_backpack_price
+            - context: gear_basic_crafters_book
+              variable_id: equipment_gear_index_basic_crafters_book_price
+            - context: gear_bedroll
+              variable_id: equipment_gear_index_bedroll_price
+            - context: gear_beltpouch
+              variable_id: equipment_gear_index_beltpouch_price
+            - context: gear_caltrops
+              variable_id: equipment_gear_index_caltrops_price
+            - context: gear_candle
+              variable_id: equipment_gear_index_candle_price
+            - context: gear_chain
+              variable_id: equipment_gear_index_chain_price
+            - context: gear_chalk
+              variable_id: equipment_gear_index_chalk_price
+            - context: gear_chest
+              variable_id: equipment_gear_index_chest_price
+            - context: gear_climbing_kit
+              variable_id: equipment_gear_index_climbing_kit_price
+            - context: gear_climbing_kit_expert
+              variable_id: equipment_gear_index_climbing_kit_expert_price
+            - context: gear_clothing_ordinary
+              variable_id: equipment_gear_index_clothing_ordinary_price
+            - context: gear_clothing_fine
+              variable_id: equipment_gear_index_clothing_fine_price
+            - context: gear_clothing_winter
+              variable_id: equipment_gear_index_clothing_winter_price
+            - context: gear_compass
+              variable_id: equipment_gear_index_compass_price
+            - context: gear_cookware
+              variable_id: equipment_gear_index_cookware_price
+            - context: gear_crowbar_expert
+              variable_id: equipment_gear_index_crowbar_expert_price
+            - context: gear_disguise_kit
+              variable_id: equipment_gear_index_disguise_kit_price
+            - context: gear_disguise_kit_replacement_cosmetics
+              variable_id: equipment_gear_index_disguise_kit_replacement_cosmetics_price
+            - context: gear_disguise_kit_expert
+              variable_id: equipment_gear_index_disguise_kit_expert_price
+            - context: gear_disguise_kit_expert_cosmetics
+              variable_id: equipment_gear_index_disguise_kit_expert_cosmetics_price
+            - context: gear_disguise_kit_master
+              variable_id: equipment_gear_index_disguise_kit_master_price
+            - context: gear_disguise_kit_master_cosmetics
+              variable_id: equipment_gear_index_disguise_kit_master_cosmetics_price
+            - context: gear_fishing_tackle
+              variable_id: equipment_gear_index_fishing_tackle_price
+            - context: gear_fishing_tackle_expert
+              variable_id: equipment_gear_index_fishing_tackle_expert_price
+            - context: gear_flint_and_steel
+              variable_id: equipment_gear_index_flint_and_steel_price
+            - context: gear_formula_book
+              variable_id: equipment_gear_index_formula_book_price
+            - context: gear_grappling_hook
+              variable_id: equipment_gear_index_grappling_hook_price
+            - context: gear_hammer
+              variable_id: equipment_gear_index_hammer_price
+            - context: gear_healers_tools
+              variable_id: equipment_gear_index_healers_tools_price
+            - context: gear_healers_tools_expert
+              variable_id: equipment_gear_index_healers_tools_expert_price
+            - context: gear_holly_mistletoe
+              variable_id: equipment_gear_index_holly_mistletoe_price
+            - context: gear_hourglass
+              variable_id: equipment_gear_index_hourglass_price
+            - context: gear_ladder
+              variable_id: equipment_gear_index_ladder_price
+            - context: gear_lantern_bulls_eye
+              variable_id: equipment_gear_index_lantern_bulls_eye_price
+            - context: gear_lantern_hooded
+              variable_id: equipment_gear_index_lantern_hooded_price
+            - context: gear_lock
+              variable_id: equipment_gear_index_lock_price
+            - context: gear_lock_expert
+              variable_id: equipment_gear_index_lock_expert_price
+            - context: gear_lock_master
+              variable_id: equipment_gear_index_lock_master_price
+            - context: gear_magnifying_glass_expert
+              variable_id: equipment_gear_index_magnifying_glass_expert_price
+            - context: gear_manacles
+              variable_id: equipment_gear_index_manacles_price
+            - context: gear_manacles_expert
+              variable_id: equipment_gear_index_manacles_expert_price
+            - context: gear_manacles_master
+              variable_id: equipment_gear_index_manacles_master_price
+            - context: gear_material_component_pouch
+              variable_id: equipment_gear_index_material_component_pouch_price
+            - context: gear_merchants_scale
+              variable_id: equipment_gear_index_merchants_scale_price
+            - context: gear_mirror
+              variable_id: equipment_gear_index_mirror_price
+            - context: gear_mug
+              variable_id: equipment_gear_index_mug_price
+            - context: gear_musical_instrument_handheld
+              variable_id: equipment_gear_index_musical_instrument_handheld_price
+            - context: gear_musical_instrument_handheld_expert
+              variable_id: equipment_gear_index_musical_instrument_handheld_expert_price
+            - context: gear_musical_instrument_handheld_master
+              variable_id: equipment_gear_index_musical_instrument_handheld_master_price
+            - context: gear_musical_instrument_heavy
+              variable_id: equipment_gear_index_musical_instrument_heavy_price
+            - context: gear_musical_instrument_heavy_expert
+              variable_id: equipment_gear_index_musical_instrument_heavy_expert_price
+            - context: gear_musical_instrument_heavy_master
+              variable_id: equipment_gear_index_musical_instrument_heavy_master_price
+            - context: gear_oil
+              variable_id: equipment_gear_index_oil_price
+            - context: gear_piton
+              variable_id: equipment_gear_index_piton_price
+            - context: gear_rations
+              variable_id: equipment_gear_index_rations_price
+            - context: gear_religious_symbol_wooden
+              variable_id: equipment_gear_index_religious_symbol_wooden_price
+            - context: gear_religious_symbol_silver
+              variable_id: equipment_gear_index_religious_symbol_silver_price
+            - context: gear_religious_text
+              variable_id: equipment_gear_index_religious_text_price
+            - context: gear_repair_kit
+              variable_id: equipment_gear_index_repair_kit_price
+            - context: gear_repair_kit_expert
+              variable_id: equipment_gear_index_repair_kit_expert_price
+            - context: gear_rope_hemp
+              variable_id: equipment_gear_index_rope_hemp_price
+            - context: gear_rope_silk
+              variable_id: equipment_gear_index_rope_silk_price
+            - context: gear_sack
+              variable_id: equipment_gear_index_sack_price
+            - context: gear_saddlebags
+              variable_id: equipment_gear_index_saddlebags_price
+            - context: gear_satchel
+              variable_id: equipment_gear_index_satchel_price
+            - context: gear_scroll_case
+              variable_id: equipment_gear_index_scroll_case_price
+            - context: gear_sheath
+              variable_id: equipment_gear_index_sheath_price
+            - context: gear_signal_whistle
+              variable_id: equipment_gear_index_signal_whistle_price
+            - context: gear_snare_kit
+              variable_id: equipment_gear_index_snare_kit_price
+            - context: gear_snare_kit_expert
+              variable_id: equipment_gear_index_snare_kit_expert_price
+            - context: gear_snare_kit_master
+              variable_id: equipment_gear_index_snare_kit_master_price
+            - context: gear_spellbook
+              variable_id: equipment_gear_index_spellbook_price
+            - context: gear_spyglass
+              variable_id: equipment_gear_index_spyglass_price
+            - context: gear_spyglass_expert
+              variable_id: equipment_gear_index_spyglass_expert_price
+            - context: gear_tack
+              variable_id: equipment_gear_index_tack_price
+            - context: gear_ten_foot_pole
+              variable_id: equipment_gear_index_ten_foot_pole_price
+            - context: gear_tent_pup
+              variable_id: equipment_gear_index_tent_pup_price
+            - context: gear_tent_four_person
+              variable_id: equipment_gear_index_tent_four_person_price
+            - context: gear_tent_pavilion
+              variable_id: equipment_gear_index_tent_pavilion_price
+            - context: gear_thieves_tools
+              variable_id: equipment_gear_index_thieves_tools_price
+            - context: gear_thieves_tools_replacement_picks
+              variable_id: equipment_gear_index_thieves_tools_replacement_picks_price
+            - context: gear_thieves_tools_expert
+              variable_id: equipment_gear_index_thieves_tools_expert_price
+            - context: gear_thieves_tools_expert_picks
+              variable_id: equipment_gear_index_thieves_tools_expert_picks_price
+            - context: gear_thieves_tools_master
+              variable_id: equipment_gear_index_thieves_tools_master_price
+            - context: gear_thieves_tools_master_picks
+              variable_id: equipment_gear_index_thieves_tools_master_picks_price
+            - context: gear_tool_long
+              variable_id: equipment_gear_index_tool_long_price
+            - context: gear_tool_short
+              variable_id: equipment_gear_index_tool_short_price
+            - context: gear_torch
+              variable_id: equipment_gear_index_torch_price
+            - context: gear_vial
+              variable_id: equipment_gear_index_vial_price
+            - context: gear_waterskin
+              variable_id: equipment_gear_index_waterskin_price
+            - context: gear_writing_set
+              variable_id: equipment_gear_index_writer_set_price
+            - context: gear_writing_set_ink_paper
+              variable_id: equipment_gear_index_writer_set_ink_paper_price
   - format:
       element_format:
         horizontal_alignment: left
@@ -5798,8 +5773,204 @@ groups:
           type: variable_template
           variable_template:
             entries:
+            - context: gear_alchemists_tools
+              variable_id: equipment_gear_index_alchemists_tools_hands
+            - context: gear_alchemists_tools_expert
+              variable_id: equipment_gear_index_alchemists_tools_expert_hands
+            - context: gear_alchemists_tools_master
+              variable_id: equipment_gear_index_alchemists_tools_master_hands
+            - context: gear_artisans_tools
+              variable_id: equipment_gear_index_artisans_tools_hands
+            - context: gear_artisans_tools_expert
+              variable_id: equipment_gear_index_artisans_tools_expert_hands
+            - context: gear_artisans_tools_master
+              variable_id: equipment_gear_index_artisans_tools_master_hands
             - context: gear_backpack
               variable_id: equipment_gear_index_backpack_hands
+            - context: gear_basic_crafters_book
+              variable_id: equipment_gear_index_basic_crafters_book_hands
+            - context: gear_bedroll
+              variable_id: equipment_gear_index_bedroll_hands
+            - context: gear_beltpouch
+              variable_id: equipment_gear_index_beltpouch_hands
+            - context: gear_caltrops
+              variable_id: equipment_gear_index_caltrops_hands
+            - context: gear_candle
+              variable_id: equipment_gear_index_candle_hands
+            - context: gear_chain
+              variable_id: equipment_gear_index_chain_hands
+            - context: gear_chalk
+              variable_id: equipment_gear_index_chalk_hands
+            - context: gear_chest
+              variable_id: equipment_gear_index_chest_hands
+            - context: gear_climbing_kit
+              variable_id: equipment_gear_index_climbing_kit_hands
+            - context: gear_climbing_kit_expert
+              variable_id: equipment_gear_index_climbing_kit_expert_hands
+            - context: gear_clothing_ordinary
+              variable_id: equipment_gear_index_clothing_ordinary_hands
+            - context: gear_clothing_fine
+              variable_id: equipment_gear_index_clothing_fine_hands
+            - context: gear_clothing_winter
+              variable_id: equipment_gear_index_clothing_winter_hands
+            - context: gear_compass
+              variable_id: equipment_gear_index_compass_hands
+            - context: gear_cookware
+              variable_id: equipment_gear_index_cookware_hands
+            - context: gear_crowbar_expert
+              variable_id: equipment_gear_index_crowbar_expert_hands
+            - context: gear_disguise_kit
+              variable_id: equipment_gear_index_disguise_kit_hands
+            - context: gear_disguise_kit_replacement_cosmetics
+              variable_id: equipment_gear_index_disguise_kit_replacement_cosmetics_hands
+            - context: gear_disguise_kit_expert
+              variable_id: equipment_gear_index_disguise_kit_expert_hands
+            - context: gear_disguise_kit_expert_cosmetics
+              variable_id: equipment_gear_index_disguise_kit_expert_cosmetics_hands
+            - context: gear_disguise_kit_master
+              variable_id: equipment_gear_index_disguise_kit_master_hands
+            - context: gear_disguise_kit_master_cosmetics
+              variable_id: equipment_gear_index_disguise_kit_master_cosmetics_hands
+            - context: gear_fishing_tackle
+              variable_id: equipment_gear_index_fishing_tackle_hands
+            - context: gear_fishing_tackle_expert
+              variable_id: equipment_gear_index_fishing_tackle_expert_hands
+            - context: gear_flint_and_steel
+              variable_id: equipment_gear_index_flint_and_steel_hands
+            - context: gear_formula_book
+              variable_id: equipment_gear_index_formula_book_hands
+            - context: gear_grappling_hook
+              variable_id: equipment_gear_index_grappling_hook_hands
+            - context: gear_hammer
+              variable_id: equipment_gear_index_hammer_hands
+            - context: gear_healers_tools
+              variable_id: equipment_gear_index_healers_tools_hands
+            - context: gear_healers_tools_expert
+              variable_id: equipment_gear_index_healers_tools_expert_hands
+            - context: gear_holly_mistletoe
+              variable_id: equipment_gear_index_holly_mistletoe_hands
+            - context: gear_hourglass
+              variable_id: equipment_gear_index_hourglass_hands
+            - context: gear_ladder
+              variable_id: equipment_gear_index_ladder_hands
+            - context: gear_lantern_bulls_eye
+              variable_id: equipment_gear_index_lantern_bulls_eye_hands
+            - context: gear_lantern_hooded
+              variable_id: equipment_gear_index_lantern_hooded_hands
+            - context: gear_lock
+              variable_id: equipment_gear_index_lock_hands
+            - context: gear_lock_expert
+              variable_id: equipment_gear_index_lock_expert_hands
+            - context: gear_lock_master
+              variable_id: equipment_gear_index_lock_master_hands
+            - context: gear_magnifying_glass_expert
+              variable_id: equipment_gear_index_magnifying_glass_expert_hands
+            - context: gear_manacles
+              variable_id: equipment_gear_index_manacles_hands
+            - context: gear_manacles_expert
+              variable_id: equipment_gear_index_manacles_expert_hands
+            - context: gear_manacles_master
+              variable_id: equipment_gear_index_manacles_master_hands
+            - context: gear_material_component_pouch
+              variable_id: equipment_gear_index_material_component_pouch_hands
+            - context: gear_merchants_scale
+              variable_id: equipment_gear_index_merchants_scale_hands
+            - context: gear_mirror
+              variable_id: equipment_gear_index_mirror_hands
+            - context: gear_mug
+              variable_id: equipment_gear_index_mug_hands
+            - context: gear_musical_instrument_handheld
+              variable_id: equipment_gear_index_musical_instrument_handheld_hands
+            - context: gear_musical_instrument_handheld_expert
+              variable_id: equipment_gear_index_musical_instrument_handheld_expert_hands
+            - context: gear_musical_instrument_handheld_master
+              variable_id: equipment_gear_index_musical_instrument_handheld_master_hands
+            - context: gear_musical_instrument_heavy
+              variable_id: equipment_gear_index_musical_instrument_heavy_hands
+            - context: gear_musical_instrument_heavy_expert
+              variable_id: equipment_gear_index_musical_instrument_heavy_expert_hands
+            - context: gear_musical_instrument_heavy_master
+              variable_id: equipment_gear_index_musical_instrument_heavy_master_hands
+            - context: gear_oil
+              variable_id: equipment_gear_index_oil_hands
+            - context: gear_piton
+              variable_id: equipment_gear_index_piton_hands
+            - context: gear_rations
+              variable_id: equipment_gear_index_rations_hands
+            - context: gear_religious_symbol_wooden
+              variable_id: equipment_gear_index_religious_symbol_wooden_hands
+            - context: gear_religious_symbol_silver
+              variable_id: equipment_gear_index_religious_symbol_silver_hands
+            - context: gear_religious_text
+              variable_id: equipment_gear_index_religious_text_hands
+            - context: gear_repair_kit
+              variable_id: equipment_gear_index_repair_kit_hands
+            - context: gear_repair_kit_expert
+              variable_id: equipment_gear_index_repair_kit_expert_hands
+            - context: gear_rope_hemp
+              variable_id: equipment_gear_index_rope_hemp_hands
+            - context: gear_rope_silk
+              variable_id: equipment_gear_index_rope_silk_hands
+            - context: gear_sack
+              variable_id: equipment_gear_index_sack_hands
+            - context: gear_saddlebags
+              variable_id: equipment_gear_index_saddlebags_hands
+            - context: gear_satchel
+              variable_id: equipment_gear_index_satchel_hands
+            - context: gear_scroll_case
+              variable_id: equipment_gear_index_scroll_case_hands
+            - context: gear_sheath
+              variable_id: equipment_gear_index_sheath_hands
+            - context: gear_signal_whistle
+              variable_id: equipment_gear_index_signal_whistle_hands
+            - context: gear_snare_kit
+              variable_id: equipment_gear_index_snare_kit_hands
+            - context: gear_snare_kit_expert
+              variable_id: equipment_gear_index_snare_kit_expert_hands
+            - context: gear_snare_kit_master
+              variable_id: equipment_gear_index_snare_kit_master_hands
+            - context: gear_spellbook
+              variable_id: equipment_gear_index_spellbook_hands
+            - context: gear_spyglass
+              variable_id: equipment_gear_index_spyglass_hands
+            - context: gear_spyglass_expert
+              variable_id: equipment_gear_index_spyglass_expert_hands
+            - context: gear_tack
+              variable_id: equipment_gear_index_tack_hands
+            - context: gear_ten_foot_pole
+              variable_id: equipment_gear_index_ten_foot_pole_hands
+            - context: gear_tent_pup
+              variable_id: equipment_gear_index_tent_pup_hands
+            - context: gear_tent_four_person
+              variable_id: equipment_gear_index_tent_four_person_hands
+            - context: gear_tent_pavilion
+              variable_id: equipment_gear_index_tent_pavilion_hands
+            - context: gear_thieves_tools
+              variable_id: equipment_gear_index_thieves_tools_hands
+            - context: gear_thieves_tools_replacement_picks
+              variable_id: equipment_gear_index_thieves_tools_replacement_picks_hands
+            - context: gear_thieves_tools_expert
+              variable_id: equipment_gear_index_thieves_tools_expert_hands
+            - context: gear_thieves_tools_expert_picks
+              variable_id: equipment_gear_index_thieves_tools_expert_picks_hands
+            - context: gear_thieves_tools_master
+              variable_id: equipment_gear_index_thieves_tools_master_hands
+            - context: gear_thieves_tools_master_picks
+              variable_id: equipment_gear_index_thieves_tools_master_picks_hands
+            - context: gear_tool_long
+              variable_id: equipment_gear_index_tool_long_hands
+            - context: gear_tool_short
+              variable_id: equipment_gear_index_tool_short_hands
+            - context: gear_torch
+              variable_id: equipment_gear_index_torch_hands
+            - context: gear_vial
+              variable_id: equipment_gear_index_vial_hands
+            - context: gear_waterskin
+              variable_id: equipment_gear_index_waterskin_hands
+            - context: gear_writing_set
+              variable_id: equipment_gear_index_writer_set_hands
+            - context: gear_writing_set_ink_paper
+              variable_id: equipment_gear_index_writer_set_ink_paper_hands
     - type: widget_text
       widget_text:
         format:
@@ -5821,5 +5992,255 @@ groups:
           type: variable_template
           variable_template:
             entries:
+            - context: gear_alchemists_tools
+              variable_id: equipment_gear_index_alchemists_tools_bulk
+            - context: gear_alchemists_tools_expert
+              variable_id: equipment_gear_index_alchemists_tools_expert_bulk
+            - context: gear_alchemists_tools_master
+              variable_id: equipment_gear_index_alchemists_tools_master_bulk
+            - context: gear_artisans_tools
+              variable_id: equipment_gear_index_artisans_tools_bulk
+            - context: gear_artisans_tools_expert
+              variable_id: equipment_gear_index_artisans_tools_expert_bulk
+            - context: gear_artisans_tools_master
+              variable_id: equipment_gear_index_artisans_tools_master_bulk
             - context: gear_backpack
               variable_id: equipment_gear_index_backpack_bulk
+            - context: gear_basic_crafters_book
+              variable_id: equipment_gear_index_basic_crafters_book_bulk
+            - context: gear_bedroll
+              variable_id: equipment_gear_index_bedroll_bulk
+            - context: gear_beltpouch
+              variable_id: equipment_gear_index_beltpouch_bulk
+            - context: gear_caltrops
+              variable_id: equipment_gear_index_caltrops_bulk
+            - context: gear_candle
+              variable_id: equipment_gear_index_candle_bulk
+            - context: gear_chain
+              variable_id: equipment_gear_index_chain_bulk
+            - context: gear_chalk
+              variable_id: equipment_gear_index_chalk_bulk
+            - context: gear_chest
+              variable_id: equipment_gear_index_chest_bulk
+            - context: gear_climbing_kit
+              variable_id: equipment_gear_index_climbing_kit_bulk
+            - context: gear_climbing_kit_expert
+              variable_id: equipment_gear_index_climbing_kit_expert_bulk
+            - context: gear_clothing_ordinary
+              variable_id: equipment_gear_index_clothing_ordinary_bulk
+            - context: gear_clothing_fine
+              variable_id: equipment_gear_index_clothing_fine_bulk
+            - context: gear_clothing_winter
+              variable_id: equipment_gear_index_clothing_winter_bulk
+            - context: gear_compass
+              variable_id: equipment_gear_index_compass_bulk
+            - context: gear_cookware
+              variable_id: equipment_gear_index_cookware_bulk
+            - context: gear_crowbar_expert
+              variable_id: equipment_gear_index_crowbar_expert_bulk
+            - context: gear_disguise_kit
+              variable_id: equipment_gear_index_disguise_kit_bulk
+            - context: gear_disguise_kit_replacement_cosmetics
+              variable_id: equipment_gear_index_disguise_kit_replacement_cosmetics_bulk
+            - context: gear_disguise_kit_expert
+              variable_id: equipment_gear_index_disguise_kit_expert_bulk
+            - context: gear_disguise_kit_expert_cosmetics
+              variable_id: equipment_gear_index_disguise_kit_expert_cosmetics_bulk
+            - context: gear_disguise_kit_master
+              variable_id: equipment_gear_index_disguise_kit_master_bulk
+            - context: gear_disguise_kit_master_cosmetics
+              variable_id: equipment_gear_index_disguise_kit_master_cosmetics_bulk
+            - context: gear_fishing_tackle
+              variable_id: equipment_gear_index_fishing_tackle_bulk
+            - context: gear_fishing_tackle_expert
+              variable_id: equipment_gear_index_fishing_tackle_expert_bulk
+            - context: gear_flint_and_steel
+              variable_id: equipment_gear_index_flint_and_steel_bulk
+            - context: gear_formula_book
+              variable_id: equipment_gear_index_formula_book_bulk
+            - context: gear_grappling_hook
+              variable_id: equipment_gear_index_grappling_hook_bulk
+            - context: gear_hammer
+              variable_id: equipment_gear_index_hammer_bulk
+            - context: gear_healers_tools
+              variable_id: equipment_gear_index_healers_tools_bulk
+            - context: gear_healers_tools_expert
+              variable_id: equipment_gear_index_healers_tools_expert_bulk
+            - context: gear_holly_mistletoe
+              variable_id: equipment_gear_index_holly_mistletoe_bulk
+            - context: gear_hourglass
+              variable_id: equipment_gear_index_hourglass_bulk
+            - context: gear_ladder
+              variable_id: equipment_gear_index_ladder_bulk
+            - context: gear_lantern_bulls_eye
+              variable_id: equipment_gear_index_lantern_bulls_eye_bulk
+            - context: gear_lantern_hooded
+              variable_id: equipment_gear_index_lantern_hooded_bulk
+            - context: gear_lock
+              variable_id: equipment_gear_index_lock_bulk
+            - context: gear_lock_expert
+              variable_id: equipment_gear_index_lock_expert_bulk
+            - context: gear_lock_master
+              variable_id: equipment_gear_index_lock_master_bulk
+            - context: gear_magnifying_glass_expert
+              variable_id: equipment_gear_index_magnifying_glass_expert_bulk
+            - context: gear_manacles
+              variable_id: equipment_gear_index_manacles_bulk
+            - context: gear_manacles_expert
+              variable_id: equipment_gear_index_manacles_expert_bulk
+            - context: gear_manacles_master
+              variable_id: equipment_gear_index_manacles_master_bulk
+            - context: gear_material_component_pouch
+              variable_id: equipment_gear_index_material_component_pouch_bulk
+            - context: gear_merchants_scale
+              variable_id: equipment_gear_index_merchants_scale_bulk
+            - context: gear_mirror
+              variable_id: equipment_gear_index_mirror_bulk
+            - context: gear_mug
+              variable_id: equipment_gear_index_mug_bulk
+            - context: gear_musical_instrument_handheld
+              variable_id: equipment_gear_index_musical_instrument_handheld_bulk
+            - context: gear_musical_instrument_handheld_expert
+              variable_id: equipment_gear_index_musical_instrument_handheld_expert_bulk
+            - context: gear_musical_instrument_handheld_master
+              variable_id: equipment_gear_index_musical_instrument_handheld_master_bulk
+            - context: gear_musical_instrument_heavy
+              variable_id: equipment_gear_index_musical_instrument_heavy_bulk
+            - context: gear_musical_instrument_heavy_expert
+              variable_id: equipment_gear_index_musical_instrument_heavy_expert_bulk
+            - context: gear_musical_instrument_heavy_master
+              variable_id: equipment_gear_index_musical_instrument_heavy_master_bulk
+            - context: gear_oil
+              variable_id: equipment_gear_index_oil_bulk
+            - context: gear_piton
+              variable_id: equipment_gear_index_piton_bulk
+            - context: gear_rations
+              variable_id: equipment_gear_index_rations_bulk
+            - context: gear_religious_symbol_wooden
+              variable_id: equipment_gear_index_religious_symbol_wooden_bulk
+            - context: gear_religious_symbol_silver
+              variable_id: equipment_gear_index_religious_symbol_silver_bulk
+            - context: gear_religious_text
+              variable_id: equipment_gear_index_religious_text_bulk
+            - context: gear_repair_kit
+              variable_id: equipment_gear_index_repair_kit_bulk
+            - context: gear_repair_kit_expert
+              variable_id: equipment_gear_index_repair_kit_expert_bulk
+            - context: gear_rope_hemp
+              variable_id: equipment_gear_index_rope_hemp_bulk
+            - context: gear_rope_silk
+              variable_id: equipment_gear_index_rope_silk_bulk
+            - context: gear_sack
+              variable_id: equipment_gear_index_sack_bulk
+            - context: gear_saddlebags
+              variable_id: equipment_gear_index_saddlebags_bulk
+            - context: gear_satchel
+              variable_id: equipment_gear_index_satchel_bulk
+            - context: gear_scroll_case
+              variable_id: equipment_gear_index_scroll_case_bulk
+            - context: gear_sheath
+              variable_id: equipment_gear_index_sheath_bulk
+            - context: gear_signal_whistle
+              variable_id: equipment_gear_index_signal_whistle_bulk
+            - context: gear_snare_kit
+              variable_id: equipment_gear_index_snare_kit_bulk
+            - context: gear_snare_kit_expert
+              variable_id: equipment_gear_index_snare_kit_expert_bulk
+            - context: gear_snare_kit_master
+              variable_id: equipment_gear_index_snare_kit_master_bulk
+            - context: gear_spellbook
+              variable_id: equipment_gear_index_spellbook_bulk
+            - context: gear_spyglass
+              variable_id: equipment_gear_index_spyglass_bulk
+            - context: gear_spyglass_expert
+              variable_id: equipment_gear_index_spyglass_expert_bulk
+            - context: gear_tack
+              variable_id: equipment_gear_index_tack_bulk
+            - context: gear_ten_foot_pole
+              variable_id: equipment_gear_index_ten_foot_pole_bulk
+            - context: gear_tent_pup
+              variable_id: equipment_gear_index_tent_pup_bulk
+            - context: gear_tent_four_person
+              variable_id: equipment_gear_index_tent_four_person_bulk
+            - context: gear_tent_pavilion
+              variable_id: equipment_gear_index_tent_pavilion_bulk
+            - context: gear_thieves_tools
+              variable_id: equipment_gear_index_thieves_tools_bulk
+            - context: gear_thieves_tools_replacement_picks
+              variable_id: equipment_gear_index_thieves_tools_replacement_picks_bulk
+            - context: gear_thieves_tools_expert
+              variable_id: equipment_gear_index_thieves_tools_expert_bulk
+            - context: gear_thieves_tools_expert_picks
+              variable_id: equipment_gear_index_thieves_tools_expert_picks_bulk
+            - context: gear_thieves_tools_master
+              variable_id: equipment_gear_index_thieves_tools_master_bulk
+            - context: gear_thieves_tools_master_picks
+              variable_id: equipment_gear_index_thieves_tools_master_picks_bulk
+            - context: gear_tool_long
+              variable_id: equipment_gear_index_tool_long_bulk
+            - context: gear_tool_short
+              variable_id: equipment_gear_index_tool_short_bulk
+            - context: gear_torch
+              variable_id: equipment_gear_index_torch_bulk
+            - context: gear_vial
+              variable_id: equipment_gear_index_vial_bulk
+            - context: gear_waterskin
+              variable_id: equipment_gear_index_waterskin_bulk
+            - context: gear_writing_set
+              variable_id: equipment_gear_index_writer_set_bulk
+            - context: gear_writing_set_ink_paper
+              variable_id: equipment_gear_index_writer_set_ink_paper_bulk
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Weapons > Weapon Trait Card
+## ---------------------------------------------------------------------------------------------
+- id: '03aac266-dd98-4094-a9b7-7275ff8d7d7f'
+  name: 'Equipment > Weapons > Weapon Trait Card'
+  summary: 'Equipment > Weapons > Weapon Trait Card'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragarph
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: weapon_trait_description
+## ---------------------------------------------------------------------------------------------
+## | Equipment > Weapons > Weapon Critical Specialization Card
+## ---------------------------------------------------------------------------------------------
+- id: '60cdd3f6-e975-4dcf-beba-ae020f16ba30'
+  name: 'Equipment > Weapons > Critical Specialization'
+  summary: 'Equipment > Weapons > Critical Specialization'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragarph
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: weapon_crit_spec_description

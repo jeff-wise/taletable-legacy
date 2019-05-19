@@ -2,7 +2,6 @@
 package com.taletable.android.rts.entity
 
 
-import android.util.Log
 import com.taletable.android.app.*
 import com.taletable.android.model.engine.EngineValue
 import com.taletable.android.model.engine.EngineValueBoolean
@@ -934,7 +933,10 @@ class EntityState(val entityId : EntityId,
         when (variableReference)
         {
             is VariableId      -> effApply(::setOf, this.variable(variableReference))
-            is VariableTag     -> effValue(this.variablesWithTag(variableReference))
+            is VariableTag     ->
+            {
+                effValue(this.variablesWithTag(variableReference, context))
+            }
             is VariableReferenceContextual -> {
                 val context = variableReference.context
                 when (context)
@@ -1011,10 +1013,25 @@ class EntityState(val entityId : EntityId,
 
 
     // TODO errors vs events. tag does not exist is not an error
-    fun variablesWithTag(variableTag : VariableTag) : Set<Variable> =
-            this.variablesByTag.get(variableTag) ?: setOf()
+    fun variablesWithTag(variableTag : VariableTag,
+                         context : Maybe<VariableNamespace> = Nothing()) : Set<Variable>
+    {
+        return when (context) {
+            is Just -> {
+                val contextTag = VariableTag(context.value.value)
+                val labelSet = this.variablesByTag.get(variableTag) ?: setOf<Variable>()
+                val contextSet = this.variablesByTag.get(contextTag) ?: setOf<Variable>()
+                contextSet.intersect(labelSet)
+            }
+            is Nothing -> {
+                this.variablesByTag.get(variableTag) ?: setOf()
+            }
+        }
+    }
+
 //        note(this.variablesByTag.get(variableTag),
 //             AppStateError(VariableWithTagDoesNotExist(entityId, variableTag)))
+
 
 
 

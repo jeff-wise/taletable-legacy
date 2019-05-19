@@ -3,11 +3,14 @@ package com.taletable.android.model.sheet.widget.text.official_view
 
 
 import android.content.Context
+import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.taletable.android.R
+import com.taletable.android.lib.ui.CustomTypefaceSpan
 import com.taletable.android.lib.ui.Font
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.lib.ui.TextViewBuilder
@@ -23,8 +26,11 @@ import com.taletable.android.model.theme.ThemeColorId
 import com.taletable.android.model.theme.ThemeId
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
+import effect.Err
+import effect.Val
+import maybe.Just
 import maybe.Maybe
-
+import maybe.Nothing
 
 
 /**
@@ -38,13 +44,13 @@ fun textWidgetOfficialMetricView(
         groupContext : Maybe<GroupContext>
 ) : View = when (style.value)
 {
-    "paragraph"        -> textWidgetMetricParagraphView(textWidget, entityId, groupContext, context)
+    "paragraph"        -> paragraphView(textWidget, entityId, groupContext, context)
     "paragraph_header" -> textWidgetMetricParagraphHeaderView(textWidget, entityId, groupContext, context)
     "vertical_box"     -> textWidgetMetricVerticalBoxView(textWidget, entityId, groupContext, context)
     "horizontal_box"   -> horizontalBoxView(textWidget, entityId, groupContext, context)
     "entity_section_label" -> entitySectionLabelView(textWidget, entityId, groupContext, context)
     "entity_section_tag" -> entitySectionEntryTagView(textWidget, entityId, groupContext, context)
-    else               -> textWidgetMetricParagraphView(textWidget, entityId, groupContext, context)
+    else               -> paragraphView(textWidget, entityId, groupContext, context)
 }
 
 
@@ -57,7 +63,7 @@ fun textWidgetOfficialMetricView(
  *
  * Small and legible body text.
  */
-private fun textWidgetMetricParagraphView(
+private fun paragraphView(
         textWidget : TextWidget,
         entityId : EntityId,
         groupContext : Maybe<GroupContext>,
@@ -65,29 +71,52 @@ private fun textWidgetMetricParagraphView(
 ) : View
 {
     val valueString = textWidget.valueString(entityId, groupContext)
-    val paragraphs = valueString.split("\n")
 
-    return if (paragraphs.isEmpty()) {
-        val text = textWidget.valueString(entityId, groupContext)
-        textWidgetMetricParagraphTextView(text, false, entityId, groupContext, context)
+    // Get paragraphs
+    var paragraphs = listOf<String>()
+    paragraphs = valueString.split("\n")
+    if (paragraphs.isEmpty()) {
+        paragraphs = listOf(valueString)
     }
-    else {
-        textWidgetMetricParagraphViewLayout(context).also { it
+
+    // Get label
+    val labelString = textWidget.labelValue(entityId)
+
+    val layout = paragraphViewLayout(context)
+
+
+    // Add first paragraph
+    paragraphs.firstOrNull()?.let { paragraph ->
+        when (labelString) {
+            is Val -> {
+                layout.addView(paragraphTextView(labelString.value, paragraph, false, entityId, context))
+            }
+            is Err -> {
+                layout.addView(paragraphTextView(null, paragraph, false, entityId, context))
+            }
+        }
+
+    }
+
+    paragraphs.drop(1).forEach {
+        paragraphViewLayout(context).also { it
             paragraphs.forEachIndexed { index, paragraphString ->
                 val isParagraph = index < paragraphs.size - 1
-                val view = textWidgetMetricParagraphTextView(
+                val view = paragraphTextView(
+                                null,
                                paragraphString,
                                isParagraph,
                                entityId,
-                               groupContext,
                                context)
                 it.addView(view)
             }
         }
     }
+
+    return layout
 }
 
-private fun textWidgetMetricParagraphViewLayout(
+private fun paragraphViewLayout(
         context : Context
 ) : LinearLayout
 {
@@ -103,11 +132,11 @@ private fun textWidgetMetricParagraphViewLayout(
 
 
 
-private fun textWidgetMetricParagraphTextView(
-        text : String,
+private fun paragraphTextView(
+        header : String?,
+        body : String,
         isParagraph : Boolean,
         entityId : EntityId,
-        groupContext : Maybe<GroupContext>,
         context : Context
 ) : TextView
 {
@@ -119,7 +148,7 @@ private fun textWidgetMetricParagraphTextView(
     if (isParagraph)
         textViewBuilder.margin.bottomDp = 16f
 
-    textViewBuilder.text            = text
+    textViewBuilder.textSpan        = paragraphSpannable(header, body, context)
 
     textViewBuilder.font            = Font.typeface(TextFont.RobotoSlab,
                                                     TextFontStyle.Regular,
@@ -136,6 +165,30 @@ private fun textWidgetMetricParagraphTextView(
     textViewBuilder.lineSpacingMult = 1.1f
 
     return textViewBuilder.textView(context)
+}
+
+
+private fun paragraphSpannable(
+        header : String?,
+        body : String,
+        context : Context
+) : SpannableStringBuilder
+{
+    val builder = SpannableStringBuilder()
+
+    if (header != null)
+    {
+        builder.append(header)
+        builder.append(" ")
+
+        val typeface = Font.typeface(TextFont.RobotoSlab, TextFontStyle.Bold, context)
+        val typefaceSpan = CustomTypefaceSpan(typeface)
+        builder.setSpan(typefaceSpan, 0, header.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+    }
+
+    builder.append(body)
+
+    return builder
 }
 
 
@@ -209,6 +262,8 @@ private fun textWidgetMetricParagraphHeaderTextView(
 
     return textViewBuilder.textView(context)
 }
+
+
 
 
 // ---------------------------------------------------------------------------------------------
@@ -593,26 +648,14 @@ private fun horizontalBoxValueView(
     // -----------------------------------------------------------------------------------------
 
     layoutBuilder.width     = LinearLayout.LayoutParams.WRAP_CONTENT
-    //layoutBuilder.height    = LinearLayout.LayoutParams.WRAP_CONTENT
     layoutBuilder.heightDp  = 44
 
     layoutBuilder.padding.leftDp    = 12f
     layoutBuilder.padding.rightDp    = 12f
 
     layoutBuilder.gravity   = Gravity.CENTER
-//    layoutBuilder.padding.topDp     = 4f
-//    layoutBuilder.padding.bottomDp  = 4f
-//    layoutBuilder.padding.leftDp    = 4f
-//    layoutBuilder.padding.rightDp   = 4f
 
-//    val bgColorTheme = ColorTheme(setOf(
-//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-//            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_20"))))
-//    layoutBuilder.backgroundColor   = colorOrBlack(bgColorTheme, entityId)
-    //layoutBuilder.backgroundColor   = Color.WHITE
     layoutBuilder.backgroundResource    = R.drawable.bg_style_horizontal_box
-
-//    layoutBuilder.corners   = Corners(4.0, 0.0, 0.0, 4.0)
 
     layoutBuilder.child(labelViewBuilder)
 

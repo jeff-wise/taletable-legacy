@@ -124,7 +124,7 @@ persisted_entities:
   name: 'Sample Adventure'
   category: 'Book'
   summary: 'A sample Pathfinder 2 adventure module.'
-  path: 'pathfinder2_playtest/books/bestiary.yaml'
+  path: 'pathfinder2_playtest/books/adventure.yaml'
 - entity_id: '829bce54-aba6-4611-b73b-9f9b1a8fac6f'
   entity_type: book
   name: 'Using Tale Table'

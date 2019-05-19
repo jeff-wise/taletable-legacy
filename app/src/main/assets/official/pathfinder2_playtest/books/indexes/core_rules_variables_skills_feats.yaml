@@ -10128,3 +10128,20 @@ variables:
       type: text_literal
       text_literal: >-
         You either undo one success you have already gained, or, if you have no successes, you break your tools. The tools can be used while broken, but are treated as poor- quality tools. Repairing them requires replacing the tools (costing 6 sp, or 50 sp for expert-quality thieves’ tools).
+# ----------------------------------------------------------------------------------------------
+# | REFERENCES
+# ----------------------------------------------------------------------------------------------
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_skills_ability_balance
+    label: 'Reference > Card > Skills > Ability > Balance'
+    description: 'Reference > Card > Skills > Ability > Balance'
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'c7dac7fe-540c-4868-bc54-f5b67343349a'

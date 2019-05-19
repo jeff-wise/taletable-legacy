@@ -2,12 +2,7 @@
 package com.taletable.android.model.book
 
 
-import com.taletable.android.db.DB_BookSubsectionValue
-import com.taletable.android.db.bookSubsectionTable
 import com.taletable.android.lib.Factory
-import com.taletable.android.lib.orm.ProdType
-import com.taletable.android.lib.orm.RowValue2
-import com.taletable.android.lib.orm.schema.PrimValue
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
@@ -23,8 +18,6 @@ import lulo.value.ValueParser
 import maybe.*
 import maybe.Nothing
 import java.io.Serializable
-import java.util.*
-
 
 
 /**
@@ -257,8 +250,9 @@ sealed class BookSubsectionEntry()
         override fun fromDocument(doc : SchemaDoc): ValueParser<BookSubsectionEntry> =
             when (doc.case())
             {
-                "book_subsection_entry_card_group" -> BookSubsectionEntryCardGroup.fromDocument(doc) as ValueParser<BookSubsectionEntry>
-                "book_subsection_entry_card"       -> BookSubsectionEntryCard.fromDocument(doc) as ValueParser<BookSubsectionEntry>
+                "book_subsection_entry_card_group"  -> BookSubsectionEntryCardGroup.fromDocument(doc) as ValueParser<BookSubsectionEntry>
+                "book_subsection_entry_card"        -> BookSubsectionEntryCard.fromDocument(doc) as ValueParser<BookSubsectionEntry>
+                "book_subsection_entry_card_inline_expandable" -> BookSubsectionEntryCardInlineExpandable.fromDocument(doc) as ValueParser<BookSubsectionEntry>
                 else                 -> {
                     effError(UnknownCase(doc.case(), doc.path))
                 }
@@ -291,6 +285,29 @@ data class BookSubsectionEntryCard(
 
 }
 
+
+data class BookSubsectionEntryCardInlineExpandable(
+        val cardId : BookCardId) : BookSubsectionEntry()
+{
+
+    companion object : Factory<BookSubsectionEntryCardInlineExpandable>
+    {
+
+        override fun fromDocument(doc: SchemaDoc)
+                : ValueParser<BookSubsectionEntryCardInlineExpandable> = when (doc)
+        {
+            is DocDict -> {
+                apply(::BookSubsectionEntryCardInlineExpandable,
+                      // Card Id
+                      doc.at("card_id").apply { BookCardId.fromDocument(it) }
+                )
+            }
+            else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+    }
+
+}
 
 data class BookSubsectionEntryCardGroup(
         val title : String,

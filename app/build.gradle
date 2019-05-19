@@ -53,6 +53,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile files('libs/do-0.7.0.jar')
     compile files('libs/culebra-0.7.jar')
+
+    implementation 'com.github.castorflex.smoothprogressbar:library-circular:1.3.0'
 }
 
 repositories {
