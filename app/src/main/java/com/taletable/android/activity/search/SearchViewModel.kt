@@ -16,9 +16,9 @@ class SearchViewModel : ViewModel()
     private var query : SearchQuery = SearchQuery("", "")
 
 
-    private val results : MutableLiveData<List<SearchResult>> = MutableLiveData()
+    private val results : MutableLiveData<SearchResultList> = MutableLiveData()
 
-    fun results() : LiveData<List<SearchResult>> = this.results
+    fun results() : LiveData<SearchResultList> = this.results
 
     fun query() : SearchQuery = this.query
 

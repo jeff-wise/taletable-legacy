@@ -5505,7 +5505,6 @@ groups:
             - context: gear_writing_set_ink_paper
               variable_id: equipment_gear_index_writer_set_ink_paper_price
 ## ---------------------------------------------------------------------------------------------
-## | Equipment > Gear > Card
 ## ---------------------------------------------------------------------------------------------
 - id: '0f4bec36-65fa-4d6b-95d9-31d555d2c7eb'
   name: 'Equipment > Gear > Card'

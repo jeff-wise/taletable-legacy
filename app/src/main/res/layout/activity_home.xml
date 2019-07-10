@@ -15,7 +15,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_theme_light_blue_grey_7">
+        android:background="@color/light_theme_light_blue_grey_9">
 
 
         <com.google.android.material.appbar.AppBarLayout
@@ -70,7 +70,7 @@
 
                             <EditText
                                 android:id="@+id/searchbar_text_view"
-                                android:textSize="17sp"
+                                android:textSize="17.5sp"
                                 android:textColor="@color/light_theme_dark_blue_grey_12"
                                 android:hint="@string/search_everything"
                                 android:layout_centerVertical="true"

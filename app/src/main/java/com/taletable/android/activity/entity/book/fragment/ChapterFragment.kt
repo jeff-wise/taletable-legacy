@@ -210,8 +210,8 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.padding.leftDp   = 15f
         layout.padding.rightDp  = 15f
-        layout.padding.topDp    = 14f
-        layout.padding.bottomDp = 20f
+        layout.padding.topDp    = 8f
+        layout.padding.bottomDp = 14f
 
         return layout.linearLayout(context)
     }
@@ -326,7 +326,9 @@ class ChapterUI(val chapter : BookChapter,
         layout.width               = LinearLayout.LayoutParams.WRAP_CONTENT
         layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.corners             = Corners(3.0, 3.0, 3.0, 3.0)
+//        layout.corners             = Corners(3.0, 3.0, 3.0, 3.0)
+
+        layout.backgroundResource   = R.drawable.bg_button_book_toolbar
 
         layout.padding.topDp       = 8f
         layout.padding.bottomDp    = 8f
@@ -337,9 +339,10 @@ class ChapterUI(val chapter : BookChapter,
 
         layout.margin.rightDp       = 12f
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_16"))))
-        layout.backgroundColor     = theme.colorOrBlack(bgColorTheme)
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_16"))))
+//        layout.backgroundColor     = theme.colorOrBlack(bgColorTheme)
+//        layout.backgroundColor     = Color.TRANSPARENT
 
         layout.child(icon)
               .child(label)
@@ -366,8 +369,8 @@ class ChapterUI(val chapter : BookChapter,
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        label.font              = Font.typeface(TextFont.RobotoCondensed,
-                                                TextFontStyle.Bold,
+        label.font              = Font.typeface(TextFont.Roboto,
+                                                TextFontStyle.Medium,
                                                 context)
 
         label.textId            = labelId
@@ -589,128 +592,126 @@ class ChapterUI(val chapter : BookChapter,
 //    }
 
 
-    private fun sectionSummaryView(section : BookSection, isLast : Boolean = false) : ViewGroup
-    {
-        val layout = this.sectionSummaryViewLayout(section.sectionId, isLast)
+//    private fun sectionSummaryView(section : BookSection, isLast : Boolean = false) : ViewGroup
+//    {
+//        val layout = this.sectionSummaryViewLayout(section.sectionId, isLast)
+//
+//        val textView = this.sectionSummaryTextView(section.title().value, isLast)
+//        val iconView = this.sectionSummaryIconView(isLast)
+//
+//        layout.addView(textView)
+//        layout.addView(iconView)
+//
+//        return layout
+//    }
+//
 
-        val textView = this.sectionSummaryTextView(section.title().value, isLast)
-        val iconView = this.sectionSummaryIconView(isLast)
-
-        layout.addView(textView)
-        layout.addView(iconView)
-
-        return layout
-    }
-
-
-    private fun sectionSummaryViewLayout(sectionId : BookSectionId,
-                                         isProceeding : Boolean) : RelativeLayout
-    {
-        val layout                  = RelativeLayoutBuilder()
-
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation          = LinearLayout.HORIZONTAL
-
-        layout.backgroundColor      = Color.WHITE
-
-
-        if (isProceeding)
-            layout.padding.topDp        = 32f
-        else
-            layout.padding.topDp        = 16f
-
-        layout.padding.bottomDp     = 16f
-        layout.padding.leftDp       = 16f
-        layout.padding.rightDp      = 16f
-
-        layout.margin.bottomDp      = 1f
-
-        layout.onClick              = View.OnClickListener {
-            val sectionReference = BookReferenceSection(book.entityId(),
-                                                        this.chapter.chapterId,
-                                                        sectionId)
-            sessionActivity.setCurrentBookReference(sectionReference)
-        }
-
-
-        return layout.relativeLayout(context)
-
-    }
-
-
-    private fun sectionSummaryTextView(summaryString : String, isProceeding : Boolean) : TextView
-    {
-        val summary                 = TextViewBuilder()
-
-        summary.layoutType          = LayoutType.RELATIVE
-        summary.width               = RelativeLayout.LayoutParams.WRAP_CONTENT
-        summary.height              = RelativeLayout.LayoutParams.WRAP_CONTENT
-
-        if (!isProceeding)
-            summary.addRule(RelativeLayout.CENTER_VERTICAL)
-
-        summary.addRule(RelativeLayout.ALIGN_PARENT_START)
-
-        summary.text                = summaryString
-
-        summary.font                = Font.typeface(TextFont.Roboto,
-                                                    TextFontStyle.Medium,
-                                                    context)
-
-        val colorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
-        summary.color               = theme.colorOrBlack(colorTheme)
-
-        summary.sizeSp              = 17.5f
-
-        summary.backgroundColor     = Color.WHITE
-
-        return summary.textView(context)
-
-    }
-
-
-    private fun sectionSummaryIconView(isProceeding: Boolean) : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout                  = LinearLayoutBuilder()
-        val icon                    = ImageViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.layoutType           = LayoutType.RELATIVE
-        layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
-        layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
-
-        if (!isProceeding)
-            layout.addRule(RelativeLayout.CENTER_VERTICAL)
-
-        layout.addRule(RelativeLayout.ALIGN_PARENT_END)
-
-        layout.child(icon)
-
-        // (3) Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.widthDp                = 17
-        icon.heightDp               = 17
-
-        icon.image                  = R.drawable.icon_arrow_forward
-
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_18"))))
-        icon.color               = theme.colorOrBlack(iconColorTheme)
-
-        return layout.linearLayout(context)
-    }
-
+//    private fun sectionSummaryViewLayout(sectionId : BookSectionId,
+//                                         isProceeding : Boolean) : RelativeLayout
+//    {
+//        val layout                  = RelativeLayoutBuilder()
+//
+//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        layout.orientation          = LinearLayout.HORIZONTAL
+//
+//        layout.backgroundColor      = Color.WHITE
+//
+//
+//        if (isProceeding)
+//            layout.padding.topDp        = 32f
+//        else
+//            layout.padding.topDp        = 16f
+//
+//        layout.padding.bottomDp     = 16f
+//        layout.padding.leftDp       = 16f
+//        layout.padding.rightDp      = 16f
+//
+//        layout.margin.bottomDp      = 1f
+//
+//        layout.onClick              = View.OnClickListener {
+//            val sectionReference = BookReferenceSection(book.entityId(),
+//                                                        this.chapter.chapterId,
+//                                                        sectionId)
+//            sessionActivity.setCurrentBookReference(sectionReference)
+//        }
+//
+//        return layout.relativeLayout(context)
+//    }
+//
+//
+//    private fun sectionSummaryTextView(summaryString : String, isProceeding : Boolean) : TextView
+//    {
+//        val summary                 = TextViewBuilder()
+//
+//        summary.layoutType          = LayoutType.RELATIVE
+//        summary.width               = RelativeLayout.LayoutParams.WRAP_CONTENT
+//        summary.height              = RelativeLayout.LayoutParams.WRAP_CONTENT
+//
+//        if (!isProceeding)
+//            summary.addRule(RelativeLayout.CENTER_VERTICAL)
+//
+//        summary.addRule(RelativeLayout.ALIGN_PARENT_START)
+//
+//        summary.text                = summaryString
+//
+//        summary.font                = Font.typeface(TextFont.Roboto,
+//                                                    TextFontStyle.Regular,
+//                                                    context)
+//
+//        val colorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_10"))))
+//        summary.color               = theme.colorOrBlack(colorTheme)
+//
+//        summary.sizeSp              = 17f
+//
+//        summary.backgroundColor     = Color.WHITE
+//
+//        return summary.textView(context)
+//
+//    }
+//
+//
+//    private fun sectionSummaryIconView(isProceeding: Boolean) : LinearLayout
+//    {
+//        // (1) Declarations
+//        // -------------------------------------------------------------------------------------
+//
+//        val layout                  = LinearLayoutBuilder()
+//        val icon                    = ImageViewBuilder()
+//
+//        // (2) Layout
+//        // -------------------------------------------------------------------------------------
+//
+//        layout.layoutType           = LayoutType.RELATIVE
+//        layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
+//        layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
+//
+//        if (!isProceeding)
+//            layout.addRule(RelativeLayout.CENTER_VERTICAL)
+//
+//        layout.addRule(RelativeLayout.ALIGN_PARENT_END)
+//
+//        layout.child(icon)
+//
+//        // (3) Icon
+//        // -------------------------------------------------------------------------------------
+//
+//        icon.widthDp                = 17
+//        icon.heightDp               = 17
+//
+//        icon.image                  = R.drawable.icon_arrow_forward
+//
+//        val iconColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_18"))))
+//        icon.color               = theme.colorOrBlack(iconColorTheme)
+//
+//        return layout.linearLayout(context)
+//    }
+//
 
 
 

@@ -29,9 +29,9 @@ fun searchResultSessionView(theme : Theme, context : Context) : LinearLayout
 
     layout.addView(searchResultSessionDescriptionView(theme, context))
 
-    layout.addView(searchResultSessionDividerView(theme, context))
+    //layout.addView(searchResultSessionDividerView(theme, context))
 
-    layout.addView(searchResultSessionFooterView(theme, context))
+    //layout.addView(searchResultSessionEntitiesViewLayout(context))
 
     return layout
 }
@@ -46,16 +46,23 @@ private fun searchResultSessionViewLayout(theme : Theme, context : Context) : Li
     layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
     layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    layout.backgroundResource   = R.drawable.search_session_bg
+    //layout.backgroundResource   = R.drawable.search_session_bg
+
+    layout.backgroundColor  = Color.WHITE
+
+    layout.elevation        = 5f
+
+    layout.corners          = Corners(8.0,8.0,8.0,8.0)
 
     layout.orientation      = LinearLayout.VERTICAL
 
-    layout.margin.topDp     = 12f
+    layout.margin.topDp     = 4f
     layout.margin.leftDp   = 12f
     layout.margin.rightDp  = 12f
+    layout.margin.bottomDp  = 20f
 
     layout.padding.topDp    = 8f
-    layout.padding.bottomDp    = 8f
+    layout.padding.bottomDp = 8f
 //    layout.padding.leftDp    = 8f
 //    layout.padding.rightDp    = 8f
 
@@ -84,8 +91,8 @@ private fun searchResultSessionHeaderViewLayout(theme : Theme, context : Context
 
     layout.orientation      = LinearLayout.HORIZONTAL
 
-    layout.padding.leftDp    = 8f
-    layout.padding.rightDp    = 8f
+//    layout.padding.leftDp    = 8f
+//    layout.padding.rightDp    = 8f
 
 //    layout.margin.leftDp    = 12f
 //    layout.margin.rightDp   = 12f
@@ -106,6 +113,9 @@ private fun searchResultSessionNameView(theme : Theme, context : Context) : Text
     title.layoutGravity        = Gravity.TOP
     //title.padding.topDp     = 10f
 
+    title.margin.leftDp   = 8f
+    title.margin.rightDp  = 8f
+
     //title.corners           = Corners(3.0, 3.0, 0.0, 0.0)
 
 //    val bgColorTheme = ColorTheme(setOf(
@@ -114,15 +124,15 @@ private fun searchResultSessionNameView(theme : Theme, context : Context) : Text
 //    title.backgroundColor   = theme.colorOrBlack(bgColorTheme)
 
     title.font              = Font.typeface(TextFont.Roboto,
-                                            TextFontStyle.Bold,
+                                            TextFontStyle.Medium,
                                             context)
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_10"))))
     title.color           = theme.colorOrBlack(colorTheme)
 
-    title.sizeSp          = 20f
+    title.sizeSp          = 17.5f
 
     return title.textView(context)
 }
@@ -193,11 +203,14 @@ private fun searchResultSessionDescriptionView(theme : Theme, context : Context)
 //    viewBuilder.padding.leftDp    = 12f
 //    viewBuilder.padding.rightDp   = 12f
 
+    viewBuilder.margin.leftDp   = 8f
+    viewBuilder.margin.rightDp  = 8f
+
     viewBuilder.padding.topDp    = 4f
     //viewBuilder.padding.bottomDp = 4f
 
-    viewBuilder.padding.leftDp    = 8f
-    viewBuilder.padding.rightDp    = 8f
+//    viewBuilder.padding.leftDp    = 8f
+//    viewBuilder.padding.rightDp    = 8f
 
 //    val bgColorTheme = ColorTheme(setOf(
 //            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
@@ -213,7 +226,7 @@ private fun searchResultSessionDescriptionView(theme : Theme, context : Context)
             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_14"))))
     viewBuilder.color           = theme.colorOrBlack(colorTheme)
 
-    viewBuilder.sizeSp          = 17f
+    viewBuilder.sizeSp          = 16f
 
 //    viewBuilder.lineSpacingAdd  = 10f
 //    viewBuilder.lineSpacingMult = .82f
@@ -223,21 +236,20 @@ private fun searchResultSessionDescriptionView(theme : Theme, context : Context)
 
 
 
-private fun searchResultSessionFooterView(theme : Theme, context : Context) : LinearLayout
-{
-    val layout = searchResultSessionFooterViewLayout(context)
+//private fun searchResultSessionEntitiesView(theme : Theme, context : Context) : LinearLayout
+//{
+//    val layout = searchResultSessionEntitiesViewLayout(context)
+//
+//
+//    return layout
+//}
 
 
-    layout.addView(searchResultSessionOpenButtonView(theme, context))
-
-
-    return layout
-}
-
-
-private fun searchResultSessionFooterViewLayout(context : Context) : LinearLayout
+private fun searchResultSessionEntitiesViewLayout(context : Context) : LinearLayout
 {
     val layout                  = LinearLayoutBuilder()
+
+    layout.id                   = R.id.entity_list_layout
 
     layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
     layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -246,7 +258,7 @@ private fun searchResultSessionFooterViewLayout(context : Context) : LinearLayou
 
 //    layout.backgroundColor      = Color.WHITE
 
-    layout.padding.topDp        = 8f
+    layout.padding.topDp        = 4f
     layout.padding.bottomDp        = 8f
     layout.padding.leftDp    = 8f
     layout.padding.rightDp    = 8f
@@ -258,7 +270,11 @@ private fun searchResultSessionFooterViewLayout(context : Context) : LinearLayou
 }
 
 
-private fun searchResultSessionDetailsButtonView(theme : Theme, context : Context) : LinearLayout
+private fun searchResultSessionEntityView(
+        name : String,
+        theme : Theme,
+        context : Context
+) : LinearLayout
 {
 
     // | Declarations
@@ -276,23 +292,13 @@ private fun searchResultSessionDetailsButtonView(theme : Theme, context : Contex
 
     layoutBuilder.orientation           = LinearLayout.HORIZONTAL
 
-    layoutBuilder.padding.topDp         = 8f
-    layoutBuilder.padding.bottomDp      = 8f
-    layoutBuilder.padding.leftDp        = 12f
-    layoutBuilder.padding.rightDp       = 12f
-
-//    layoutBuilder.margin.leftDp         = 10f
-    layoutBuilder.margin.rightDp        = 12f
-
-//    layoutBuilder.corners               = Corners(3.0, 3.0, 3.0, 3.0)
+    layoutBuilder.margin.topDp          = 4f
+//    layoutBuilder.padding.leftDp        = 12f
+//    layoutBuilder.padding.rightDp       = 12f
 
     layoutBuilder.gravity               = Gravity.CENTER
-    layoutBuilder.layoutGravity         = Gravity.END
+    layoutBuilder.layoutGravity         = Gravity.START
 
-//    val bgColorTheme = ColorTheme(setOf(
-//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-//            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
-//    layoutBuilder.backgroundColor       = theme.colorOrBlack(bgColorTheme)
 
     layoutBuilder.child(iconViewBuilder)
                  .child(labelViewBuilder)
@@ -300,14 +306,17 @@ private fun searchResultSessionDetailsButtonView(theme : Theme, context : Contex
     // | Icon
     // -----------------------------------------------------------------------------------------
 
-    iconViewBuilder.widthDp             = 20
-    iconViewBuilder.heightDp            = 20
+    iconViewBuilder.widthDp             = 18
+    iconViewBuilder.heightDp            = 18
 
-    iconViewBuilder.image               = R.drawable.icon_list
+    iconViewBuilder.image               = R.drawable.icon_book
 
-    iconViewBuilder.color               = Color.WHITE
+    val iconColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_16"))))
+    iconViewBuilder.color       = theme.colorOrBlack(iconColorTheme)
 
-    iconViewBuilder.margin.rightDp      = 6f
+    iconViewBuilder.margin.rightDp      = 8f
 
     // | Label
     // -----------------------------------------------------------------------------------------
@@ -315,7 +324,7 @@ private fun searchResultSessionDetailsButtonView(theme : Theme, context : Contex
     labelViewBuilder.width              = LinearLayout.LayoutParams.WRAP_CONTENT
     labelViewBuilder.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    labelViewBuilder.text               = "DETAILS"
+    labelViewBuilder.text               = name
 
     labelViewBuilder.font               = Font.typeface(TextFont.Roboto,
                                                         TextFontStyle.Medium,
@@ -323,84 +332,8 @@ private fun searchResultSessionDetailsButtonView(theme : Theme, context : Contex
 
     val labelColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_22"))))
-    labelViewBuilder.backgroundColor       = theme.colorOrBlack(labelColorTheme)
-
-    labelViewBuilder.gravity            = Gravity.CENTER
-
-    labelViewBuilder.sizeSp             = 16f
-
-    return layoutBuilder.linearLayout(context)
-}
-
-
-private fun searchResultSessionOpenButtonView(theme : Theme, context : Context) : LinearLayout
-{
-
-    // | Declarations
-    // -----------------------------------------------------------------------------------------
-
-    val layoutBuilder                   = LinearLayoutBuilder()
-    val iconViewBuilder                 = ImageViewBuilder()
-    val labelViewBuilder                = TextViewBuilder()
-
-    // | Layout
-    // -----------------------------------------------------------------------------------------
-
-    layoutBuilder.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
-    layoutBuilder.height                = LinearLayout.LayoutParams.WRAP_CONTENT
-
-    layoutBuilder.orientation           = LinearLayout.HORIZONTAL
-
-//    layoutBuilder.padding.topDp         = 8f
-//    layoutBuilder.padding.bottomDp      = 8f
-//    layoutBuilder.padding.leftDp        = 12f
-//    layoutBuilder.padding.rightDp       = 12f
-
-//    layoutBuilder.corners               = Corners(3.0, 3.0, 3.0, 3.0)
-
-    layoutBuilder.gravity               = Gravity.CENTER
-    layoutBuilder.layoutGravity         = Gravity.START
-
-//    val bgColorTheme = ColorTheme(setOf(
-//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-//            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
-//    layoutBuilder.backgroundColor       = theme.colorOrBlack(bgColorTheme)
-
-    layoutBuilder.child(iconViewBuilder)
-                 .child(labelViewBuilder)
-
-    // | Icon
-    // -----------------------------------------------------------------------------------------
-
-    iconViewBuilder.widthDp             = 21
-    iconViewBuilder.heightDp            = 21
-
-    iconViewBuilder.image               = R.drawable.icon_open
-
-    val iconColorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
-    iconViewBuilder.color               = theme.colorOrBlack(iconColorTheme)
-
-    iconViewBuilder.margin.rightDp      = 6f
-
-    // | Label
-    // -----------------------------------------------------------------------------------------
-
-    labelViewBuilder.width              = LinearLayout.LayoutParams.WRAP_CONTENT
-    labelViewBuilder.height             = LinearLayout.LayoutParams.WRAP_CONTENT
-
-    labelViewBuilder.text               = context.getString(R.string.open_session).toUpperCase()
-
-    labelViewBuilder.font               = Font.typeface(TextFont.Roboto,
-                                                        TextFontStyle.Bold,
-                                                        context)
-
-    val labelColorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
-    labelViewBuilder.color               = theme.colorOrBlack(labelColorTheme)
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_16"))))
+    labelViewBuilder.color       = theme.colorOrBlack(labelColorTheme)
 
     labelViewBuilder.gravity            = Gravity.CENTER
 
@@ -410,6 +343,85 @@ private fun searchResultSessionOpenButtonView(theme : Theme, context : Context) 
 }
 
 
+//
+//
+//private fun searchResultSessionOpenButtonView(theme : Theme, context : Context) : LinearLayout
+//{
+//
+//    // | Declarations
+//    // -----------------------------------------------------------------------------------------
+//
+//    val layoutBuilder                   = LinearLayoutBuilder()
+//    val iconViewBuilder                 = ImageViewBuilder()
+//    val labelViewBuilder                = TextViewBuilder()
+//
+//    // | Layout
+//    // -----------------------------------------------------------------------------------------
+//
+//    layoutBuilder.width                 = LinearLayout.LayoutParams.WRAP_CONTENT
+//    layoutBuilder.height                = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//    layoutBuilder.orientation           = LinearLayout.HORIZONTAL
+//
+////    layoutBuilder.padding.topDp         = 8f
+////    layoutBuilder.padding.bottomDp      = 8f
+////    layoutBuilder.padding.leftDp        = 12f
+////    layoutBuilder.padding.rightDp       = 12f
+//
+////    layoutBuilder.corners               = Corners(3.0, 3.0, 3.0, 3.0)
+//
+//    layoutBuilder.gravity               = Gravity.CENTER
+//    layoutBuilder.layoutGravity         = Gravity.START
+//
+////    val bgColorTheme = ColorTheme(setOf(
+////            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+////            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+////    layoutBuilder.backgroundColor       = theme.colorOrBlack(bgColorTheme)
+//
+//    layoutBuilder.child(iconViewBuilder)
+//                 .child(labelViewBuilder)
+//
+//    // | Icon
+//    // -----------------------------------------------------------------------------------------
+//
+//    iconViewBuilder.widthDp             = 21
+//    iconViewBuilder.heightDp            = 21
+//
+//    iconViewBuilder.image               = R.drawable.icon_open
+//
+//    val iconColorTheme = ColorTheme(setOf(
+//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+//            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+//    iconViewBuilder.color               = theme.colorOrBlack(iconColorTheme)
+//
+//    iconViewBuilder.margin.rightDp      = 6f
+//
+//    // | Label
+//    // -----------------------------------------------------------------------------------------
+//
+//    labelViewBuilder.width              = LinearLayout.LayoutParams.WRAP_CONTENT
+//    labelViewBuilder.height             = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//    labelViewBuilder.text               = context.getString(R.string.open_session).toUpperCase()
+//
+//    labelViewBuilder.font               = Font.typeface(TextFont.Roboto,
+//                                                        TextFontStyle.Bold,
+//                                                        context)
+//
+//    val labelColorTheme = ColorTheme(setOf(
+//            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+//            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+//    labelViewBuilder.color               = theme.colorOrBlack(labelColorTheme)
+//
+//    labelViewBuilder.gravity            = Gravity.CENTER
+//
+//    labelViewBuilder.sizeSp             = 17f
+//
+//    return layoutBuilder.linearLayout(context)
+//}
+//
+//
+//
 
 fun searchResultSessionDividerView(theme : Theme, context: Context) : LinearLayout
 {
@@ -420,15 +432,15 @@ fun searchResultSessionDividerView(theme : Theme, context: Context) : LinearLayo
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_7"))))
+           ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
     layoutBuilder.backgroundColor   = theme.colorOrBlack(colorTheme)
 
     layoutBuilder.margin.topDp      = 16f
 
     return layoutBuilder.linearLayout(context)
 }
-
-
+//
+//
 
 
 class SearchResultSessionViewHolder(itemView : View, val theme : Theme, val context : Context)
@@ -439,9 +451,10 @@ class SearchResultSessionViewHolder(itemView : View, val theme : Theme, val cont
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var layout          : LinearLayout? = null
-    var nameView        : TextView? = null
-    var descriptionView : TextView? = null
+    var layout           : LinearLayout? = null
+    var nameView         : TextView? = null
+    var descriptionView  : TextView? = null
+    var entityListLayout : LinearLayout? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -450,9 +463,10 @@ class SearchResultSessionViewHolder(itemView : View, val theme : Theme, val cont
 
     init
     {
-        this.layout          = itemView.findViewById(R.id.layout)
-        this.nameView        = itemView.findViewById(R.id.name_view)
-        this.descriptionView = itemView.findViewById(R.id.description_view)
+        this.layout           = itemView.findViewById(R.id.layout)
+        this.nameView         = itemView.findViewById(R.id.name_view)
+        this.descriptionView  = itemView.findViewById(R.id.description_view)
+        this.entityListLayout = itemView.findViewById(R.id.entity_list_layout)
     }
 
 
@@ -469,6 +483,17 @@ class SearchResultSessionViewHolder(itemView : View, val theme : Theme, val cont
     fun setDescription(description : String)
     {
         this.descriptionView?.text = description
+    }
+
+
+    fun setEntityList(names : List<String>)
+    {
+        this.entityListLayout?.let { layout ->
+            layout.removeAllViews()
+            names.forEach { name ->
+                layout.addView(searchResultSessionEntityView(name, theme, context))
+            }
+        }
     }
 
 

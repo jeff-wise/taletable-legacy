@@ -1735,6 +1735,28 @@ data class ListWidget(val widgetId : WidgetId,
           .apply { it.value(entityId) }
 
 
+    fun valuesOrBlank(entityId : EntityId,
+                      groupContext: Maybe<GroupContext> = Nothing()) : String
+    {
+        val valueStringList = value(entityId, groupContext)
+
+        return when (valueStringList) {
+            is Val -> {
+                val values = valueStringList.value
+                when (values.size) {
+                    0 -> ""
+                    1 -> values.first()
+                    2 -> "${values[0]} and ${values[1]}"
+                    else -> "${values.take(values.size - 1).joinToString(", ")}, and ${values[values.size - 1]}"
+                }
+                valueStringList.value.joinToString(", ")
+            }
+            is Err -> ""
+        }
+
+    }
+
+
     fun valueIdStrings(entityId : EntityId,
                        groupContext : Maybe<GroupContext> = Nothing()) : AppEff<List<String>>
     {
@@ -1776,6 +1798,16 @@ data class ListWidget(val widgetId : WidgetId,
     fun labelValue(entityId : EntityId) : AppEff<String> =
             labelValueVariable(entityId).apply { it.valueString(entityId) }
 
+
+    fun labelValueOrBlank(entityId : EntityId) : String
+    {
+        val label = labelValue(entityId)
+
+        return when (label) {
+            is Val -> label.value
+            is Err -> ""
+        }
+    }
 
 
 //    fun baseValueSets(entityId : EntityId) : List<ValueSetBase> =
@@ -4629,6 +4661,7 @@ data class TextWidget(val widgetId : WidgetId,
                       val format : TextWidgetFormat,
                       val valueVariableReference : VariableReference,
                       val labelVariableReference : Maybe<VariableReference>,
+                      val defaultValue : Maybe<TextWidgetDefaultValue>,
                       val bookReference : Maybe<BookReference>,
                       val primaryActionWidgetId : Maybe<WidgetId>,
                       val secondaryActionWigdetId : Maybe<WidgetId>)
@@ -4654,6 +4687,7 @@ data class TextWidget(val widgetId : WidgetId,
                Nothing(),
                Nothing(),
                Nothing(),
+               Nothing(),
                Nothing())
 
 
@@ -4676,6 +4710,10 @@ data class TextWidget(val widgetId : WidgetId,
                       split(doc.maybeAt("label_variable_reference"),
                             effValue<ValueError,Maybe<VariableReference>>(Nothing()),
                             { apply(::Just, VariableReference.fromDocument(it)) }),
+                      // Default Value
+                      split(doc.maybeAt("default_value"),
+                            effValue<ValueError,Maybe<TextWidgetDefaultValue>>(Nothing()),
+                            { apply(::Just, TextWidgetDefaultValue.fromDocument(it)) }),
                       // Book Reference
                       split(doc.maybeAt("book_reference"),
                             effValue<ValueError,Maybe<BookReference>>(Nothing()),
@@ -4890,7 +4928,10 @@ data class TextWidget(val widgetId : WidgetId,
             is Err -> ApplicationLog.error(str.error)
         }
 
-        return ""
+        return when (this.defaultValue) {
+            is Just    -> this.defaultValue.value.value
+            is Nothing -> ""
+        }
     }
 
 

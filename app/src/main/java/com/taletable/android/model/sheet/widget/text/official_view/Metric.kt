@@ -5,6 +5,7 @@ package com.taletable.android.model.sheet.widget.text.official_view
 import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -20,6 +21,7 @@ import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.sheet.widget.TextWidget
 import com.taletable.android.model.sheet.widget.WidgetStyle
+import com.taletable.android.model.sheet.widget.WidgetStyleVariation
 import com.taletable.android.model.theme.ColorId
 import com.taletable.android.model.theme.ColorTheme
 import com.taletable.android.model.theme.ThemeColorId
@@ -38,6 +40,7 @@ import maybe.Nothing
  */
 fun textWidgetOfficialMetricView(
         style : WidgetStyle,
+        variation : Maybe<WidgetStyleVariation>,
         textWidget : TextWidget,
         entityId : EntityId,
         context : Context,
@@ -45,13 +48,62 @@ fun textWidgetOfficialMetricView(
 ) : View = when (style.value)
 {
     "paragraph"        -> paragraphView(textWidget, entityId, groupContext, context)
-    "paragraph_header" -> textWidgetMetricParagraphHeaderView(textWidget, entityId, groupContext, context)
+    "paragraph_header" -> {
+        when (variation) {
+            is Just -> {
+                when (variation.value.value) {
+                    "normal" -> {
+                        textWidgetMetricParagraphHeaderView(textWidget, MetricParagraphHeaderStyleVariationNormal, entityId, groupContext, context)
+                    }
+                    "large" -> {
+                        textWidgetMetricParagraphHeaderView(textWidget, MetricParagraphHeaderStyleVariationLarge, entityId, groupContext, context)
+                    }
+                    else -> {
+                        textWidgetMetricParagraphHeaderView(textWidget, MetricParagraphHeaderStyleVariationNormal, entityId, groupContext, context)
+                    }
+                }
+            }
+            is Nothing -> {
+                textWidgetMetricParagraphHeaderView(textWidget, MetricParagraphHeaderStyleVariationNormal, entityId, groupContext, context)
+            }
+        }
+
+    }
     "vertical_box"     -> textWidgetMetricVerticalBoxView(textWidget, entityId, groupContext, context)
-    "horizontal_box"   -> horizontalBoxView(textWidget, entityId, groupContext, context)
+    "horizontal_box"   -> {
+        when (variation) {
+            is Just -> {
+                when (variation.value.value) {
+                    "large" -> {
+                        horizontalBoxView(textWidget, MetricHorizontalBoxStyleVariationLarge, entityId, groupContext, context)
+                    }
+                    "normal" -> {
+                        horizontalBoxView(textWidget, MetricHorizontalBoxStyleVariationNormal, entityId, groupContext, context)
+                    }
+                    else -> {
+                        horizontalBoxView(textWidget, MetricHorizontalBoxStyleVariationLarge, entityId, groupContext, context)
+                    }
+                }
+            }
+            is Nothing -> {
+                horizontalBoxView(textWidget, MetricHorizontalBoxStyleVariationLarge, entityId, groupContext, context)
+            }
+        }
+    }
     "entity_section_label" -> entitySectionLabelView(textWidget, entityId, groupContext, context)
     "entity_section_tag" -> entitySectionEntryTagView(textWidget, entityId, groupContext, context)
     else               -> paragraphView(textWidget, entityId, groupContext, context)
 }
+
+
+
+sealed class MetricHorizontalBoxStyleVariation
+object MetricHorizontalBoxStyleVariationLarge :  MetricHorizontalBoxStyleVariation()
+object MetricHorizontalBoxStyleVariationNormal :  MetricHorizontalBoxStyleVariation()
+
+sealed class MetricParagraphHeaderStyleVariation
+object MetricParagraphHeaderStyleVariationNormal :  MetricParagraphHeaderStyleVariation()
+object MetricParagraphHeaderStyleVariationLarge :  MetricParagraphHeaderStyleVariation()
 
 
 // ---------------------------------------------------------------------------------------------
@@ -83,7 +135,6 @@ private fun paragraphView(
     val labelString = textWidget.labelValue(entityId)
 
     val layout = paragraphViewLayout(context)
-
 
     // Add first paragraph
     paragraphs.firstOrNull()?.let { paragraph ->
@@ -203,6 +254,7 @@ private fun paragraphSpannable(
  */
 private fun textWidgetMetricParagraphHeaderView(
         textWidget : TextWidget,
+        variation : MetricParagraphHeaderStyleVariation,
         entityId : EntityId,
         groupContext : Maybe<GroupContext>,
         context : Context
@@ -210,7 +262,7 @@ private fun textWidgetMetricParagraphHeaderView(
 {
     val layout = textWidgetMetricParagraphHeaderViewLayout(context)
 
-    val valueView = textWidgetMetricParagraphHeaderTextView(textWidget, entityId, groupContext, context)
+    val valueView = textWidgetMetricParagraphHeaderTextView(textWidget, variation, entityId, groupContext, context)
     layout.addView(valueView)
 
     return layout
@@ -234,6 +286,7 @@ private fun textWidgetMetricParagraphHeaderViewLayout(
 
 private fun textWidgetMetricParagraphHeaderTextView(
         textWidget : TextWidget,
+        variation : MetricParagraphHeaderStyleVariation,
         entityId : EntityId,
         groupContext : Maybe<GroupContext>,
         context : Context
@@ -255,7 +308,14 @@ private fun textWidgetMetricParagraphHeaderTextView(
             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
     textViewBuilder.color           = colorOrBlack(colorTheme, entityId)
 
-    textViewBuilder.sizeSp          = 20f
+    when (variation) {
+        is MetricParagraphHeaderStyleVariationNormal -> {
+            textViewBuilder.sizeSp          = 20f
+        }
+        is MetricParagraphHeaderStyleVariationLarge -> {
+            textViewBuilder.sizeSp          = 24f
+        }
+    }
 
     textViewBuilder.lineSpacingAdd  = 8f
     textViewBuilder.lineSpacingMult = 1f
@@ -454,7 +514,7 @@ private fun entitySectionLabelView(
             ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
     textViewBuilder.color           = colorOrBlack(colorTheme, entityId)
 
-    textViewBuilder.sizeSp          = 17.5f
+    textViewBuilder.sizeSp          = 17f
 
     textViewBuilder.lineSpacingAdd  = 8f
     textViewBuilder.lineSpacingMult = 1f
@@ -527,6 +587,7 @@ private fun entitySectionEntryTagView(
  */
 private fun horizontalBoxView(
         textWidget : TextWidget,
+        variation : MetricHorizontalBoxStyleVariation,
         entityId : EntityId,
         groupContext : Maybe<GroupContext>,
         context : Context
@@ -534,8 +595,8 @@ private fun horizontalBoxView(
 {
     val layout = horizontalBoxViewLayout(context)
 
-    layout.addView(horizontalBoxLabelView(textWidget, entityId, context))
-    layout.addView(horizontalBoxValueView(textWidget, entityId, groupContext, context))
+    layout.addView(horizontalBoxLabelView(textWidget, variation, entityId, context))
+    layout.addView(horizontalBoxValueView(textWidget, variation, entityId, groupContext, context))
 
     return layout
 }
@@ -565,6 +626,7 @@ private fun horizontalBoxViewLayout(
  */
 private fun horizontalBoxLabelView(
         textWidget : TextWidget,
+        variation : MetricHorizontalBoxStyleVariation,
         entityId : EntityId,
         context : Context
 ) : LinearLayout
@@ -621,7 +683,14 @@ private fun horizontalBoxLabelView(
     labelViewBuilder.color           = colorOrBlack(labelColorTheme, entityId)
     //labelViewBuilder.color           = Color.WHITE
 
-    labelViewBuilder.sizeSp     = 20f
+    when (variation) {
+        is MetricHorizontalBoxStyleVariationNormal -> {
+            labelViewBuilder.sizeSp     = 17f
+        }
+        is MetricHorizontalBoxStyleVariationLarge -> {
+            labelViewBuilder.sizeSp     = 20f
+        }
+    }
 
     return layoutBuilder.linearLayout(context)
 }
@@ -632,6 +701,7 @@ private fun horizontalBoxLabelView(
  */
 private fun horizontalBoxValueView(
         textWidget : TextWidget,
+        variation : MetricHorizontalBoxStyleVariation,
         entityId : EntityId,
         groupContext : Maybe<GroupContext>,
         context : Context
@@ -677,7 +747,15 @@ private fun horizontalBoxValueView(
     labelViewBuilder.color           = colorOrBlack(labelColorTheme, entityId)
 //    labelViewBuilder.color           = Color.WHITE
 
-    labelViewBuilder.sizeSp     = 22f
+
+    when (variation) {
+        is MetricHorizontalBoxStyleVariationNormal -> {
+            labelViewBuilder.sizeSp     = 19f
+        }
+        is MetricHorizontalBoxStyleVariationLarge -> {
+            labelViewBuilder.sizeSp     = 22f
+        }
+    }
 
     return layoutBuilder.linearLayout(context)
 }

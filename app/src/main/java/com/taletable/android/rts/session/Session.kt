@@ -219,7 +219,7 @@ data class Session(val sessionId : SessionId,
 //        viewList.add(SessionOtherEntitiesHeader())
 //        viewList.addAll(otherEntities)
 
-        viewList.add(SessionListHeader())
+        viewList.add(SessionListHeader(this.sessionInfo.sessionSummary.value))
         viewList.addAll(otherEntities)
 
         return viewList

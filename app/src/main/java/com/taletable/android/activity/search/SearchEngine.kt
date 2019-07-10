@@ -2,6 +2,7 @@
 package com.taletable.android.activity.search
 
 
+import android.util.Log
 import com.taletable.android.R
 import com.taletable.android.model.book.Book
 import com.taletable.android.rts.session.SessionId
@@ -15,8 +16,7 @@ class SearchEngine
     // | Properties
     // -----------------------------------------------------------------------------------------
 
-    //private var currentQuery : String = ""
-
+    private var currentQuery : SearchQuery? = null
     private val history : MutableList<SearchQuery> = mutableListOf()
 
 
@@ -29,47 +29,47 @@ class SearchEngine
 //
 //    }
 
-    fun results(query : SearchQuery) : List<SearchResult>
+    fun results(query : SearchQuery) : SearchResultList
     {
-        this.history.add(query)
+        Log.d("***SEARCH", "query: $query")
+
+        this.currentQuery?.let {
+            this.history.add(it)
+        }
+
+        this.currentQuery = query
 
         return if (query.context.isNotBlank())
         {
             if (query.context == "Pathfinder 2" && query.term == "books") {
                 this.pathfinder2BookSearchResults(query)
             } else {
-                this.defaultSearchResults()
+                this.defaultSearchResults(query)
             }
         }
         else {
             when (query.term) {
-                "books" -> this.bookSearchResults()
-                else    -> this.defaultSearchResults()
+                "books" -> this.bookSearchResults(query)
+                else    -> this.defaultSearchResults(query)
             }
         }
     }
 
 
-    fun previousSearchResults() : List<SearchResult> =
+    fun previousSearchResults() : SearchResultList =
         // No history, doesn't make sense to assume anything
         if (history.isEmpty())
         {
-            listOf()
+            this.results(SearchQuery.default())
         }
         // Just research current query
-        else if (history.size == 1)
-        {
-            val currentQuery = this.history.removeAt(this.history.size - 1)
-            this.results(currentQuery)
-        }
         else
         {
             // Discard current query
-            this.history.removeAt(this.history.size - 1)
-            // Get last query
-            val lastQuery = this.history.last()
+            val previousQuery = this.history.removeAt(this.history.size - 1)
+            this.currentQuery = previousQuery
             // Return results for last query
-            this.results(lastQuery)
+            this.results(previousQuery)
         }
 
 
@@ -83,36 +83,40 @@ class SearchEngine
 //    }
 
 
-    private fun defaultSearchResults() : List<SearchResult>
+    private fun defaultSearchResults(query : SearchQuery) : SearchResultList
     {
-        val news  = SearchResultIcon("News", "Gaming related news and updates.", R.drawable.icon_news, SearchQuery("", "news"), 23)
-        val games = SearchResultIcon("Games", "Browse, play and create games.", R.drawable.icon_die, SearchQuery("", "games"), 24)
-        val books = SearchResultIcon("Books", "Discover and read interactive books.", R.drawable.icon_books, SearchQuery("", "books"), 25)
-        val recommended = SearchResultIcon("Recommended", "Suggestions based on what you like.", R.drawable.icon_wand, SearchQuery("", "recommended"))
-        val people = SearchResultIcon("People", "Players, authors, game designers, ...", R.drawable.icon_people, SearchQuery("", "people"), 25)
+        val news  = SearchResultIcon("News", "What's going on", R.drawable.icon_news, SearchQuery("", "news"), 23)
+        val games = SearchResultIcon("Games", "Play and create", R.drawable.icon_die, SearchQuery("", "games"), 24)
+        val books = SearchResultIcon("Books", "Read and write", R.drawable.icon_books, SearchQuery("", "books"), 25)
+        //val recommended = SearchResultIcon("Recommended", "Suggestions based on what you like.", R.drawable.icon_wand, SearchQuery("", "recommended"), 22)
+        val people = SearchResultIcon("People", "Players, authors, ...", R.drawable.icon_people, SearchQuery("", "people"), 25)
 
-        return listOf(recommended, games, books, news, people)
+        return SearchResultList(query, listOf(games, books, news, people))
     }
 
 
-    private fun bookSearchResults() : List<SearchResult>
+    private fun bookSearchResults(query : SearchQuery) : SearchResultList
     {
         val pageGroupHeaderResult = SearchResultPageGroupHeader("Pathfinder 2 Playtest Books")
 
         val rulebookResult = SearchResultPage("Core Rulebook",
                                               "Pathfinder 2 Core Rulebook (OGL)",
-                                              SearchQuery("", "books pathfinder 2 playtest rulebook"))
+                                              SearchQuery("", "books pathfinder 2 rulebook"))
+
+        val bestiaryResult = SearchResultPage("Bestiary",
+                                              "Creatures and NPCs for Pathfinder 2",
+                                              SearchQuery("", "books pathfinder 2 bestiary"))
 
         val pageGroupSearchResult = SearchResultPageGroupSearch("Pathfinder 2", SearchQuery("Pathfinder 2", "books"))
 
         val bookSessionId = SessionId(UUID.fromString("2c383a1b-b695-4553-bcf3-22eb4ed16b1c"))
         val sessionResult = SearchResultSession("Core Rulebooks for Pathfinder 2", "Collection of rulebooks (OGL) for the core rules of Pathfinder 2", bookSessionId)
 
-        return listOf(pageGroupHeaderResult, rulebookResult, pageGroupSearchResult, sessionResult)
+        return SearchResultList(query, listOf(pageGroupHeaderResult, rulebookResult, bestiaryResult, pageGroupSearchResult, sessionResult))
     }
 
 
-    private fun pathfinder2BookSearchResults(query : SearchQuery) : List<SearchResult>
+    private fun pathfinder2BookSearchResults(query : SearchQuery) : SearchResultList
     {
         val bookSessionId = SessionId(UUID.fromString("2c383a1b-b695-4553-bcf3-22eb4ed16b1c"))
 
@@ -120,7 +124,7 @@ class SearchEngine
 
         val sessionResult = SearchResultSession("Core Rulebooks for Pathfinder 2", "Collection of rulebooks (OGL) for the core rules of Pathfinder 2", bookSessionId)
 
-        return listOf(toolbarResult, sessionResult)
+        return SearchResultList(query, listOf(toolbarResult, sessionResult))
     }
 
 

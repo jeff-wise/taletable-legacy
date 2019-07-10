@@ -16,6 +16,7 @@ import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.sheet.widget.NumberWidget
+import com.taletable.android.model.sheet.widget.WidgetFormat
 import com.taletable.android.model.sheet.widget.WidgetStyle
 import com.taletable.android.model.theme.ColorId
 import com.taletable.android.model.theme.ColorTheme
@@ -24,7 +25,7 @@ import com.taletable.android.model.theme.ThemeId
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
 import maybe.Maybe
-
+import java.lang.NumberFormatException
 
 
 /**
@@ -328,7 +329,7 @@ private fun numberWidgetMetricVerticalBoxLabelView(
             ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_20"))))
     labelViewBuilder.color      = colorOrBlack(textColorTheme, entityId)
 
-    labelViewBuilder.sizeSp     = 12f
+    labelViewBuilder.sizeSp     = 11f
 
     return layoutBuilder.linearLayout(context)
 }
@@ -385,7 +386,7 @@ private fun numberWidgetMetricVerticalBoxValueView(
     labelViewBuilder.color           = colorOrBlack(labelColorTheme, entityId)
 //    labelViewBuilder.color           = Color.WHITE
 
-    labelViewBuilder.sizeSp     = 22f
+    labelViewBuilder.sizeSp     = 21f
 
     return labelViewBuilder.textView(context)
 }
@@ -418,11 +419,12 @@ private fun numberWidgetMetricVerticalBoxPostfixView(
 
     val labelColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_20"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+            //ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_20"))))
     labelViewBuilder.color           = colorOrBlack(labelColorTheme, entityId)
 //    labelViewBuilder.color           = Color.WHITE
 
-    labelViewBuilder.sizeSp     = 24f
+    labelViewBuilder.sizeSp     = 23f
 
     return labelViewBuilder.textView(context)
 }
@@ -500,7 +502,7 @@ private fun entitySectionLabelTagView(
         context : Context
 ) : LinearLayout
 {
-    val layout = entitySectionLabelTagViewLayout(context)
+    val layout = entitySectionLabelTagViewLayout(numberWidget.widgetFormat(), context)
 
     numberWidget.prefixValue(entityId).apDo {
         layout.addView(entitySectionLabelTagPrefixView(it, entityId, context))
@@ -519,12 +521,13 @@ private fun entitySectionLabelTagView(
  * Entity Section Label Tag Layout
  */
 private fun entitySectionLabelTagViewLayout(
+        widgetFormat : WidgetFormat,
         context : Context
 ) : LinearLayout
 {
     val layoutBuilder               = LinearLayoutBuilder()
 
-    layoutBuilder.width             = LinearLayout.LayoutParams.MATCH_PARENT
+    layoutBuilder.width             = LinearLayout.LayoutParams.WRAP_CONTENT
     layoutBuilder.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
     layoutBuilder.orientation       = LinearLayout.HORIZONTAL
@@ -532,7 +535,7 @@ private fun entitySectionLabelTagViewLayout(
 //    layoutBuilder.padding.leftDp    = 8f
 //    layoutBuilder.padding.rightDp   = 8f
 
-//    layoutBuilder.gravity   = Gravity.CENTER_VERTICAL or Gravity.START
+    layoutBuilder.layoutGravity     = widgetFormat.elementFormat().alignment().gravityConstant()
 //    layoutBuilder.backgroundResource    = R.drawable.bg_style_vertical_box
 
     return layoutBuilder.linearLayout(context)

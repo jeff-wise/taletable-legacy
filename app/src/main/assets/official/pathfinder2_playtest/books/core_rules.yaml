@@ -3,8 +3,13 @@ book_info:
   title: 'Core Rulebook'
   subtitle: 'Pathfinder 2'
   summary: 'The core rules for being a player and running a game with the Pathfinder 2 Playtest.'
-  authors:
-  - name: 'Paizo Publishing'
+  credits:
+    label: 'Book Credits'
+    content_id: 'credits'
+  publisher:
+    name: 'Paizo Publishing'
+  license_info:
+    label: 'Open Game License'
   abstract: >-
     The core rules for being a player and running a game with the Pathfinder 2 Playtest.
 introduction:
@@ -236,6 +241,12 @@ engine:
   summations:
   procedures:
 content:
+- id: credits
+  title: 'Book Credits'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '726dac9a-c926-4a21-ade5-c8f5f3356dac'
 - id: ancestries_backgrounds_reading_introduction
   title: 'Ancestries and Backgrounds > Reading Entries > Introduction'
   group_references:
@@ -587,970 +598,2636 @@ content:
       group_id: '74c29284-7667-4ad6-ad4d-fffc36c665f7'
 - id: skills_acrobatics_balance_entry
   title: 'Skills > Acrobatics > Balance > Entry'
-  context: acrobatics_balance
+  context: skills_ability_acrobatics_balance
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_acrobatics_escape_entry
   title: 'Skills > Acrobatics > Escape > Entry'
-  context: acrobatics_escape
+  context: skills_ability_acrobatics_escape
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_acrobatics_grab_edge_entry
   title: 'Skills > Acrobatics > Grab Edge > Entry'
-  context: acrobatics_grab_edge
+  context: skills_ability_acrobatics_grab_edge
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_acrobatics_maintain_balance_entry
   title: 'Skills > Acrobatics > Maintain Balance > Entry'
-  context: acrobatics_maintain_balance
+  context: skills_ability_acrobatics_maintain_balance
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_acrobatics_squeeze_entry
   title: 'Skills > Acrobatics > Squeeze > Entry'
-  context: acrobatics_squeeze
+  context: skills_ability_acrobatics_squeeze
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_acrobatics_tumble_through_entry
   title: 'Skills > Acrobatics > Tumble Through > Entry'
-  context: acrobatics_tumble_through
+  context: skills_ability_acrobatics_tumble_through
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_acrobatics_maneuver_in_flight_entry
   title: 'Skills > Acrobatics > Maneuver in Flight > Entry'
-  context: acrobatics_maneuver_in_flight
+  context: skills_ability_acrobatics_maneuver_in_flight
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_arcana_recall_knowledge_entry
   title: 'Skills > Arcana > Recall Knowledge > Entry'
-  context: arcana_recall_knowledge
+  context: skills_ability_arcana_recall_knowledge
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_arcana_borrow_arcane_spell_entry
   title: 'Skills > Arcana > Borrow an Arcane Spell > Entry'
-  context: arcana_borrow_arcane_spell
+  context: skills_ability_arcana_borrow_arcane_spell
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_arcana_identify_magic_entry
   title: 'Skills > Arcana > Identify Magic > Entry'
-  context: arcana_identify_magic
+  context: skills_ability_arcana_identify_magic
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_arcana_learn_arcane_spell_entry
   title: 'Skills > Arcana > Learn an Arcane Spell > Entry'
-  context: arcana_learn_arcane_spell
+  context: skills_ability_arcana_learn_arcane_spell
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_arcana_read_magic_entry
   title: 'Skills > Arcana > Read Magic > Entry'
-  context: arcana_read_magic
+  context: skills_ability_arcana_read_magic
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_athletics_break_grapple_entry
   title: 'Skills > Athletics > Break Grapple > Entry'
-  context: athletics_break_grapple
+  context: skills_ability_athletics_break_grapple
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_athletics_break_open_entry
   title: 'Skills > Athletics > Break Open > Entry'
-  context: athletics_break_open
+  context: skills_ability_athletics_break_open
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_athletics_climb_entry
   title: 'Skills > Athletics > Climb > Entry'
-  context: athletics_climb
+  context: skills_ability_athletics_climb
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_athletics_grapple_entry
   title: 'Skills > Athletics > Grapple > Entry'
-  context: athletics_grapple
+  context: skills_ability_athletics_grapple
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_athletics_high_jump_entry
   title: 'Skills > Athletics > High Jump > Entry'
-  context: athletics_high_jump
+  context: skills_ability_athletics_high_jump
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_athletics_long_jump_entry
   title: 'Skills > Athletics > Long Jump > Entry'
-  context: athletics_long_jump
+  context: skills_ability_athletics_long_jump
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_athletics_shove_entry
   title: 'Skills > Athletics > Shove > Entry'
-  context: athletics_shove
+  context: skills_ability_athletics_shove
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_athletics_swim_entry
   title: 'Skills > Athletics > Swim > Entry'
-  context: athletics_swim
+  context: skills_ability_athletics_swim
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_athletics_trip_entry
   title: 'Skills > Athletics > Trip > Entry'
-  context: athletics_trip
+  context: skills_ability_athletics_trip
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_athletics_disarm_entry
   title: 'Skills > Athletics > Disarm > Entry'
-  context: athletics_disarm
+  context: skills_ability_athletics_disarm
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_crafting_repair_entry
   title: 'Skills > Crafting > Repair > Entry'
-  context: crafting_repair
+  context: skills_ability_crafting_repair
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_crafting_craft_entry
   title: 'Skills > Crafting > Craft > Entry'
-  context: crafting_craft
+  context: skills_ability_crafting_craft
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_crafting_identify_alchemy_entry
   title: 'Skills > Crafting > Identify Alchemy > Entry'
-  context: crafting_identify_alchemy
+  context: skills_ability_crafting_identify_alchemy
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_deception_create_diversion_entry
   title: 'Skills > Deception > Create a Diversion > Entry'
-  context: deception_create_diversion
+  context: skills_ability_deception_create_diversion
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_deception_impersonate_entry
   title: 'Skills > Deception > Impersonate > Entry'
-  context: deception_impersonate
+  context: skills_ability_deception_impersonate
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_deception_lie_entry
   title: 'Skills > Deception > Lie > Entry'
-  context: deception_lie
+  context: skills_ability_deception_lie
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_deception_feint_entry
   title: 'Skills > Deception > Feint > Entry'
-  context: deception_feint
+  context: skills_ability_deception_feint
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_diplomacy_gather_information_entry
   title: 'Skills > Diplomacy > Gather Information > Entry'
-  context: diplomacy_gather_information
+  context: skills_ability_diplomacy_gather_information
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_diplomacy_make_impression_entry
   title: 'Skills > Diplomacy > Make an Impression > Entry'
-  context: diplomacy_make_impression
+  context: skills_ability_diplomacy_make_impression
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_diplomacy_request_entry
   title: 'Skills > Diplomacy > Request > Entry'
-  context: diplomacy_request
+  context: skills_ability_diplomacy_request
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_intimidation_coerce_entry
   title: 'Skills > Intimidation > Coerce > Entry'
-  context: intimidation_coerce
+  context: skills_ability_intimidation_coerce
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_intimidation_demoralize_entry
   title: 'Skills > Intimidation > Demoralize > Entry'
-  context: intimidation_demoralize
+  context: skills_ability_intimidation_demoralize
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_lore_recall_knowledge_entry
   title: 'Skills > Lore > Recall Knowledge > Entry'
-  context: lore_recall_knowledge
+  context: skills_ability_lore_recall_knowledge
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_lore_practice_trade_entry
   title: 'Skills > Lore > Practice a Trade > Entry'
-  context: lore_practice_trade
+  context: skills_ability_lore_practice_trade
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_medicine_administer_first_aid_entry
   title: 'Skills > Medicine > Administer First Aid > Entry'
-  context: medicine_administer_first_aid
+  context: skills_ability_medicine_administer_first_aid
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_medicine_treat_disease_entry
   title: 'Skills > Medicine > Treat Disease > Entry'
-  context: medicine_treat_disease
+  context: skills_ability_medicine_treat_disease
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_medicine_treat_poison_entry
   title: 'Skills > Medicine > Treat Poison > Entry'
-  context: medicine_treat_poison
+  context: skills_ability_medicine_treat_poison
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_nature_command_animal_entry
   title: 'Skills > Nature > Command an Animal > Entry'
-  context: nature_command_animal
+  context: skills_ability_nature_command_animal
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_nature_handle_animal_entry
   title: 'Skills > Nature > Handle an Animal > Entry'
-  context: nature_handle_animal
+  context: skills_ability_nature_handle_animal
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_nature_recall_knowledge_entry
   title: 'Skills > Nature > Recall Knowledge > Entry'
-  context: nature_recall_knowledge
+  context: skills_ability_nature_recall_knowledge
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_nature_identify_magic_entry
   title: 'Skills > Nature > Identify Magic > Entry'
-  context: nature_identify_magic
+  context: skills_ability_nature_identify_magic
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_nature_learn_primal_spell_entry
   title: 'Skills > Nature > Learn Primal Spell > Entry'
-  context: nature_learn_primal_spell
+  context: skills_ability_nature_learn_primal_spell
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_occultism_recall_knowledge_entry
   title: 'Skills > Occultism > Recall Knowledge > Entry'
-  context: occultism_recall_knowledge
+  context: skills_ability_occultism_recall_knowledge
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_occultism_identify_magic_entry
   title: 'Skills > Occultism > Identify Magic > Entry'
-  context: occultism_identify_magic
+  context: skills_ability_occultism_identify_magic
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_occultism_learn_occult_spell_entry
   title: 'Skills > Occultism > Learn an Occult Spell > Entry'
-  context: occultism_learn_occult_spell
+  context: skills_ability_occultism_learn_occult_spell
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_occultism_read_esoterica_entry
   title: 'Skills > Occultism > Read Esoterica > Entry'
-  context: occultism_read_esoterica
+  context: skills_ability_occultism_read_esoterica
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_performance_perform_entry
   title: 'Skills > Performance > Perform > Entry'
-  context: performance_perform
+  context: skills_ability_performance_perform
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_performance_stage_performance_entry
   title: 'Skills > Performance > Stage a Peformance > Entry'
-  context: performance_stage_performance
+  context: skills_ability_performance_stage_performance
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_religion_recall_knowledge_entry
   title: 'Skills > Religion > Recall Knowledge > Entry'
-  context: religion_recall_knowledge
+  context: skills_ability_religion_recall_knowledge
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_religion_identify_magic_entry
   title: 'Skills > Religion > Identify Magic > Entry'
-  context: religion_identify_magic
+  context: skills_ability_religion_identify_magic
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_religion_learn_divine_spell_entry
   title: 'Skills > Religion > Learn Divine Spell > Entry'
-  context: religion_learn_divine_spell
+  context: skills_ability_religion_learn_divine_spell
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_religion_read_scripture_entry
   title: 'Skills > Religion > Read Scripture > Entry'
-  context: religion_read_scripture
+  context: skills_ability_religion_read_scripture
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_society_recall_knowledge_entry
   title: 'Skills > Society > Recall Knowledge > Entry'
-  context: society_recall_knowledge
+  context: skills_ability_society_recall_knowledge
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_society_subsist_streets_entry
   title: 'Skills > Society > Subsist on the Streets > Entry'
-  context: society_subsist_streets
+  context: skills_ability_society_subsist_streets
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_society_create_forgery_entry
   title: 'Skills > Society > Create Forgery > Entry'
-  context: society_create_forgery
+  context: skills_ability_society_create_forgery
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_society_decipher_writing_entry
   title: 'Skills > Society > Decipher Writing > Entry'
-  context: society_decipher_writing
+  context: skills_ability_society_decipher_writing
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_stealth_conceal_object_entry
   title: 'Skills > Stealth > Conceal Object > Entry'
-  context: stealth_conceal_object
+  context: skills_ability_stealth_conceal_object
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_stealth_hide_entry
   title: 'Skills > Stealth > Hide > Entry'
-  context: stealth_hide
+  context: skills_ability_stealth_hide
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_stealth_sneak_entry
   title: 'Skills > Stealth > Sneak > Entry'
-  context: stealth_sneak
+  context: skills_ability_stealth_sneak
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_survival_sense_direction_entry
   title: 'Skills > Survival > Sense Direction > Entry'
-  context: survival_sense_direction
+  context: skills_ability_survival_sense_direction
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_survival_survive_wild_entry
   title: 'Skills > Survival > Survive in the Wild > Entry'
-  context: survival_survive_wild
+  context: skills_ability_survival_survive_wild
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_survival_cover_tracks_entry
   title: 'Skills > Survival > Cover Tracks > Entry'
-  context: survival_cover_tracks
+  context: skills_ability_survival_cover_tracks
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_survival_track_entry
   title: 'Skills > Survival > Track > Entry'
-  context: survival_track
+  context: skills_ability_survival_track
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_thievery_palm_object_entry
   title: 'Skills > Thievery > Palm an Object  > Entry'
-  context: thievery_palm_object
+  context: skills_ability_thievery_palm_object
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_thievery_steal_object_entry
   title: 'Skills > Thievery > Steal an Object  > Entry'
-  context: thievery_steal_object
+  context: skills_ability_thievery_steal_object
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_thievery_disable_device_entry
   title: 'Skills > Thievery > Disable a Device > Entry'
-  context: thievery_disable_device
+  context: skills_ability_thievery_disable_device
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_thievery_pick_lock_entry
   title: 'Skills > Thievery > Pick a Lock > Entry'
-  context: thievery_pick_lock
+  context: skills_ability_thievery_pick_lock
   group_references:
   - value:
       type: group_id
       group_id: 'dc906b38-0472-493e-b307-28816926c5b5'
 - id: skills_acrobatics_balance_card
   title: 'Skills > Acrobatics > Balance > Card'
-  context: acrobatics_balance
+  context: skills_ability_acrobatics_balance
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_acrobatics_escape_card
   title: 'Skills > Acrobatics > Escape > Card'
-  context: acrobatics_escape
+  context: skills_ability_acrobatics_escape
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_acrobatics_grab_edge_card
   title: 'Skills > Acrobatics > Grab Edge > Card'
-  context: acrobatics_grab_edge
+  context: skills_ability_acrobatics_grab_edge
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_acrobatics_maintain_balance_card
   title: 'Skills > Acrobatics > Maintain Balance > Card'
-  context: acrobatics_maintain_balance
+  context: skills_ability_acrobatics_maintain_balance
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_acrobatics_squeeze_card
   title: 'Skills > Acrobatics > Squeeze > Card'
-  context: acrobatics_squeeze
+  context: skills_ability_acrobatics_squeeze
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_acrobatics_tumble_through_card
   title: 'Skills > Acrobatics > Tumble Through > Card'
-  context: acrobatics_tumble_through
+  context: skills_ability_acrobatics_tumble_through
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_acrobatics_maneuver_in_flight_card
   title: 'Skills > Acrobatics > Maneuver in Flight > Card'
-  context: acrobatics_maneuver_in_flight
+  context: skills_ability_acrobatics_maneuver_in_flight
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_arcana_recall_knowledge_card
   title: 'Skills > Arcana > Recall Knowledge > Card'
-  context: arcana_recall_knowledge
+  context: skills_ability_arcana_recall_knowledge
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_arcana_borrow_arcane_spell_card
   title: 'Skills > Arcana > Borrow an Arcane Spell > Card'
-  context: arcana_borrow_arcane_spell
+  context: skills_ability_arcana_borrow_arcane_spell
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_arcana_identify_magic_card
   title: 'Skills > Arcana > Identify Magic > Card'
-  context: arcana_identify_magic
+  context: skills_ability_arcana_identify_magic
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_arcana_learn_arcane_spell_card
   title: 'Skills > Arcana > Learn an Arcane Spell > Card'
-  context: arcana_learn_arcane_spell
+  context: skills_ability_arcana_learn_arcane_spell
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_arcana_read_magic_card
   title: 'Skills > Arcana > Read Magic > Card'
-  context: arcana_read_magic
+  context: skills_ability_arcana_read_magic
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_athletics_break_grapple_card
   title: 'Skills > Athletics > Break Grapple > Card'
-  context: athletics_break_grapple
+  context: skills_ability_athletics_break_grapple
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_athletics_break_open_card
   title: 'Skills > Athletics > Break Open > Card'
-  context: athletics_break_open
+  context: skills_ability_athletics_break_open
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_athletics_climb_card
   title: 'Skills > Athletics > Climb > Card'
-  context: athletics_climb
+  context: skills_ability_athletics_climb
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_athletics_grapple_card
   title: 'Skills > Athletics > Grapple > Card'
-  context: athletics_grapple
+  context: skills_ability_athletics_grapple
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_athletics_high_jump_card
   title: 'Skills > Athletics > High Jump > Card'
-  context: athletics_high_jump
+  context: skills_ability_athletics_high_jump
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_athletics_long_jump_card
   title: 'Skills > Athletics > Long Jump > Card'
-  context: athletics_long_jump
+  context: skills_ability_athletics_long_jump
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_athletics_shove_card
   title: 'Skills > Athletics > Shove > Card'
-  context: athletics_shove
+  context: skills_ability_athletics_shove
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_athletics_swim_card
   title: 'Skills > Athletics > Swim > Card'
-  context: athletics_swim
+  context: skills_ability_athletics_swim
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_athletics_trip_card
   title: 'Skills > Athletics > Trip > Card'
-  context: athletics_trip
+  context: skills_ability_athletics_trip
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_athletics_disarm_card
   title: 'Skills > Athletics > Disarm > Card'
-  context: athletics_disarm
+  context: skills_ability_athletics_disarm
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_crafting_repair_card
   title: 'Skills > Crafting > Repair > Card'
-  context: crafting_repair
+  context: skills_ability_crafting_repair
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_crafting_craft_card
   title: 'Skills > Crafting > Craft > Card'
-  context: crafting_craft
+  context: skills_ability_crafting_craft
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_crafting_identify_alchemy_card
   title: 'Skills > Crafting > Identify Alchemy > Card'
-  context: crafting_identify_alchemy
+  context: skills_ability_crafting_identify_alchemy
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_deception_create_diversion_card
   title: 'Skills > Deception > Create a Diversion > Card'
-  context: deception_create_diversion
+  context: skills_ability_deception_create_diversion
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_deception_impersonate_card
   title: 'Skills > Deception > Impersonate > Card'
-  context: deception_impersonate
+  context: skills_ability_deception_impersonate
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_deception_lie_card
   title: 'Skills > Deception > Lie > Card'
-  context: deception_lie
+  context: skills_ability_deception_lie
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_deception_feint_card
   title: 'Skills > Deception > Feint > Card'
-  context: deception_feint
+  context: skills_ability_deception_feint
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_diplomacy_gather_information_card
   title: 'Skills > Diplomacy > Gather Information > Card'
-  context: diplomacy_gather_information
+  context: skills_ability_diplomacy_gather_information
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_diplomacy_make_impression_card
   title: 'Skills > Diplomacy > Make Impression > Card'
-  context: diplomacy_make_impression
+  context: skills_ability_diplomacy_make_impression
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_diplomacy_request_card
   title: 'Skills > Diplomacy > Request > Card'
-  context: diplomacy_request
+  context: skills_ability_diplomacy_request
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_intimidation_demoralize_card
   title: 'Skills > Intimidation > Demoralize > Card'
-  context: intimidation_demoralize
+  context: skills_ability_intimidation_demoralize
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_intimidation_coerce_card
   title: 'Skills > Intimidation > Coerce > Card'
-  context: intimidation_coerce
+  context: skills_ability_intimidation_coerce
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_lore_recall_knowledge_card
   title: 'Skills > Lore > Recall Knowledge > Card'
-  context: lore_recall_knowledge
+  context: skills_ability_lore_recall_knowledge
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_lore_practice_trade_card
   title: 'Skills > Lore > Practice a Trade > Card'
-  context: lore_practice_trade
+  context: skills_ability_lore_practice_trade
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_medicine_administer_first_aid_card
   title: 'Skills > Medicine > Administer First Aid > Card'
-  context: medicine_administer_first_aid
+  context: skills_ability_medicine_administer_first_aid
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_medicine_treat_disease_card
   title: 'Skills > Medicine > Treat Disease > Card'
-  context: medicine_treat_disease
+  context: skills_ability_medicine_treat_disease
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_medicine_treat_poison_card
   title: 'Skills > Medicine > Treat Poison > Card'
-  context: medicine_treat_poison
+  context: skills_ability_medicine_treat_poison
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_nature_command_animal_card
   title: 'Skills > Nature > Command Animal > Card'
-  context: nature_command_animal
+  context: skills_ability_nature_command_animal
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_nature_handle_animal_card
   title: 'Skills > Nature > Handle an Animal > Card'
-  context: nature_handle_animal
+  context: skills_ability_nature_handle_animal
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_nature_recall_knowledge_card
   title: 'Skills > Nature > Recall Knowledge > Card'
-  context: nature_recall_knowledge
+  context: skills_ability_nature_recall_knowledge
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_nature_identify_magic_card
   title: 'Skills > Nature > Identify Magic > Card'
-  context: nature_identify_magic
+  context: skills_ability_nature_identify_magic
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_nature_learn_primal_spell_card
   title: 'Skills > Nature > Learn Primal Spell > Card'
-  context: nature_learn_primal_spell
+  context: skills_ability_nature_learn_primal_spell
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_occultism_recall_knowledge_card
   title: 'Skills > Occultism > Recall Knowledge > Card'
-  context: occultism_recall_knowledge
+  context: skills_ability_occultism_recall_knowledge
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_occultism_identify_magic_card
   title: 'Skills > Occultism > Identify Magic > Card'
-  context: occultism_identify_magic
+  context: skills_ability_occultism_identify_magic
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_occultism_learn_occult_spell_card
   title: 'Skills > Occultism > Learn an Occult Spell > Card'
-  context: occultism_learn_occult_spell
+  context: skills_ability_occultism_learn_occult_spell
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_occultism_read_esoterica_card
   title: 'Skills > Occultism > Read Esoterica > Card'
-  context: occultism_read_esoterica
+  context: skills_ability_occultism_read_esoterica
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_performance_perform_card
   title: 'Skills > Performance > Perform > Card'
-  context: performance_perform
+  context: skills_ability_performance_perform
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_performance_stage_performance_card
   title: 'Skills > Performance > Stage a Performance > Card'
-  context: performance_stage_performance
+  context: skills_ability_performance_stage_performance
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_religion_recall_knowledge_card
   title: 'Skills > Religion > Recall Knolwedge > Card'
-  context: religion_recall_knowledge
+  context: skills_ability_religion_recall_knowledge
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_religion_identify_magic_card
   title: 'Skills > Religion > Identify Magic > Card'
-  context: religion_identify_magic
+  context: skills_ability_religion_identify_magic
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_religion_learn_divine_spell_card
   title: 'Skills > Religion > Learn a Divine Spell > Card'
-  context: religion_learn_divine_spell
+  context: skills_ability_religion_learn_divine_spell
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_religion_read_scripture_card
   title: 'Skills > Religion > Read Scripture > Card'
-  context: religion_read_scripture
+  context: skills_ability_religion_read_scripture
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_society_recall_knowledge_card
   title: 'Skills > Society > Recall Knowledge > Card'
-  context: society_recall_knowledge
+  context: skills_ability_society_recall_knowledge
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_society_subsist_streets_card
   title: 'Skills > Society > Subsist on the Streets > Card'
-  context: society_subsist_streets
+  context: skills_ability_society_subsist_streets
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_society_create_forgery_card
   title: 'Skills > Society > Create Forgery > Card'
-  context: society_create_forgery
+  context: skills_ability_society_create_forgery
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_society_decipher_writing_card
   title: 'Skills > Society > Decipher Writing > Card'
-  context: society_decipher_writing
+  context: skills_ability_society_decipher_writing
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_stealth_conceal_object_card
   title: 'Skills > Stealth > Conceal an Object > Card'
-  context: stealth_conceal_object
+  context: skills_ability_stealth_conceal_object
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_stealth_hide_card
   title: 'Skills > Stealth > Hide > Card'
-  context: stealth_hide
+  context: skills_ability_stealth_hide
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_stealth_sneak_card
   title: 'Skills > Stealth > Sneak > Card'
-  context: stealth_sneak
+  context: skills_ability_stealth_sneak
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_survival_sense_direction_card
   title: 'Skills > Survival > Sense Direction > Card'
-  context: survival_sense_direction
+  context: skills_ability_survival_sense_direction
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_survival_survive_wild_card
   title: 'Skills > Survival > Survive in the Wild > Card'
-  context: survival_survive_wild
+  context: skills_ability_survival_survive_wild
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_survival_cover_tracks_card
   title: 'Skills > Survival > Cover Tracks > Card'
-  context: survival_cover_tracks
+  context: skills_ability_survival_cover_tracks
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_survival_track_card
   title: 'Skills > Survival > Track > Card'
-  context: survival_track
+  context: skills_ability_survival_track
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_thievery_palm_object_card
   title: 'Skills > Thievery > Palm an Object > Card'
-  context: thievery_palm_object
+  context: skills_ability_thievery_palm_object
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_thievery_steal_object_card
   title: 'Skills > Thievery > Steal an Object > Card'
-  context: thievery_steal_object
+  context: skills_ability_thievery_steal_object
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_thievery_disable_device_card
   title: 'Skills > Thievery > Disable a Device > Card'
-  context: thievery_disable_device
+  context: skills_ability_thievery_disable_device
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
 - id: skills_thievery_pick_lock_card
   title: 'Skills > Thievery > Pick a Lock> Card'
-  context: thievery_pick_lock
+  context: skills_ability_thievery_pick_lock
   group_references:
   - value:
       type: group_id
       group_id: 'f9d59a32-9b18-4d1a-b795-d2f83b2ff488'
+- id: general_feats_adopted_ancestry_entry
+  title: 'General Feats > Adopted Ancestry > Entry'
+  context: general_feats_adopted_ancestry
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_alertness_entry
+  title: 'General Feats > Alertness > Entry'
+  context: general_feats_alertness
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_ancestral_paragon_entry
+  title: 'General Feats > Ancestral Paragon > Entry'
+  context: general_feats_ancestral_paragon
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_armor_proficiency_entry
+  title: 'General Feats > Armor Proficiency > Entry'
+  context: general_feats_armor_proficiency
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_breath_control_entry
+  title: 'General Feats > Breath Control > Entry'
+  context: general_feats_breath_control
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_diehard_entry
+  title: 'General Feats > Diehard > Entry'
+  context: general_feats_diehard
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_fast_recovery_entry
+  title: 'General Feats > Fast Recovery > Entry'
+  context: general_feats_fast_recovery
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_feather_step_entry
+  title: 'General Feats > Feather Step > Entry'
+  context: general_feats_feather_step
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_fleet_entry
+  title: 'General Feats > Fleet > Entry'
+  context: general_feats_fleet
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_great_fortitude_entry
+  title: 'General Feats > Great Fortitude > Entry'
+  context: general_feats_great_fortitude
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_hefty_hauler_entry
+  title: 'General Feats > Hefty Hauler > Entry'
+  context: general_feats_hefty_hauler
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_incredible_initiative_entry
+  title: 'General Feats > Incredible Initiative > Entry'
+  context: general_feats_incredible_initiative
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_iron_will_entry
+  title: 'General Feats > Iron Will > Entry'
+  context: general_feats_iron_will
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_lightning_reflexes_entry
+  title: 'General Feats > Lightning Reflexes > Entry'
+  context: general_feats_lightning_reflexes
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_remarkable_resonance_entry
+  title: 'General Feats > Remarkable Resonance > Entry'
+  context: general_feats_remarkable_resonance
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_ride_entry
+  title: 'General Feats > Ride > Entry'
+  context: general_feats_ride
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_shield_proficiency_entry
+  title: 'General Feats > Shield Proficiency > Entry'
+  context: general_feats_shield_proficiency
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_toughness_entry
+  title: 'General Feats > Toughness > Entry'
+  context: general_feats_toughness
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_weapon_proficiency_entry
+  title: 'General Feats > Weapon Proficiency > Entry'
+  context: general_feats_weapon_proficiency
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_expeditious_search_entry
+  title: 'General Feats > Expeditious search > Entry'
+  context: general_feats_expeditious_search
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_assurance_entry
+  title: 'General Feats > Assurance > Entry'
+  context: general_feats_assurance
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_dubious_knowledge_entry
+  title: 'General Feats > Dubious Knowledge > Entry'
+  context: general_feats_dubious_knowledge
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_quick_identification_entry
+  title: 'General Feats > Quick Identification > Entry'
+  context: general_feats_quick_identification
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_recognize_spell_entry
+  title: 'General Feats > Recognize Spell > Entry'
+  context: general_feats_recognize_spell
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_scribe_scroll_entry
+  title: 'General Feats > Scribe Scroll > Entry'
+  context: general_feats_scribe_scroll
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_skill_training_entry
+  title: 'General Feats > Skill Training > Entry'
+  context: general_feats_skill_training
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_trick_magic_item_entry
+  title: 'General Feats > Trick Magic Item > Entry'
+  context: general_feats_trick_magic_item
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_automatic_knowledge_entry
+  title: 'General Feats > Automatic Knowledge > Entry'
+  context: general_feats_automatic_knowledge
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_magical_shorthand_entry
+  title: 'General Feats > Magical Shorthand > Entry'
+  context: general_feats_magical_shorthand
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_quick_recognition_entry
+  title: 'General Feats > Quick Recognition > Entry'
+  context: general_feats_quick_recognition
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_cat_fall_entry
+  title: 'General Feats > Cat Fall > Entry'
+  context: general_feats_cat_fall
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_steady_balance_entry
+  title: 'General Feats > Steady Balance > Entry'
+  context: general_feats_steady_balance
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_nimble_crawl_entry
+  title: 'General Feats > Nimble Crawl > Entry'
+  context: general_feats_nimble_crawl
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_quick_squeeze_entry
+  title: 'General Feats > Quick Squeeze > Entry'
+  context: general_feats_quick_squeeze
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_kip_up_entry
+  title: 'General Feats > Kip Up > Entry'
+  context: general_feats_kip_up
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_legendary_contortionist_entry
+  title: 'General Feats > Legendary Contortionist > Entry'
+  context: general_feats_legendary_contortionist
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_arcane_sense_entry
+  title: 'General Feats > Arcane Sense > Entry'
+  context: general_feats_arcane_sense
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_defensive_climber_entry
+  title: 'General Feats > Defensive Climber > Entry'
+  context: general_feats_defensive_climber
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_quick_jump_entry
+  title: 'General Feats > Quick Jump > Entry'
+  context: general_feats_quick_jump
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_underwater_marauder_entry
+  title: 'General Feats > Underwater Marauder > Entry'
+  context: general_feats_underwater_marauder
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_one_handed_climber_entry
+  title: 'General Feats > One-Hander Climber > Entry'
+  context: general_feats_one_handed_climber
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_powerful_leap_entry
+  title: 'General Feats > Powerful Leap > Entry'
+  context: general_feats_powerful_leap
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_rapid_mantel_entry
+  title: 'General Feats > Rapid Mantel > Entry'
+  context: general_feats_rapid_mantel
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_quick_climb_entry
+  title: 'General Feats > Quick Climb > Entry'
+  context: general_feats_quick_climb
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_quick_swim_entry
+  title: 'General Feats > Quick Swim > Entry'
+  context: general_feats_quick_swim
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_wall_jump_entry
+  title: 'General Feats > Wall Jump > Entry'
+  context: general_feats_wall_jump
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_legendary_climber_entry
+  title: 'General Feats > Legendary Climber > Entry'
+  context: general_feats_legendary_climber
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_legendary_swimmer_entry
+  title: 'General Feats > Legendary Swimmer > Entry'
+  context: general_feats_legendary_swimmer
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_alchemical_crafting_entry
+  title: 'General Feats > Alchemical Crafting > Entry'
+  context: general_feats_alchemical_crafting
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_quick_repair_entry
+  title: 'General Feats > Quick Repair > Entry'
+  context: general_feats_quick_repair
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_snare_crafting_entry
+  title: 'General Feats > Snare Crafting > Entry'
+  context: general_feats_snare_crafting
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_specialty_crafting_entry
+  title: 'General Feats > Specialty Crafting > Entry'
+  context: general_feats_specialty_crafting
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_magical_crafting_entry
+  title: 'General Feats > Magical Crafting > Entry'
+  context: general_feats_magical_crafting
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_inventor_entry
+  title: 'General Feats > Inventor > Entry'
+  context: general_feats_inventor
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_impeccable_craft_entry
+  title: 'General Feats > Impeccable Craft > Entry'
+  context: general_feats_impeccable_craft
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_charming_liar_entry
+  title: 'General Feats > Charming Liar > Entry'
+  context: general_feats_charming_liar
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_close_match_entry
+  title: 'General Feats > Close Match > Entry'
+  context: general_feats_close_match
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_confabulator_entry
+  title: 'General Feats > Confabulator > Entry'
+  context: general_feats_confabulator
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_lengthy_diversion_entry
+  title: 'General Feats > Lengthy Diversion > Entry'
+  context: general_feats_lengthy_diversion
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_lie_to_me_entry
+  title: 'General Feats > Lie to Me > Entry'
+  context: general_feats_lie_to_me
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_quick_disguise_entry
+  title: 'General Feats > Quick Disguise > Entry'
+  context: general_feats_quick_disguise
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_cruel_deceiver_entry
+  title: 'General Feats > Cruel Deceiver > Entry'
+  context: general_feats_cruel_deceiver
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_slippery_secrets_entry
+  title: 'General Feats > Slippery Secrets > Entry'
+  context: general_feats_slippery_secrets
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_legendary_impersonator_entry
+  title: 'General Feats > Legendary Impersonator > Entry'
+  context: general_feats_legendary_impersonator
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_group_impression_entry
+  title: 'General Feats > Group Impression > Entry'
+  context: general_feats_group_impression
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_hobnobber_entry
+  title: 'General Feats > Hobnobber > Entry'
+  context: general_feats_hobnobber
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_bargain_hunter_entry
+  title: 'General Feats > Bargain Hunter > Entry'
+  context: general_feats_bargain_hunter
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_glad_hand_entry
+  title: 'General Feats > Glad-Hand > Entry'
+  context: general_feats_glad_hand
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_shameless_request_entry
+  title: 'General Feats > Shameless Request > Entry'
+  context: general_feats_shameless_request
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_legendary_negotiator_entry
+  title: 'General Feats > Legendary Negotiator > Entry'
+  context: general_feats_legendary_negotiator
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_intimidating_glare_entry
+  title: 'General Feats > Intimidating Glare > Entry'
+  context: general_feats_intimidating_glare
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_quick_intimidation_entry
+  title: 'General Feats > Quick Intimidation > Entry'
+  context: general_feats_quick_intimidation
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_group_coercion_entry
+  title: 'General Feats > Group Coercion > Entry'
+  context: general_feats_group_coercion
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_intimidating_prowess_entry
+  title: 'General Feats > Intimidating Prowess > Entry'
+  context: general_feats_intimidating_prowess
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_lasting_coercion_entry
+  title: 'General Feats > Lasting Coercion > Entry'
+  context: general_feats_lasting_coercion
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_battle_cry_entry
+  title: 'General Feats > Battle Cry > Entry'
+  context: general_feats_battle_cry
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_scare_to_death_entry
+  title: 'General Feats > Scare to Death > Entry'
+  context: general_feats_scare_to_death
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_additional_lore_entry
+  title: 'General Feats > Additional Lore > Entry'
+  context: general_feats_additional_lore
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_experienced_professional_entry
+  title: 'General Feats > Experienced Professional > Entry'
+  context: general_feats_experienced_professional
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_unmistakable_lore_entry
+  title: 'General Feats > Unmistakable Lore > Entry'
+  context: general_feats_unmistakable_lore
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_legendary_professional_entry
+  title: 'General Feats > Legendary Professional > Entry'
+  context: general_feats_legendary_professional
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_battle_medic_entry
+  title: 'General Feats > Battle Medic > Entry'
+  context: general_feats_battle_medic
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_robust_recovery_entry
+  title: 'General Feats > Robust Recovery > Entry'
+  context: general_feats_robust_recovery
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_legendary_medic_entry
+  title: 'General Feats > Legendary Medic > Entry'
+  context: general_feats_legendary_medic
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_train_animal_entry
+  title: 'General Feats > Train Animal > Entry'
+  context: general_feats_train_animal
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_bonded_animal_entry
+  title: 'General Feats > Bonded Animal > Entry'
+  context: general_feats_bonded_animal
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_natural_medicine_entry
+  title: 'General Feats > Natural Medicine > Entry'
+  context: general_feats_natural_medicine
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_oddity_identification_entry
+  title: 'General Feats > Oddity Identification > Entry'
+  context: general_feats_oddity_identification
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_fascinating_performance_entry
+  title: 'General Feats > Fascinating Performance > Entry'
+  context: general_feats_fascinating_perforamnce
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_virtuosic_performer_entry
+  title: 'General Feats > Virtuosic Performer > Entry'
+  context: general_feats_virtuosic_performer
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_impressive_performance_entry
+  title: 'General Feats > Impressive Performance > Entry'
+  context: general_feats_impressive_performance
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_legendary_performer_entry
+  title: 'General Feats > Legendary Peformer > Entry'
+  context: general_feats_legendary_performer
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_student_canon_entry
+  title: 'General Feats > Student of the Canon > Entry'
+  context: general_feats_student_canon
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_courtly_graces_entry
+  title: 'General Feats > Courtly Graces > Entry'
+  context: general_feats_courtly_graces
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_cultural_familiarity_entry
+  title: 'General Feats > Cultural Familiarity > Entry'
+  context: general_feats_cultural_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_multilingual_entry
+  title: 'General Feats > Multilingual > Entry'
+  context: general_feats_multilingual
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_read_lips_entry
+  title: 'General Feats > Read Lips > Entry'
+  context: general_feats_read_lips
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_sign_language_entry
+  title: 'General Feats > Sign Language > Entry'
+  context: general_feats_sign_language
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_streetwise_entry
+  title: 'General Feats > Streetwise > Entry'
+  context: general_feats_streetwise
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_connections_entry
+  title: 'General Feats > Connections > Entry'
+  context: general_feats_connections
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_legendary_codebreaker_entry
+  title: 'General Feats > Legendary Codebreaker > Entry'
+  context: general_feats_legendary_codebreaker
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_legendary_linguist_entry
+  title: 'General Feats > Legendary Linguist > Entry'
+  context: general_feats_legendary_linguist
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_experienced_smuggler_entry
+  title: 'General Feats > Experienced Smuggler > Entry'
+  context: general_feats_experienced_smuggler
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_terrain_stalker_entry
+  title: 'General Feats > Terrain Stalker > Entry'
+  context: general_feats_terrain_stalker
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_quiet_allies_entry
+  title: 'General Feats > Quiet Allies > Entry'
+  context: general_feats_quiet_allies
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_foil_senses_entry
+  title: 'General Feats > Foil Senses > Entry'
+  context: general_feats_foil_senses
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_swift_sneak_entry
+  title: 'General Feats > Swift Sneak > Entry'
+  context: general_feats_swift_sneak
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_legendary_sneak_entry
+  title: 'General Feats > Legendary Sneak > Entry'
+  context: general_feats_legendary_sneak
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_forager_entry
+  title: 'General Feats > Forager > Entry'
+  context: general_feats_forager
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_survey_wildlife_entry
+  title: 'General Feats > Survey Wildlife > Entry'
+  context: general_feats_survey_wildlife
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_experienced_tracker_entry
+  title: 'General Feats > Experienced Tracker > Entry'
+  context: general_feats_experienced_tracker
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_planar_survival_entry
+  title: 'General Feats > Planar Survival > Entry'
+  context: general_feats_planar_survival
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_legendary_survivalist_entry
+  title: 'General Feats > Legendary Survivalist > Entry'
+  context: general_feats_legendary_survivalist
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_pickpocket_entry
+  title: 'General Feats > Pickpocket > Entry'
+  context: general_feats_pickpocket
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_subtle_theft_entry
+  title: 'General Feats > Subtle Theft > Entry'
+  context: general_feats_subtle_theft
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_wary_disarmament_entry
+  title: 'General Feats > Wary Disarmament > Entry'
+  context: general_feats_wary_disarmament
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_quick_unlock_entry
+  title: 'General Feats > Quick Unlock > Entry'
+  context: general_feats_quick_unlock
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_spell_thievery_entry
+  title: 'General Feats > Spell Thievery > Entry'
+  context: general_feats_spell_thievery
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_legendary_thief_entry
+  title: 'General Feats > Legendary Thief > Entry'
+  context: general_feats_legendary_thief
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+- id: general_feats_adopted_ancestry_card
+  title: 'General Feats > Adopted Ancestry > Entry'
+  context: general_feats_adopted_ancestry
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_alertness_card
+  title: 'General Feats > Alertness > Entry'
+  context: general_feats_alertness
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_ancestral_paragon_card
+  title: 'General Feats > Ancestral Paragon > Entry'
+  context: general_feats_ancestral_paragon
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_armor_proficiency_card
+  title: 'General Feats > Armor Proficiency > Entry'
+  context: general_feats_armor_proficiency
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_breath_control_card
+  title: 'General Feats > Breath Control > Entry'
+  context: general_feats_breath_control
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_diehard_card
+  title: 'General Feats > Diehard > Entry'
+  context: general_feats_diehard
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_fast_recovery_card
+  title: 'General Feats > Fast Recovery > Entry'
+  context: general_feats_fast_recovery
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_feather_step_card
+  title: 'General Feats > Feather Step > Entry'
+  context: general_feats_feather_step
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_fleet_card
+  title: 'General Feats > Fleet > Entry'
+  context: general_feats_fleet
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_great_fortitude_card
+  title: 'General Feats > Great Fortitude > Entry'
+  context: general_feats_great_fortitude
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_hefty_hauler_card
+  title: 'General Feats > Hefty Hauler > Entry'
+  context: general_feats_hefty_hauler
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_incredible_initiative_card
+  title: 'General Feats > Incredible Initiative > Entry'
+  context: general_feats_incredible_intiative
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_iron_will_card
+  title: 'General Feats > Iron Will > Entry'
+  context: general_feats_iron_will
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_lightning_reflexes_card
+  title: 'General Feats > Lightning Reflexes > Entry'
+  context: general_feats_lightning_reflexes
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_remarkable_resonance_card
+  title: 'General Feats > Remarkable Resonance > Entry'
+  context: general_feats_remarkable_resonance
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_ride_card
+  title: 'General Feats > Ride > Entry'
+  context: general_feats_ride
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_shield_proficiency_card
+  title: 'General Feats > Shield Proficiency > Entry'
+  context: general_feats_shield_proficiency
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_toughness_card
+  title: 'General Feats > Toughness > Entry'
+  context: general_feats_toughness
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_weapon_proficiency_card
+  title: 'General Feats > Weapon Proficiency > Entry'
+  context: general_feats_weapon_proficiency
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_expeditious_search_card
+  title: 'General Feats > Expeditious Search > Entry'
+  context: general_feats_expeditious_search
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_assurance_card
+  title: 'General Feats > Assurance > Entry'
+  context: general_feats_assurance
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_dubious_knowledge_card
+  title: 'General Feats > Dubious Knowledge > Entry'
+  context: general_feats_dubious_knowledge
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_quick_identification_card
+  title: 'General Feats > Quick Identification > Entry'
+  context: general_feats_quick_identification
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_recognize_spell_card
+  title: 'General Feats > Recognize Spell > Entry'
+  context: general_feats_recognize_spell
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_scribe_scroll_card
+  title: 'General Feats > Scribe Scroll > Entry'
+  context: general_feats_scribe_scroll
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_skill_training_card
+  title: 'General Feats > Skill Training > Entry'
+  context: general_feats_skill_training
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_trick_magic_item_card
+  title: 'General Feats > Trick Magic Item > Entry'
+  context: general_feats_trick_magic_item
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_automatic_knowledge_card
+  title: 'General Feats > Automatic Knowledge > Entry'
+  context: general_feats_automatic_knowledge
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_magical_shorthand_card
+  title: 'General Feats > Magical Shorthand > Entry'
+  context: general_feats_magical_shorthand
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_quick_recognition_card
+  title: 'General Feats > Quick Recognition > Entry'
+  context: general_feats_quick_recognition
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_cat_fall_card
+  title: 'General Feats > Cat Fall > Entry'
+  context: general_feats_cat_fall
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_steady_balance_card
+  title: 'General Feats > Steady Balance > Entry'
+  context: general_feats_steady_balance
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_nimble_crawl_card
+  title: 'General Feats > Nimble Crawl > Entry'
+  context: general_feats_nimble_crawl
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_quick_squeeze_card
+  title: 'General Feats > Quick Squeeze > Entry'
+  context: general_feats_quick_squeeze
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_kip_up_card
+  title: 'General Feats > Kip Up > Entry'
+  context: general_feats_kip_up
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_legendary_contortionist_card
+  title: 'General Feats > Legendary Contortionist > Entry'
+  context: general_feats_legendary_contortionist
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_arcane_sense_card
+  title: 'General Feats > Arcane Sense > Entry'
+  context: general_feats_arcane_sense
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_defensive_climber_card
+  title: 'General Feats > Defensive Climber > Entry'
+  context: general_feats_defensive_climber
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_quick_jump_card
+  title: 'General Feats > Quick Jump > Entry'
+  context: general_feats_quick_jump
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_underwater_marauder_card
+  title: 'General Feats > Underwater Marauder > Entry'
+  context: general_feats_underwater_marauder
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_one_handed_climber_card
+  title: 'General Feats > One-Handed Climber > Entry'
+  context: general_feats_one_handed_climber
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_powerful_leap_card
+  title: 'General Feats > Powerful Leap > Entry'
+  context: general_feats_powerful_leap
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_rapid_mantel_card
+  title: 'General Feats > Rapid Mantel > Entry'
+  context: general_feats_rapid_mantel
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_quick_climb_card
+  title: 'General Feats > Quick Climb > Entry'
+  context: general_feats_quick_climb
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_quick_swim_card
+  title: 'General Feats > Quick Swim > Entry'
+  context: general_feats_quick_swim
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_wall_jump_card
+  title: 'General Feats > Wall Jump > Entry'
+  context: general_feats_wall_jump
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_legendary_climber_card
+  title: 'General Feats > Legendary Climber > Entry'
+  context: general_feats_legendary_climber
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_legendary_swimmer_card
+  title: 'General Feats > Legendary Swimmer > Entry'
+  context: general_feats_legendary_swimmer
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_alchemical_crafting_card
+  title: 'General Feats > Alchemical Crafting > Entry'
+  context: general_feats_alchemical_crafting
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_quick_repair_card
+  title: 'General Feats > Quick Repair > Entry'
+  context: general_feats_quick_repair
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_snare_crafting_card
+  title: 'General Feats > Snare Crafting > Entry'
+  context: general_feats_snare_crafting
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_specialty_crafting_card
+  title: 'General Feats > Specialty Crafting > Entry'
+  context: general_feats_specialty_crafting
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_magical_crafting_card
+  title: 'General Feats > Magical Crafting > Entry'
+  context: general_feats_magical_crafting
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_inventor_card
+  title: 'General Feats > Inventor > Entry'
+  context: general_feats_inventor
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_impeccable_craft_card
+  title: 'General Feats > Impeccable Craft > Entry'
+  context: general_feats_impeccable_craft
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_charming_liar_card
+  title: 'General Feats > Charming Liar > Entry'
+  context: general_feats_charming_liar
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_close_match_card
+  title: 'General Feats > Close Match > Entry'
+  context: general_feats_close_match
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_confabulator_card
+  title: 'General Feats > Confabulator > Entry'
+  context: general_feats_confabulator
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_lengthy_diversion_card
+  title: 'General Feats > Lengthy Diversion > Entry'
+  context: general_feats_lengthy_diversion
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_lie_to_me_card
+  title: 'General Feats > Lie to Me > Entry'
+  context: general_feats_lie_to_me
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_quick_diguise_card
+  title: 'General Feats > Quick Disguise > Entry'
+  context: general_feats_quick_disguise
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_cruel_deceiver_card
+  title: 'General Feats > Cruel Deceiver > Entry'
+  context: general_feats_cruel_deceiver
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_slippery_secrets_card
+  title: 'General Feats > Slippery Secrets > Entry'
+  context: general_feats_slippery_secrets
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_legendary_impersonator_card
+  title: 'General Feats > Legendary Impersonator > Entry'
+  context: general_feats_legendary_impersonator
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_group_impression_card
+  title: 'General Feats > Group Impression > Entry'
+  context: general_feats_group_impression
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_hobnobber_card
+  title: 'General Feats > Hobnobber > Entry'
+  context: general_feats_hobnobber
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_bargain_hunter_card
+  title: 'General Feats > Bargain Hunter > Entry'
+  context: general_feats_bargain_hunter
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_glad_hand_card
+  title: 'General Feats > Glad-Hand > Entry'
+  context: general_feats_glad_hand
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_shameless_request_card
+  title: 'General Feats > Shameless Request > Entry'
+  context: general_feats_shameless_request
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_legendary_negotiator_card
+  title: 'General Feats > Legendary Negotiator > Entry'
+  context: general_feats_legendary_negotiator
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_intimidating_glare_card
+  title: 'General Feats > Intimidating Glare > Entry'
+  context: general_feats_intimidating_glare
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_quick_intimidation_card
+  title: 'General Feats > Quick Intimidation > Entry'
+  context: general_feats_quick_intimidation
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_group_coercion_card
+  title: 'General Feats > Group Coercion > Entry'
+  context: general_feats_group_coercion
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_intimidating_prowess_card
+  title: 'General Feats > Intimidating Prowess > Entry'
+  context: general_feats_intimidating_prowess
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_lasting_coercion_card
+  title: 'General Feats > Lasting Coercion > Entry'
+  context: general_feats_lasting_coercion
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_battle_cry_card
+  title: 'General Feats > Battle Cry > Entry'
+  context: general_feats_battle_cry
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_scare_to_death_card
+  title: 'General Feats > Scare to Death > Entry'
+  context: general_feats_scare_to_death
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_additional_lore_card
+  title: 'General Feats > Additional Lore > Entry'
+  context: general_feats_additional_lore
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_experienced_professional_card
+  title: 'General Feats > Experienced Professional > Entry'
+  context: general_feats_experienced_professional
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_unmistakable_lore_card
+  title: 'General Feats > Unmistakable Lore > Entry'
+  context: general_feats_unmistakable_lore
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_legendary_professional_card
+  title: 'General Feats > Legendary Professional > Entry'
+  context: general_feats_legendary_professional
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_battle_medic_card
+  title: 'General Feats > Battle Medic > Entry'
+  context: general_feats_battle_medic
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_robust_recovery_card
+  title: 'General Feats > Robust Recovery > Entry'
+  context: general_feats_robust_recovery
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_legendary_medic_card
+  title: 'General Feats > Legendary Medic > Entry'
+  context: general_feats_legendary_medic
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_train_animal_card
+  title: 'General Feats > Train Animal > Entry'
+  context: general_feats_train_animal
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_bonded_animal_card
+  title: 'General Feats > Bonded Animal > Entry'
+  context: general_feats_bonded_animal
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_natural_medicine_card
+  title: 'General Feats > Natural Medicine > Entry'
+  context: general_feats_natural_medicine
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_oddity_identification_card
+  title: 'General Feats > Oddity Identification > Entry'
+  context: general_feats_oddity_identification
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_fascinating_performance_card
+  title: 'General Feats > Fascinating Performance > Entry'
+  context: general_feats_fascinating_performance
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_virtuosic_performer_card
+  title: 'General Feats > Virtuosic Performer > Entry'
+  context: general_feats_virtuosic_performer
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_impressive_performance_card
+  title: 'General Feats > Impressive Peformance > Entry'
+  context: general_feats_impressive_performance
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_legendary_performer_card
+  title: 'General Feats > Legendary Performer > Entry'
+  context: general_feats_legendary_performer
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_student_canon_card
+  title: 'General Feats > Student of the Canon > Entry'
+  context: general_feats_student_canon
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_courtly_graces_card
+  title: 'General Feats > Courtly Graces > Entry'
+  context: general_feats_courtly_graces
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_cultural_familiarity_card
+  title: 'General Feats > Cultural Familiarity > Entry'
+  context: general_feats_cultural_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_multilingual_card
+  title: 'General Feats > Multilingual > Entry'
+  context: general_feats_multilingual
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_read_lips_card
+  title: 'General Feats > Read Lips > Entry'
+  context: general_feats_read_lips
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_sign_language_card
+  title: 'General Feats > Sign Language > Entry'
+  context: general_feats_sign_language
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_streetwise_card
+  title: 'General Feats > Streetwise > Entry'
+  context: general_feats_streetwise
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_connections_card
+  title: 'General Feats > Connections > Entry'
+  context: general_feats_connections
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_legendary_codebreaker_card
+  title: 'General Feats > Legendary Codebreaker > Entry'
+  context: general_feats_legendary_codebreaker
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_legendary_linguist_card
+  title: 'General Feats > Legendary Linguist > Entry'
+  context: general_feats_legendary_linguist
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_experienced_smuggler_card
+  title: 'General Feats > Experienced Smuggler > Entry'
+  context: general_feats_experienced_smuggler
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_terrain_stalker_card
+  title: 'General Feats > Terrain Stalker > Entry'
+  context: general_feats_terrain_stalker
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_quiet_allies_card
+  title: 'General Feats > Quiet Allies > Entry'
+  context: general_feats_quiet_allies
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_foil_senses_card
+  title: 'General Feats > Foil Senses > Entry'
+  context: general_feats_foil_senses
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_legendary_sneak_card
+  title: 'General Feats > Legendary Sneak > Entry'
+  context: general_feats_legendary_sneak
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_swift_sneak_card
+  title: 'General Feats > Swift Sneak > Entry'
+  context: general_feats_swift_sneak
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_forager_card
+  title: 'General Feats > Forager > Entry'
+  context: general_feats_forager
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_survey_wildlife_card
+  title: 'General Feats > Survey Wildlife > Entry'
+  context: general_feats_survey_wildlife
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_experienced_tracker_card
+  title: 'General Feats > Experienced Tracker > Entry'
+  context: general_feats_experienced_tracker
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_planar_survival_card
+  title: 'General Feats > Planar Survival > Entry'
+  context: general_feats_planar_survival
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_legendary_survivalist_card
+  title: 'General Feats > Legendary Survivalist > Entry'
+  context: general_feats_legendary_survivalist
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_pickpocket_card
+  title: 'General Feats > Pickpocket > Entry'
+  context: general_feats_pickpocket
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_subtle_theft_card
+  title: 'General Feats > Subtle Theft > Entry'
+  context: general_feats_subtle_theft
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_wary_disarmament_card
+  title: 'General Feats > Wary Disarmament > Entry'
+  context: general_feats_wary_disarmament
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_quick_unlock_card
+  title: 'General Feats > Quick Unlock > Entry'
+  context: general_feats_quick_unlock
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_spell_thievery_card
+  title: 'General Feats > Spell Thievery > Entry'
+  context: general_feats_spell_thievery
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: general_feats_legendary_thief_card
+  title: 'General Feats > Legendary Thief > Entry'
+  context: general_feats_legendary_thief
+  group_references:
+  - value:
+      type: group_id
+      group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
 - id: classes_introduction
   title: 'Classes > Introduction'
   group_references:
@@ -4906,9 +6583,488 @@ chapters:
           book_section_entry_card:
             entry_content: skills_thievery_pick_lock_entry
 - id: feats
-  title: 'Feats'
-  summary: 'The feats in the game and rules for using them.'
+  title: 'General Feats'
+  summary: 'Some abilities require training, but can be learned by anyone. These are general feats.'
+  entries:
+  - type: book_chapter_entry_simple
+    book_chapter_entry_simple:
+      section_id: feats_non_skill_feats
+  - type: book_chapter_entry_simple
+    book_chapter_entry_simple:
+      section_id: feats_varying_skill_feats
+  - type: book_chapter_entry_group
+    book_chapter_entry_group:
+      title: 'Skill Feats'
+      entries:
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_acrobatics_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_arcana_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_athletics_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_crafting_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_deception_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_diplomacy_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_intimidation_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_lore_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_medicine_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_nature_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_occultism_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_performance_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_religion_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_society_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_stealth_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_survival_feats
+      - type: book_chapter_entry_simple
+        book_chapter_entry_simple:
+          section_id: feats_thievery_feats
   sections:
+  - id: feats_non_skill_feats
+    title: 'Non-Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_adopted_ancestry_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_alertness_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_ancestral_paragon_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_armor_proficiency_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_breath_control_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_diehard_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_fast_recovery_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_feather_step_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_fleet_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_great_fortitude_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_hefty_hauler_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_incredible_initiative_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_iron_will_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_lightning_reflexes_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_remarkable_resonance_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_ride_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_shield_proficiency_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_toughness_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_weapon_proficiency_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_expeditious_search_entry
+  - id: feats_varying_skill_feats
+    title: 'Varying Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_assurance_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_dubious_knowledge_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_quick_identification_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_quick_identification_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_recognize_spell_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_scribe_scroll_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_skill_training_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_trick_magic_item_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_automatic_knowledge_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_magical_shorthand_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_quick_recognition_entry
+  - id: feats_acrobatics_feats
+    title: 'Acrobatics Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_cat_fall_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_steady_balance_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_nimble_crawl_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_quick_squeeze_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_kip_up_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_legendary_contortionist_entry
+  - id: feats_arcana_feats
+    title: 'Arcana Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_arcane_sense_entry
+  - id: feats_athletics_feats
+    title: 'Athletics Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_defensive_climber_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_quick_jump_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_underwater_marauder_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_one_handed_climber_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_powerful_leap_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_rapid_mantel_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_quick_climb_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_quick_swim_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_wall_jump_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_legendary_climber_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_legendary_swimmer_entry
+  - id: feats_crafting_feats
+    title: 'Crafting Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_alchemical_crafting_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_quick_repair_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_snare_crafting_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_specialty_crafting_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_magical_crafting_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_inventor_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_impeccable_craft_entry
+  - id: feats_deception_feats
+    title: 'Deception Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_charming_liar_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_close_match_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_confabulator_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_lengthy_diversion_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_lie_to_me_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_quick_disguise_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_cruel_deceiver_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_slippery_secrets_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_legendary_impersonator_entry
+  - id: feats_diplomacy_feats
+    title: 'Diplomacy Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_group_impression_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_hobnobber_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_bargain_hunter_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_glad_hand_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_shameless_request_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_legendary_negotiator_entry
+  - id: feats_intimidation_feats
+    title: 'Intimidation Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_intimidating_glare_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_quick_intimidation_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_group_coercion_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_intimidating_prowess_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_lasting_coercion_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_battle_cry_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_scare_to_death_entry
+  - id: feats_lore_feats
+    title: 'Lore Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_additional_lore_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_experienced_professional_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_unmistakable_lore_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_legendary_professional_entry
+  - id: feats_medicine_feats
+    title: 'Medicine Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_battle_medic_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_robust_recovery_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_legendary_medic_entry
+  - id: feats_nature_feats
+    title: 'Nature Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_train_animal_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_bonded_animal_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_natural_medicine_entry
+  - id: feats_occultism_feats
+    title: 'Occultism Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_oddity_identification_entry
+  - id: feats_performance_feats
+    title: 'Performance Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_fascinating_performance_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_virtuosic_performer_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_impressive_performance_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_legendary_performer_entry
+  - id: feats_religion_feats
+    title: 'Religion Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_student_canon_entry
+  - id: feats_society_feats
+    title: 'Society Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_courtly_graces_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_cultural_familiarity_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_multilingual_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_read_lips_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_sign_language_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_streetwise_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_connections_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_legendary_codebreaker_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_legendary_linguist_entry
+  - id: feats_stealth_feats
+    title: 'Stealth Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_experienced_smuggler_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_terrain_stalker_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_quiet_allies_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_foil_senses_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_swift_sneak_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_legendary_sneak_entry
+  - id: feats_survival_feats
+    title: 'Survival Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_forager_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_survery_wildlife_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_experienced_tracker_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_planar_survival_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_legendary_survivalist_entry
+  - id: feats_thievery_feats
+    title: 'Thievery Skill Feats'
+    entries:
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_pickpocket_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_subtle_theft_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_wary_disarmament_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_quick_unlock_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_spell_thievery_entry
+    - type: book_section_entry_card
+      book_section_entry_card:
+        entry_content: general_feats_legendary_thief_entry
 - id: equipment
   title: 'Equipment'
   summary: 'Currency, weapons, tools and other gear or objects in the game.'
@@ -6274,6 +8430,10 @@ cards:
   name: 'Tumble Through'
   content_ids:
   - skills_acrobatics_tumble_through_card
+- id: '97e9eb7c-6987-447e-a33b-b98d1a0f7838'
+  name: 'Maneuver in Flight'
+  content_ids:
+  - skills_acrobatics_maneuver_in_flight_card
 - id: 'ca5136d6-1a62-46f8-acf5-33c9d26acdfe'
   name: 'Recall Knowledge'
   content_ids:
@@ -6522,3 +8682,482 @@ cards:
   name: 'Pick a Lock'
   content_ids:
   - skills_thievery_pick_lock_card
+## -------------------------------------------------------------------------------------------------
+## GENERAL FEATS
+## -------------------------------------------------------------------------------------------------
+- id: '8286a904-eb0d-49ca-9506-2b30572647f6'
+  name: 'Adopted Ancestry'
+  content_ids:
+  - general_feats_adopted_ancestry_card
+- id: '49f83ae0-d698-4751-9b20-739ba09d734b'
+  name: 'Alertness'
+  content_ids:
+  - general_feats_alertness_card
+- id: '3ee9b674-a902-4be8-87b8-8b66eebc943d'
+  name: 'Ancestral Paragon'
+  content_ids:
+  - general_feats_ancestral_paragon_card
+- id: '20b0febc-fab0-41f5-82c8-2c1fdfd296e6'
+  name: 'Armor Proficiency'
+  content_ids:
+  - general_feats_armor_proficiency_card
+- id: '81c4d696-87c9-4fed-b4da-438d633cff43'
+  name: 'Breath Control'
+  content_ids:
+  - general_feats_breath_control_card
+- id: '6fde5041-dbeb-41a5-94e1-f640aeb51e80'
+  name: 'Diehard'
+  content_ids:
+  - general_feats_diehard_card
+- id: '8bc959e7-0b7f-4cef-8b70-dae75001e975'
+  name: 'Fast Recovery'
+  content_ids:
+  - general_feats_fast_recovery_card
+- id: '34d15e72-84a3-44dc-ad53-6138eeade6ac'
+  name: 'Feather Step'
+  content_ids:
+  - general_feats_feather_step_card
+- id: 'a7a96686-d358-4706-aaf2-0788829e1eac'
+  name: 'Fleet'
+  content_ids:
+  - general_feats_fleet_card
+- id: '7734f5a2-6db3-48b3-ad38-0d76a15aacac'
+  name: 'Great Fortitude'
+  content_ids:
+  - general_feats_great_fortitude_card
+- id: 'daf235a4-e5b4-423c-961c-1e97dddf6bba'
+  name: 'Hefty Hauler'
+  content_ids:
+  - general_feats_hefty_hauler_card
+- id: 'a8e8431a-f112-40c2-96f9-442a71d321de'
+  name: 'Incredible Initiative'
+  content_ids:
+  - general_feats_incredible_initiative_card
+- id: '1314cf12-f258-47ac-8124-68d175269f43'
+  name: 'Iron Will'
+  content_ids:
+  - general_feats_iron_will_card
+- id: '7ed53062-b32f-4093-a2eb-9cda64222304'
+  name: 'Lightning Reflexes'
+  content_ids:
+  - general_feats_lightning_reflexes_card
+- id: 'a09b265d-472c-45f8-90fc-7b9ef7e1f589'
+  name: 'Remarkable Resonance'
+  content_ids:
+  - general_feats_remarkable_resonance_card
+- id: 'cdc9fd5e-eb84-448e-8608-8cd4bbca8214'
+  name: 'Ride'
+  content_ids:
+  - general_feats_ride_card
+- id: 'f9851e72-0112-4a55-837a-ba0c773746ab'
+  name: 'Shield Proficiency'
+  content_ids:
+  - general_feats_shield_proficiency_card
+- id: '440dbf00-807e-4ccc-967b-96a0d98b6420'
+  name: 'Toughness'
+  content_ids:
+  - general_feats_toughness_card
+- id: '0aa4df6d-c814-4c39-ae85-82946a660642'
+  name: 'Weapon Proficiency'
+  content_ids:
+  - general_feats_weapon_proficiency_card
+- id: 'adcea420-3637-4a87-bc5f-c47649b75084'
+  name: 'Expeditious Search'
+  content_ids:
+  - general_feats_expeditious_search_card
+- id: '57fb330e-c3ac-479f-b73f-78aab1813c83'
+  name: 'Assurance'
+  content_ids:
+  - general_feats_assurance_card
+- id: '342e46b2-73e0-43d8-9af3-5aa039589cbe'
+  name: 'Dubious Knowledge'
+  content_ids:
+  - general_feats_dubious_knowledge_card
+- id: '9d1a15fc-5d96-43df-a50f-efa525810b1a'
+  name: 'Quick Identification'
+  content_ids:
+  - general_feats_quick_identification_card
+- id: 'd30cc9d4-25b0-45d9-9aaa-ca4967a4c278'
+  name: 'Recognize Spell'
+  content_ids:
+  - general_feats_recognize_spell_card
+- id: '93f2fee0-4f6c-4386-a546-6cb10ba4bf4f'
+  name: 'Scribe Scroll'
+  content_ids:
+  - general_feats_scribe_scroll_card
+- id: '6aa93eb8-697f-4e02-8935-790aa7664d23'
+  name: 'Skill Training'
+  content_ids:
+  - general_feats_skill_training_card
+- id: '06a101c9-ecf2-43f1-a63c-1955f9bee7aa'
+  name: 'Trick Magic Item'
+  content_ids:
+  - general_feats_trick_magic_item_card
+- id: '87380440-82d1-4fc8-97bc-015db816a5cf'
+  name: 'Automatic Knowledge'
+  content_ids:
+  - general_feats_automatic_knowledge_card
+- id: 'ce5dbd54-9ab5-4dc3-8543-7dd7e5c600f7'
+  name: 'Magical Shorthand'
+  content_ids:
+  - general_feats_magical_shorthand_card
+- id: '9f6beab1-6780-4641-b365-6e5cbc142e8a'
+  name: 'Quick Recognition'
+  content_ids:
+  - general_feats_quick_recognition_card
+- id: '58215768-1d8d-4f22-8dfc-223984398c8f'
+  name: 'Cat Fall'
+  content_ids:
+  - general_feats_cat_fall_card
+- id: '70577230-38d9-464a-b45d-9d7beac8b468'
+  name: 'Steady Balance'
+  content_ids:
+  - general_feats_steady_balance_card
+- id: 'c154188e-821a-4344-a410-4390f71c5f9c'
+  name: 'Nimble Crawl'
+  content_ids:
+  - general_feats_nimble_crawl_card
+- id: '0d25d01b-5fdb-40ea-86a2-f83193ea07cc'
+  name: 'Quick Squeeze'
+  content_ids:
+  - general_feats_quick_squeeze_card
+- id: '9b10aea9-6dba-4280-a003-8c5ca801fec2'
+  name: 'Kip Up'
+  content_ids:
+  - general_feats_kip_up_card
+- id: 'c2878b67-b57b-4ebe-92e4-25007edc106f'
+  name: 'Legendary Contortionist'
+  content_ids:
+  - general_feats_legendary_contortionist_card
+- id: 'b5d12e60-1af4-4add-b39b-170bddb0ebf4'
+  name: 'Arcane Sense'
+  content_ids:
+  - general_feats_arcane_sense_card
+- id: 'cbda5310-1ec9-42a3-916f-112d1c15efd6'
+  name: 'Defensive Climber'
+  content_ids:
+  - general_feats_defensive_climber_card
+- id: 'afc65e2c-4f22-4895-b070-ed1f5eee6224'
+  name: 'Quick Jump'
+  content_ids:
+  - general_feats_quick_jump_card
+- id: 'eed18ffe-b180-4d50-818f-07cf17db7512'
+  name: 'Underwater Marauder'
+  content_ids:
+  - general_feats_underwater_marauder_card
+- id: '0931d1d6-27af-4af0-b9bc-1f0119fa6874'
+  name: 'One-Handed Climber'
+  content_ids:
+  - general_feats_one_handed_climber_card
+- id: 'e28f01e0-696d-4db6-bb1f-a811a5b4c1bf'
+  name: 'Powerful Leap'
+  content_ids:
+  - general_feats_powerful_leap_card
+- id: '390ad35c-9ad5-41a8-906c-db9eb96b36a8'
+  name: 'Rapid Mantel'
+  content_ids:
+  - general_feats_rapid_mantel_card
+- id: '8dc1b656-c1f3-482a-94f9-e4842c0d3569'
+  name: 'Quick Climb'
+  content_ids:
+  - general_feats_quick_climb_card
+- id: '4e1fc59d-a272-481c-9fbd-b0daf5a52bc6'
+  name: 'Quick Swim'
+  content_ids:
+  - general_feats_quick_swim_card
+- id: '4d1ed4bf-6e59-4311-ac49-1976fd1cd68f'
+  name: 'Wall Jump'
+  content_ids:
+  - general_feats_wall_jump_card
+- id: '0ccd1c06-1883-41b4-a2e9-944380023006'
+  name: 'Legendary Climber'
+  content_ids:
+  - general_feats_legendary_climber_card
+- id: '55b3006b-f995-4f16-88e6-aaaac1fa4e37'
+  name: 'Legendary Swimmer'
+  content_ids:
+  - general_feats_legendary_swimmer_card
+- id: '7b3f3468-058d-405e-8f2c-353eba6ba1ae'
+  name: 'Alchemical Crafting'
+  content_ids:
+  - general_feats_alchemical_crafting_card
+- id: '18acd218-6916-460f-bd52-d7515cb89846'
+  name: 'Quick Repair'
+  content_ids:
+  - general_feats_quick_repair_card
+- id: '12f28953-5ad8-4b50-a0e6-f626f555531e'
+  name: 'Snare Crafting'
+  content_ids:
+  - general_feats_snare_crafting_card
+- id: '1df49756-2a2b-4c8a-902e-42b7091c39aa'
+  name: 'Specialty Crafting'
+  content_ids:
+  - general_feats_specialty_crafting_card
+- id: '7055ca7b-15f4-47cb-b4d1-69de4b8a0c89'
+  name: 'Magical Crafting'
+  content_ids:
+    - general_feats_magical_crafting_card
+- id: '5f95fb3c-8fc2-4b45-abd7-6dbc907db1bd'
+  name: 'Inventor'
+  content_ids:
+  - general_feats_inventor_card
+- id: '07b1bb10-d9f0-4c97-9760-666a82fb65d9'
+  name: 'Impeccable Craft'
+  content_ids:
+  - general_feats_impeccable_craft_card
+- id: '8b687fc8-d3bb-4211-aed2-aa8f6b7347b3'
+  name: 'Charming Liar'
+  content_ids:
+  - general_feats_charming_liar_card
+- id: 'dc89dc9d-875e-4285-8b06-ebfad61d6681'
+  name: 'Close Match'
+  content_ids:
+  - general_feats_close_match_card
+- id: '3ded9d45-68f0-446d-b5c5-90b60c021609'
+  name: 'Confabulator'
+  content_ids:
+  - general_feats_confabulator_card
+- id: '94e163eb-ac28-4b32-a7af-7e4b8f469f73'
+  name: 'Lengthy Diversion'
+  content_ids:
+  - general_feats_length_diversion_card
+- id: 'fd8488bb-239e-4bf4-9ce6-f082d6a301b0'
+  name: 'Lie to Me'
+  content_ids:
+  - general_feats_lie_to_me_card
+- id: 'f5e66f1a-cbed-446b-a2e6-cd1674d90d54'
+  name: 'Quick Disguise'
+  content_ids:
+  - general_feats_quick_disguise_card
+- id: '7ff938ce-c4c2-4a16-8976-8b6193e1303f'
+  name: 'Cruel Deceiver'
+  content_ids:
+  - general_feats_cruel_deceiver_card
+- id: '7dea3780-a475-4e37-b902-c2bcd6abe6e8'
+  name: 'Slippery Secrets'
+  content_ids:
+  - general_feats_slippery_secrets_card
+- id: '8062da9f-73b5-4b59-9582-fb9143efa470'
+  name: 'Legendary Impersonator'
+  content_ids:
+  - general_feats_legendary_impersonator_card
+- id: '21a9c6a8-22e5-4e9b-a867-9aa1770a1b89'
+  name: 'Group Impression'
+  content_ids:
+  - general_feats_group_impression_card
+- id: '8209aaec-86e7-4d88-9494-2e6c378929e3'
+  name: 'Hobnobber'
+  content_ids:
+  - general_feats_hobnobber_card
+- id: '323d3415-57a8-4af7-92ad-eb2463bd2dcd'
+  name: 'Bargain Hunter'
+  content_ids:
+  - general_feats_bargain_hunter_card
+- id: '2589fde9-9c8b-4b33-84fa-5da5b812a801'
+  name: 'Glad-Hand'
+  content_ids:
+  - general_feats_glad_hand_card
+- id: 'cac3e320-df86-40ff-928c-5a4c16523813'
+  name: 'Shameless Request'
+  content_ids:
+  - general_feats_shameless_request_card
+- id: 'ef785a1b-3acb-473d-8245-b0cedb12c1c4'
+  name: 'Legendary Negotiator'
+  content_ids:
+  - general_feats_legendary_negotiator_card
+- id: '41dbbaea-89aa-4131-8d1f-edf6dc5f5a1c'
+  name: 'Intimidating Glare'
+  content_ids:
+  - general_feats_intimidating_glare_card
+- id: 'e733a474-d569-48fa-961b-d6e1bf6eb7fc'
+  name: 'Quick Intimidation'
+  content_ids:
+  - general_feats_quick_intimidation_card
+- id: 'fd4b3789-ba26-48d2-9828-a9c7d3092136'
+  name: 'Group Coercion'
+  content_ids:
+  - general_feats_group_coercion_card
+- id: '30783b66-ae48-4b40-89a8-fd3b8009cc90'
+  name: 'Intimidating Prowess'
+  content_ids:
+  - general_feats_intimidation_prowess_card
+- id: '884c4545-c0a4-46f9-a700-f91a6bf4ac07'
+  name: 'Lasting Coercion'
+  content_ids:
+  - general_feats_lasting_coercion_card
+- id: 'cb71fbe0-991b-44b1-96bd-46ef9449cb48'
+  name: 'Battle Cry'
+  content_ids:
+  - general_feats_battle_cry_card
+- id: '1cc25014-b8ce-4251-b958-dcffb375bcf8'
+  name: 'Scare to Death'
+  content_ids:
+  - general_feats_scare_to_death_card
+- id: 'fb736187-ab70-4f27-8f87-6876338680fe'
+  name: 'Additional Lore'
+  content_ids:
+  - general_feats_additional_lore_card
+- id: '5ab4e3d9-5d18-4d20-b0ae-02e43f3a6226'
+  name: 'Experienced Professional'
+  content_ids:
+  - general_feats_experienced_professional_card
+- id: '600ca856-d7b9-4da2-afcc-85c18577e2bb'
+  name: 'Unmistakable Lore'
+  content_ids:
+  - general_feats_unmistakable_lore_card
+- id: '01545865-2018-487c-991e-46e417c902bf'
+  name: 'Legendary Professional'
+  content_ids:
+  - general_feats_legendary_professional_card
+- id: 'a439a948-90ce-4686-a26f-d8406b818063'
+  name: 'Battle Medic'
+  content_ids:
+  - general_feats_battle_medic_card
+- id: '0a8dfc72-cbde-47a5-a025-20ccb3a9ce65'
+  name: 'Robust Recovery'
+  content_ids:
+  - general_feats_robust_recovery_card
+- id: '1bac62e4-1194-4a93-94e2-9b57a85f24f5'
+  name: 'Legendary Medic'
+  content_ids:
+  - general_feats_legendary_medic_card
+- id: 'c4f8d3af-d239-431b-a299-f181c2320e7a'
+  name: 'Train Animal'
+  content_ids:
+  - general_feats_train_animal_card
+- id: 'd1de6302-ecb5-4099-8762-ac5e004e30d3'
+  name: 'Bonded Animal'
+  content_ids:
+  - general_feats_bonded_animal_card
+- id: '28f93648-d378-42e8-941a-ceac1e792f00'
+  name: 'Natural Medicine'
+  content_ids:
+  - general_feats_natural_medicine_card
+- id: '142923cd-63be-4b18-975b-6906a5b7af1f'
+  name: 'Oddity Identification'
+  content_ids:
+  - general_feats_oddity_identification_card
+- id: '6007515e-50d5-4fb0-b846-f982cda72c93'
+  name: 'Fascinating Performance'
+  content_ids:
+  - general_feats_fascinating_performance_card
+- id: 'd8e7cdff-bdc4-40f1-aebb-3f828d8f2642'
+  name: 'Virtuosic Performer'
+  content_ids:
+  - general_feats_virtuosic_performer_card
+- id: '294dcfe9-d7a7-444c-b403-86c801ad8459'
+  name: 'Impressive Performance'
+  content_ids:
+  - general_feats_impressive_performance_card
+- id: '2af1297a-354b-42f4-b7e8-cf70aa7077ff'
+  name: 'Legendary Performer'
+  content_ids:
+  - general_feats_legendary_performer_card
+- id: '1ab8021b-0659-44dc-bf2b-bdff13fc3476'
+  name: 'Student of the Canon'
+  content_ids:
+  - general_feats_student_canon_card
+- id: 'b991574d-c295-4c2a-9721-deb8413d045b'
+  name: 'Courtly Graces'
+  content_ids:
+  - general_feats_courtly_graces_card
+- id: 'd3e789ff-f270-4047-88a8-cd9cc05524a3'
+  name: 'Cultural Familiarity'
+  content_ids:
+  - general_feats_cultural_familiarity_card
+- id: '2a9a50ea-01bf-4db8-8a93-c45eeb98cde3'
+  name: 'Multilingual'
+  content_ids:
+  - general_feats_multilingual_card
+- id: '686fed1d-7311-4393-aca2-98616e084975'
+  name: 'Read Lips'
+  content_ids:
+  - general_feats_read_lips_card
+- id: 'ded00032-6efb-4c86-a61f-492ddb00b84c'
+  name: 'Sign Language'
+  content_ids:
+  - general_feats_sign_language_card
+- id: '5b72bd07-5618-4085-b5dc-7ffbafa921ef'
+  name: 'Streetwise'
+  content_ids:
+  - general_feats_streetwise_card
+- id: '3dcbfeb4-18d2-47df-8a5d-0e11f5e52652'
+  name: 'Connections'
+  content_ids:
+  - general_feats_connections_card
+- id: '22ca80e4-73c7-4b04-8cb7-4ee7723e0127'
+  name: 'Legendary Codebreaker'
+  content_ids:
+  - general_feats_legendary_codebreaker_card
+- id: '05cf04dd-07dd-4415-8aec-3cf1913e036f'
+  name: 'Legendary Linguist'
+  content_ids:
+    - general_feats_legendary_linguist_card
+- id: '025b3997-3653-46c5-a756-bedc914ed54e'
+  name: 'Experienced Smuggler'
+  content_ids:
+  - general_feats_experienced_smuggler_card
+- id: 'e9c2594e-974b-48ab-8b30-128b3589c5e9'
+  name: 'Terrain Stalker'
+  content_ids:
+  - general_feats_terrain_stalker_card
+- id: 'a8343c03-082f-42f3-825e-93aa5d42cd37'
+  name: 'Quiet Allies'
+  content_ids:
+  - general_feats_quiet_allies_card
+- id: '71871b3c-7e41-4781-a5c0-4dd65edf6b6f'
+  name: 'Foil Senses'
+  content_ids:
+  - general_feats_foil_senses_card
+- id: '48fb6975-6e9d-410e-b7a5-ac83e0e1977c'
+  name: 'Swift Sneak'
+  content_ids:
+  - general_feats_swift_sneak_card
+- id: '61490ef6-e2a0-4c8a-83a6-e7c962e4758b'
+  name: 'Legendary Sneak'
+  content_ids:
+  - general_feats_legendary_sneak_card
+- id: '4955bd74-90bc-449f-bf47-c115a1425c1d'
+  name: 'Forager'
+  content_ids:
+  - general_feats_forager_card
+- id: '57a3342b-e032-4743-afde-d1dafaab397b'
+  name: 'Survey Wildlife'
+  content_ids:
+  - general_feats_survey_wildlife_card
+- id: '0e515e4e-d02b-4072-8710-fc8604dc73f4'
+  name: 'Experienced Tracker'
+  content_ids:
+  - general_feats_experienced_tracker_card
+- id: '4770a8c7-535b-4b68-a168-a2c3d7d483bb'
+  name: 'Planar Survival'
+  content_ids:
+  - general_feats_planar_survival_card
+- id: '23991ce3-ed9a-4ca3-8b6d-67b7da4d0cbd'
+  name: 'Legendary Survivalist'
+  content_ids:
+  - general_feats_legendary_survivalist_card
+- id: '81d22640-417f-4b1d-a782-d9734b37206f'
+  name: 'Pickpocket'
+  content_ids:
+  - general_feats_pickpocket_card
+- id: '3ade7df5-ab2a-498e-9c9c-4602e6e8915c'
+  name: 'Sublet Theft'
+  content_ids:
+  - general_feats_subtle_theft_card
+- id: 'c7603ff2-1e20-4b22-b7b9-45374d00a06b'
+  name: 'Wary Disarmament'
+  content_ids:
+  - general_feats_wary_disarmament_card
+- id: '8a6f8ee6-d0de-4c69-b8e4-036a4c15bfa2'
+  name: 'Quick Unlock'
+  content_ids:
+  - general_feats_quick_unlock_card
+- id: '9e677b65-3059-4950-9407-243049aad2c1'
+  name: 'Spell Thievery'
+  content_ids:
+    - general_feats_spell_thievery_card
+- id: 'fa36b25a-5795-4d78-b4c1-f9def725f267'
+  name: 'Legendary Thief'
+  content_ids:
+  - general_feats_legendary_thief_card

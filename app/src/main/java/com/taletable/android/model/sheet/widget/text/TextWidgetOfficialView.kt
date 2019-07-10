@@ -27,6 +27,12 @@ fun textWidgetOfficialView(
 ) : View = when (format.format.theme)
 {
     is WidgetOfficialTheme.Metric ->
-        textWidgetOfficialMetricView(format.format.style, textWidget, entityId, context, groupContext)
+        textWidgetOfficialMetricView(
+                format.format.style,
+                format.format.variation,
+                textWidget,
+                entityId,
+                context,
+                groupContext)
 
 }

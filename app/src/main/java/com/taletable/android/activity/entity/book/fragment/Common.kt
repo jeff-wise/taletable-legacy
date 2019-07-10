@@ -274,16 +274,16 @@ fun entryGroupHeaderView(
 
     headerViewBuilder.text          = header
 
-    headerViewBuilder.font          = Font.typeface(TextFont.RobotoCondensed,
+    headerViewBuilder.font          = Font.typeface(TextFont.Roboto,
                                                     TextFontStyle.Bold,
                                                     context)
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_18"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_18"))))
     headerViewBuilder.color         = theme.colorOrBlack(colorTheme)
 
-    headerViewBuilder.sizeSp        = 17.5f
+    headerViewBuilder.sizeSp        = 17f
 
     return layoutBuilder.linearLayout(context)
 }
@@ -387,15 +387,15 @@ private fun entrySimpleTitleTextView(
     summary.text                = titleString
 
     summary.font                = Font.typeface(TextFont.Roboto,
-                                                TextFontStyle.Medium,
+                                                TextFontStyle.Regular,
                                                 context)
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_10"))))
     summary.color               = theme.colorOrBlack(colorTheme)
 
-    summary.sizeSp              = 17.5f
+    summary.sizeSp              = 17f
 
     summary.backgroundColor     = Color.WHITE
 

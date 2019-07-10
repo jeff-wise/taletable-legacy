@@ -5,6 +5,12 @@ import com.taletable.android.rts.session.SessionId
 
 
 
+data class SearchResultList(
+    val query : SearchQuery,
+    val results : List<SearchResult>
+)
+
+
 sealed class SearchResult(term : String)
 
 

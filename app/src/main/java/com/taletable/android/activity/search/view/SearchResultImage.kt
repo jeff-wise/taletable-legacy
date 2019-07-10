@@ -84,15 +84,15 @@ private fun searchResultImageNameView(theme : Theme, context : Context) : TextVi
     title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
     title.font              = Font.typeface(TextFont.Roboto,
-                                            TextFontStyle.Bold,
+                                            TextFontStyle.Medium,
                                             context)
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_10"))))
     title.color           = theme.colorOrBlack(colorTheme)
 
-    title.sizeSp          = 20f
+    title.sizeSp          = 17.5f
 
     return title.textView(context)
 }
@@ -113,10 +113,10 @@ private fun searchResultImageDescriptionView(theme : Theme, context : Context) :
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_11"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_14"))))
     title.color           = theme.colorOrBlack(colorTheme)
 
-    title.sizeSp          = 16f
+    title.sizeSp          = 16.5f
 
     return title.textView(context)
 }
@@ -158,11 +158,11 @@ private fun searchResultImageImageView(theme : Theme, context : Context) : Linea
 
     val iconColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_22"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_14"))))
 
     iconViewBuilder.image           = R.drawable.icon_book
 
-    iconViewBuilder.color           = theme.colorOrBlack(iconColorTheme)
+    //iconViewBuilder.color           = theme.colorOrBlack(iconColorTheme)
 
     return layout.linearLayout(context)
 }

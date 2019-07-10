@@ -343,6 +343,7 @@
 
     <item name="layout" type="id"/>
     <item name="name_view" type="id"/>
+    <item name="summary_view" type="id"/>
     <item name="description_view" type="id"/>
     <item name="icon_view" type="id"/>
     <item name="label_view" type="id"/>
@@ -365,5 +366,7 @@
     <item name="table_body" type="id"/>
 
     <item name="list_item_edit_button" type="id"/>
+
+    <item name="entity_list_layout" type="id"/>
 
 </resources>

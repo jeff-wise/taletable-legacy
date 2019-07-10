@@ -3,6 +3,7 @@ package com.taletable.android.activity.search.view
 
 
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -21,23 +22,15 @@ import com.taletable.android.util.Util
 
 
 
-fun searchResultIconView(theme : Theme, context : Context) : ViewGroup
+fun searchResultIconView(theme : Theme, context : Context) : LinearLayout
 {
     val layout = searchResultIconViewLayout(context)
 
-    val leftLayout = searchResultIconLeftViewLayout(context)
-    val rightLayout = searchResultIconRightViewLayout(context)
+    layout.addView(searchResultIconMainView(theme, context))
 
-    leftLayout.addView(searchResultIconIconView(theme, context))
+    //layout.addView(searchResultIconDescriptionView(theme, context))
 
-    val descriptionView = searchResultIconDescriptionView(theme, context)
-    val nameView = searchResultIconNameView(theme, context)
-
-    rightLayout.addView(nameView)
-    rightLayout.addView(descriptionView)
-
-    layout.addView(leftLayout)
-    layout.addView(rightLayout)
+    layout.addView(searchResultIconDividerView(theme, context))
 
     return layout
 }
@@ -52,15 +45,75 @@ private fun searchResultIconViewLayout(context : Context) : LinearLayout
     layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
     layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    layout.margin.leftDp    = 13f
-    layout.margin.rightDp   = 13f
+    layout.orientation      = LinearLayout.VERTICAL
 
-    layout.padding.topDp    = 12f
-    layout.padding.bottomDp = 12f
+    layout.margin.leftDp    = 21f
+    layout.margin.rightDp   = 20f
+
+    layout.padding.topDp    = 16f
+
+    return layout.linearLayout(context)
+}
+
+
+
+fun searchResultIconMainView(theme : Theme, context : Context) : ViewGroup
+{
+    val layout = searchResultIconMainViewLayout(context)
+
+    val leftLayout = searchResultIconLeftViewLayout(context)
+    val rightLayout = searchResultIconRightViewLayout(context)
+
+    layout.addView(searchResultIconIconView(theme, context))
+
+    val nameView = searchResultIconNameView(theme, context)
+    val descriptionView = searchResultIconDescriptionView(theme, context)
+
+    layout.addView(nameView)
+    layout.addView(descriptionView)
+
+//    layout.addView(leftLayout)
+//    layout.addView(rightLayout)
+
+    return layout
+}
+
+
+private fun searchResultIconMainViewLayout(context : Context) : LinearLayout
+{
+    val layout              = LinearLayoutBuilder()
+
+    layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+    layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+//    layout.margin.leftDp    = 13f
+//    layout.margin.rightDp   = 13f
+//
+//    layout.padding.topDp    = 12f
+//    layout.padding.bottomDp = 12f
     //layout.padding.bottomDp = 12f
 
     return layout.linearLayout(context)
 }
+
+
+private fun searchResultIconDividerView(theme : Theme, context : Context) : LinearLayout
+{
+    val layout              = LinearLayoutBuilder()
+
+    layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+    layout.heightDp         = 1
+
+    val bgColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
+    layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
+
+    layout.margin.topDp    = 16f
+
+    return layout.linearLayout(context)
+}
+
 
 
 private fun searchResultIconLeftViewLayout(context : Context) : LinearLayout
@@ -71,8 +124,6 @@ private fun searchResultIconLeftViewLayout(context : Context) : LinearLayout
     layout.height           = LinearLayout.LayoutParams.MATCH_PARENT
 
     layout.gravity          = Gravity.CENTER_VERTICAL
-
-    layout.padding.leftDp   = 7f
 
     return layout.linearLayout(context)
 }
@@ -87,26 +138,10 @@ private fun searchResultIconRightViewLayout(context : Context) : LinearLayout
 
     layout.orientation      = LinearLayout.VERTICAL
 
-    layout.padding.leftDp   = 8f
+    layout.padding.leftDp   = 9f
 
     return layout.linearLayout(context)
 }
-
-
-//fun searchResultIconHeaderViewLayout(context : Context) : LinearLayout
-//{
-//    val layout              = LinearLayoutBuilder()
-//
-//    layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-//    layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-//
-//    layout.orientation      = LinearLayout.HORIZONTAL
-//
-//    layout.gravity          = Gravity.CENTER_VERTICAL
-//
-//    return layout.linearLayout(context)
-//}
-//
 
 
 private fun searchResultIconNameView(theme : Theme, context : Context) : TextView
@@ -122,7 +157,7 @@ private fun searchResultIconNameView(theme : Theme, context : Context) : TextVie
     title.addRule(RelativeLayout.ALIGN_PARENT_START)
 
     title.font              = Font.typeface(TextFont.Roboto,
-                                            TextFontStyle.Bold,
+                                            TextFontStyle.Medium,
                                             context)
 
     val colorTheme = ColorTheme(setOf(
@@ -146,6 +181,8 @@ private fun searchResultIconDescriptionView(theme : Theme, context : Context) : 
     title.width             = RelativeLayout.LayoutParams.WRAP_CONTENT
     title.height            = RelativeLayout.LayoutParams.WRAP_CONTENT
 
+    title.margin.leftDp     = 8f
+
     title.addRule(RelativeLayout.CENTER_VERTICAL)
     title.addRule(RelativeLayout.ALIGN_PARENT_START)
 
@@ -155,10 +192,10 @@ private fun searchResultIconDescriptionView(theme : Theme, context : Context) : 
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_16"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_22"))))
     title.color           = theme.colorOrBlack(colorTheme)
 
-    title.sizeSp          = 16f
+    title.sizeSp          = 18f
 
     return title.textView(context)
 }
@@ -176,10 +213,11 @@ private fun searchResultIconIconView(theme : Theme, context : Context) : LinearL
     // -----------------------------------------------------------------------------------------
 
     layout.layoutType           = LayoutType.RELATIVE
-    layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
+    layout.widthDp              = 42
     layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
 
-    layout.margin.rightDp       = 10f
+    //layout.margin.rightDp       = 18f
+    layout.margin.topDp         = 2f
 
     layout.addRule(RelativeLayout.CENTER_VERTICAL)
     layout.addRule(RelativeLayout.ALIGN_PARENT_END)
@@ -191,12 +229,12 @@ private fun searchResultIconIconView(theme : Theme, context : Context) : LinearL
 
     iconView.id                 = R.id.icon_view
 
-    iconView.widthDp            = 25
-    iconView.heightDp           = 25
+    iconView.widthDp            = 24
+    iconView.heightDp           = 24
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_11"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
     iconView.color              = theme.colorOrBlack(colorTheme)
 
     return layout.linearLayout(context)
@@ -240,6 +278,8 @@ class SearchResultIconViewHolder(itemView : View, val theme : Theme, val context
         this.iconView?.let {
 
             it.setImageDrawable(ContextCompat.getDrawable(context, iconId))
+
+            Log.d("***SEARCH RSULT ICON", "iconSize: $iconSize")
 
             if (iconSize != null)
             {

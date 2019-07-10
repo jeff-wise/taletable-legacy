@@ -4,7 +4,6 @@ package com.taletable.android.activity.search
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,10 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.taletable.android.R
 import com.taletable.android.lib.ui.RecyclerViewBuilder
-import com.taletable.android.lib.ui.TextViewBuilder
 import com.taletable.android.model.theme.*
 import com.taletable.android.model.theme.official.officialThemeLight
 import com.taletable.android.util.Util
+
 
 
 /**
@@ -86,10 +85,10 @@ class SearchFragment : Fragment()
                                                                   context)
             recyclerView.adapter = resultsAdapter
 
-            searchViewModel.results().observe(this, Observer<List<SearchResult>>{ results ->
-                resultsAdapter.results = results
+            searchViewModel.results().observe(this, Observer<SearchResultList>{ resultList ->
+                resultsAdapter.results = resultList.results
                 resultsAdapter.notifyDataSetChanged()
-                updateSearchBar()
+                updateSearchBar(resultList)
             })
 
             searchViewModel.search(SearchQuery.default())
@@ -101,19 +100,19 @@ class SearchFragment : Fragment()
     }
 
 
-    private fun updateSearchBar()
+    private fun updateSearchBar(resultList : SearchResultList)
     {
-        val currentQuery = this.searchViewModel.query()
+        //val currentQuery = this.searchViewModel.query()
 
         this.context?.let { context ->
 
             this.activity?.findViewById<TextView>(R.id.searchbar_text_view)?.let { textView ->
-                textView.text = currentQuery.term
+                textView.text = resultList.query.term
             }
 
             this.activity?.findViewById<ImageView>(R.id.searchbar_left_button_view)?.let { buttonView ->
 
-                if (currentQuery.term.isBlank())
+                if (resultList.query.term.isBlank())
                 {
                     buttonView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_toolbar_search))
                     buttonView.setPadding(Util.dpToPixel(10f), 0, Util.dpToPixel(10f), 0)

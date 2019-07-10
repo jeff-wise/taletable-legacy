@@ -12,10 +12,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.ScrollView
-import android.widget.TextView
+import android.widget.*
 import com.taletable.android.R
 import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.lib.ui.*
@@ -136,7 +133,7 @@ class BookUI(val book : Book,
 
         layout.addView(this.chapterListView())
 
-        layout.addView(this.otherDataView())
+        //layout.addView(this.otherDataView())
 
         return scrollView
     }
@@ -254,10 +251,11 @@ class BookUI(val book : Book,
     {
         val layout = this.chapterListViewLayout()
 
-        layout.addView(this.chapterHeaderView("Chapters"))
+        layout.addView(this.chapterHeaderView("Chapters", 0f))
 
         book.chapters().forEach {
             layout.addView(this.chapterSummaryView(it))
+            layout.addView(this.dividerView(0f))
         }
 
         return layout
@@ -277,14 +275,14 @@ class BookUI(val book : Book,
     }
 
 
-    private fun chapterHeaderView(label : String) : TextView
+    private fun chapterHeaderView(label : String, paddingBottomDp : Float) : TextView
     {
         val headerViewBuilder               = TextViewBuilder()
 
         headerViewBuilder.width             = LinearLayout.LayoutParams.MATCH_PARENT
         headerViewBuilder.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        headerViewBuilder.padding.bottomDp   = 4f
+        headerViewBuilder.padding.bottomDp  = paddingBottomDp
         headerViewBuilder.padding.leftDp    = 16f
         headerViewBuilder.padding.rightDp   = 16f
         headerViewBuilder.padding.topDp     = 16f
@@ -297,7 +295,7 @@ class BookUI(val book : Book,
         headerViewBuilder.text              = label
 
 
-        headerViewBuilder.font          = Font.typeface(TextFont.RobotoCondensed,
+        headerViewBuilder.font          = Font.typeface(TextFont.Roboto,
                                                         TextFontStyle.Bold,
                                                         context)
 
@@ -306,7 +304,7 @@ class BookUI(val book : Book,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_18"))))
         headerViewBuilder.color         = theme.colorOrBlack(colorTheme)
 
-        headerViewBuilder.sizeSp              = 17.7f
+        headerViewBuilder.sizeSp              = 16f
 
         return headerViewBuilder.textView(context)
 
@@ -346,7 +344,7 @@ class BookUI(val book : Book,
         layout.padding.leftDp       = 16f
         layout.padding.rightDp      = 16f
 
-        layout.margin.bottomDp      = 1f
+        //layout.margin.bottomDp      = 1f
 
         return layout.relativeLayout(context)
 
@@ -367,15 +365,15 @@ class BookUI(val book : Book,
         summary.text                = summaryString
 
         summary.font                = Font.typeface(TextFont.Roboto,
-                                                    TextFontStyle.Medium,
+                                                    TextFontStyle.Regular,
                                                     context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
-        summary.sizeSp              = 17.5f
+        summary.sizeSp              = 17f
 
         summary.backgroundColor     = Color.WHITE
 
@@ -452,17 +450,19 @@ class BookUI(val book : Book,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_13"))))
-        layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_13"))))
+//        layout.backgroundColor  = theme.colorOrBlack(bgColorTheme)
+
+        layout.backgroundResource   = R.drawable.bg_book_default_header
 
         //layout.margin.topDp     = 10f
 
         layout.padding.leftDp   = 15f
         layout.padding.rightDp  = 15f
         //layout.padding.topDp    = 6f
-        layout.padding.bottomDp = 20f
+        layout.padding.bottomDp = 24f
 
         return layout.linearLayout(context)
     }
@@ -548,7 +548,7 @@ class BookUI(val book : Book,
         title.text              = book.summary()
 
         title.font              = Font.typeface(TextFont.RobotoSlab,
-                                                TextFontStyle.Regular,
+                                                TextFontStyle.Light,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
@@ -557,7 +557,7 @@ class BookUI(val book : Book,
         title.color              = theme.colorOrBlack(colorTheme)
 //        title.color             = Color.WHITE
 
-        title.sizeSp             = 18f
+        title.sizeSp             = 16f
 
         title.lineSpacingAdd      = 4f
         title.lineSpacingMult     = 1f
@@ -570,11 +570,28 @@ class BookUI(val book : Book,
     {
         val layout = metadataViewLayout()
 
-        layout.addView(chapterHeaderView("Written by"))
+        layout.addView(chapterHeaderView("About", 0f))
 
-        layout.addView(authorsView())
+        book.bookInfo().publisher.doMaybe {
+            layout.addView(metadataButtonView("Published by", it.value))
+        }
+        val creditsButtonView = metadataButtonView(null, book.bookInfo.credits.label)
+        creditsButtonView.setOnClickListener {
+            val creditsFragment = BookCreditsFragment.newInstance(book.entityId())
+            val transaction = sessionActivity.supportFragmentManager.beginTransaction()
+            transaction.replace(com.taletable.android.R.id.session_content, creditsFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+        layout.addView(dividerView(0f, 16f))
+        layout.addView(creditsButtonView)
 
-        layout.addView(dividerView())
+        book.bookInfo().licenseInfo.doMaybe {
+            layout.addView(dividerView(0f, 16f))
+            layout.addView(metadataButtonView("Licensed under", it.label))
+        }
+
+        layout.addView(dividerView(8f))
 
         return layout
     }
@@ -584,11 +601,11 @@ class BookUI(val book : Book,
     {
         val layout = metadataViewLayout()
 
-        layout.addView(chapterHeaderView("Last edited on"))
+        layout.addView(chapterHeaderView("Last edited on", 4f))
 
         layout.addView(lastEditView())
 
-        layout.addView(dividerView())
+        layout.addView(dividerView(0f))
 
         return layout
     }
@@ -605,6 +622,9 @@ class BookUI(val book : Book,
 
         layout.backgroundColor  = Color.WHITE
 
+//        layout.padding.leftDp    = 16f
+//        layout.padding.rightDp   = 16f
+
 //        layout.padding.leftDp   = 8f
 //        layout.padding.rightDp  = 8f
         //layout.padding.topDp    = 16f
@@ -614,71 +634,80 @@ class BookUI(val book : Book,
     }
 
 
-    private fun authorsView() : LinearLayout
+    private fun metadataButtonView(label : String?, value : String) : LinearLayout
     {
         // 1 | Declarations
         // -------------------------------------------------------------------------------------
 
-        val layout              = LinearLayoutBuilder()
-        val icon                = ImageViewBuilder()
-        val label               = TextViewBuilder()
+        val layout                  = LinearLayoutBuilder()
+        val labelViewBuilder        = TextViewBuilder()
+        val valueViewBuilder        = TextViewBuilder()
 
         // 2 | Layout
         // -------------------------------------------------------------------------------------
 
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        layout.gravity          = Gravity.CENTER_VERTICAL
+        layout.gravity              = Gravity.CENTER_VERTICAL
 
-        layout.orientation      = LinearLayout.HORIZONTAL
+        layout.orientation          = LinearLayout.HORIZONTAL
 
+        //layout.backgroundResource   = R.drawable.bg_session_button
 
-        //layout.backgroundColor  = Color.WHITE
-        //layout.backgroundResource  = R.drawable.bg_card_flat
+        layout.padding.topDp        = 16f
+        layout.padding.bottomDp     = 16f
+        layout.padding.leftDp       = 16f
+        layout.padding.rightDp      = 16f
 
-        layout.padding.topDp    = 16f
-        layout.padding.bottomDp = 16f
-        layout.padding.leftDp   = 16f
-        layout.padding.rightDp  = 16f
+//        layout.margin.leftDp        = 16f
+//        layout.margin.rightDp       = 16f
+        //layout.margin.topDp         = 12f
 
+        layout.child(labelViewBuilder)
+              .child(valueViewBuilder)
 
-        layout.child(icon)
-              .child(label)
-
-        // 3 | Icon
+        // | Label
         // -------------------------------------------------------------------------------------
 
-        icon.widthDp            = 21
-        icon.heightDp           = 21
+        labelViewBuilder.width      = LinearLayout.LayoutParams.WRAP_CONTENT
+        labelViewBuilder.height     = LinearLayout.LayoutParams.WRAP_CONTENT
 
-        icon.image              = R.drawable.icon_user
+        if (label != null)
+            labelViewBuilder.margin.rightDp = 8f
 
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
-        icon.color              = theme.colorOrBlack(iconColorTheme)
+        labelViewBuilder.text       = label
 
-        icon.margin.rightDp     = 16f
-
-        // 3 | Label
-        // -------------------------------------------------------------------------------------
-
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        label.text              = book.bookInfo().authorListString()
-
-        label.font              = Font.typeface(TextFont.RobotoCondensed,
-                                                TextFontStyle.Bold,
-                                                context)
+        labelViewBuilder.font       = Font.typeface(TextFont.Roboto,
+                                                    TextFontStyle.Regular,
+                                                    context)
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_14"))))
-        label.color              = theme.colorOrBlack(labelColorTheme)
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
+        labelViewBuilder.color      = theme.colorOrBlack(labelColorTheme)
 
-        label.sizeSp            = 18.5f
+        labelViewBuilder.sizeSp     = 17f
+
+        // | Value
+        // -------------------------------------------------------------------------------------
+
+        valueViewBuilder.width      = LinearLayout.LayoutParams.WRAP_CONTENT
+        valueViewBuilder.height     = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        valueViewBuilder.text       = value
+
+        valueViewBuilder.font       = Font.typeface(TextFont.Roboto,
+                                                    TextFontStyle.Regular,
+                                                    context)
+
+        val valueColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+        valueViewBuilder.color      = theme.colorOrBlack(valueColorTheme)
+
+        valueViewBuilder.sizeSp     = 17f
+
 
         return layout.linearLayout(context)
     }
@@ -756,12 +785,16 @@ class BookUI(val book : Book,
     // | Search Button View
     // -----------------------------------------------------------------------------------------
 
-    private fun dividerView() : LinearLayout
+    private fun dividerView(marginTopDp : Float, horizontalMargin : Float = 0f) : LinearLayout
     {
         val layout              = LinearLayoutBuilder()
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.heightDp         = 1
+
+        layout.margin.topDp     = marginTopDp
+        layout.margin.leftDp    = horizontalMargin
+        layout.margin.rightDp    = horizontalMargin
 
         val bgColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),

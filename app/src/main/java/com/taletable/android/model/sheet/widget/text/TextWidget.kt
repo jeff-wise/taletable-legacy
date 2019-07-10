@@ -5,17 +5,24 @@ package com.taletable.android.model.sheet.widget.text
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import com.taletable.android.lib.Factory
 import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.group.RowLayoutType
 import com.taletable.android.model.sheet.widget.TextWidget
 import com.taletable.android.model.sheet.widget.Widget
+import com.taletable.android.model.sheet.widget.WidgetStyle
 import com.taletable.android.model.sheet.widget.WidgetView
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.EntityTypeSheet
 import com.taletable.android.rts.entity.entityType
+import effect.effError
+import effect.effValue
+import lulo.document.*
+import lulo.value.UnexpectedType
+import lulo.value.ValueParser
 import maybe.Maybe
 import maybe.Nothing
-
+import java.io.Serializable
 
 
 // -----------------------------------------------------------------------------------------
@@ -111,4 +118,27 @@ fun textWidgetView(
 
 
 
+/**
+ * Text Widget Default Value
+ */
+data class TextWidgetDefaultValue(val value : String) : ToDocument, Serializable
+{
+
+    // | CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TextWidgetDefaultValue>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<TextWidgetDefaultValue> = when (doc) {
+            is DocText -> effValue(TextWidgetDefaultValue(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+    // | TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+}
 

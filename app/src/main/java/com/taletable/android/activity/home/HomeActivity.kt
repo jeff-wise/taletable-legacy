@@ -5,15 +5,11 @@ package com.taletable.android.activity.home
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.transition.Fade
 import android.transition.Slide
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.*
-import android.view.animation.AnimationUtils
 import android.widget.*
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.taletable.android.R
 import com.taletable.android.activity.search.*
 import com.taletable.android.lib.ui.*
@@ -24,7 +20,7 @@ import com.taletable.android.rts.session.*
 import com.taletable.android.util.Util
 import com.taletable.android.util.configureToolbar
 import io.reactivex.disposables.CompositeDisposable
-import java.util.*
+
 
 // pinned
 // news
@@ -89,7 +85,7 @@ class HomeActivity : AppCompatActivity()
             // Check if we're running on Android 5.0 or higher
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
-                enterTransition = Slide(Gravity.START)
+                enterTransition = Slide(Gravity.BOTTOM)
                 allowEnterTransitionOverlap = true
             } else {
                 // Swap without transition
@@ -107,8 +103,6 @@ class HomeActivity : AppCompatActivity()
 
         // (3) Configure View
         // -------------------------------------------------------------------------------------
-
-        searchHistory.add("")
 
         this.configureToolbar(getString(R.string.tale_table), TextFont.RobotoCondensed, TextFontStyle.Bold, 19f)
 
@@ -136,8 +130,8 @@ class HomeActivity : AppCompatActivity()
     private fun initializeSearchView()
     {
         this.findViewById<TextView>(R.id.searchbar_text_view)?.let { textView ->
-            textView.textSize = Util.spToPx(5f, this).toFloat()
-            textView.typeface = Font.typeface(TextFont.RobotoCondensed, TextFontStyle.Bold, this)
+            textView.textSize = Util.spToPx(6f, this).toFloat()
+            textView.typeface = Font.typeface(TextFont.Roboto, TextFontStyle.Medium, this)
         }
 
         val searchFragment = SearchFragment.newInstance()

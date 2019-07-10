@@ -75,3 +75,452 @@ groups:
         value_variable_reference:
           type: variable_id
           variable_id: introduction_subtitle
+## ---------------------------------------------------------------------------------------------
+## | Credits > Header > Credits
+## ---------------------------------------------------------------------------------------------
+- id: '726dac9a-c926-4a21-ade5-c8f5f3356dac'
+  name: 'Credits > Header > Credits'
+  summary: 'Credits > Header > Credits'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 20
+        bottom: 40
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph_header
+            variation: large
+        value_variable_reference:
+          type: variable_id
+          variable_id: credits_header_credits
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_designers
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_designers
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_developers
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_developers
+  - format:
+      element_format:
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_editors
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_editors
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_graphic_designers
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_graphic_designers
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_cover_interior_artist
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_cover_interior_artist
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_page_border_design
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_page_border_design
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 8
+          bottom: 8
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph_header
+            variation: large
+        value_variable_reference:
+          type: variable_id
+          variable_id: credits_header_editorial
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_creative_management
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_creative_management
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_design
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_design
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_development
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_development
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_editing
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_editing
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_graphic_design
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_graphic_design
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph_header
+            variation: large
+        value_variable_reference:
+          type: variable_id
+          variable_id: credits_header_incorporated
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_executive
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_executive
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_customer_service
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_customer_service
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_finance
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_finance
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_licensing_marketing
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_licensing_marketing
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_organized_play
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_organized_play
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_sales
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_sales
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_technology
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_technology
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_warehouse
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_warehouse
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          bottom: 8
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        label_variable_reference:
+          type: variable_id
+          variable_id: credits_subheader_webstore
+        values_variable_reference:
+          type: variable_id
+          variable_id: credits_webstore

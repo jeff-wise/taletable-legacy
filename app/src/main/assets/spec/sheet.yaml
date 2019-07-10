@@ -3637,6 +3637,12 @@ types:
         custom_type: variable_reference
       presence: optional
       description: The value variable reference.
+    - name: default_value
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The default value.
     - name: outside_label_variable_reference
       type:
         type: custom_type
@@ -4094,6 +4100,12 @@ types:
         custom_type: widget_style
       presence: required
       description: The style.
+    - name: variation
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The variation.
     - name: widget_format
       type:
         type: custom_type

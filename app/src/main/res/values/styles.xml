@@ -36,6 +36,11 @@
         <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
     </style>
 
+    <style name="TTMaterialButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="backgroundTint">@color/white</item>
+        <item name="strokeColor">@color/light_theme_dark_blue_grey_18</item>
+    </style>
+
     <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>

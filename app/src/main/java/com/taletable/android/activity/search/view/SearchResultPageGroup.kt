@@ -96,7 +96,7 @@ fun searchResultPageGroupSearchView(theme : Theme, context : Context) : LinearLa
 
     layout.addView(searchResultPageGroupSearchButtonView(theme, context))
 
-//    layout.addView(searchResultPageGroupDividerView(theme, context))
+    //layout.addView(searchResultPageGroupDividerView(theme, context))
 
     return layout
 }
@@ -140,14 +140,14 @@ fun searchResultPageGroupSearchButtonView(theme : Theme, context : Context) : Li
     layout.margin.leftDp    = 12f
     layout.margin.rightDp   = 12f
     //layout.margin.topDp     = 8f
-    layout.margin.bottomDp  = 16f
+    layout.margin.bottomDp  = 20f
 
     layout.padding.topDp    = 8f
     layout.padding.bottomDp = 8f
     layout.padding.leftDp   = 12f
     layout.padding.rightDp  = 8f
 
-    layout.corners          = Corners(12.0, 12.0, 12.0, 12.0)
+    layout.corners          = Corners(16.0, 16.0, 16.0, 16.0)
 
     layout.gravity          = Gravity.CENTER_VERTICAL
 
@@ -182,10 +182,10 @@ fun searchResultPageGroupSearchButtonView(theme : Theme, context : Context) : Li
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_10"))))
     title.color           = theme.colorOrBlack(colorTheme)
 
-    title.sizeSp          = 18f
+    title.sizeSp          = 17.5f
 
     return layout.linearLayout(context)
 }
@@ -200,7 +200,7 @@ fun searchResultPageGroupDividerView(theme : Theme, context: Context) : LinearLa
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_22")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_7"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_5"))))
     layoutBuilder.backgroundColor   = theme.colorOrBlack(colorTheme)
 
     return layoutBuilder.linearLayout(context)
@@ -345,10 +345,10 @@ class SearchResultPageGroupSearchViewHolder(itemView : View, val theme : Theme, 
         val inColor = theme.colorOrBlack(inColorTheme)
         val inColorSpan = ForegroundColorSpan(inColor)
 
-        builder.setSpan(inItalicSpan,
-                        query.term.length,
-                        query.term.length + 4,
-                        Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+//        builder.setSpan(inItalicSpan,
+//                        query.term.length,
+//                        query.term.length + 4,
+//                        Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
 
         builder.setSpan(inColorSpan,
                 query.term.length,

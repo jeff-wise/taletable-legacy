@@ -1,0 +1,5150 @@
+variables:
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricate_name
+    label: 'Spells > Index > Fabricate > Name'
+    description: 'Spells > Index > Fabricate > Name'
+    value:
+      type: text_literal
+      text_literal: 'Fabricate'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricate_type
+    label: 'Spells > Index > Fabricate > Type'
+    description: 'Spells > Index > Fabricate > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_fabricate_level
+    label: 'Spells > Index > Fabricate > Level'
+    description: 'Spells > Index > Fabricate > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_fabricate_traits
+    label: 'Spells > Index > Fabricate > Traits'
+    description: 'Spells > Index > Fabricate > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Conjuration'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricate_somatic_casting
+    label: 'Spells > Index > Fabricate > Somatic Casting'
+    description: 'Spells > Index > Fabricate > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricate_verbal_casting
+    label: 'Spells > Index > Fabricate > Verbal Casting'
+    description: 'Spells > Index > Fabricate > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricate_duration
+    label: 'Spells > Index > Fabricate > Duration'
+    description: 'Spells > Index > Fabricate > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricate_description
+    label: 'Spells > Index > Fabricate > Description'
+    description: 'Spells > Index > Fabricate > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You create a temporary standard-quality object. It must be of vegetable matter and 1 Bulk or less. It can’t rely on intricate craftsmanship or complex moving parts, never functions as a cost or the like, and can’t be made of special materials or materials with a rarity of uncommon or higher. It is obviously temporary conjured, and its aesthetic matches your style of craftsmanship or artistry.
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricated_truth_name
+    label: 'Spells > Index > Fabricated Truth > Name'
+    description: 'Spells > Index > Fabricated Truth > Name'
+    value:
+      type: text_literal
+      text_literal: 'Fabricated Truth'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricated_truth_type
+    label: 'Spells > Index > Fabricated Truth > Type'
+    description: 'Spells > Index > Fabricated Truth > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_fabricated_truth_level
+    label: 'Spells > Index > Fabricated Truth > Level'
+    description: 'Spells > Index > Fabricated Truth > Level'
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_fabricated_truth_traits
+    label: 'Spells > Index > Fabricated Truth > Traits'
+    description: 'Spells > Index > Fabricated Truth > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Enchantment'
+      - 'Mental'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricated_truth_material_casting
+    label: 'Spells > Index > Fabricated Truth > Material Casting'
+    description: 'Spells > Index > Fabricated Truth > Material Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricated_truth_somatic_casting
+    label: 'Spells > Index > Fabricated Truth > Somatic Casting'
+    description: 'Spells > Index > Fabricated Truth > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricated_truth_verbal_casting
+    label: 'Spells > Index > Fabricated Truth > Verbal Casting'
+    description: 'Spells > Index > Fabricated Truth > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricated_truth_range
+    label: 'Spells > Index > Fabricated Truth > Range'
+    description: 'Spells > Index > Fabricated Truth > Range'
+    value:
+      type: text_literal
+      text_literal: '100 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricated_truth_targets
+    label: 'Spells > Index > Fabricated Truth > Targets'
+    description: 'Spells > Index > Fabricated Truth > Targets'
+    value:
+      type: text_literal
+      text_literal: 'Up to 5 creatures'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricated_truth_duration
+    label: 'Spells > Index > Fabricated Truth > Duration'
+    description: 'Spells > Index > Fabricated Truth > Duration'
+    value:
+      type: text_literal
+      text_literal: 'Varies'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricated_truth_description
+    label: 'Spells > Index > Fabricated Truth > Description'
+    description: 'Spells > Index > Fabricated Truth > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Choose a single fact you want all targets to believe. Their experiences color how they react to this “truth” and how their behavior changes. If the fact changes what they perceive, they treat the change as a sudden revelation. The fact could be narrow, such as “a dragon is circling overhead and wants to kill me”; wide-reaching, such as “all humanoids are disguised abominations”; or conceptual, such as “if I don’t live a kinder life, I’ll be punished in the afterlife.”
+
+        The effect depends on the targets’ Will saves. If a target is already subject to fabricated truth, your spell tries to dispel it. If the check fails, the target can’t get an outcome worse than success.
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricated_truth_success
+    label: 'Spells > Index > Fabricated Truth > Success'
+    description: 'Spells > Index > Fabricated Truth > Success'
+    value:
+      type: text_literal
+      text_literal: 'It doesn’t believe the fact or realize you tried to trick it..'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricated_truth_critical_success
+    label: 'Spells > Index > Fabricated Truth > Critical Success'
+    description: 'Spells > Index > Fabricated Truth > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'As success, but it knows you tried to trick it.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricated_truth_failure
+    label: 'Spells > Index > Fabricated Truth > Failure'
+    description: 'Spells > Index > Fabricated Truth > Failure'
+    value:
+      type: text_literal
+      text_literal: 'It believes the fact for a duration of 1 week.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fabricated_truth_critical_failure
+    label: 'Spells > Index > Fabricated Truth > Critical Failure'
+    description: 'Spells > Index > Fabricated Truth > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'It believes the fact with unlimited duration..'
+- type: variable_text
+  variable_text:
+    id: spells_index_face_in_the_crowd_name
+    label: 'Spells > Index > Face in the Crowd > Name'
+    description: 'Spells > Index > Face in the Crowd > Name'
+    value:
+      type: text_literal
+      text_literal: 'Face in the Crowd'
+- type: variable_text
+  variable_text:
+    id: spells_index_face_in_the_crowd_type
+    label: 'Spells > Index > Face in the Crowd > Type'
+    description: 'Spells > Index > Face in the Crowd > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_face_in_the_crowd_level
+    label: 'Spells > Index > Face in the Crowd > Level'
+    description: 'Spells > Index > Face in the Crowd > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_face_in_the_crowd_traits
+    label: 'Spells > Index > Face in the Crowd > Traits'
+    description: 'Spells > Index > Face in the Crowd > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Illusion'
+      - 'Visual'
+- type: variable_text
+  variable_text:
+    id: spells_index_face_in_the_crowd_somatic_casting
+    label: 'Spells > Index > Face in the Crowd > Somatic Casting'
+    description: 'Spells > Index > Face in the Crowd > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_face_in_the_crowd_verbal_casting
+    label: 'Spells > Index > Face in the Crowd > Verbal Casting'
+    description: 'Spells > Index > Face in the Crowd > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_face_in_the_crowd_duration
+    label: 'Spells > Index > Face in the Crowd > Duration'
+    description: 'Spells > Index > Face in the Crowd > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_face_in_the_crowd_description
+    label: 'Spells > Index > Face in the Crowd > Description'
+    description: 'Spells > Index > Face in the Crowd > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You cause yourself to blend into a crowd. While within a crowd of roughly similar creatures, you are concealed, gain a +2 conditional bonus to Deception and Stealth checks to go unnoticed among the crowd, and ignore difficult terrain caused by the crowd.
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_dust_name
+    label: 'Spells > Index > Faerie Dust > Name'
+    description: 'Spells > Index > Faerie Dust > Name'
+    value:
+      type: text_literal
+      text_literal: 'Faerie Dust'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_dust_type
+    label: 'Spells > Index > Faerie Dust > Type'
+    description: 'Spells > Index > Faerie Dust > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_faerie_dust_level
+    label: 'Spells > Index > Faerie Dust > Level'
+    description: 'Spells > Index > Faerie Dust > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_faerie_dust_traits
+    label: 'Spells > Index > Faerie Dust > Traits'
+    description: 'Spells > Index > Faerie Dust > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Enchantment'
+      - 'Mental'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_dust_somatic_casting
+    label: 'Spells > Index > Faerie Dust > Somatic Casting'
+    description: 'Spells > Index > Faerie Dust > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_dust_verbal_casting
+    label: 'Spells > Index > Faerie Dust > Verbal Casting'
+    description: 'Spells > Index > Faerie Dust > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_dust_range
+    label: 'Spells > Index > Faerie Dust > Range'
+    description: 'Spells > Index > Faerie Dust > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_dust_area
+    label: 'Spells > Index > Faerie Dust > Area'
+    description: 'Spells > Index > Faerie Dust > Area'
+    value:
+      type: text_literal
+      text_literal: '5-foot burst'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_dust_duration
+    label: 'Spells > Index > Faerie Dust > Duration'
+    description: 'Spells > Index > Faerie Dust > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 round'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_dust_description
+    label: 'Spells > Index > Faerie Dust > Description'
+    description: 'Spells > Index > Faerie Dust > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Sparkling magical dust fills the spell’s area, making those within drowsy. Each creature in the area must attempt a Will save.
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_dust_success
+    label: 'Spells > Index > Faerie Dust > Success'
+    description: 'Spells > Index > Faerie Dust > Success'
+    value:
+      type: text_literal
+      text_literal: 'The creature is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_dust_failure
+    label: 'Spells > Index > Faerie Dust > Failure'
+    description: 'Spells > Index > Faerie Dust > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The creature can’t use reactions and takes a –2 conditional penalty to Perception checks..'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_dust_critical_failure
+    label: 'Spells > Index > Faerie Dust > Critical Failure'
+    description: 'Spells > Index > Faerie Dust > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target falls asleep. It automatically awakens when the spell ends.'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_fire_name
+    label: 'Spells > Index > Faerie Fire > Name'
+    description: 'Spells > Index > Faerie Fire > Name'
+    value:
+      type: text_literal
+      text_literal: 'Faerie Fire'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_fire_type
+    label: 'Spells > Index > Faerie Fire > Type'
+    description: 'Spells > Index > Faerie Fire > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_faerie_fire_level
+    label: 'Spells > Index > Faerie Fire > Level'
+    description: 'Spells > Index > Faerie Fire > Level'
+    value:
+      type: number_literal
+      number_literal: 2
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_faerie_fire_traits
+    label: 'Spells > Index > Faerie Fire > Traits'
+    description: 'Spells > Index > Faerie Fire > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Evocation'
+      - 'Light'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_fire_somatic_casting
+    label: 'Spells > Index > Faerie Fire > Somatic Casting'
+    description: 'Spells > Index > Faerie Fire > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_fire_verbal_casting
+    label: 'Spells > Index > Faerie Fire > Verbal Casting'
+    description: 'Spells > Index > Faerie Fire > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_fire_range
+    label: 'Spells > Index > Faerie Fire > Range'
+    description: 'Spells > Index > Faerie Fire > Range'
+    value:
+      type: text_literal
+      text_literal: '120 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_fire_area
+    label: 'Spells > Index > Faerie Fire > Area'
+    description: 'Spells > Index > Faerie Fire > Area'
+    value:
+      type: text_literal
+      text_literal: '10-foot burst'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_fire_duration
+    label: 'Spells > Index > Faerie Fire > Duration'
+    description: 'Spells > Index > Faerie Fire > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_faerie_fire_description
+    label: 'Spells > Index > Faerie Fire > Description'
+    description: 'Spells > Index > Faerie Fire > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        All creatures in the area are limned in colorful, heatless fire of a color of your choice. Visible creatures can’t be concealed while affected by faerie fire. If the creatures are invisible, they are concealed while affected by faerie fire, rather than being unseen.
+- type: variable_text
+  variable_text:
+    id: spells_index_false_life_name
+    label: 'Spells > Index > False Life > Name'
+    description: 'Spells > Index > False Life > Name'
+    value:
+      type: text_literal
+      text_literal: 'False Life'
+- type: variable_text
+  variable_text:
+    id: spells_index_false_life_type
+    label: 'Spells > Index > False Life > Type'
+    description: 'Spells > Index > False Life > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_false_life_level
+    label: 'Spells > Index > False Life > Level'
+    description: 'Spells > Index > False Life > Level'
+    value:
+      type: number_literal
+      number_literal: 2
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_false_life_traits
+    label: 'Spells > Index > False Life > Traits'
+    description: 'Spells > Index > False Life > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Necromancy'
+- type: variable_text
+  variable_text:
+    id: spells_index_false_life_somatic_casting
+    label: 'Spells > Index > False Life > Somatic Casting'
+    description: 'Spells > Index > False Life > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_false_life_verbal_casting
+    label: 'Spells > Index > False Life > Verbal Casting'
+    description: 'Spells > Index > False Life > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_false_life_duration
+    label: 'Spells > Index > False Life > Duration'
+    description: 'Spells > Index > False Life > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 day'
+- type: variable_text
+  variable_text:
+    id: spells_index_false_life_description
+    label: 'Spells > Index > False Life > Description'
+    description: 'Spells > Index > False Life > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You gain a number of temporary Hit Points equal to 6 plus your spellcasting ability modifier.
+- type: variable_text
+  variable_text:
+    id: spells_index_false_life_heightened_plus_two
+    label: 'Spells > Index > False Life > Heightened (+2)'
+    description: 'Spells > Index > False Life > Heightened (+2)'
+    value:
+      type: text_literal
+      text_literal: 'The temporary Hit Points increase by 6.'
+- type: variable_text
+  variable_text:
+    id: spells_index_false_vision_name
+    label: 'Spells > Index > False Vision > Name'
+    description: 'Spells > Index > False Vision > Name'
+    value:
+      type: text_literal
+      text_literal: 'False Vision'
+- type: variable_text
+  variable_text:
+    id: spells_index_false_vision_type
+    label: 'Spells > Index > False Vision > Type'
+    description: 'Spells > Index > False Vision > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_false_vision_level
+    label: 'Spells > Index > False Vision > Level'
+    description: 'Spells > Index > False Vision > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_false_vision_traits
+    label: 'Spells > Index > False Vision > Traits'
+    description: 'Spells > Index > False Vision > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Illusion'
+- type: variable_text
+  variable_text:
+    id: spells_index_false_vision_casting
+    label: 'Spells > Index > False Vision > Casting'
+    description: 'Spells > Index > False Vision > Casting'
+    value:
+      type: text_literal
+      text_literal: '10 minutes (Material, Somatic, Verbal)'
+- type: variable_text
+  variable_text:
+    id: spells_index_false_vision_range
+    label: 'Spells > Index > False Vision > Range'
+    description: 'Spells > Index > False Vision > Range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_false_vision_area
+    label: 'Spells > Index > False Vision > Area'
+    description: 'Spells > Index > False Vision > Area'
+    value:
+      type: text_literal
+      text_literal: '100-foot burst'
+- type: variable_text
+  variable_text:
+    id: spells_index_false_vision_duration
+    label: 'Spells > Index > False Vision > Duration'
+    description: 'Spells > Index > False Vision > Duration'
+    value:
+      type: text_literal
+      text_literal: '24 hours'
+- type: variable_text
+  variable_text:
+    id: spells_index_false_vision_description
+    label: 'Spells > Index > False Vision > Description'
+    description: 'Spells > Index > False Vision > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Any scrying spell sees, hears, smells, and otherwise detects whatever you wish within the area, rather than what is actually in the area. You can Concentrate on the Spell each round to change the illusion as you desire, including playing out a complex scene. If the scrying spell is of a higher level than false vision, you can attempt a Perception check to disbelieve the illusion, though even if you’re successful, you can’t learn what’s truly going on in the area.
+- type: variable_text
+  variable_text:
+    id: spells_index_fatal_aria_name
+    label: 'Spells > Index > Fatal Aria > Name'
+    description: 'Spells > Index > Fatal Aria > Name'
+    value:
+      type: text_literal
+      text_literal: 'Fatal Aria'
+- type: variable_text
+  variable_text:
+    id: spells_index_fatal_aria_type
+    label: 'Spells > Index > Fatal Aria > Type'
+    description: 'Spells > Index > Fatal Aria > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_fatal_aria_level
+    label: 'Spells > Index > Fatal Aria > Level'
+    description: 'Spells > Index > Fatal Aria > Level'
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_fatal_aria_traits
+    label: 'Spells > Index > Fatal Aria > Traits'
+    description: 'Spells > Index > Fatal Aria > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Composition'
+      - 'Death'
+      - 'Emotion'
+      - 'Enchantment'
+      - 'Mental'
+      - 'Power'
+- type: variable_text
+  variable_text:
+    id: spells_index_fatal_aria_verbal_casting
+    label: 'Spells > Index > Fatal Aria > Verbal Casting'
+    description: 'Spells > Index > Fatal Aria > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fatal_aria_range
+    label: 'Spells > Index > Fatal Aria > Range'
+    description: 'Spells > Index > Fatal Aria > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_fatal_aria_targets
+    label: 'Spells > Index > Fatal Aria > Targets'
+    description: 'Spells > Index > Fatal Aria > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_fatal_aria_description
+    label: 'Spells > Index > Fatal Aria > Description'
+    description: 'Spells > Index > Fatal Aria > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You perform music so perfect that the target dies of joy or sorrow. Once targeted, the target is bolstered against all castings of fatal aria. The effect of the spell depends on the target’s level and current Hit Points.
+
+        16th or Lower The target dies instantly.
+        17th If the target has 50 Hit Points or fewer, it dies instantly; otherwise, the target drops to 0 Hit Points and gains dying 1 or, if it’s already dying, increases its dying condition by 1.
+        18th or Higher The target takes 50 damage. If this brings it to 0 Hit Points, it dies instantly.
+- type: variable_text
+  variable_text:
+    id: spells_index_fear_name
+    label: 'Spells > Index > Fear > Name'
+    description: 'Spells > Index > Fear > Name'
+    value:
+      type: text_literal
+      text_literal: 'Fear'
+- type: variable_text
+  variable_text:
+    id: spells_index_fear_type
+    label: 'Spells > Index > Fear > Type'
+    description: 'Spells > Index > Fear > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_fear_level
+    label: 'Spells > Index > Fear > Level'
+    description: 'Spells > Index > Fear > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_fear_traits
+    label: 'Spells > Index > Fear > Traits'
+    description: 'Spells > Index > Fear > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Emotion'
+      - 'Enchantment'
+      - 'Fear'
+      - 'Mental'
+- type: variable_text
+  variable_text:
+    id: spells_index_fear_somatic_casting
+    label: 'Spells > Index > Fear > Somatic Casting'
+    description: 'Spells > Index > Fear > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fear_verbal_casting
+    label: 'Spells > Index > Fear > Verbal Casting'
+    description: 'Spells > Index > Fear > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fear_range
+    label: 'Spells > Index > Fear > Range'
+    description: 'Spells > Index > Fear > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_fear_targets
+    label: 'Spells > Index > Fear > Targets'
+    description: 'Spells > Index > Fear > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_fear_duration
+    label: 'Spells > Index > Fear > Duration'
+    description: 'Spells > Index > Fear > Duration'
+    value:
+      type: text_literal
+      text_literal: 'Varies'
+- type: variable_text
+  variable_text:
+    id: spells_index_fear_description
+    label: 'Spells > Index > Fear > Description'
+    description: 'Spells > Index > Fear > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You plant fear in the target, with effects based on its Will save.
+- type: variable_text
+  variable_text:
+    id: spells_index_fear_success
+    label: 'Spells > Index > Fear > Success'
+    description: 'Spells > Index > Fear > Success'
+    value:
+      type: text_literal
+      text_literal: 'The target is frightened 1.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fear_critical_success
+    label: 'Spells > Index > Fear > Critical Success'
+    description: 'Spells > Index > Fear > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The target is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fear_failure
+    label: 'Spells > Index > Fear > Failure'
+    description: 'Spells > Index > Fear > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target is frightened 2.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fear_critical_failure
+    label: 'Spells > Index > Fear > Critical Failure'
+    description: 'Spells > Index > Fear > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target is frightened 3 and fleeing for 1 round.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fear_heightened_level_three
+    label: 'Spells > Index > Fear > Heightened (3rd)'
+    description: 'Spells > Index > Fear > Heightened (3rd)'
+    value:
+      type: text_literal
+      text_literal: 'You can target up to five creatures.'
+- type: variable_text
+  variable_text:
+    id: spells_index_feather_fall_name
+    label: 'Spells > Index > Feather Fall > Name'
+    description: 'Spells > Index > Feather Fall > Name'
+    value:
+      type: text_literal
+      text_literal: 'Feather Fall'
+- type: variable_text
+  variable_text:
+    id: spells_index_feather_fall_type
+    label: 'Spells > Index > Feather Fall > Type'
+    description: 'Spells > Index > Feather Fall > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_feather_fall_level
+    label: 'Spells > Index > Feather Fall > Level'
+    description: 'Spells > Index > Feather Fall > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_feather_fall_traits
+    label: 'Spells > Index > Feather Fall > Traits'
+    description: 'Spells > Index > Feather Fall > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Abjuration'
+- type: variable_text
+  variable_text:
+    id: spells_index_feather_fall_verbal_casting
+    label: 'Spells > Index > Feather Fall > Verbal Casting'
+    description: 'Spells > Index > Feather Fall > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: 'Reaction'
+- type: variable_text
+  variable_text:
+    id: spells_index_feather_fall_trigger
+    label: 'Spells > Index > Feather Fall > Trigger'
+    description: 'Spells > Index > Feather Fall > Trigger'
+    value:
+      type: text_literal
+      text_literal: 'A creature within range is falling.'
+- type: variable_text
+  variable_text:
+    id: spells_index_feather_fall_range
+    label: 'Spells > Index > Feather Fall > Range'
+    description: 'Spells > Index > Feather Fall > Range'
+    value:
+      type: text_literal
+      text_literal: '60 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_feather_fall_targets
+    label: 'Spells > Index > Feather Fall > Targets'
+    description: 'Spells > Index > Feather Fall > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 falling creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_feather_fall_duration
+    label: 'Spells > Index > Feather Fall > Duration'
+    description: 'Spells > Index > Feather Fall > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute or until dismissed'
+- type: variable_text
+  variable_text:
+    id: spells_index_feather_fall_description
+    label: 'Spells > Index > Feather Fall > Description'
+    description: 'Spells > Index > Feather Fall > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The target’s fall slows to 60 feet per round, and the portion of the fall during the spell’s duration doesn’t count when calculating falling damage. If the target reaches the ground while the spell is in effect, it takes no damage from the fall. The spell is dismissed as soon as the target lands.
+- type: variable_text
+  variable_text:
+    id: spells_index_feeblemind_name
+    label: 'Spells > Index > Feeblemind > Name'
+    description: 'Spells > Index > Feeblemind > Name'
+    value:
+      type: text_literal
+      text_literal: 'Feeblemind'
+- type: variable_text
+  variable_text:
+    id: spells_index_feeblemind_type
+    label: 'Spells > Index > Feeblemind > Type'
+    description: 'Spells > Index > Feeblemind > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_feeblemind_level
+    label: 'Spells > Index > Feeblemind > Level'
+    description: 'Spells > Index > Feeblemind > Level'
+    value:
+      type: number_literal
+      number_literal: 6
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_feeblemind_traits
+    label: 'Spells > Index > Feeblemind > Traits'
+    description: 'Spells > Index > Feeblemind > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Curse'
+      - 'Enchantment'
+      - 'Mental'
+- type: variable_text
+  variable_text:
+    id: spells_index_feeblemind_somatic_casting
+    label: 'Spells > Index > Feeblemind > Somatic Casting'
+    description: 'Spells > Index > Feeblemind > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_feeblemind_verbal_casting
+    label: 'Spells > Index > Feeblemind > Verbal Casting'
+    description: 'Spells > Index > Feeblemind > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_feeblemind_range
+    label: 'Spells > Index > Feeblemind > Range'
+    description: 'Spells > Index > Feeblemind > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_feeblemind_targets
+    label: 'Spells > Index > Feeblemind > Targets'
+    description: 'Spells > Index > Feeblemind > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 humanoid creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_feeblemind_duration
+    label: 'Spells > Index > Feeblemind > Duration'
+    description: 'Spells > Index > Feeblemind > Duration'
+    value:
+      type: text_literal
+      text_literal: 'Varies'
+- type: variable_text
+  variable_text:
+    id: spells_index_feeblemind_description
+    label: 'Spells > Index > Feeblemind > Description'
+    description: 'Spells > Index > Feeblemind > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You drastically reduce the target’s mental faculties. The effect depends on the target’s Will save.
+- type: variable_text
+  variable_text:
+    id: spells_index_feeblemind_success
+    label: 'Spells > Index > Feeblemind > Success'
+    description: 'Spells > Index > Feeblemind > Success'
+    value:
+      type: text_literal
+      text_literal: 'The target is stupefied 2 for 1 round.'
+- type: variable_text
+  variable_text:
+    id: spells_index_feeblemind_critical_success
+    label: 'Spells > Index > Feeblemind > Critical Success'
+    description: 'Spells > Index > Feeblemind > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The target is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_feeblemind_failure
+    label: 'Spells > Index > Feeblemind > Failure'
+    description: 'Spells > Index > Feeblemind > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target is stupefied 4 with a permanent duration.'
+- type: variable_text
+  variable_text:
+    id: spells_index_feeblemind_critical_failure
+    label: 'Spells > Index > Feeblemind > Critical Failure'
+    description: 'Spells > Index > Feeblemind > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: >-
+        The target’s intellect is permanently reduced below that of an animal, and it treats its Charisma, Intelligence, and Wisdom modifiers as –5. It loses all class abilities that require mental faculties, including all spellcasting. If the target is a PC, she becomes an NPC under the GM’s control.
+- type: variable_text
+  variable_text:
+    id: spells_index_feeblemind_heightened_level_nine
+    label: 'Spells > Index > Feeblemind > Heightened (9th)'
+    description: 'Spells > Index > Feeblemind > Heightened (9th)'
+    value:
+      type: text_literal
+      text_literal: 'You can target a non-humanoid creature.'
+- type: variable_text
+  variable_text:
+    id: spells_index_feet_to_fins_name
+    label: 'Spells > Index > Feet to Fins > Name'
+    description: 'Spells > Index > Feet to Fins > Name'
+    value:
+      type: text_literal
+      text_literal: 'Feet to Fins'
+- type: variable_text
+  variable_text:
+    id: spells_index_feet_to_fins_type
+    label: 'Spells > Index > Feet to Fins > Type'
+    description: 'Spells > Index > Feet to Fins > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_feet_to_fins_level
+    label: 'Spells > Index > Feet to Fins > Level'
+    description: 'Spells > Index > Feet to Fins > Level'
+    value:
+      type: number_literal
+      number_literal: 3
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_feet_to_fins_traits
+    label: 'Spells > Index > Feet to Fins > Traits'
+    description: 'Spells > Index > Feet to Fins > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Morph'
+      - 'Transmutation'
+- type: variable_text
+  variable_text:
+    id: spells_index_feet_to_fins_somatic_casting
+    label: 'Spells > Index > Feet to Fins > Somatic Casting'
+    description: 'Spells > Index > Feet to Fins > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_feet_to_fins_verbal_casting
+    label: 'Spells > Index > Feet to Fins > Verbal Casting'
+    description: 'Spells > Index > Feet to Fins > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_feet_to_fins_range
+    label: 'Spells > Index > Feet to Fins > Range'
+    description: 'Spells > Index > Feet to Fins > Range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_feet_to_fins_targets
+    label: 'Spells > Index > Feet to Fins > Targets'
+    description: 'Spells > Index > Feet to Fins > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 willing creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_feet_to_fins_duration
+    label: 'Spells > Index > Feet to Fins > Duration'
+    description: 'Spells > Index > Feet to Fins > Duration'
+    value:
+      type: text_literal
+      text_literal: '10 minutes'
+- type: variable_text
+  variable_text:
+    id: spells_index_feet_to_fins_description
+    label: 'Spells > Index > Feet to Fins > Description'
+    description: 'Spells > Index > Feet to Fins > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The target’s feet transform into fins, improving mobility in the water but reducing it on land. The target gains a swim Speed equal to its land Speed. Its land Speed then becomes 5 feet.
+- type: variable_text
+  variable_text:
+    id: spells_index_fey_disappearance_name
+    label: 'Spells > Index > Fey Disappearance > Name'
+    description: 'Spells > Index > Fey Disappearance > Name'
+    value:
+      type: text_literal
+      text_literal: 'Fey Disappearance'
+- type: variable_text
+  variable_text:
+    id: spells_index_fey_disappearance_type
+    label: 'Spells > Index > Fey Disappearance > Type'
+    description: 'Spells > Index > Fey Disappearance > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_fey_disappearance_level
+    label: 'Spells > Index > Fey Disappearance > Level'
+    description: 'Spells > Index > Fey Disappearance > Level'
+    value:
+      type: number_literal
+      number_literal: 3
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_fey_disappearance_traits
+    label: 'Spells > Index > Fey Disappearance > Traits'
+    description: 'Spells > Index > Fey Disappearance > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Enchantment'
+- type: variable_text
+  variable_text:
+    id: spells_index_fey_disappearance_somatic_casting
+    label: 'Spells > Index > Fey Disappearance > Somatic Casting'
+    description: 'Spells > Index > Fey Disappearance > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fey_disappearance_verbal_casting
+    label: 'Spells > Index > Fey Disappearance > Verbal Casting'
+    description: 'Spells > Index > Fey Disappearance > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fey_disappearance_duration
+    label: 'Spells > Index > Fey Disappearance > Duration'
+    description: 'Spells > Index > Fey Disappearance > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 round'
+- type: variable_text
+  variable_text:
+    id: spells_index_fey_disappearance_description
+    label: 'Spells > Index > Fey Disappearance > Description'
+    description: 'Spells > Index > Fey Disappearance > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You can ignore natural difficult terrain (such as underbrush). Once this spell comes into effect, you can immediately Step or Stride.
+
+        If you have a pool of Spell Points, you can increase the cost of fey disappearance by 2 Spell Points to also turn invisible for the spell’s duration, before taking your Step or Stride. Acting in a hostile manner doesn’t dismiss this invisibility.
+- type: variable_text
+  variable_text:
+    id: spells_index_field_of_life_name
+    label: 'Spells > Index > Field of Life > Name'
+    description: 'Spells > Index > Field of Life > Name'
+    value:
+      type: text_literal
+      text_literal: 'Field of Life'
+- type: variable_text
+  variable_text:
+    id: spells_index_field_of_life_type
+    label: 'Spells > Index > Field of Life > Type'
+    description: 'Spells > Index > Field of Life > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_field_of_life_level
+    label: 'Spells > Index > Field of Life > Level'
+    description: 'Spells > Index > Field of Life > Level'
+    value:
+      type: number_literal
+      number_literal: 6
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_field_of_life_traits
+    label: 'Spells > Index > Field of Life > Traits'
+    description: 'Spells > Index > Field of Life > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Healing'
+      - 'Necromancy'
+      - 'Positive'
+- type: variable_text
+  variable_text:
+    id: spells_index_field_of_life_somatic_casting
+    label: 'Spells > Index > Field of Life > Somatic Casting'
+    description: 'Spells > Index > Field of Life > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_field_of_life_verbal_casting
+    label: 'Spells > Index > Field of Life > Verbal Casting'
+    description: 'Spells > Index > Field of Life > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_field_of_life_range
+    label: 'Spells > Index > Field of Life > Range'
+    description: 'Spells > Index > Field of Life > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_field_of_life_area
+    label: 'Spells > Index > Field of Life > Area'
+    description: 'Spells > Index > Field of Life > Area'
+    value:
+      type: text_literal
+      text_literal: '20-foot burst'
+- type: variable_text
+  variable_text:
+    id: spells_index_field_of_life_duration
+    label: 'Spells > Index > Field of Life > Duration'
+    description: 'Spells > Index > Field of Life > Duration'
+    value:
+      type: text_literal
+      text_literal: 'Concentration, up to 1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_field_of_life_description
+    label: 'Spells > Index > Field of Life > Description'
+    description: 'Spells > Index > Field of Life > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        A field of positive energy fills the area, exuding warmth and rejuvenating those within. Each living creature that starts its turn in the area regains 1d4 Hit Points, and any undead creature that starts its turn in the area takes 1d4 positive damage.
+- type: variable_text
+  variable_text:
+    id: spells_index_field_of_life_heightened_level_nine
+    label: 'Spells > Index > Field of Life > Heightened (9th)'
+    description: 'Spells > Index > Field of Life > Heightened (9th)'
+    value:
+      type: text_literal
+      text_literal: 'The healing and damage increase to 1d6.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fiery_body_name
+    label: 'Spells > Index > Fiery Body > Name'
+    description: 'Spells > Index > Fiery Body > Name'
+    value:
+      type: text_literal
+      text_literal: 'Fiery Body'
+- type: variable_text
+  variable_text:
+    id: spells_index_fiery_body_type
+    label: 'Spells > Index > Fiery Body > Type'
+    description: 'Spells > Index > Fiery Body > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_fiery_body_level
+    label: 'Spells > Index > Fiery Body > Level'
+    description: 'Spells > Index > Fiery Body > Level'
+    value:
+      type: number_literal
+      number_literal: 7
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_fiery_body_traits
+    label: 'Spells > Index > Fiery Body > Traits'
+    description: 'Spells > Index > Fiery Body > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Fire'
+      - 'Polymorph'
+      - 'Transmutation'
+- type: variable_text
+  variable_text:
+    id: spells_index_fiery_body_somatic_casting
+    label: 'Spells > Index > Fiery Body > Somatic Casting'
+    description: 'Spells > Index > Fiery Body > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fiery_body_verbal_casting
+    label: 'Spells > Index > Fiery Body > Verbal Casting'
+    description: 'Spells > Index > Fiery Body > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fiery_body_duration
+    label: 'Spells > Index > Fiery Body > Duration'
+    description: 'Spells > Index > Fiery Body > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_fiery_body_description
+    label: 'Spells > Index > Fiery Body > Description'
+    description: 'Spells > Index > Fiery Body > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You become living flame, giving you fire immunity, resistance 10 to precision damage, and weakness 5 to cold and to water. Any creature that touches you or damages you with an unarmed attack or non-reach melee weapon takes 3d6 fire damage.
+
+        Your unarmed attacks deal 1d4 additional fire damage, and your fire spells deal one additional die of fire damage (of the same damage die the spell uses). You can cast produce flame as an innate spell with a single Somatic Casting action.
+
+        In fire form, you have a fly Speed of 40 feet and don’t need to breathe.
+- type: variable_text
+  variable_text:
+    id: spells_index_fiery_body_heightened_level_nine
+    label: 'Spells > Index > Fiery Body > Heightened (9th)'
+    description: 'Spells > Index > Fiery Body > Heightened (9th)'
+    value:
+      type: text_literal
+      text_literal: >-
+        You have resistance 15 to precision damage, creatures touching you take 4d6 fire damage instead of 3d6, your unarmed attacks deal 2d4 fire damage, and you have a fly Speed of 60 feet.
+- type: variable_text
+  variable_text:
+    id: spells_index_finger_of_death_name
+    label: 'Spells > Index > Finger of Death > Name'
+    description: 'Spells > Index > Finger of Death > Name'
+    value:
+      type: text_literal
+      text_literal: 'Finger of Death'
+- type: variable_text
+  variable_text:
+    id: spells_index_finger_of_death_type
+    label: 'Spells > Index > Finger of Death > Type'
+    description: 'Spells > Index > Finger of Death > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_finger_of_death_level
+    label: 'Spells > Index > Finger of Death > Level'
+    description: 'Spells > Index > Finger of Death > Level'
+    value:
+      type: number_literal
+      number_literal: 7
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_finger_of_death_traits
+    label: 'Spells > Index > Finger of Death > Traits'
+    description: 'Spells > Index > Finger of Death > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Death'
+      - 'Necromancy'
+- type: variable_text
+  variable_text:
+    id: spells_index_finger_of_death_somatic_casting
+    label: 'Spells > Index > Finger of Death > Somatic Casting'
+    description: 'Spells > Index > Finger of Death > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_finger_of_death_verbal_casting
+    label: 'Spells > Index > Finger of Death > Verbal Casting'
+    description: 'Spells > Index > Finger of Death > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_finger_of_death_range
+    label: 'Spells > Index > Finger of Death > Range'
+    description: 'Spells > Index > Finger of Death > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_finger_of_death_targets
+    label: 'Spells > Index > Finger of Death > Targets'
+    description: 'Spells > Index > Finger of Death > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 living creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_finger_of_death_description
+    label: 'Spells > Index > Finger of Death > Description'
+    description: 'Spells > Index > Finger of Death > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You point your finger toward the target and speak a word of slaying. You deal 50 negative damage to the target, and the target must attempt a Fortitude save. If the damage from finger of death reduces the target to 0 Hit Points, the target dies instantly.
+- type: variable_text
+  variable_text:
+    id: spells_index_finger_of_death_success
+    label: 'Spells > Index > Finger of Death > Success'
+    description: 'Spells > Index > Finger of Death > Success'
+    value:
+      type: text_literal
+      text_literal: 'The target takes half damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_finger_of_death_critical_success
+    label: 'Spells > Index > Finger of Death > Critical Success'
+    description: 'Spells > Index > Finger of Death > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The target is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_finger_of_death_failure
+    label: 'Spells > Index > Finger of Death > Failure'
+    description: 'Spells > Index > Finger of Death > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target takes full damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_finger_of_death_critical_failure
+    label: 'Spells > Index > Finger of Death > Critical Failure'
+    description: 'Spells > Index > Finger of Death > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target dies instantly.'
+- type: variable_text
+  variable_text:
+    id: spells_index_finger_of_death_heightened_plus_one
+    label: 'Spells > Index > Finger of Death > Heightened (+1)'
+    description: 'Spells > Index > Finger of Death > Heightened (+1)'
+    value:
+      type: text_literal
+      text_literal: 'The damage increases by 10.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_ray_name
+    label: 'Spells > Index > Fire Ray > Name'
+    description: 'Spells > Index > Fire Ray > Name'
+    value:
+      type: text_literal
+      text_literal: 'Fire Ray'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_ray_type
+    label: 'Spells > Index > Fire Ray > Type'
+    description: 'Spells > Index > Fire Ray > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_fire_ray_level
+    label: 'Spells > Index > Fire Ray > Level'
+    description: 'Spells > Index > Fire Ray > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_fire_ray_traits
+    label: 'Spells > Index > Fire Ray > Traits'
+    description: 'Spells > Index > Fire Ray > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Evocation'
+      - 'Fire'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_ray_somatic_casting
+    label: 'Spells > Index > Fire Ray > Somatic Casting'
+    description: 'Spells > Index > Fire Ray > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_ray_verbal_casting
+    label: 'Spells > Index > Fire Ray > Verbal Casting'
+    description: 'Spells > Index > Fire Ray > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_ray_range
+    label: 'Spells > Index > Fire Ray > Range'
+    description: 'Spells > Index > Fire Ray > Range'
+    value:
+      type: text_literal
+      text_literal: '60 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_ray_targets
+    label: 'Spells > Index > Fire Ray > Targets'
+    description: 'Spells > Index > Fire Ray > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature or object'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_ray_description
+    label: 'Spells > Index > Fire Ray > Description'
+    description: 'Spells > Index > Fire Ray > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Attempt a ranged touch Strike against the target. If you succeed at the attack, you deal fire damage to the target equal to 1d6 plus your spellcasting ability modifier.
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_ray_heightened_plus_one
+    label: 'Spells > Index > Fire Ray > Heightened (+1)'
+    description: 'Spells > Index > Fire Ray > Heightened (+1)'
+    value:
+      type: text_literal
+      text_literal: 'The ray’s damage increases by 1d6.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_seeds_name
+    label: 'Spells > Index > Fire Seeds > Name'
+    description: 'Spells > Index > Fire Seeds > Name'
+    value:
+      type: text_literal
+      text_literal: 'Fire Seeds'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_seeds_type
+    label: 'Spells > Index > Fire Seeds > Type'
+    description: 'Spells > Index > Fire Seeds > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_fire_seeds_level
+    label: 'Spells > Index > Fire Seeds > Level'
+    description: 'Spells > Index > Fire Seeds > Level'
+    value:
+      type: number_literal
+      number_literal: 6
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_fire_seeds_traits
+    label: 'Spells > Index > Fire Seeds > Traits'
+    description: 'Spells > Index > Fire Seeds > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Evocation'
+      - 'Fire'
+      - 'Plant'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_seeds_somatic_casting
+    label: 'Spells > Index > Fire Seeds > Somatic Casting'
+    description: 'Spells > Index > Fire Seeds > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_seeds_verbal_casting
+    label: 'Spells > Index > Fire Seeds > Verbal Casting'
+    description: 'Spells > Index > Fire Seeds > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_seeds_duration
+    label: 'Spells > Index > Fire Seeds > Duration'
+    description: 'Spells > Index > Fire Seeds > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_seeds_description
+    label: 'Spells > Index > Fire Seeds > Description'
+    description: 'Spells > Index > Fire Seeds > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Four acorns grow in your hand, their shells streaked with red patterns. You or anyone else who has one of the acorns can toss it up to 30 feet with an action that has the manipulate trait. It explodes in a 5-foot burst, dealing 4d6 fire damage, and each creature in the area must attempt a Reflex save. The save uses your spell DC, even if someone else throws the acorn.
+
+        Flames continue to burn on the ground in the burst for 1 minute, dealing 2d6 fire damage to any creature that enters the flames or ends its turn within them. A creature can take damage from the continuing flames only once per round, even if it’s in overlapping areas of fire created by different acorns.
+
+        When the spell ends, any remaining acorns rot and turn to ordinary soil.
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_seeds_success
+    label: 'Spells > Index > Fire Seeds > Success'
+    description: 'Spells > Index > Fire Seeds > Success'
+    value:
+      type: text_literal
+      text_literal: 'The creature takes half damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_seeds_critical_success
+    label: 'Spells > Index > Fire Seeds > Critical Success'
+    description: 'Spells > Index > Fire Seeds > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The creature is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_seeds_failure
+    label: 'Spells > Index > Fire Seeds > Failure'
+    description: 'Spells > Index > Fire Seeds > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The creature takes full damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_seeds_critical_failure
+    label: 'Spells > Index > Fire Seeds > Critical Failure'
+    description: 'Spells > Index > Fire Seeds > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'The creature takes double damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_seeds_heightened_level_eight
+    label: 'Spells > Index > Fire Seeds > Heightened (8th)'
+    description: 'Spells > Index > Fire Seeds > Heightened (8th)'
+    value:
+      type: text_literal
+      text_literal: 'The burst damage increases to 5d6 and the continuing flames damage increases to 3d6.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_seeds_heightened_level_nine
+    label: 'Spells > Index > Fire Seeds > Heightened (9th)'
+    description: 'Spells > Index > Fire Seeds > Heightened (9th)'
+    value:
+      type: text_literal
+      text_literal: 'The burst damage increases to 6d6 and the continuing flames damage increases to 3d6.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_shield_name
+    label: 'Spells > Index > Fire Shield > Name'
+    description: 'Spells > Index > Fire Shield > Name'
+    value:
+      type: text_literal
+      text_literal: 'Fire Shield'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_shield_type
+    label: 'Spells > Index > Fire Shield > Type'
+    description: 'Spells > Index > Fire Shield > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_fire_shield_level
+    label: 'Spells > Index > Fire Shield > Level'
+    description: 'Spells > Index > Fire Shield > Level'
+    value:
+      type: number_literal
+      number_literal: 4
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_fire_shield_traits
+    label: 'Spells > Index > Fire Shield > Traits'
+    description: 'Spells > Index > Fire Shield > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Evocation'
+      - 'Fire'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_shield_somatic_casting
+    label: 'Spells > Index > Fire Shield > Somatic Casting'
+    description: 'Spells > Index > Fire Shield > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_shield_verbal_casting
+    label: 'Spells > Index > Fire Shield > Verbal Casting'
+    description: 'Spells > Index > Fire Shield > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_shield_duration
+    label: 'Spells > Index > Fire Shield > Duration'
+    description: 'Spells > Index > Fire Shield > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_shield_description
+    label: 'Spells > Index > Fire Shield > Description'
+    description: 'Spells > Index > Fire Shield > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You wreathe yourself in flames, gaining cold resistance 5. Additionally, adjacent creatures that hit you with a melee attack, as well as creatures that touch you or hit you with an unarmed attack, take 2d6 fire damage each time they do.
+- type: variable_text
+  variable_text:
+    id: spells_index_fire_shield_heightened_plus_two
+    label: 'Spells > Index > Fire Shield > Heightened (+2)'
+    description: 'Spells > Index > Fire Shield > Heightened (+2)'
+    value:
+      type: text_literal
+      text_literal: 'The cold resistance increases by 5 and the fire damage increases by 1d6.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fireball_name
+    label: 'Spells > Index > Fireball > Name'
+    description: 'Spells > Index > Fireball > Name'
+    value:
+      type: text_literal
+      text_literal: 'Fireball'
+- type: variable_text
+  variable_text:
+    id: spells_index_fireball_type
+    label: 'Spells > Index > Fireball > Type'
+    description: 'Spells > Index > Fireball > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_fireball_level
+    label: 'Spells > Index > Fireball > Level'
+    description: 'Spells > Index > Fireball > Level'
+    value:
+      type: number_literal
+      number_literal: 3
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_fireball_traits
+    label: 'Spells > Index > Fireball > Traits'
+    description: 'Spells > Index > Fireball > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Evocation'
+      - 'Fire'
+- type: variable_text
+  variable_text:
+    id: spells_index_fireball_somatic_casting
+    label: 'Spells > Index > Fireball > Somatic Casting'
+    description: 'Spells > Index > Fireball > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fireball_verbal_casting
+    label: 'Spells > Index > Fireball > Verbal Casting'
+    description: 'Spells > Index > Fireball > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fireball_range
+    label: 'Spells > Index > Fireball > Range'
+    description: 'Spells > Index > Fireball > Range'
+    value:
+      type: text_literal
+      text_literal: '500 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_fireball_area
+    label: 'Spells > Index > Fireball > Area'
+    description: 'Spells > Index > Fireball > Area'
+    value:
+      type: text_literal
+      text_literal: '20-foot burst'
+- type: variable_text
+  variable_text:
+    id: spells_index_fireball_description
+    label: 'Spells > Index > Fireball > Description'
+    description: 'Spells > Index > Fireball > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        A burst of fire explodes, dealing 6d6 fire damage; creatures in the area must attempt a Reflex save.
+- type: variable_text
+  variable_text:
+    id: spells_index_fireball_success
+    label: 'Spells > Index > Fireball > Success'
+    description: 'Spells > Index > Fireball > Success'
+    value:
+      type: text_literal
+      text_literal: 'The creature takes half damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fireball_critical_success
+    label: 'Spells > Index > Fireball > Critical Success'
+    description: 'Spells > Index > Fireball > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The creature is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fireball_failure
+    label: 'Spells > Index > Fireball > Failure'
+    description: 'Spells > Index > Fireball > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The creature takes full damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fireball_critical_failure
+    label: 'Spells > Index > Fireball > Critical Failure'
+    description: 'Spells > Index > Fireball > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'The creature takes double damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fireball_heightened_plus_one
+    label: 'Spells > Index > Fireball > Heightened (+1)'
+    description: 'Spells > Index > Fireball > Heightened (+1)'
+    value:
+      type: text_literal
+      text_literal: 'The damage increases by 2d6.'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_barrier_name
+    label: 'Spells > Index > Flame Barrier > Name'
+    description: 'Spells > Index > Flame Barrier > Name'
+    value:
+      type: text_literal
+      text_literal: 'Flame Barrier'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_barrier_type
+    label: 'Spells > Index > Flame Barrier > Type'
+    description: 'Spells > Index > Flame Barrier > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_flame_barrier_level
+    label: 'Spells > Index > Flame Barrier > Level'
+    description: 'Spells > Index > Flame Barrier > Level'
+    value:
+      type: number_literal
+      number_literal: 2
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_flame_barrier_traits
+    label: 'Spells > Index > Flame Barrier > Traits'
+    description: 'Spells > Index > Flame Barrier > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Abjuration'
+      - 'Fire'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_barrier_verbal_casting
+    label: 'Spells > Index > Flame Barrier > Verbal Casting'
+    description: 'Spells > Index > Flame Barrier > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: 'Reaction'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_barrier_trigger
+    label: 'Spells > Index > Flame Barrier > Trigger'
+    description: 'Spells > Index > Flame Barrier > Trigger'
+    value:
+      type: text_literal
+      text_literal: 'An effect deals fire damage to either you or an ally within range.'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_barrier_range
+    label: 'Spells > Index > Flame Barrier > Range'
+    description: 'Spells > Index > Flame Barrier > Range'
+    value:
+      type: text_literal
+      text_literal: '60 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_barrier_description
+    label: 'Spells > Index > Flame Barrier > Description'
+    description: 'Spells > Index > Flame Barrier > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You or one ally gains fire resistance from the triggering effect equal to twice your level. The resistance applies only against damage you take from the triggering attack, not to any enhancements or conditions.
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_strike_name
+    label: 'Spells > Index > Flame Strike > Name'
+    description: 'Spells > Index > Flame Strike > Name'
+    value:
+      type: text_literal
+      text_literal: 'Flame Strike'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_strike_type
+    label: 'Spells > Index > Flame Strike > Type'
+    description: 'Spells > Index > Flame Strike > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_flame_strike_level
+    label: 'Spells > Index > Flame Strike > Level'
+    description: 'Spells > Index > Flame Strike > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_flame_strike_traits
+    label: 'Spells > Index > Flame Strike > Traits'
+    description: 'Spells > Index > Flame Strike > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Evocation'
+      - 'Fire'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_strike_somatic_casting
+    label: 'Spells > Index > Flame Strike > Somatic Casting'
+    description: 'Spells > Index > Flame Strike > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_strike_verbal_casting
+    label: 'Spells > Index > Flame Strike > Verbal Casting'
+    description: 'Spells > Index > Flame Strike > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_strike_range
+    label: 'Spells > Index > Flame Strike > Range'
+    description: 'Spells > Index > Flame Strike > Range'
+    value:
+      type: text_literal
+      text_literal: '120 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_strike_area
+    label: 'Spells > Index > Flame Strike > Area'
+    description: 'Spells > Index > Flame Strike > Area'
+    value:
+      type: text_literal
+      text_literal: '10-foot radius, 40-foot tall cylinder'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_strike_description
+    label: 'Spells > Index > Flame Strike > Description'
+    description: 'Spells > Index > Flame Strike > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You call a rain of divine fire that plummets down from above, dealing 8d6 fire damage. Each creature in the area must attempt a Reflex save. Because the flame is infused with divine energy, creatures in the area apply only half their usual fire resistance. Creatures that are immune to fire treat their result on the saving throw as one degree of success better instead of gaining the usual benefit of immunity.
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_strike_success
+    label: 'Spells > Index > Flame Strike > Success'
+    description: 'Spells > Index > Flame Strike > Success'
+    value:
+      type: text_literal
+      text_literal: 'The creature takes half damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_strike_critical_success
+    label: 'Spells > Index > Flame Strike > Critical Success'
+    description: 'Spells > Index > Flame Strike > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The creature is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_strike_failure
+    label: 'Spells > Index > Flame Strike > Failure'
+    description: 'Spells > Index > Flame Strike > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The creature takes full damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_strike_critical_failure
+    label: 'Spells > Index > Flame Strike > Critical Failure'
+    description: 'Spells > Index > Flame Strike > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'The creature takes double damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_flame_strike_heightened_plus_one
+    label: 'Spells > Index > Flame Strike > Heightened (+1)'
+    description: 'Spells > Index > Flame Strike > Heightened (+1)'
+    value:
+      type: text_literal
+      text_literal: 'The damage increases by 2d6.'
+- type: variable_text
+  variable_text:
+    id: spells_index_flaming_sphere_name
+    label: 'Spells > Index > Flaming Sphere > Name'
+    description: 'Spells > Index > Flaming Sphere > Name'
+    value:
+      type: text_literal
+      text_literal: 'Flaming Sphere'
+- type: variable_text
+  variable_text:
+    id: spells_index_flaming_sphere_type
+    label: 'Spells > Index > Flaming Sphere > Type'
+    description: 'Spells > Index > Flaming Sphere > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_flaming_sphere_level
+    label: 'Spells > Index > Flaming Sphere > Level'
+    description: 'Spells > Index > Flaming Sphere > Level'
+    value:
+      type: number_literal
+      number_literal: 2
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_flaming_sphere_traits
+    label: 'Spells > Index > Flaming Sphere > Traits'
+    description: 'Spells > Index > Flaming Sphere > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Evocation'
+      - 'Fire'
+- type: variable_text
+  variable_text:
+    id: spells_index_flaming_sphere_somatic_casting
+    label: 'Spells > Index > Flaming Sphere > Somatic Casting'
+    description: 'Spells > Index > Flaming Sphere > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_flaming_sphere_verbal_casting
+    label: 'Spells > Index > Flaming Sphere > Verbal Casting'
+    description: 'Spells > Index > Flaming Sphere > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_flaming_sphere_range
+    label: 'Spells > Index > Flaming Sphere > Range'
+    description: 'Spells > Index > Flaming Sphere > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_flaming_sphere_area
+    label: 'Spells > Index > Flaming Sphere > Area'
+    description: 'Spells > Index > Flaming Sphere > Area'
+    value:
+      type: text_literal
+      text_literal: '1 5-foot square'
+- type: variable_text
+  variable_text:
+    id: spells_index_flaming_sphere_duration
+    label: 'Spells > Index > Flaming Sphere > Duration'
+    description: 'Spells > Index > Flaming Sphere > Duration'
+    value:
+      type: text_literal
+      text_literal: 'Concentration or until dismissed (see below)'
+- type: variable_text
+  variable_text:
+    id: spells_index_flaming_sphere_description
+    label: 'Spells > Index > Flaming Sphere > Description'
+    description: 'Spells > Index > Flaming Sphere > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You create a sphere of flame in a square within range. The sphere deals 3d6 fire damage to each creature in the sphere’s square; each creature must attempt a Reflex save. Once per round when you Concentrate on this Spell, you can direct the sphere to roll to a spot within range and deal 3d6 fire damage; each creature in that square must attempt a Reflex save. You can’t Concentrate on the Spell to move the sphere during the round you create it.
+- type: variable_text
+  variable_text:
+    id: spells_index_flaming_sphere_success
+    label: 'Spells > Index > Flaming Sphere > Success'
+    description: 'Spells > Index > Flaming Sphere > Success'
+    value:
+      type: text_literal
+      text_literal: 'The creature is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_flaming_sphere_failure
+    label: 'Spells > Index > Flaming Sphere > Failure'
+    description: 'Spells > Index > Flaming Sphere > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The creature takes full damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_flaming_sphere_critical_failure
+    label: 'Spells > Index > Flaming Sphere > Critical Failure'
+    description: 'Spells > Index > Flaming Sphere > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'The creature takes double damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_flaming_sphere_heightened_plus_one
+    label: 'Spells > Index > Flaming Sphere > Heightened (+1)'
+    description: 'Spells > Index > Flaming Sphere > Heightened (+1)'
+    value:
+      type: text_literal
+      text_literal: 'The damage increases by 1d6.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fleet_step_name
+    label: 'Spells > Index > Fleet Step > Name'
+    description: 'Spells > Index > Fleet Step > Name'
+    value:
+      type: text_literal
+      text_literal: 'Fleet Step'
+- type: variable_text
+  variable_text:
+    id: spells_index_fleet_step_type
+    label: 'Spells > Index > Fleet Step > Type'
+    description: 'Spells > Index > Fleet Step > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_fleet_step_level
+    label: 'Spells > Index > Fleet Step > Level'
+    description: 'Spells > Index > Fleet Step > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_fleet_step_traits
+    label: 'Spells > Index > Fleet Step > Traits'
+    description: 'Spells > Index > Fleet Step > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Transmutation'
+- type: variable_text
+  variable_text:
+    id: spells_index_fleet_step_somatic_casting
+    label: 'Spells > Index > Fleet Step > Somatic Casting'
+    description: 'Spells > Index > Fleet Step > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fleet_step_verbal_casting
+    label: 'Spells > Index > Fleet Step > Verbal Casting'
+    description: 'Spells > Index > Fleet Step > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fleet_step_duration
+    label: 'Spells > Index > Fleet Step > Duration'
+    description: 'Spells > Index > Fleet Step > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_fleet_step_description
+    label: 'Spells > Index > Fleet Step > Description'
+    description: 'Spells > Index > Fleet Step > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You are accelerated 30, but this applies only to your Speed.
+- type: variable_text
+  variable_text:
+    id: spells_index_flesh_to_stone_name
+    label: 'Spells > Index > Flesh to Stone > Name'
+    description: 'Spells > Index > Flesh to Stone > Name'
+    value:
+      type: text_literal
+      text_literal: 'Flesh to Stone'
+- type: variable_text
+  variable_text:
+    id: spells_index_flesh_to_stone_type
+    label: 'Spells > Index > Flesh to Stone > Type'
+    description: 'Spells > Index > Flesh to Stone > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_flesh_to_stone_level
+    label: 'Spells > Index > Flesh to Stone > Level'
+    description: 'Spells > Index > Flesh to Stone > Level'
+    value:
+      type: number_literal
+      number_literal: 6
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_flesh_to_stone_traits
+    label: 'Spells > Index > Flesh to Stone > Traits'
+    description: 'Spells > Index > Flesh to Stone > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Transmutation'
+- type: variable_text
+  variable_text:
+    id: spells_index_flesh_to_stone_somatic_casting
+    label: 'Spells > Index > Flesh to Stone > Somatic Casting'
+    description: 'Spells > Index > Flesh to Stone > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_flesh_to_stone_verbal_casting
+    label: 'Spells > Index > Flesh to Stone > Verbal Casting'
+    description: 'Spells > Index > Flesh to Stone > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_flesh_to_stone_range
+    label: 'Spells > Index > Flesh to Stone > Range'
+    description: 'Spells > Index > Flesh to Stone > Range'
+    value:
+      type: text_literal
+      text_literal: '120 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_flesh_to_stone_targets
+    label: 'Spells > Index > Flesh to Stone > Targets'
+    description: 'Spells > Index > Flesh to Stone > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature made of flesh'
+- type: variable_text
+  variable_text:
+    id: spells_index_flesh_to_stone_duration
+    label: 'Spells > Index > Flesh to Stone > Duration'
+    description: 'Spells > Index > Flesh to Stone > Duration'
+    value:
+      type: text_literal
+      text_literal: 'Varies'
+- type: variable_text
+  variable_text:
+    id: spells_index_flesh_to_stone_description
+    label: 'Spells > Index > Flesh to Stone > Description'
+    description: 'Spells > Index > Flesh to Stone > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You attempt to turn the target’s flesh into stone. The target must attempt a Fortitude save.
+- type: variable_text
+  variable_text:
+    id: spells_index_flesh_to_stone_success
+    label: 'Spells > Index > Flesh to Stone > Success'
+    description: 'Spells > Index > Flesh to Stone > Success'
+    value:
+      type: text_literal
+      text_literal: 'The target is slowed 1 for 1 round.'
+- type: variable_text
+  variable_text:
+    id: spells_index_flesh_to_stone_critical_success
+    label: 'Spells > Index > Flesh to Stone > Critical Success'
+    description: 'Spells > Index > Flesh to Stone > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The target is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_flesh_to_stone_failure
+    label: 'Spells > Index > Flesh to Stone > Failure'
+    description: 'Spells > Index > Flesh to Stone > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target is slowed 1 and must attempt a Fortitude save at the end of each of its turns. On a failed save, the slowed condition increases by 1; on a critically failed save, it increases by 2. A successful save reduces the slowed condition by 1. If the slowed condition is reduced to 0 or otherwise ends, the spell ends. When a creature is unable to act due to the slowed condition from flesh to stone, the spell ends but the creature is petrified permanently.'
+- type: variable_text
+  variable_text:
+    id: spells_index_flesh_to_stone_critical_failure
+    label: 'Spells > Index > Flesh to Stone > Critical Failure'
+    description: 'Spells > Index > Flesh to Stone > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'As failure, but the creature is initially slowed 2.'
+- type: variable_text
+  variable_text:
+    id: spells_index_floating_disk_name
+    label: 'Spells > Index > Floating Disk > Name'
+    description: 'Spells > Index > Floating Disk > Name'
+    value:
+      type: text_literal
+      text_literal: 'Floating Disk'
+- type: variable_text
+  variable_text:
+    id: spells_index_floating_disk_type
+    label: 'Spells > Index > Floating Disk > Type'
+    description: 'Spells > Index > Floating Disk > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_floating_disk_level
+    label: 'Spells > Index > Floating Disk > Level'
+    description: 'Spells > Index > Floating Disk > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_floating_disk_traits
+    label: 'Spells > Index > Floating Disk > Traits'
+    description: 'Spells > Index > Floating Disk > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Conjuration'
+- type: variable_text
+  variable_text:
+    id: spells_index_floating_disk_somatic_casting
+    label: 'Spells > Index > Floating Disk > Somatic Casting'
+    description: 'Spells > Index > Floating Disk > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_floating_disk_verbal_casting
+    label: 'Spells > Index > Floating Disk > Verbal Casting'
+    description: 'Spells > Index > Floating Disk > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_floating_disk_duration
+    label: 'Spells > Index > Floating Disk > Duration'
+    description: 'Spells > Index > Floating Disk > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 hour or until dismissed'
+- type: variable_text
+  variable_text:
+    id: spells_index_floating_disk_description
+    label: 'Spells > Index > Floating Disk > Description'
+    description: 'Spells > Index > Floating Disk > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        A disk of magical energy materializes adjacent to you. This disk is 2 feet in diameter and follows 5 feet behind you automatically, floating just above the ground. It holds up to 5 Bulk of objects (though they must be able to fit and balance on its surface). Any objects atop a floating disk fall to the ground when the spell ends.
+
+        The disk is dismissed if a creature tries to ride atop it, if anyone tries to lift or force the disk higher above the ground, or if you move more than 30 feet away from the disk (such as by Flying or Climbing above the ground).
+- type: variable_text
+  variable_text:
+    id: spells_index_fly_name
+    label: 'Spells > Index > Fly > Name'
+    description: 'Spells > Index > Fly > Name'
+    value:
+      type: text_literal
+      text_literal: 'Fly'
+- type: variable_text
+  variable_text:
+    id: spells_index_fly_type
+    label: 'Spells > Index > Fly > Type'
+    description: 'Spells > Index > Fly > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_fly_level
+    label: 'Spells > Index > Fly > Level'
+    description: 'Spells > Index > Fly > Level'
+    value:
+      type: number_literal
+      number_literal: 4
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_fly_traits
+    label: 'Spells > Index > Fly > Traits'
+    description: 'Spells > Index > Fly > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Transmutation'
+- type: variable_text
+  variable_text:
+    id: spells_index_fly_somatic_casting
+    label: 'Spells > Index > Fly > Somatic Casting'
+    description: 'Spells > Index > Fly > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fly_verbal_casting
+    label: 'Spells > Index > Fly > Verbal Casting'
+    description: 'Spells > Index > Fly > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_fly_range
+    label: 'Spells > Index > Fly > Range'
+    description: 'Spells > Index > Fly > Range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_fly_targets
+    label: 'Spells > Index > Fly > Targets'
+    description: 'Spells > Index > Fly > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_fly_duration
+    label: 'Spells > Index > Fly > Duration'
+    description: 'Spells > Index > Fly > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_fly_description
+    label: 'Spells > Index > Fly > Description'
+    description: 'Spells > Index > Fly > Description'
+    value:
+      type: text_literal
+      text_literal: 'The target gains a fly Speed of 30 feet.'
+- type: variable_text
+  variable_text:
+    id: spells_index_fly_heightened_level_seven
+    label: 'Spells > Index > Fly > Heightened (7th)'
+    description: 'Spells > Index > Fly > Heightened (7th)'
+    value:
+      type: text_literal
+      text_literal: 'The duration increases to 1 hour.'
+- type: variable_text
+  variable_text:
+    id: spells_index_forbidding_ward_name
+    label: 'Spells > Index > Forbidding Ward > Name'
+    description: 'Spells > Index > Forbidding Ward > Name'
+    value:
+      type: text_literal
+      text_literal: 'Forbidding Ward'
+- type: variable_text
+  variable_text:
+    id: spells_index_forbidding_ward_type
+    label: 'Spells > Index > Forbidding Ward > Type'
+    description: 'Spells > Index > Forbidding Ward > Type'
+    value:
+      type: text_literal
+      text_literal: 'Cantrip'
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_forbidding_ward_traits
+    label: 'Spells > Index > Forbidding Ward > Traits'
+    description: 'Spells > Index > Forbidding Ward > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Abjuration'
+      - 'Cantrip'
+- type: variable_text
+  variable_text:
+    id: spells_index_forbidding_ward_somatic_casting
+    label: 'Spells > Index > Forbidding Ward > Somatic Casting'
+    description: 'Spells > Index > Forbidding Ward > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_forbidding_ward_verbal_casting
+    label: 'Spells > Index > Forbidding Ward > Verbal Casting'
+    description: 'Spells > Index > Forbidding Ward > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_forbidding_ward_range
+    label: 'Spells > Index > Forbidding Ward > Range'
+    description: 'Spells > Index > Forbidding Ward > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_forbidding_ward_targets
+    label: 'Spells > Index > Forbidding Ward > Targets'
+    description: 'Spells > Index > Forbidding Ward > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 ally and 1 enemy'
+- type: variable_text
+  variable_text:
+    id: spells_index_forbidding_ward_duration
+    label: 'Spells > Index > Forbidding Ward > Duration'
+    description: 'Spells > Index > Forbidding Ward > Duration'
+    value:
+      type: text_literal
+      text_literal: 'Concentration, up to 1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_forbidding_ward_description
+    label: 'Spells > Index > Forbidding Ward > Description'
+    description: 'Spells > Index > Forbidding Ward > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You ward your ally against the attacks and hostile spells of the target enemy. The target ally gains a +1 conditional bonus to Armor Class and saving throws against the target enemy’s attacks, spells, and other effects.
+- type: variable_text
+  variable_text:
+    id: spells_index_forbidding_ward_heightened_level_six
+    label: 'Spells > Index > Forbidding Ward > Heightened (6th)'
+    description: 'Spells > Index > Forbidding Ward > Heightened (6th)'
+    value:
+      type: text_literal
+      text_literal: 'The conditional bonus increases to +2.'
+- type: variable_text
+  variable_text:
+    id: spells_index_force_bolt_name
+    label: 'Spells > Index > Force Bolt > Name'
+    description: 'Spells > Index > Force Bolt > Name'
+    value:
+      type: text_literal
+      text_literal: 'Force Bolt'
+- type: variable_text
+  variable_text:
+    id: spells_index_force_bolt_type
+    label: 'Spells > Index > Force Bolt > Type'
+    description: 'Spells > Index > Force Bolt > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_force_bolt_level
+    label: 'Spells > Index > Force Bolt > Level'
+    description: 'Spells > Index > Force Bolt > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_force_bolt_traits
+    label: 'Spells > Index > Force Bolt > Traits'
+    description: 'Spells > Index > Force Bolt > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Attack'
+      - 'Evocation'
+      - 'Force'
+- type: variable_text
+  variable_text:
+    id: spells_index_force_bolt_somatic_casting
+    label: 'Spells > Index > Force Bolt > Somatic Casting'
+    description: 'Spells > Index > Force Bolt > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_force_bolt_verbal_casting
+    label: 'Spells > Index > Force Bolt > Verbal Casting'
+    description: 'Spells > Index > Force Bolt > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_force_bolt_range
+    label: 'Spells > Index > Force Bolt > Range'
+    description: 'Spells > Index > Force Bolt > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_force_bolt_targets
+    label: 'Spells > Index > Force Bolt > Targets'
+    description: 'Spells > Index > Force Bolt > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature or object'
+- type: variable_text
+  variable_text:
+    id: spells_index_force_bolt_description
+    label: 'Spells > Index > Force Bolt > Description'
+    description: 'Spells > Index > Force Bolt > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You fire a dart of force from your fingertips. Make a ranged touch attack against the target to deal force damage equal to 1d4 plus your spellcasting ability modifier.
+- type: variable_text
+  variable_text:
+    id: spells_index_force_bolt_success
+    label: 'Spells > Index > Force Bolt > Success'
+    description: 'Spells > Index > Force Bolt > Success'
+    value:
+      type: text_literal
+      text_literal: 'The target takes full damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_force_bolt_critical_success
+    label: 'Spells > Index > Force Bolt > Critical Success'
+    description: 'Spells > Index > Force Bolt > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The target takes double damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_force_bolt_failure
+    label: 'Spells > Index > Force Bolt > Failure'
+    description: 'Spells > Index > Force Bolt > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_force_bolt_heightened_plus_one
+    label: 'Spells > Index > Force Bolt > Heightened (+1)'
+    description: 'Spells > Index > Force Bolt > Heightened (+1)'
+    value:
+      type: text_literal
+      text_literal: 'The damage increases by 1d4.'
+- type: variable_text
+  variable_text:
+    id: spells_index_forced_quiet_name
+    label: 'Spells > Index > Forced Quiet > Name'
+    description: 'Spells > Index > Forced Quiet > Name'
+    value:
+      type: text_literal
+      text_literal: 'Forced Quiet'
+- type: variable_text
+  variable_text:
+    id: spells_index_forced_quiet_type
+    label: 'Spells > Index > Forced Quiet > Type'
+    description: 'Spells > Index > Forced Quiet > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_forced_quiet_level
+    label: 'Spells > Index > Forced Quiet > Level'
+    description: 'Spells > Index > Forced Quiet > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_forced_quiet_traits
+    label: 'Spells > Index > Forced Quiet > Traits'
+    description: 'Spells > Index > Forced Quiet > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Abjuration'
+- type: variable_text
+  variable_text:
+    id: spells_index_forced_quiet_material_casting
+    label: 'Spells > Index > Forced Quiet > Material Casting'
+    description: 'Spells > Index > Forced Quiet > Material Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_forced_quiet_verbal_casting
+    label: 'Spells > Index > Forced Quiet > Verbal Casting'
+    description: 'Spells > Index > Forced Quiet > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_forced_quiet_range
+    label: 'Spells > Index > Forced Quiet > Range'
+    description: 'Spells > Index > Forced Quiet > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_forced_quiet_targets
+    label: 'Spells > Index > Forced Quiet > Targets'
+    description: 'Spells > Index > Forced Quiet > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_forced_quiet_duration
+    label: 'Spells > Index > Forced Quiet > Duration'
+    description: 'Spells > Index > Forced Quiet > Duration'
+    value:
+      type: text_literal
+      text_literal: 'See text'
+- type: variable_text
+  variable_text:
+    id: spells_index_forced_quiet_description
+    label: 'Spells > Index > Forced Quiet > Description'
+    description: 'Spells > Index > Forced Quiet > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You quiet the target’s voice, preventing it from giving away valuable secrets. This doesn’t prevent the target from talking or performing Verbal Casting actions, but no creature more than 10 feet away can hear its croaking whispers without a successful Perception check against forced quiet’s DC, which might interfere with auditory or lingual effects as well as communication. The duration depends on the target’s Fortitude save, and the target is bolstered against your forced quiet.
+- type: variable_text
+  variable_text:
+    id: spells_index_forced_quiet_success
+    label: 'Spells > Index > Forced Quiet > Success'
+    description: 'Spells > Index > Forced Quiet > Success'
+    value:
+      type: text_literal
+      text_literal: 'The effect’s duration is 1 round.'
+- type: variable_text
+  variable_text:
+    id: spells_index_forced_quiet_critical_success
+    label: 'Spells > Index > Forced Quiet > Critical Success'
+    description: 'Spells > Index > Forced Quiet > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The target is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_forced_quiet_failure
+    label: 'Spells > Index > Forced Quiet > Failure'
+    description: 'Spells > Index > Forced Quiet > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The effect’s duration is 1 minute.'
+- type: variable_text
+  variable_text:
+    id: spells_index_forced_quiet_critical_failure
+    label: 'Spells > Index > Forced Quiet > Critical Failure'
+    description: 'Spells > Index > Forced Quiet > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'The effect’s duration is 10 minutes.'
+- type: variable_text
+  variable_text:
+    id: spells_index_foresight_name
+    label: 'Spells > Index > Foresight > Name'
+    description: 'Spells > Index > Foresight > Name'
+    value:
+      type: text_literal
+      text_literal: 'Foresight'
+- type: variable_text
+  variable_text:
+    id: spells_index_foresight_type
+    label: 'Spells > Index > Foresight > Type'
+    description: 'Spells > Index > Foresight > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_foresight_level
+    label: 'Spells > Index > Foresight > Level'
+    description: 'Spells > Index > Foresight > Level'
+    value:
+      type: number_literal
+      number_literal: 9
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_foresight_traits
+    label: 'Spells > Index > Foresight > Traits'
+    description: 'Spells > Index > Foresight > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Divination'
+      - 'Mental'
+      - 'Prediction'
+- type: variable_text
+  variable_text:
+    id: spells_index_foresight_somatic_casting
+    label: 'Spells > Index > Foresight > Somatic Casting'
+    description: 'Spells > Index > Foresight > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_foresight_verbal_casting
+    label: 'Spells > Index > Foresight > Verbal Casting'
+    description: 'Spells > Index > Foresight > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_foresight_range
+    label: 'Spells > Index > Foresight > Range'
+    description: 'Spells > Index > Foresight > Range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_foresight_targets
+    label: 'Spells > Index > Foresight > Targets'
+    description: 'Spells > Index > Foresight > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_foresight_duration
+    label: 'Spells > Index > Foresight > Duration'
+    description: 'Spells > Index > Foresight > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 hour'
+- type: variable_text
+  variable_text:
+    id: spells_index_foresight_description
+    label: 'Spells > Index > Foresight > Description'
+    description: 'Spells > Index > Foresight > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You gain a sixth sense that warns you of danger that might befall the target of the spell. If you choose a creature other than yourself as the target, you create a psychic link through which you can inform the target of danger. This link is a mental effect. While foresight is in effect, the target gains a +2 conditional bonus to initiative rolls and can’t be flat-footed. In addition, you gain the following reaction.
+
+        Foresight Trigger: The target of foresight defends against a hostile creature or other danger. Effect: The target rolls two dice and uses the higher result if it’s being forced to roll (like with a saving throw), or the attacker or danger must roll twice and use the lower result (like with an attack or skill check). This is a fortune effect if the target is rolling twice, or a misfortune effect if the hostile force is.
+
+        Due to the amount of information this spell requires you to process, you can’t have more than one foresight spell in effect at a time. Casting foresight again dismisses the previous foresight.
+- type: variable_text
+  variable_text:
+    id: spells_index_freedom_of_movement_name
+    label: 'Spells > Index > Freedom of Movement > Name'
+    description: 'Spells > Index > Freedom of Movement > Name'
+    value:
+      type: text_literal
+      text_literal: 'Freedom of Movement'
+- type: variable_text
+  variable_text:
+    id: spells_index_freedom_of_movement_type
+    label: 'Spells > Index > Freedom of Movement > Type'
+    description: 'Spells > Index > Freedom of Movement > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_freedom_of_movement_level
+    label: 'Spells > Index > Freedom of Movement > Level'
+    description: 'Spells > Index > Freedom of Movement > Level'
+    value:
+      type: number_literal
+      number_literal: 4
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_freedom_of_movement_traits
+    label: 'Spells > Index > Freedom of Movement > Traits'
+    description: 'Spells > Index > Freedom of Movement > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Abjuration'
+- type: variable_text
+  variable_text:
+    id: spells_index_freedom_of_movement_somatic_casting
+    label: 'Spells > Index > Freedom of Movement > Somatic Casting'
+    description: 'Spells > Index > Freedom of Movement > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_freedom_of_movement_verbal_casting
+    label: 'Spells > Index > Freedom of Movement > Verbal Casting'
+    description: 'Spells > Index > Freedom of Movement > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_freedom_of_movement_range
+    label: 'Spells > Index > Freedom of Movement > Range'
+    description: 'Spells > Index > Freedom of Movement > Range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_freedom_of_movement_targets
+    label: 'Spells > Index > Freedom of Movement > Targets'
+    description: 'Spells > Index > Freedom of Movement > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature touched'
+- type: variable_text
+  variable_text:
+    id: spells_index_freedom_of_movement_duration
+    label: 'Spells > Index > Freedom of Movement > Duration'
+    description: 'Spells > Index > Freedom of Movement > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_freedom_of_movement_description
+    label: 'Spells > Index > Freedom of Movement > Description'
+    description: 'Spells > Index > Freedom of Movement > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        While under this spell’s effect, the target ignores all effects that would entangle or hamper her. When she attempts to escape an effect that has her immobilized, grabbed, or restrained, she automatically succeeds unless it’s a magical effect of a higher level than the freedom of movement spell.
+- type: variable_text
+  variable_text:
+    id: spells_index_gaseous_form_name
+    label: 'Spells > Index > Gaseous Form > Name'
+    description: 'Spells > Index > Gaseous Form > Name'
+    value:
+      type: text_literal
+      text_literal: 'Gaseous Form'
+- type: variable_text
+  variable_text:
+    id: spells_index_gaseous_form_type
+    label: 'Spells > Index > Gaseous Form > Type'
+    description: 'Spells > Index > Gaseous Form > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_gaseous_form_level
+    label: 'Spells > Index > Gaseous Form > Level'
+    description: 'Spells > Index > Gaseous Form > Level'
+    value:
+      type: number_literal
+      number_literal: 4
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_gaseous_form_traits
+    label: 'Spells > Index > Gaseous Form > Traits'
+    description: 'Spells > Index > Gaseous Form > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Polymorph'
+      - 'Transmutation'
+- type: variable_text
+  variable_text:
+    id: spells_index_gaseous_form_somatic_casting
+    label: 'Spells > Index > Gaseous Form > Somatic Casting'
+    description: 'Spells > Index > Gaseous Form > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_gaseous_form_verbal_casting
+    label: 'Spells > Index > Gaseous Form > Verbal Casting'
+    description: 'Spells > Index > Gaseous Form > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_gaseous_form_range
+    label: 'Spells > Index > Gaseous Form > Range'
+    description: 'Spells > Index > Gaseous Form > Range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_gaseous_form_targets
+    label: 'Spells > Index > Gaseous Form > Targets'
+    description: 'Spells > Index > Gaseous Form > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 willing creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_gaseous_form_duration
+    label: 'Spells > Index > Gaseous Form > Duration'
+    description: 'Spells > Index > Gaseous Form > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_gaseous_form_description
+    label: 'Spells > Index > Gaseous Form > Description'
+    description: 'Spells > Index > Gaseous Form > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The target transforms into a vaporous state. In this state, the target is amorphous and loses any item bonus to AC. It gains resistance 8 to physical damage and is immune to precision damage. It can’t cast spells or use actions that have the attack or manipulate trait. It gains a fly Speed of 10 feet and can slip through tiny cracks.
+- type: variable_text
+  variable_text:
+    id: spells_index_gate_name
+    label: 'Spells > Index > Gate > Name'
+    description: 'Spells > Index > Gate > Name'
+    value:
+      type: text_literal
+      text_literal: 'Gate'
+- type: variable_text
+  variable_text:
+    id: spells_index_gate_type
+    label: 'Spells > Index > Gate > Type'
+    description: 'Spells > Index > Gate > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_gate_level
+    label: 'Spells > Index > Gate > Level'
+    description: 'Spells > Index > Gate > Level'
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_gate_traits
+    label: 'Spells > Index > Gate > Traits'
+    description: 'Spells > Index > Gate > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Conjuration'
+      - 'Teleportation'
+- type: variable_text
+  variable_text:
+    id: spells_index_gate_somatic_casting
+    label: 'Spells > Index > Gate > Somatic Casting'
+    description: 'Spells > Index > Gate > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_gate_verbal_casting
+    label: 'Spells > Index > Gate > Verbal Casting'
+    description: 'Spells > Index > Gate > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_gate_range
+    label: 'Spells > Index > Gate > Range'
+    description: 'Spells > Index > Gate > Range'
+    value:
+      type: text_literal
+      text_literal: '120 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_gate_duration
+    label: 'Spells > Index > Gate > Duration'
+    description: 'Spells > Index > Gate > Duration'
+    value:
+      type: text_literal
+      text_literal: 'Concentration, up to 1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_gate_description
+    label: 'Spells > Index > Gate > Description'
+    description: 'Spells > Index > Gate > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You tear open a rift to another plane, creating a portal that creatures can use to travel both ways for the duration. This portal is vertical and circular, with a radius of 40 feet. The gate appears at a location of your choice on the destination plane, assuming you have a clear idea of both the destination’s location on the plane and what the destination looks like. If you attempt to create a gate into or out of the realm of deity or another powerful being, that being can prevent the gate from forming.
+- type: variable_text
+  variable_text:
+    id: spells_index_gentle_repose_name
+    label: 'Spells > Index > Gentle Repose > Name'
+    description: 'Spells > Index > Gentle Repose > Name'
+    value:
+      type: text_literal
+      text_literal: 'Gentle Repose'
+- type: variable_text
+  variable_text:
+    id: spells_index_gentle_repose_type
+    label: 'Spells > Index > Gentle Repose > Type'
+    description: 'Spells > Index > Gentle Repose > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_gentle_repose_level
+    label: 'Spells > Index > Gentle Repose > Level'
+    description: 'Spells > Index > Gentle Repose > Level'
+    value:
+      type: number_literal
+      number_literal: 2
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_gentle_repose_traits
+    label: 'Spells > Index > Gentle Repose > Traits'
+    description: 'Spells > Index > Gentle Repose > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Necromancy'
+- type: variable_text
+  variable_text:
+    id: spells_index_gentle_repose_somatic_casting
+    label: 'Spells > Index > Gentle Repose > Somatic Casting'
+    description: 'Spells > Index > Gentle Repose > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_gentle_repose_verbal_casting
+    label: 'Spells > Index > Gentle Repose > Verbal Casting'
+    description: 'Spells > Index > Gentle Repose > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_gentle_repose_range
+    label: 'Spells > Index > Gentle Repose > Range'
+    description: 'Spells > Index > Gentle Repose > Range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_gentle_repose_targets
+    label: 'Spells > Index > Gentle Repose > Targets'
+    description: 'Spells > Index > Gentle Repose > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 corpse'
+- type: variable_text
+  variable_text:
+    id: spells_index_gentle_repose_duration
+    label: 'Spells > Index > Gentle Repose > Duration'
+    description: 'Spells > Index > Gentle Repose > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 day'
+- type: variable_text
+  variable_text:
+    id: spells_index_gentle_repose_description
+    label: 'Spells > Index > Gentle Repose > Description'
+    description: 'Spells > Index > Gentle Repose > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The corpse doesn’t decay, nor can it be transformed into an undead. Time spent under the effect of this spell doesn’t count when determining the success of spells that require a fresh corpse.
+- type: variable_text
+  variable_text:
+    id: spells_index_gentle_repose_heightened_level_five
+    label: 'Spells > Index > Gentle Repose > Heightened (5th)'
+    description: 'Spells > Index > Gentle Repose > Heightened (5th)'
+    value:
+      type: text_literal
+      text_literal: >-
+        The spell’s duration is permanent, but you must add a Material Casting action during which you expend 6 gp worth of embalming fluid as a cost.
+- type: variable_text
+  variable_text:
+    id: spells_index_ghost_sound_name
+    label: 'Spells > Index > Ghost Sound > Name'
+    description: 'Spells > Index > Ghost Sound > Name'
+    value:
+      type: text_literal
+      text_literal: 'Ghost Sound'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghost_sound_type
+    label: 'Spells > Index > Ghost Sound > Type'
+    description: 'Spells > Index > Ghost Sound > Type'
+    value:
+      type: text_literal
+      text_literal: 'Cantrip'
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_ghost_sound_traits
+    label: 'Spells > Index > Ghost Sound > Traits'
+    description: 'Spells > Index > Ghost Sound > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Auditory'
+      - 'Cantrip'
+      - 'Illusion'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghost_sound_somatic_casting
+    label: 'Spells > Index > Ghost Sound > Somatic Casting'
+    description: 'Spells > Index > Ghost Sound > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghost_sound_verbal_casting
+    label: 'Spells > Index > Ghost Sound > Verbal Casting'
+    description: 'Spells > Index > Ghost Sound > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghost_sound_range
+    label: 'Spells > Index > Ghost Sound > Range'
+    description: 'Spells > Index > Ghost Sound > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghost_sound_duration
+    label: 'Spells > Index > Ghost Sound > Duration'
+    description: 'Spells > Index > Ghost Sound > Duration'
+    value:
+      type: text_literal
+      text_literal: 'Concentration'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghost_sound_description
+    label: 'Spells > Index > Ghost Sound > Description'
+    description: 'Spells > Index > Ghost Sound > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You create simple sounds up to a maximum volume of four normal humans shouting, emanating from a square you designate within range. You can’t create intelligible words or other intricate sounds.
+- type: variable_text
+  variable_text:
+    id: spells_index_ghost_sound_heightened_level_three
+    label: 'Spells > Index > Ghost Sound > Heightened (3rd)'
+    description: 'Spells > Index > Ghost Sound > Heightened (3rd)'
+    value:
+      type: text_literal
+      text_literal: >-
+        The range increases to 60 feet.
+- type: variable_text
+  variable_text:
+    id: spells_index_ghost_sound_heightened_level_five
+    label: 'Spells > Index > Ghost Sound > Heightened (5th)'
+    description: 'Spells > Index > Ghost Sound > Heightened (5th)'
+    value:
+      type: text_literal
+      text_literal: >-
+        The range increases to 120 feet.
+- type: variable_text
+  variable_text:
+    id: spells_index_ghostly_weapon_name
+    label: 'Spells > Index > Ghostly Weapon > Name'
+    description: 'Spells > Index > Ghostly Weapon > Name'
+    value:
+      type: text_literal
+      text_literal: 'Ghostly Weapon'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghostly_weapon_type
+    label: 'Spells > Index > Ghostly Weapon > Type'
+    description: 'Spells > Index > Ghostly Weapon > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_ghostly_weapon_level
+    label: 'Spells > Index > Ghostly Weapon > Level'
+    description: 'Spells > Index > Ghostly Weapon > Level'
+    value:
+      type: number_literal
+      number_literal: 3
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_ghostly_weapon_traits
+    label: 'Spells > Index > Ghostly Weapon > Traits'
+    description: 'Spells > Index > Ghostly Weapon > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Transmutation'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghostly_weapon_somatic_casting
+    label: 'Spells > Index > Ghostly Weapon > Somatic Casting'
+    description: 'Spells > Index > Ghostly Weapon > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghostly_weapon_verbal_casting
+    label: 'Spells > Index > Ghostly Weapon > Verbal Casting'
+    description: 'Spells > Index > Ghostly Weapon > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghostly_weapon_range
+    label: 'Spells > Index > Ghostly Weapon > Range'
+    description: 'Spells > Index > Ghostly Weapon > Range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghostly_weapon_targets
+    label: 'Spells > Index > Ghostly Weapon > Targets'
+    description: 'Spells > Index > Ghostly Weapon > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 nonmagical weapon that is either unattended or wielded by you or a willing ally'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghostly_weapon_duration
+    label: 'Spells > Index > Ghostly Weapon > Duration'
+    description: 'Spells > Index > Ghostly Weapon > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghostly_weapon_description
+    label: 'Spells > Index > Ghostly Weapon > Description'
+    description: 'Spells > Index > Ghostly Weapon > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The target weapon becomes translucent and ghostly, and can affect material and incorporeal creatures and objects. It can be wielded by a corporeal or incorporeal creature and counts as ghost touch.
+- type: variable_text
+  variable_text:
+    id: spells_index_ghoulish_cravings_name
+    label: 'Spells > Index > Ghoulish Cravings > Name'
+    description: 'Spells > Index > Ghoulish Cravings > Name'
+    value:
+      type: text_literal
+      text_literal: 'Ghoulish Cravings'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghoulish_cravings_type
+    label: 'Spells > Index > Ghoulish Cravings > Type'
+    description: 'Spells > Index > Ghoulish Cravings > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_ghoulish_cravings_level
+    label: 'Spells > Index > Ghoulish Cravings > Level'
+    description: 'Spells > Index > Ghoulish Cravings > Level'
+    value:
+      type: number_literal
+      number_literal: 2
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_ghoulish_cravings_traits
+    label: 'Spells > Index > Ghoulish Cravings > Traits'
+    description: 'Spells > Index > Ghoulish Cravings > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Attack'
+      - 'Disease'
+      - 'Evil'
+      - 'Necromancy'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghoulish_cravings_somatic_casting
+    label: 'Spells > Index > Ghoulish Cravings > Somatic Casting'
+    description: 'Spells > Index > Ghoulish Cravings > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghoulish_cravings_verbal_casting
+    label: 'Spells > Index > Ghoulish Cravings > Verbal Casting'
+    description: 'Spells > Index > Ghoulish Cravings > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghoulish_cravings_range
+    label: 'Spells > Index > Ghoulish Cravings > Range'
+    description: 'Spells > Index > Ghoulish Cravings > Range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghoulish_cravings_targets
+    label: 'Spells > Index > Ghoulish Cravings > Targets'
+    description: 'Spells > Index > Ghoulish Cravings > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghoulish_cravings_description
+    label: 'Spells > Index > Ghoulish Cravings > Description'
+    description: 'Spells > Index > Ghoulish Cravings > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You touch the target to afflict it with ghoul fever; the target must attempt a Fortitude save.
+
+        Ghoul Fever (disease) Level 3; Stage 1 carrier with no ill effect (1 day); Stage 2 3d8 damage and regains half as many Hit Points from all healing (1 day); Stage 3 as stage 2 (1 day); Stage 4 3d8 damage and gains no benefit from healing (1 day); Stage 5 as stage 4 (1 day); Stage 6 dead, and rises as a ghoul at the next midnight.
+- type: variable_text
+  variable_text:
+    id: spells_index_ghoulish_cravings_success
+    label: 'Spells > Index > Ghoulish Cravings > Success'
+    description: 'Spells > Index > Ghoulish Cravings > Success'
+    value:
+      type: text_literal
+      text_literal: 'The target takes a –2 conditional penalty to saving throws against ghoul fever for 1 day or until she contracts it, whichever comes first.'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghoulish_cravings_critical_success
+    label: 'Spells > Index > Ghoulish Cravings > Critical Success'
+    description: 'Spells > Index > Ghoulish Cravings > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The target is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghoulish_cravings_failure
+    label: 'Spells > Index > Ghoulish Cravings > Failure'
+    description: 'Spells > Index > Ghoulish Cravings > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target is afflicted with ghoul fever at stage 1.'
+- type: variable_text
+  variable_text:
+    id: spells_index_ghoulish_cravings_critical_failure
+    label: 'Spells > Index > Ghoulish Cravings > Critical Failure'
+    description: 'Spells > Index > Ghoulish Cravings > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target is afflicted with ghoul fever at stage 2.'
+- type: variable_text
+  variable_text:
+    id: spells_index_glimpse_the_truth_name
+    label: 'Spells > Index > Glimpse the Truth > Name'
+    description: 'Spells > Index > Glimpse the Truth > Name'
+    value:
+      type: text_literal
+      text_literal: 'Glimpse the Truth'
+- type: variable_text
+  variable_text:
+    id: spells_index_glimpse_the_truth_type
+    label: 'Spells > Index > Glimpse the Truth > Type'
+    description: 'Spells > Index > Glimpse the Truth > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_glimpse_the_truth_level
+    label: 'Spells > Index > Glimpse the Truth > Level'
+    description: 'Spells > Index > Glimpse the Truth > Level'
+    value:
+      type: number_literal
+      number_literal: 2
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_glimpse_the_truth_traits
+    label: 'Spells > Index > Glimpse the Truth > Traits'
+    description: 'Spells > Index > Glimpse the Truth > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Divination'
+- type: variable_text
+  variable_text:
+    id: spells_index_glimpse_the_truth_somatic_casting
+    label: 'Spells > Index > Glimpse the Truth > Somatic Casting'
+    description: 'Spells > Index > Glimpse the Truth > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_glimpse_the_truth_duration
+    label: 'Spells > Index > Glimpse the Truth > Duration'
+    description: 'Spells > Index > Glimpse the Truth > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 round'
+- type: variable_text
+  variable_text:
+    id: spells_index_glimpse_the_truth_description
+    label: 'Spells > Index > Glimpse the Truth > Description'
+    description: 'Spells > Index > Glimpse the Truth > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You see things within 30 feet as they truly are. The GM attempts a special secret dispel check against any illusion in the area, but only for the purpose of determining whether you see through it (for instance, if the check succeeds against an illusory disguise spell, you see the creature’s true form but it doesn’t end the illusory disguise).
+- type: variable_text
+  variable_text:
+    id: spells_index_glitterdust_name
+    label: 'Spells > Index > Glitterdust > Name'
+    description: 'Spells > Index > Glitterdust > Name'
+    value:
+      type: text_literal
+      text_literal: 'Glitterdust'
+- type: variable_text
+  variable_text:
+    id: spells_index_glitterdust_type
+    label: 'Spells > Index > Glitterdust > Type'
+    description: 'Spells > Index > Glitterdust > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_glitterdust_level
+    label: 'Spells > Index > Glitterdust > Level'
+    description: 'Spells > Index > Glitterdust > Level'
+    value:
+      type: number_literal
+      number_literal: 2
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_glitterdust_traits
+    label: 'Spells > Index > Glitterdust > Traits'
+    description: 'Spells > Index > Glitterdust > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Evocation'
+- type: variable_text
+  variable_text:
+    id: spells_index_glitterdust_somatic_casting
+    label: 'Spells > Index > Glitterdust > Somatic Casting'
+    description: 'Spells > Index > Glitterdust > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_glitterdust_verbal_casting
+    label: 'Spells > Index > Glitterdust > Verbal Casting'
+    description: 'Spells > Index > Glitterdust > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_glitterdust_range
+    label: 'Spells > Index > Glitterdust > Range'
+    description: 'Spells > Index > Glitterdust > Range'
+    value:
+      type: text_literal
+      text_literal: '120 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_glitterdust_area
+    label: 'Spells > Index > Glitterdust > Area'
+    description: 'Spells > Index > Glitterdust > Area'
+    value:
+      type: text_literal
+      text_literal: '10-foot burst'
+- type: variable_text
+  variable_text:
+    id: spells_index_glitterdust_description
+    label: 'Spells > Index > Glitterdust > Description'
+    description: 'Spells > Index > Glitterdust > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Creatures in the area are outlined by glittering dust, with an effect depending on their Reflex save results. If a creature has its invisibility negated by this spell, it is concealed instead of invisible. This applies both if the creature was already invisible and if it benefits from new invisibility effects before the invisibility negation effect runs out.
+- type: variable_text
+  variable_text:
+    id: spells_index_glitterdust_success
+    label: 'Spells > Index > Glitterdust > Success'
+    description: 'Spells > Index > Glitterdust > Success'
+    value:
+      type: text_literal
+      text_literal: 'The target’s invisibility is negated for 1 round.'
+- type: variable_text
+  variable_text:
+    id: spells_index_glitterdust_critical_success
+    label: 'Spells > Index > Glitterdust > Critical Success'
+    description: 'Spells > Index > Glitterdust > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The target is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_glitterdust_failure
+    label: 'Spells > Index > Glitterdust > Failure'
+    description: 'Spells > Index > Glitterdust > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target is dazzled for 1 minute and its invisibility is negated for 1 minute.'
+- type: variable_text
+  variable_text:
+    id: spells_index_glitterdust_critical_failure
+    label: 'Spells > Index > Glitterdust > Critical Failure'
+    description: 'Spells > Index > Glitterdust > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target is blinded for 1 round and dazzled for 1 minute. Its invisibility is negated for 1 minute.'
+- type: variable_text
+  variable_text:
+    id: spells_index_globe_of_invulnerability_name
+    label: 'Spells > Index > Globe of Invulnerability > Name'
+    description: 'Spells > Index > Globe of Invulnerability > Name'
+    value:
+      type: text_literal
+      text_literal: 'Globe of Invulnerability'
+- type: variable_text
+  variable_text:
+    id: spells_index_globe_of_invulnerability_type
+    label: 'Spells > Index > Globe of Invulnerability > Type'
+    description: 'Spells > Index > Globe of Invulnerability > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_globe_of_invulnerability_level
+    label: 'Spells > Index > Globe of Invulnerability > Level'
+    description: 'Spells > Index > Globe of Invulnerability > Level'
+    value:
+      type: number_literal
+      number_literal: 4
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_globe_of_invulnerability_traits
+    label: 'Spells > Index > Globe of Invulnerability > Traits'
+    description: 'Spells > Index > Globe of Invulnerability > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Abjuration'
+- type: variable_text
+  variable_text:
+    id: spells_index_globe_of_invulnerability_somatic_casting
+    label: 'Spells > Index > Globe of Invulnerability > Somatic Casting'
+    description: 'Spells > Index > Globe of Invulnerability > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_globe_of_invulnerability_verbal_casting
+    label: 'Spells > Index > Globe of Invulnerability > Verbal Casting'
+    description: 'Spells > Index > Globe of Invulnerability > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_globe_of_invulnerability_area
+    label: 'Spells > Index > Globe of Invulnerability > Area'
+    description: 'Spells > Index > Globe of Invulnerability > Area'
+    value:
+      type: text_literal
+      text_literal: '10-foot burst centered on one corner of your space'
+- type: variable_text
+  variable_text:
+    id: spells_index_globe_of_invulnerability_duration
+    label: 'Spells > Index > Globe of Invulnerability > Duration'
+    description: 'Spells > Index > Globe of Invulnerability > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_globe_of_invulnerability_description
+    label: 'Spells > Index > Globe of Invulnerability > Description'
+    description: 'Spells > Index > Globe of Invulnerability > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You create an immobile globe around you that attempts to dispel any spell from outside the globe whose area or targets enter into the globe, as if the globe were a dispel magic spell 1 level lower than its actual spell level. Even if the dispel attempt succeeds, it prevents only the portion of the spell that would have entered the globe (so if the spell also had targets outside the globe or part of its area were beyond the globe, those targets or area would still be affected normally). You must form the sphere in an unbroken open space so its edges don’t pass through any creatures or objects or the spell is lost (though creatures can enter the area afterward normally).
+- type: variable_text
+  variable_text:
+    id: spells_index_gluttons_jaws_name
+    label: 'Spells > Index > Glutton''s Jaws > Name'
+    description: 'Spells > Index > Glutton''s Jaws > Name'
+    value:
+      type: text_literal
+      text_literal: 'Glutton''s Jaws'
+- type: variable_text
+  variable_text:
+    id: spells_index_gluttons_jaws_type
+    label: 'Spells > Index > Glutton''s Jaws > Type'
+    description: 'Spells > Index > Glutton''s Jaws > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_gluttons_jaws_level
+    label: 'Spells > Index > Glutton''s Jaws > Level'
+    description: 'Spells > Index > Glutton''s Jaws > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_gluttons_jaws_traits
+    label: 'Spells > Index > Glutton''s Jaws > Traits'
+    description: 'Spells > Index > Glutton''s Jaws > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Necromancy'
+- type: variable_text
+  variable_text:
+    id: spells_index_gluttons_jaws_somatic_casting
+    label: 'Spells > Index > Glutton''s Jaws > Somatic Casting'
+    description: 'Spells > Index > Glutton''s Jaws > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_gluttons_jaws_verbal_casting
+    label: 'Spells > Index > Glutton''s Jaws > Verbal Casting'
+    description: 'Spells > Index > Glutton''s Jaws > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_gluttons_jaws_duration
+    label: 'Spells > Index > Glutton''s Jaws > Duration'
+    description: 'Spells > Index > Glutton''s Jaws > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_gluttons_jaws_description
+    label: 'Spells > Index > Glutton''s Jaws > Description'
+    description: 'Spells > Index > Glutton''s Jaws > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your mouth transforms into a shadowy maw bristling with pointed teeth. These jaws grant you an unarmed attack you’re trained in, dealing 1d6 piercing damage. They have the finesse trait.
+
+        Attacks with your jaws have the following enhancement.
+
+        Enhancement If the target was living, gain 1d4 temporary HP.
+- type: variable_text
+  variable_text:
+    id: spells_index_gluttons_jaws_heightened_level_two
+    label: 'Spells > Index > Glutton''s Jaws > Heightened (2nd)'
+    description: 'Spells > Index > Glutton''s Jaws > Heightened (2nd)'
+    value:
+      type: text_literal
+      text_literal: 'Your jaws gain the effects of a +1 weapon potency rune (a +1 item bonus to attack rolls and an additional damage die) and the temporary Hit Points increase to 2d4.'
+- type: variable_text
+  variable_text:
+    id: spells_index_gluttons_jaws_heightened_level_four
+    label: 'Spells > Index > Glutton''s Jaws > Heightened (4th)'
+    description: 'Spells > Index > Glutton''s Jaws > Heightened (4th)'
+    value:
+      type: text_literal
+      text_literal: 'The jaws gain the effects of a +2 weapon potency rune and the temporary Hit Points increase to 3d4.'
+- type: variable_text
+  variable_text:
+    id: spells_index_gluttons_jaws_heightened_level_four
+    label: 'Spells > Index > Glutton''s Jaws > Heightened (4th)'
+    description: 'Spells > Index > Glutton''s Jaws > Heightened (4th)'
+    value:
+      type: text_literal
+      text_literal: 'The jaws gain the effects of a +2 weapon potency rune and the temporary Hit Points increase to 3d4.'
+- type: variable_text
+  variable_text:
+    id: spells_index_gluttons_jaws_heightened_level_six
+    label: 'Spells > Index > Glutton''s Jaws > Heightened (6th)'
+    description: 'Spells > Index > Glutton''s Jaws > Heightened (6th)'
+    value:
+      type: text_literal
+      text_literal: 'The jaws gain the effects of a +3 weapon potency rune and the temporary Hit Points increase to 4d4.'
+- type: variable_text
+  variable_text:
+    id: spells_index_gluttons_jaws_heightened_level_eight
+    label: 'Spells > Index > Glutton''s Jaws > Heightened (8th)'
+    description: 'Spells > Index > Glutton''s Jaws > Heightened (8th)'
+    value:
+      type: text_literal
+      text_literal: 'The jaws gain the effects of a +4 weapon potency rune and the temporary Hit Points increase to 5d4.'
+- type: variable_text
+  variable_text:
+    id: spells_index_glyph_of_warding_name
+    label: 'Spells > Index > Glyph of Warding > Name'
+    description: 'Spells > Index > Glyph of Warding > Name'
+    value:
+      type: text_literal
+      text_literal: 'Glyph of Warding'
+- type: variable_text
+  variable_text:
+    id: spells_index_glyph_of_warding_type
+    label: 'Spells > Index > Glyph of Warding > Type'
+    description: 'Spells > Index > Glyph of Warding > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_glyph_of_warding_level
+    label: 'Spells > Index > Glyph of Warding > Level'
+    description: 'Spells > Index > Glyph of Warding > Level'
+    value:
+      type: number_literal
+      number_literal: 3
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_glyph_of_warding_traits
+    label: 'Spells > Index > Glyph of Warding > Traits'
+    description: 'Spells > Index > Glyph of Warding > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Abjuration'
+- type: variable_text
+  variable_text:
+    id: spells_index_glyph_of_warding_casting
+    label: 'Spells > Index > Glyph of Warding > Casting'
+    description: 'Spells > Index > Glyph of Warding > Casting'
+    value:
+      type: text_literal
+      text_literal: '10 minutes (Material, Somatic, Verbal)'
+- type: variable_text
+  variable_text:
+    id: spells_index_glyph_of_warding_range
+    label: 'Spells > Index > Glyph of Warding > Range'
+    description: 'Spells > Index > Glyph of Warding > Range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_glyph_of_warding_targets
+    label: 'Spells > Index > Glyph of Warding > Targets'
+    description: 'Spells > Index > Glyph of Warding > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 container or 10-foot-by-10-foot area'
+- type: variable_text
+  variable_text:
+    id: spells_index_glyph_of_warding_duration
+    label: 'Spells > Index > Glyph of Warding > Duration'
+    description: 'Spells > Index > Glyph of Warding > Duration'
+    value:
+      type: text_literal
+      text_literal: 'Unlimited until dismissed'
+- type: variable_text
+  variable_text:
+    id: spells_index_glyph_of_warding_description
+    label: 'Spells > Index > Glyph of Warding > Description'
+    description: 'Spells > Index > Glyph of Warding > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        While Casting this Spell, you also Cast a Spell of a lower spell level to stored in the glyph. The stored spell must take 3 actions or fewer to cast, have a hostile effect, and target one creature or have an area. You can set the glyph with a password, a trigger stimulus, or both. Any creature that opens the target container or enters the target area without speaking the password or matching the trigger stimulus activates the glyph, releasing the harmful spell within.
+
+        Once a spell is stored in the glyph, the glyph gains all the traits of that spell. If the spell targets one or more creatures, it targets the creature that set off the glyph. If the spell has an area, that area is centered on the creature that set off the glyph. Glyph of warding’s duration ends when the glyph is triggered. The glyph counts as a magical trap, using your spell DC for both the Perception check to notice it and the Thievery check to disable it; both checks require the creature attempting them to be trained in order to succeed.
+
+        You can dismiss glyph of warding with a Verbal Casting action. The maximum number of glyphs of warding you can have active at a time is equal to your spellcasting ability modifier.
+- type: variable_text
+  variable_text:
+    id: spells_index_goblin_pox_name
+    label: 'Spells > Index > Goblin Pox > Name'
+    description: 'Spells > Index > Goblin Pox > Name'
+    value:
+      type: text_literal
+      text_literal: 'Goblin Pox'
+- type: variable_text
+  variable_text:
+    id: spells_index_goblin_pox_type
+    label: 'Spells > Index > Goblin Pox > Type'
+    description: 'Spells > Index > Goblin Pox > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_goblin_pox_level
+    label: 'Spells > Index > Goblin Pox > Level'
+    description: 'Spells > Index > Goblin Pox > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_goblin_pox_traits
+    label: 'Spells > Index > Goblin Pox > Traits'
+    description: 'Spells > Index > Goblin Pox > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Attack'
+      - 'Disease'
+      - 'Necromancy'
+- type: variable_text
+  variable_text:
+    id: spells_index_goblin_pox_somatic_casting
+    label: 'Spells > Index > Goblin Pox > Somatic Casting'
+    description: 'Spells > Index > Goblin Pox > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_goblin_pox_verbal_casting
+    label: 'Spells > Index > Goblin Pox > Verbal Casting'
+    description: 'Spells > Index > Goblin Pox > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_goblin_pox_range
+    label: 'Spells > Index > Goblin Pox > Range'
+    description: 'Spells > Index > Goblin Pox > Range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_goblin_pox_targets
+    label: 'Spells > Index > Goblin Pox > Targets'
+    description: 'Spells > Index > Goblin Pox > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_goblin_pox_description
+    label: 'Spells > Index > Goblin Pox > Description'
+    description: 'Spells > Index > Goblin Pox > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Your touch afflicts the target with goblin pox. The effect is based on the result of the target’s Fortitude save.
+
+        Goblin Pox (disease) Level 1. Goblins and goblin dogs are immune. Stage 1 sick 1 (1 round); Stage 2 sick 1 and slowed 1 (1 round); Stage 3 sick 1 and can’t reduce its sick value below 1 (1 day)
+- type: variable_text
+  variable_text:
+    id: spells_index_goblin_pox_success
+    label: 'Spells > Index > Goblin Pox > Success'
+    description: 'Spells > Index > Goblin Pox > Success'
+    value:
+      type: text_literal
+      text_literal: 'The The target is sick 1.'
+- type: variable_text
+  variable_text:
+    id: spells_index_goblin_pox_critical_success
+    label: 'Spells > Index > Goblin Pox > Critical Success'
+    description: 'Spells > Index > Goblin Pox > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The target is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_goblin_pox_failure
+    label: 'Spells > Index > Goblin Pox > Failure'
+    description: 'Spells > Index > Goblin Pox > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target is afflicted with goblin pox at stage 1.'
+- type: variable_text
+  variable_text:
+    id: spells_index_goblin_pox_critical_failure
+    label: 'Spells > Index > Goblin Pox > Critical Failure'
+    description: 'Spells > Index > Goblin Pox > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'The target is afflicted with goblin pox at stage 2.'
+- type: variable_text
+  variable_text:
+    id: spells_index_goodberry_name
+    label: 'Spells > Index > Goodberry > Name'
+    description: 'Spells > Index > Goodberry > Name'
+    value:
+      type: text_literal
+      text_literal: 'Goodberry'
+- type: variable_text
+  variable_text:
+    id: spells_index_goodberry_type
+    label: 'Spells > Index > Goodberry > Type'
+    description: 'Spells > Index > Goodberry > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_goodberry_level
+    label: 'Spells > Index > Goodberry > Level'
+    description: 'Spells > Index > Goodberry > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_goodberry_traits
+    label: 'Spells > Index > Goodberry > Traits'
+    description: 'Spells > Index > Goodberry > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Healing'
+      - 'Necromancy'
+- type: variable_text
+  variable_text:
+    id: spells_index_goodberry_casting
+    label: 'Spells > Index > Goodberry > Casting'
+    description: 'Spells > Index > Goodberry > Casting'
+    value:
+      type: text_literal
+      text_literal: '10 minutes (Somatic, Verbal)'
+- type: variable_text
+  variable_text:
+    id: spells_index_goodberry_range
+    label: 'Spells > Index > Goodberry > Range'
+    description: 'Spells > Index > Goodberry > Range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_goodberry_targets
+    label: 'Spells > Index > Goodberry > Targets'
+    description: 'Spells > Index > Goodberry > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 freshly-picked berry'
+- type: variable_text
+  variable_text:
+    id: spells_index_goodberry_duration
+    label: 'Spells > Index > Goodberry > Duration'
+    description: 'Spells > Index > Goodberry > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 day'
+- type: variable_text
+  variable_text:
+    id: spells_index_goodberry_description
+    label: 'Spells > Index > Goodberry > Description'
+    description: 'Spells > Index > Goodberry > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You imbue the target berry with the bounty of nature, allowing it to heal and sustain far beyond its normal capacity. A living creature that eats the berry with an Interact action gains as much nourishment as a square meal for a typical human and regains 1d4 Hit Points plus your spellcasting ability modifier. If not consumed during the duration, the berry withers away.
+- type: variable_text
+  variable_text:
+    id: spells_index_goodberry_heightened_plus_one
+    label: 'Spells > Index > Goodberry > Heightened (+1)'
+    description: 'Spells > Index > Goodberry > Heightened (+1)'
+    value:
+      type: text_literal
+      text_literal: 'You can target an additional berry.'
+- type: variable_text
+  variable_text:
+    id: spells_index_grim_tendrils_name
+    label: 'Spells > Index > Grim Tendrils > Name'
+    description: 'Spells > Index > Grim Tendrils > Name'
+    value:
+      type: text_literal
+      text_literal: 'Grim Tendrils'
+- type: variable_text
+  variable_text:
+    id: spells_index_grim_tendrils_type
+    label: 'Spells > Index > Grim Tendrils > Type'
+    description: 'Spells > Index > Grim Tendrils > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_grim_tendrils_level
+    label: 'Spells > Index > Grim Tendrils > Level'
+    description: 'Spells > Index > Grim Tendrils > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_grim_tendrils_traits
+    label: 'Spells > Index > Grim Tendrils > Traits'
+    description: 'Spells > Index > Grim Tendrils > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Necromancy'
+      - 'Negative'
+- type: variable_text
+  variable_text:
+    id: spells_index_grim_tendrils_somatic_casting
+    label: 'Spells > Index > Grim Tendrils > Somatic Casting'
+    description: 'Spells > Index > Grim Tendrils > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_grim_tendrils_verbal_casting
+    label: 'Spells > Index > Grim Tendrils > Verbal Casting'
+    description: 'Spells > Index > Grim Tendrils > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_grim_tendrils_area
+    label: 'Spells > Index > Grim Tendrils > Area'
+    description: 'Spells > Index > Grim Tendrils > Area'
+    value:
+      type: text_literal
+      text_literal: '30-foot line'
+- type: variable_text
+  variable_text:
+    id: spells_index_grim_tendrils_description
+    label: 'Spells > Index > Grim Tendrils > Description'
+    description: 'Spells > Index > Grim Tendrils > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        Black shadows curl out from your fingertips and race through the air, taking the form of ephemeral vines spiked with thorns. You deal 2d4 negative damage and 1 persistent bleed damage to living creature in the line, depending on their Fortitude saves.
+- type: variable_text
+  variable_text:
+    id: spells_index_grim_tendrils_success
+    label: 'Spells > Index > Grim Tendrils > Success'
+    description: 'Spells > Index > Grim Tendrils > Success'
+    value:
+      type: text_literal
+      text_literal: 'The creature takes half negative damage and no bleed.'
+- type: variable_text
+  variable_text:
+    id: spells_index_grim_tendrils_critical_success
+    label: 'Spells > Index > Grim Tendrils > Critical Success'
+    description: 'Spells > Index > Grim Tendrils > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The creature is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_grim_tendrils_failure
+    label: 'Spells > Index > Grim Tendrils > Failure'
+    description: 'Spells > Index > Grim Tendrils > Failure'
+    value:
+      type: text_literal
+      text_literal: 'The creature takes full damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_grim_tendrils_critical_failure
+    label: 'Spells > Index > Grim Tendrils > Critical Failure'
+    description: 'Spells > Index > Grim Tendrils > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'Double negative and persistent bleed damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_grease_name
+    label: 'Spells > Index > Grease > Name'
+    description: 'Spells > Index > Grease > Name'
+    value:
+      type: text_literal
+      text_literal: 'Grease'
+- type: variable_text
+  variable_text:
+    id: spells_index_grease_type
+    label: 'Spells > Index > Grease > Type'
+    description: 'Spells > Index > Grease > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_grease_level
+    label: 'Spells > Index > Grease > Level'
+    description: 'Spells > Index > Grease > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_grease_traits
+    label: 'Spells > Index > Grease > Traits'
+    description: 'Spells > Index > Grease > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'conjuration'
+- type: variable_text
+  variable_text:
+    id: spells_index_grease_somatic_casting
+    label: 'spells > index > grease > somatic casting'
+    description: 'spells > index > grease > somatic casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_grease_verbal_casting
+    label: 'spells > index > grease > verbal casting'
+    description: 'spells > index > grease > verbal casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_grease_range
+    label: 'spells > index > grease > range'
+    description: 'spells > index > grease > range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_grease_target
+    label: 'spells > index > grease > target'
+    description: 'spells > index > grease > target'
+    value:
+      type: text_literal
+      text_literal: '1 object of 1 bulk or less'
+- type: variable_text
+  variable_text:
+    id: spells_index_grease_area
+    label: 'spells > index > grease > area'
+    description: 'spells > index > grease > area'
+    value:
+      type: text_literal
+      text_literal: '4 contiguous 5-foot squares'
+- type: variable_text
+  variable_text:
+    id: spells_index_grease_duration
+    label: 'spells > index > grease > duration'
+    description: 'spells > index > grease > duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_grease_description
+    label: 'spells > index > grease > description'
+    description: 'spells > index > grease > description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You conjure greasy goo, with effects based on your target.
+
+        • Target an Area Each creature within the area must attempt an Acrobatics check to Maintain Balance against your spell DC. Creatures later entering a square within the area must also attempt an Acrobatics check to Balance. A creature that takes a Step doesn’t have to Balance.
+
+        • Target an Object If you cast the spell on an unattended object, those trying to pick up the object must succeed at an Acrobatics check against your spell DC to do so. If you target an attended object, the creature that has the object must attempt an Acrobatics check. On a failure, the holder or wielder takes a –2 circumstance penalty to any attack roll or to any check attempted that involves using the object; on a critical failure, the holder or wielder drops the item. The object lands in an adjacent square of the GM’s choice. If the object is worn, the wearer gains a +2 circumstance bonus to Fortitude saving throws against attempts to grapple or shove them.
+- type: variable_text
+  variable_text:
+    id: spells_index_guidance_name
+    label: 'Spells > Index > Guidance > Name'
+    description: 'Spells > Index > Guidance > Name'
+    value:
+      type: text_literal
+      text_literal: 'Guidance'
+- type: variable_text
+  variable_text:
+    id: spells_index_guidance_type
+    label: 'Spells > Index > Guidance > Type'
+    description: 'Spells > Index > Guidance > Type'
+    value:
+      type: text_literal
+      text_literal: 'Cantrip'
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_guidance_traits
+    label: 'Spells > Index > Guidance > Traits'
+    description: 'Spells > Index > Guidance > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Cantrip'
+      - 'Divination'
+- type: variable_text
+  variable_text:
+    id: spells_index_guidance_somatic_casting
+    label: 'spells > index > Guidance > somatic casting'
+    description: 'spells > index > Guidance > somatic casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_guidance_verbal_casting
+    label: 'spells > index > Guidance > verbal casting'
+    description: 'spells > index > Guidance > verbal casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_guidance_range
+    label: 'spells > index > guidance > range'
+    description: 'spells > index > guidance > range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_guidance_targets
+    label: 'spells > index > guidance > targets'
+    description: 'spells > index > guidance > targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_guidance_duration
+    label: 'spells > index > guidance > duration'
+    description: 'spells > index > guidance > duration'
+    value:
+      type: text_literal
+      text_literal: 'Until the start of your next turn or until dismissed'
+- type: variable_text
+  variable_text:
+    id: spells_index_guidance_description
+    label: 'spells > index > guidance > description'
+    description: 'spells > index > guidance > description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You ask for divine guidance, granting the target a +1 conditional bonus to one attack roll, Perception check, saving throw, or skill check the target attempts before the duration ends. The target chooses which roll to use the bonus on before rolling. If the target uses the bonus, the spell ends. Either way, it’s bolstered.
+- type: variable_text
+  variable_text:
+    id: spells_index_gust_of_wind_name
+    label: 'Spells > Index > Gust of Wind > Name'
+    description: 'Spells > Index > Gust of Wind > Name'
+    value:
+      type: text_literal
+      text_literal: 'Gust of Wind'
+- type: variable_text
+  variable_text:
+    id: spells_index_gust_of_wind_type
+    label: 'Spells > Index > Gust of Wind > Type'
+    description: 'Spells > Index > Gust of Wind > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_gust_of_wind_level
+    label: 'Spells > Index > Gust of Wind > Level'
+    description: 'Spells > Index > Gust of Wind > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_gust_of_wind_traits
+    label: 'Spells > Index > Gust of Wind > Traits'
+    description: 'Spells > Index > Gust of Wind > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Air'
+      - 'Evocation'
+- type: variable_text
+  variable_text:
+    id: spells_index_gust_of_wind_somatic_casting
+    label: 'Spells > Index > Gust of Wind > Somatic Casting'
+    description: 'Spells > Index > Gust of Wind > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_gust_of_wind_verbal_casting
+    label: 'Spells > Index > Gust of Wind > Verbal Casting'
+    description: 'Spells > Index > Gust of Wind > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_gust_of_wind_area
+    label: 'Spells > Index > Gust of Wind > Area'
+    description: 'Spells > Index > Gust of Wind > Area'
+    value:
+      type: text_literal
+      text_literal: '60-foot line'
+- type: variable_text
+  variable_text:
+    id: spells_index_gust_of_wind_duration
+    label: 'Spells > Index > Gust of Wind > Duration'
+    description: 'Spells > Index > Gust of Wind > Duration'
+    value:
+      type: text_literal
+      text_literal: 'Until the start of your next turn'
+- type: variable_text
+  variable_text:
+    id: spells_index_gust_of_wind_description
+    label: 'Spells > Index > Gust of Wind > Description'
+    description: 'Spells > Index > Gust of Wind > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        A violent wind issues forth from your outstretched palm, blowing from the point where you are when you cast the spell to the line’s opposite end. The wind extinguishes small nonmagical fires, disperses fog and mist, blows around objects of light Bulk or less, and pushes larger objects. Large or smaller creatures in the area must attempt a Fortitude save. Large or smaller creatures that move into the gust later must attempt the save on entering.
+- type: variable_text
+  variable_text:
+    id: spells_index_gust_of_wind_success
+    label: 'Spells > Index > Gust of Wind > Success'
+    description: 'Spells > Index > Gust of Wind > Success'
+    value:
+      type: text_literal
+      text_literal: 'The creature can’t move against the wind.'
+- type: variable_text
+  variable_text:
+    id: spells_index_gust_of_wind_critical_success
+    label: 'Spells > Index > Gust of Wind > Critical Success'
+    description: 'Spells > Index > Gust of Wind > Critical Success'
+    value:
+      type: text_literal
+      text_literal: 'The creature is unaffected.'
+- type: variable_text
+  variable_text:
+    id: spells_index_gust_of_wind_failure
+    label: 'Spells > Index > Gust of Wind > Failure'
+    description: 'Spells > Index > Gust of Wind > Failure'
+    value:
+      type: text_literal
+      text_literal: 'Knocked prone. If it was flying, it suffers the effects of critical failure instead.'
+- type: variable_text
+  variable_text:
+    id: spells_index_gust_of_wind_critical_failure
+    label: 'Spells > Index > Gust of Wind > Critical Failure'
+    description: 'Spells > Index > Gust of Wind > Critical Failure'
+    value:
+      type: text_literal
+      text_literal: 'Pushed 30 feet in the wind direction, knocked prone, and takes 2d6 bludgeoning damage.'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucination_name
+    label: 'Spells > Index > Hallucination > Name'
+    description: 'Spells > Index > Hallucination > Name'
+    value:
+      type: text_literal
+      text_literal: 'Hallucination'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucination_type
+    label: 'Spells > Index > Hallucination > Type'
+    description: 'Spells > Index > Hallucination > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_hallucination_level
+    label: 'Spells > Index > Hallucination > Level'
+    description: 'Spells > Index > Hallucination > Level'
+    value:
+      type: number_literal
+      number_literal: 5
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_hallucination_traits
+    label: 'Spells > Index > Hallucination > Traits'
+    description: 'Spells > Index > Hallucination > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Illusion'
+      - 'Mental'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucination_somatic_casting
+    label: 'Spells > Index > Hallucination > Somatic Casting'
+    description: 'Spells > Index > Hallucination > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucination_material_casting
+    label: 'Spells > Index > Hallucination > Material Casting'
+    description: 'Spells > Index > Hallucination > Material Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucination_range
+    label: 'Spells > Index > Hallucination > Range'
+    description: 'Spells > Index > Hallucination > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucination_targets
+    label: 'Spells > Index > Hallucination > Targets'
+    description: 'Spells > Index > Hallucination > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucination_duration
+    label: 'Spells > Index > Hallucination > Duration'
+    description: 'Spells > Index > Hallucination > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 hour'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucination_description
+    label: 'Spells > Index > Hallucination > Description'
+    description: 'Spells > Index > Hallucination > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The target consistently believes one thing is another, can’t detect something that’s there, or detects something that’s not there. You choose which of these options applies and determine the specifics of the hallucination. For example, you could make the target think all elves are humans, be unable to detect the presence of his brother, think his beloved pocket watch is always on his person even when it isn’t, or believe there’s a tower in the center of town.
+
+        The target can attempt a Will save to disbelieve the hallucination every time he Seeks or Interacts with the subject of the hallucination. For example, the target could attempt to disbelieve each time he encountered an elf, bumped into his brother accidentally, tried to check his pocket watch, or studied the tower to spot vulnerabilities. The target can attempt to disbelieve with a large circumstance bonus in circumstances determined by the GM, such as if the target attempted to climb the nonexistent tower.
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucination_heightened_level_six
+    label: 'Spells > Index > Hallucination > Heightened (6th)'
+    description: 'Spells > Index > Hallucination > Heightened (6th)'
+    value:
+      type: text_literal
+      text_literal: 'Choose Duration 1 day or Targets up to 10 creatures.'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucination_heightened_level_eight
+    label: 'Spells > Index > Hallucination > Heightened (8th)'
+    description: 'Spells > Index > Hallucination > Heightened (8th)'
+    value:
+      type: text_literal
+      text_literal: 'Choose Duration unlimited or Targets any number of creatures.'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucinatory_terrain_name
+    label: 'Spells > Index > Hallucinatory Terrain > Name'
+    description: 'Spells > Index > Hallucinatory Terrain > Name'
+    value:
+      type: text_literal
+      text_literal: 'Hallucinatory Terrain'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucinatory_terrain_type
+    label: 'Spells > Index > Hallucinatory Terrain > Type'
+    description: 'Spells > Index > Hallucinatory Terrain > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_hallucinatory_terrain_level
+    label: 'Spells > Index > Hallucinatory Terrain > Level'
+    description: 'Spells > Index > Hallucinatory Terrain > Level'
+    value:
+      type: number_literal
+      number_literal: 4
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_hallucinatory_terrain_traits
+    label: 'Spells > Index > Hallucinatory Terrain > Traits'
+    description: 'Spells > Index > Hallucinatory Terrain > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Illusion'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucinatory_terrain_casting
+    label: 'Spells > Index > Hallucinatory Terrain > Casting'
+    description: 'Spells > Index > Hallucinatory Terrain > Casting'
+    value:
+      type: text_literal
+      text_literal: '10 minutes (Material, Somatic, Verbal)'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucinatory_terrain_range
+    label: 'Spells > Index > Hallucinatory Terrain > Range'
+    description: 'Spells > Index > Hallucinatory Terrain > Range'
+    value:
+      type: text_literal
+      text_literal: '500 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucinatory_terrain_area
+    label: 'Spells > Index > Hallucinatory Terrain > Area'
+    description: 'Spells > Index > Hallucinatory Terrain > Area'
+    value:
+      type: text_literal
+      text_literal: '50-foot burst'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucinatory_terrain_duration
+    label: 'Spells > Index > Hallucinatory Terrain > Duration'
+    description: 'Spells > Index > Hallucinatory Terrain > Duration'
+    value:
+      type: text_literal
+      text_literal: '24 hours'
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucinatory_terrain_description
+    label: 'Spells > Index > Hallucinatory Terrain > Description'
+    description: 'Spells > Index > Hallucinatory Terrain > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You create an illusion that causes natural terrain to look, sound, feel, and smell like a different kind of terrain. This doesn’t disguise any structures or creatures in the area.
+
+        Any creature that touches the illusion or uses the Seek action to examine it can attempt to disbelieve your illusion.
+- type: variable_text
+  variable_text:
+    id: spells_index_hallucination_heightened_level_five
+    label: 'Spells > Index > Hallucinatory Terrain > Heightened (5th)'
+    description: 'Spells > Index > Hallucinatory Terrain > Heightened (5th)'
+    value:
+      type: text_literal
+      text_literal: 'Your image can also disguise structures or create illusory structures (but still doesn’t disguise creatures).'
+- type: variable_text
+  variable_text:
+    id: spells_index_hand_of_the_apprentice_name
+    label: 'Spells > Index > Hand of the Apprentice > Name'
+    description: 'Spells > Index > Hand of the Apprentice > Name'
+    value:
+      type: text_literal
+      text_literal: 'Hand of the Apprentice'
+- type: variable_text
+  variable_text:
+    id: spells_index_hand_of_the_apprentice_type
+    label: 'Spells > Index > Hand of the Apprentice > Type'
+    description: 'Spells > Index > Hand of the Apprentice > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_hand_of_the_apprentice_level
+    label: 'Spells > Index > Hand of the Apprentice > Level'
+    description: 'Spells > Index > Hand of the Apprentice > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_hand_of_the_apprentice_traits
+    label: 'Spells > Index > Hand of the Apprentice > Traits'
+    description: 'Spells > Index > Hand of the Apprentice > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Attack'
+      - 'Evocation'
+- type: variable_text
+  variable_text:
+    id: spells_index_hand_of_the_apprentice_somatic_casting
+    label: 'Spells > Index > Hand of the Apprentice > Somatic Casting'
+    description: 'Spells > Index > Hand of the Apprentice > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_hand_of_the_apprentice_verbal_casting
+    label: 'Spells > Index > Hand of the Apprentice > Verbal Casting'
+    description: 'Spells > Index > Hand of the Apprentice > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 action'
+- type: variable_text
+  variable_text:
+    id: spells_index_hand_of_the_apprentice_range
+    label: 'Spells > Index > Hand of the Apprentice > Range'
+    description: 'Spells > Index > Hand of the Apprentice > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_hand_of_the_apprentice_targets
+    label: 'Spells > Index > Hand of the Apprentice > Targets'
+    description: 'Spells > Index > Hand of the Apprentice > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_hand_of_the_apprentice_description
+    label: 'Spells > Index > Hand of the Apprentice > Description'
+    description: 'Spells > Index > Hand of the Apprentice > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You hurl a held melee weapon at the target, making a ranged Strike using your proficiency with the weapon or with spells, whichever is worse. Add your spellcasting ability modifier to damage, rather than your Strength modifier. Whether the attack succeeds or fails, the weapon flies back to you and returns to your hand.
+- type: variable_text
+  variable_text:
+    id: spells_index_harmonize_name
+    label: 'Spells > Index > Harmonize > Name'
+    description: 'Spells > Index > Harmonize > Name'
+    value:
+      type: text_literal
+      text_literal: 'Harmonize'
+- type: variable_text
+  variable_text:
+    id: spells_index_harmonize_type
+    label: 'Spells > Index > Harmonize > Type'
+    description: 'Spells > Index > Harmonize > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_harmonize_level
+    label: 'Spells > Index > Harmonize > Level'
+    description: 'Spells > Index > Harmonize > Level'
+    value:
+      type: number_literal
+      number_literal: 3
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_harmonize_traits
+    label: 'Spells > Index > Harmonize > Traits'
+    description: 'Spells > Index > Harmonize > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Enchantment'
+- type: variable_text
+  variable_text:
+    id: spells_index_harmonize_verbal_casting
+    label: 'Spells > Index > Harmonize > Verbal Casting'
+    description: 'Spells > Index > Harmonize > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: 'Free Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_harmonize_trigger
+    label: 'Spells > Index > Harmonize > Trigger'
+    description: 'Spells > Index > Harmonize > Trigger'
+    value:
+      type: text_literal
+      text_literal: 'You finish casting a composition.'
+- type: variable_text
+  variable_text:
+    id: spells_index_harmonize_description
+    label: 'Spells > Index > Harmonize > Description'
+    description: 'Spells > Index > Harmonize > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The triggering spell becomes a harmonized composition. A harmonized composition doesn’t end if you cast another composition, and you can cast another composition on the same turn as a harmonized composition. Casting another harmonized composition ends any harmonized composition you have in effect.
+- type: variable_text
+  variable_text:
+    id: spells_index_haste_name
+    label: 'Spells > Index > Haste > Name'
+    description: 'Spells > Index > Haste > Name'
+    value:
+      type: text_literal
+      text_literal: 'Haste'
+- type: variable_text
+  variable_text:
+    id: spells_index_haste_type
+    label: 'Spells > Index > Haste > Type'
+    description: 'Spells > Index > Haste > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_haste_level
+    label: 'Spells > Index > Haste > Level'
+    description: 'Spells > Index > Haste > Level'
+    value:
+      type: number_literal
+      number_literal: 3
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_haste_traits
+    label: 'Spells > Index > Haste > Traits'
+    description: 'Spells > Index > Haste > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Transmutation'
+- type: variable_text
+  variable_text:
+    id: spells_index_haste_somatic_casting
+    label: 'Spells > Index > Haste > Somatic Casting'
+    description: 'Spells > Index > Haste > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_haste_verbal_casting
+    label: 'Spells > Index > Haste > Verbal Casting'
+    description: 'Spells > Index > Haste > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_haste_range
+    label: 'Spells > Index > Haste > Range'
+    description: 'Spells > Index > Haste > Range'
+    value:
+      type: text_literal
+      text_literal: '30 feet'
+- type: variable_text
+  variable_text:
+    id: spells_index_haste_targets
+    label: 'Spells > Index > Haste > Targets'
+    description: 'Spells > Index > Haste > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_haste_duration
+    label: 'Spells > Index > Haste > Duration'
+    description: 'Spells > Index > Haste > Duration'
+    value:
+      type: text_literal
+      text_literal: '1 minute'
+- type: variable_text
+  variable_text:
+    id: spells_index_haste_description
+    label: 'Spells > Index > Haste > Description'
+    description: 'Spells > Index > Haste > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The target acts faster. It gains the quick condition and can use the extra action each round only for Strike and Stride actions.
+- type: variable_text
+  variable_text:
+    id: spells_index_haste_heightened_level_seven
+    label: 'Spells > Index > Haste > Heightened (7th)'
+    description: 'Spells > Index > Haste > Heightened (7th)'
+    value:
+      type: text_literal
+      text_literal: 'You can target up to 5 creatures.'
+- type: variable_text
+  variable_text:
+    id: spells_index_healers_blessing_name
+    label: 'Spells > Index > Healer''s Blessing > Name'
+    description: 'Spells > Index > Healer''s Blessing > Name'
+    value:
+      type: text_literal
+      text_literal: 'Healer''s Blessing'
+- type: variable_text
+  variable_text:
+    id: spells_index_healers_blessing_type
+    label: 'Spells > Index > Healer''s Blessing > Type'
+    description: 'Spells > Index > Healer''s Blessing > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_healers_blessing_level
+    label: 'Spells > Index > Healer''s Blessing > Level'
+    description: 'Spells > Index > Healer''s Blessing > Level'
+    value:
+      type: number_literal
+      number_literal: 1
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_healers_blessing_traits
+    label: 'Spells > Index > Healer''s Blessing > Traits'
+    description: 'Spells > Index > Healer''s Blessing > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Necromancy'
+- type: variable_text
+  variable_text:
+    id: spells_index_healers_blessing_somatic_casting
+    label: 'Spells > Index > Healer''s Blessing > Somatic Casting'
+    description: 'Spells > Index > Healer''s Blessing > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: 'Free Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_healers_blessing_trigger
+    label: 'Spells > Index > Healer''s Blessing > Trigger'
+    description: 'Spells > Index > Healer''s Blessing > Trigger'
+    value:
+      type: text_literal
+      text_literal: 'You cast a heal spell to heal a living creature.'
+- type: variable_text
+  variable_text:
+    id: spells_index_healers_blessing_description
+    label: 'Spells > Index > Healer''s Blessing > Description'
+    description: 'Spells > Index > Healer''s Blessing > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        The amount healed by the triggering spell increases by 2 points per die. If you’re both healing living creatures and damaging undead, the healing increases by that amount but the damage does not.
+- type: variable_text
+  variable_text:
+    id: spells_index_healing_font_name
+    label: 'Spells > Index > Healing Font > Name'
+    description: 'Spells > Index > Healing Font > Name'
+    value:
+      type: text_literal
+      text_literal: 'Healing Font'
+- type: variable_text
+  variable_text:
+    id: spells_index_healing_font_type
+    label: 'Spells > Index > Healing Font > Type'
+    description: 'Spells > Index > Healing Font > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_healing_font_level
+    label: 'Spells > Index > Healing Font > Level'
+    description: 'Spells > Index > Healing Font > Level'
+    value:
+      type: number_literal
+      number_literal: 2
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_healing_font_traits
+    label: 'Spells > Index > Healing Font > Traits'
+    description: 'Spells > Index > Healing Font > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Necromancy'
+- type: variable_text
+  variable_text:
+    id: spells_index_healing_font_somatic_casting
+    label: 'Spells > Index > Healing Font > Somatic Casting'
+    description: 'Spells > Index > Healing Font > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: 'Free Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_healing_font_trigger
+    label: 'Spells > Index > Healing Font > Trigger'
+    description: 'Spells > Index > Healing Font > Trigger'
+    value:
+      type: text_literal
+      text_literal: 'You use channel energy to cast a heal spell.'
+- type: variable_text
+  variable_text:
+    id: spells_index_healing_font_description
+    label: 'Spells > Index > Healing Font > Description'
+    description: 'Spells > Index > Healing Font > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You draw power from your pool of Spell Points to cast heal, and thus this casting of heal doesn’t expend a use of channel energy.
+- type: variable_text
+  variable_text:
+    id: spells_index_heroism_name
+    label: 'Spells > Index > Heroism > Name'
+    description: 'Spells > Index > Heroism > Name'
+    value:
+      type: text_literal
+      text_literal: 'Heroism'
+- type: variable_text
+  variable_text:
+    id: spells_index_heroism_type
+    label: 'Spells > Index > Heroism > Type'
+    description: 'Spells > Index > Heroism > Type'
+    value:
+      type: text_literal
+      text_literal: 'Spell'
+- type: variable_number
+  variable_number:
+    id: spells_index_heroism_level
+    label: 'Spells > Index > Heroism > Level'
+    description: 'Spells > Index > Heroism > Level'
+    value:
+      type: number_literal
+      number_literal: 3
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_heroism_traits
+    label: 'Spells > Index > Heroism > Traits'
+    description: 'Spells > Index > Heroism > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Enchantment'
+      - 'Mental'
+- type: variable_text
+  variable_text:
+    id: spells_index_heroism_somatic_casting
+    label: 'Spells > Index > Heroism > Somatic Casting'
+    description: 'Spells > Index > Heroism > Somatic Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_heroism_verbal_casting
+    label: 'Spells > Index > Heroism > Verbal Casting'
+    description: 'Spells > Index > Heroism > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: '1 Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_heroism_range
+    label: 'Spells > Index > Heroism > Range'
+    description: 'Spells > Index > Heroism > Range'
+    value:
+      type: text_literal
+      text_literal: 'Touch'
+- type: variable_text
+  variable_text:
+    id: spells_index_heroism_targets
+    label: 'Spells > Index > Heroism > Targets'
+    description: 'Spells > Index > Heroism > Targets'
+    value:
+      type: text_literal
+      text_literal: '1 humanoid creature'
+- type: variable_text
+  variable_text:
+    id: spells_index_heroism_duration
+    label: 'Spells > Index > Heroism > Duration'
+    description: 'Spells > Index > Heroism > Duration'
+    value:
+      type: text_literal
+      text_literal: '10 minutes'
+- type: variable_text
+  variable_text:
+    id: spells_index_heroism_description
+    label: 'Spells > Index > Heroism > Description'
+    description: 'Spells > Index > Heroism > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You tap the target’s inner heroism, granting it a +1 conditional bonus to attack rolls, Perception checks, saving throws, and skill checks.
+- type: variable_text
+  variable_text:
+    id: spells_index_heroism_heightened_level_five
+    label: 'Spells > Index > Heroism > Heightened (5th)'
+    description: 'Spells > Index > Heroism > Heightened (5th)'
+    value:
+      type: text_literal
+      text_literal: 'The conditional bonus increases to +2.'
+- type: variable_text
+  variable_text:
+    id: spells_index_heroism_heightened_level_eight
+    label: 'Spells > Index > Heroism > Heightened (8th)'
+    description: 'Spells > Index > Heroism > Heightened (8th)'
+    value:
+      type: text_literal
+      text_literal: 'The conditional bonus increases to +3.'
+- type: variable_text
+  variable_text:
+    id: spells_index_heros_defiance_name
+    label: 'Spells > Index > Hero''s Defiance > Name'
+    description: 'Spells > Index > Hero''s Defiance > Name'
+    value:
+      type: text_literal
+      text_literal: 'Hero''s Defiance'
+- type: variable_text
+  variable_text:
+    id: spells_index_heros_defiance_type
+    label: 'Spells > Index > Hero''s Defiance > Type'
+    description: 'Spells > Index > Hero''s Defiance > Type'
+    value:
+      type: text_literal
+      text_literal: 'Power'
+- type: variable_number
+  variable_number:
+    id: spells_index_heros_defiance_level
+    label: 'Spells > Index > Hero''s Defiance > Level'
+    description: 'Spells > Index > Hero''s Defiance > Level'
+    value:
+      type: number_literal
+      number_literal: 10
+- type: variable_text_list
+  variable_text_list:
+    id: spells_index_heros_defiance_traits
+    label: 'Spells > Index > Hero''s Defiance > Traits'
+    description: 'Spells > Index > Hero''s Defiance > Traits'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Healing'
+      - 'Necromancy'
+      - 'Positive'
+- type: variable_text
+  variable_text:
+    id: spells_index_heros_defiance_verbal_casting
+    label: 'Spells > Index > Hero''s Defiance > Verbal Casting'
+    description: 'Spells > Index > Hero''s Defiance > Verbal Casting'
+    value:
+      type: text_literal
+      text_literal: 'Free Action'
+- type: variable_text
+  variable_text:
+    id: spells_index_heros_defiance_trigger
+    label: 'Spells > Index > Hero''s Defiance > Trigger'
+    description: 'Spells > Index > Hero''s Defiance > Trigger'
+    value:
+      type: text_literal
+      text_literal: 'An attack would bring you to 0 Hit Points, and the attack isn’t disintegrate and doesn’t have the death trait.'
+- type: variable_text
+  variable_text:
+    id: spells_index_heros_defiance_description
+    label: 'Spells > Index > Hero''s Defiance > Description'
+    description: 'Spells > Index > Hero''s Defiance > Description'
+    value:
+      type: text_literal
+      text_literal: >-
+        You shout in defiance of your fate. Just before applying the attack’s damage, you recover Hit Points equal to 19d4 plus your spellcasting ability modifier. If this is enough to prevent the attack from bringing you to 0 Hit Points, you don’t become unconscious or dying. Either way, you can’t use hero’s defiance again for 1 minute.

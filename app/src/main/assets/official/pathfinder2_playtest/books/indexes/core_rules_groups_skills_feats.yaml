@@ -5,6 +5,9 @@ groups:
 - id: 'dc906b38-0472-493e-b307-28816926c5b5'
   name: 'Skills > Ability Entry'
   summary: 'Skills > Ability Entry'
+  content_reference_variable:
+    type: variable_tag
+    variable_tag: skills_ability_card_reference
   format:
     element_format:
       background_color_theme:
@@ -45,147 +48,8 @@ groups:
                   type: width_justify
                   width_justify: justify
         value_variable_reference:
-          type: variable_template
-          variable_template:
-            entries:
-            - context: acrobatics_balance
-              variable_id: skills_index_acrobatics_balance_name
-            - context: acrobatics_escape
-              variable_id: skills_index_acrobatics_escape_name
-            - context: acrobatics_grab_edge
-              variable_id: skills_index_acrobatics_grab_edge_name
-            - context: acrobatics_maintain_balance
-              variable_id: skills_index_acrobatics_maintain_balance_name
-            - context: acrobatics_squeeze
-              variable_id: skills_index_acrobatics_squeeze_name
-            - context: acrobatics_tumble_through
-              variable_id: skills_index_acrobatics_tumble_through_name
-            - context: acrobatics_maneuver_in_flight
-              variable_id: skills_index_acrobatics_maneuver_in_flight_name
-            - context: arcana_recall_knowledge
-              variable_id: skills_index_arcana_recall_knowledge_name
-            - context: arcana_borrow_arcane_spell
-              variable_id: skills_index_arcana_borrow_arcane_spell_name
-            - context: arcana_identify_magic
-              variable_id: skills_index_arcana_identify_magic_name
-            - context: arcana_learn_arcane_spell
-              variable_id: skills_index_arcana_learn_arcane_spell_name
-            - context: arcana_read_magic
-              variable_id: skills_index_arcana_read_magic_name
-            - context: athletics_break_grapple
-              variable_id: skills_index_athletics_break_grapple_name
-            - context: athletics_break_open
-              variable_id: skills_index_athletics_break_open_name
-            - context: athletics_climb
-              variable_id: skills_index_athletics_climb_name
-            - context: athletics_grapple
-              variable_id: skills_index_athletics_grapple_name
-            - context: athletics_high_jump
-              variable_id: skills_index_athletics_high_jump_name
-            - context: athletics_long_jump
-              variable_id: skills_index_athletics_long_jump_name
-            - context: athletics_shove
-              variable_id: skills_index_athletics_shove_name
-            - context: athletics_swim
-              variable_id: skills_index_athletics_swim_name
-            - context: athletics_trip
-              variable_id: skills_index_athletics_trip_name
-            - context: athletics_disarm
-              variable_id: skills_index_athletics_disarm_name
-            - context: crafting_repair
-              variable_id: skills_index_crafting_repair_name
-            - context: crafting_craft
-              variable_id: skills_index_crafting_craft_name
-            - context: crafting_identify_alchemy
-              variable_id: skills_index_crafting_identify_alchemy_name
-            - context: deception_create_diversion
-              variable_id: skills_index_deception_create_diversion_name
-            - context: deception_impersonate
-              variable_id: skills_index_deception_impersonate_name
-            - context: deception_lie
-              variable_id: skills_index_deception_lie_name
-            - context: deception_feint
-              variable_id: skills_index_deception_feint_name
-            - context: diplomacy_gather_information
-              variable_id: skills_index_diplomacy_gather_information_name
-            - context: diplomacy_make_impression
-              variable_id: skills_index_diplomacy_make_impression_name
-            - context: diplomacy_request
-              variable_id: skills_index_diplomacy_request_name
-            - context: intimidation_coerce
-              variable_id: skills_index_intimidation_coerce_name
-            - context: intimidation_demoralize
-              variable_id: skills_index_intimidation_demoralize_name
-            - context: lore_recall_knowledge
-              variable_id: skills_index_lore_recall_knowledge_name
-            - context: lore_practice_trade
-              variable_id: skills_index_lore_practice_trade_name
-            - context: medicine_administer_first_aid
-              variable_id: skills_index_medicine_first_aid_name
-            - context: medicine_treat_disease
-              variable_id: skills_index_medicine_treat_disease_name
-            - context: medicine_treat_poison
-              variable_id: skills_index_medicine_treat_poison_name
-            - context: nature_command_animal
-              variable_id: skills_index_nature_command_animal_name
-            - context: nature_handle_animal
-              variable_id: skills_index_nature_handle_animal_name
-            - context: nature_recall_knowledge
-              variable_id: skills_index_nature_recall_knowledge_name
-            - context: nature_identify_magic
-              variable_id: skills_index_nature_identify_magic_name
-            - context: nature_learn_primal_spell
-              variable_id: skills_index_nature_learn_primal_spell_name
-            - context: occultism_recall_knowledge
-              variable_id: skills_index_occultism_recall_knowledge_name
-            - context: occultism_identify_magic
-              variable_id: skills_index_occultism_identify_magic_name
-            - context: occultism_learn_occult_spell
-              variable_id: skills_index_occultism_learn_occult_spell_name
-            - context: occultism_read_esoterica
-              variable_id: skills_index_occultism_read_esoterica_name
-            - context: performance_perform
-              variable_id: skills_index_performance_perform_name
-            - context: performance_stage_performance
-              variable_id: skills_index_performance_stage_performance_name
-            - context: religion_recall_knowledge
-              variable_id: skills_index_religion_recall_knowledge_name
-            - context: religion_identify_magic
-              variable_id: skills_index_religion_identify_magic_name
-            - context: religion_learn_divine_spell
-              variable_id: skills_index_religion_learn_divine_spell_name
-            - context: religion_read_scripture
-              variable_id: skills_index_religion_read_scripture_name
-            - context: society_recall_knowledge
-              variable_id: skills_index_society_recall_knowledge_name
-            - context: society_subsist_streets
-              variable_id: skills_index_society_subsist_streets_name
-            - context: society_create_forgery
-              variable_id: skills_index_society_create_forgery_name
-            - context: society_decipher_writing
-              variable_id: skills_index_society_decipher_writing_name
-            - context: stealth_conceal_object
-              variable_id: skills_index_stealth_conceal_object_name
-            - context: stealth_hide
-              variable_id: skills_index_stealth_hide_name
-            - context: stealth_sneak
-              variable_id: skills_index_stealth_sneak_name
-            - context: survival_sense_direction
-              variable_id: skills_index_survival_sense_direction_name
-            - context: survival_survive_wild
-              variable_id: skills_index_survival_survive_wild_name
-            - context: survival_cover_tracks
-              variable_id: skills_index_survival_cover_tracks_name
-            - context: survival_track
-              variable_id: skills_index_survival_track_name
-            - context: thievery_palm_object
-              variable_id: skills_index_thievery_palm_object_name
-            - context: thievery_steal_object
-              variable_id: skills_index_thievery_steal_object_name
-            - context: thievery_disable_device
-              variable_id: skills_index_thievery_disable_device_name
-            - context: thievery_pick_lock
-              variable_id: skills_index_thievery_pick_lock_name
+          type: variable_tag
+          variable_tag: skills_ability_name
     - type: widget_text
       widget_text:
         format:
@@ -201,147 +65,8 @@ groups:
                   type: width_justify
                   width_justify: justify
         value_variable_reference:
-          type: variable_template
-          variable_template:
-            entries:
-            - context: acrobatics_balance
-              variable_id: skills_index_acrobatics_balance_actions
-            - context: acrobatics_escape
-              variable_id: skills_index_acrobatics_escape_actions
-            - context: acrobatics_grab_edge
-              variable_id: skills_index_acrobatics_grab_edge_actions
-            - context: acrobatics_maintain_balance
-              variable_id: skills_index_acrobatics_maintain_balance_actions
-            - context: acrobatics_squeeze
-              variable_id: skills_index_acrobatics_squeeze_actions
-            - context: acrobatics_tumble_through
-              variable_id: skills_index_acrobatics_tumble_through_actions
-            - context: acrobatics_maneuver_in_flight
-              variable_id: skills_index_acrobatics_maneuver_in_flight_actions
-            - context: arcana_recall_knowledge
-              variable_id: skills_index_arcana_recall_knowledge_actions
-            - context: arcana_borrow_arcane_spell
-              variable_id: skills_index_arcana_borrow_arcane_spell_actions
-            - context: arcana_identify_magic
-              variable_id: skills_index_arcana_identify_magic_actions
-            - context: arcana_learn_arcane_spell
-              variable_id: skills_index_arcana_learn_arcane_spell_actions
-            - context: arcana_read_magic
-              variable_id: skills_index_arcana_read_magic_actions
-            - context: athletics_break_grapple
-              variable_id: skills_index_athletics_break_grapple_actions
-            - context: athletics_break_open
-              variable_id: skills_index_athletics_break_open_actions
-            - context: athletics_climb
-              variable_id: skills_index_athletics_climb_actions
-            - context: athletics_grapple
-              variable_id: skills_index_athletics_grapple_actions
-            - context: athletics_high_jump
-              variable_id: skills_index_athletics_high_jump_actions
-            - context: athletics_long_jump
-              variable_id: skills_index_athletics_long_jump_actions
-            - context: athletics_shove
-              variable_id: skills_index_athletics_shove_actions
-            - context: athletics_swim
-              variable_id: skills_index_athletics_swim_actions
-            - context: athletics_trip
-              variable_id: skills_index_athletics_trip_actions
-            - context: athletics_disarm
-              variable_id: skills_index_athletics_disarm_actions
-            - context: crafting_repair
-              variable_id: skills_index_crafting_repair_actions
-            - context: crafting_craft
-              variable_id: skills_index_crafting_craft_actions
-            - context: crafting_identify_alchemy
-              variable_id: skills_index_crafting_identify_alchemy_actions
-            - context: deception_create_diversion
-              variable_id: skills_index_deception_create_diversion_actions
-            - context: deception_impersonate
-              variable_id: skills_index_deception_impersonate_actions
-            - context: deception_lie
-              variable_id: skills_index_deception_lie_actions
-            - context: deception_feint
-              variable_id: skills_index_deception_feint_actions
-            - context: diplomacy_gather_information
-              variable_id: skills_index_diplomacy_gather_information_actions
-            - context: diplomacy_make_impression
-              variable_id: skills_index_diplomacy_make_impression_actions
-            - context: diplomacy_request
-              variable_id: skills_index_diplomacy_request_actions
-            - context: intimidation_coerce
-              variable_id: skills_index_intimidation_coerce_actions
-            - context: intimidation_demoralize
-              variable_id: skills_index_intimidation_demoralize_actions
-            - context: lore_recall_knowledge
-              variable_id: skills_index_lore_recall_knowledge_actions
-            - context: lore_practice_trade
-              variable_id: skills_index_lore_practice_trade_actions
-            - context: medicine_administer_first_aid
-              variable_id: skills_index_medicine_first_aid_actions
-            - context: medicine_treat_disease
-              variable_id: skills_index_medicine_treat_disease_actions
-            - context: medicine_treat_poison
-              variable_id: skills_index_medicine_treat_poison_actions
-            - context: nature_command_animal
-              variable_id: skills_index_nature_command_animal_actions
-            - context: nature_handle_animal
-              variable_id: skills_index_nature_handle_animal_actions
-            - context: nature_recall_knowledge
-              variable_id: skills_index_nature_recall_knowledge_actions
-            - context: nature_identify_magic
-              variable_id: skills_index_nature_identify_magic_actions
-            - context: nature_learn_primal_spell
-              variable_id: skills_index_nature_learn_primal_spell_actions
-            - context: occultism_recall_knowledge
-              variable_id: skills_index_occultism_recall_knowledge_actions
-            - context: occultism_identify_magic
-              variable_id: skills_index_occultism_identify_magic_actions
-            - context: occultism_learn_occult_spell
-              variable_id: skills_index_occultism_learn_occult_spell_actions
-            - context: occultism_read_esoterica
-              variable_id: skills_index_occultism_read_esoterica_actions
-            - context: performance_perform
-              variable_id: skills_index_performance_perform_actions
-            - context: performance_stage_performance
-              variable_id: skills_index_performance_stage_performance_actions
-            - context: religion_recall_knowledge
-              variable_id: skills_index_religion_recall_knowledge_actions
-            - context: religion_identify_magic
-              variable_id: skills_index_religion_identify_magic_actions
-            - context: religion_learn_divine_spell
-              variable_id: skills_index_religion_learn_divine_spell_actions
-            - context: religion_read_scripture
-              variable_id: skills_index_religion_read_scripture_actions
-            - context: society_recall_knowledge
-              variable_id: skills_index_society_recall_knowledge_actions
-            - context: society_subsist_streets
-              variable_id: skills_index_society_subsist_streets_actions
-            - context: society_create_forgery
-              variable_id: skills_index_society_create_forgery_actions
-            - context: society_decipher_writing
-              variable_id: skills_index_society_decipher_writing_actions
-            - context: stealth_conceal_object
-              variable_id: skills_index_stealth_conceal_object_actions
-            - context: stealth_hide
-              variable_id: skills_index_stealth_hide_actions
-            - context: stealth_sneak
-              variable_id: skills_index_stealth_sneak_actions
-            - context: survival_sense_direction
-              variable_id: skills_index_survival_sense_direction_actions
-            - context: survival_survive_wild
-              variable_id: skills_index_survival_survive_wild_actions
-            - context: survival_cover_tracks
-              variable_id: skills_index_survival_cover_tracks_actions
-            - context: survival_track
-              variable_id: skills_index_survival_track_actions
-            - context: thievery_palm_object
-              variable_id: skills_index_thievery_palm_object_actions
-            - context: thievery_steal_object
-              variable_id: skills_index_thievery_steal_object_actions
-            - context: thievery_disable_device
-              variable_id: skills_index_thievery_disable_device_actions
-            - context: thievery_pick_lock
-              variable_id: skills_index_thievery_pick_lock_actions
+          type: variable_tag
+          variable_tag: skills_ability_actions
 ## ---------------------------------------------------------------------------------------------
 ## | Ability Card
 ## ---------------------------------------------------------------------------------------------
@@ -355,46 +80,279 @@ groups:
         - theme_id: light
           color_id: white
       padding:
-        bottom: 12
+        bottom: 16
   rows:
-#  - format:
-#      element_format:
-#        horizontal_alignment: left
-#        margins:
-#          left: 12
-#          right: 12
-#          top: 16
-#          bottom: 16
-#    widgets:
-#    - type: widget_number
-#      widget_number:
-#        kind: modifier
-#        format:
-#          type: widget_format_official
-#          widget_format_official:
-#            theme: metric
-#            style: horizontal_box
-#            widget_format:
-#              element_format:
-#                margins:
-#                  right: 16
-#        prefix_variable_reference:
-#          type: variable_id
-#          variable_id: term_armor_class_label
-#        value_variable_reference:
-#          type: variable_tag
-#          variable_tag: armor_ac_bonus
-#    - type: widget_number
-#      widget_number:
-#        kind: modifier
-#        format:
-#          type: widget_format_official
-#          widget_format_official:
-#            theme: metric
-#            style: horizontal_box
-#        prefix_variable_reference:
-#          type: variable_id
-#          variable_id: term_touch_armor_class_label
-#        value_variable_reference:
-#          type: variable_tag
-#          variable_tag: armor_tac_bonus
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 16
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: horizontal_box
+            variation: normal
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_use_as
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: skills_ability_actions
+  - format:
+      element_format:
+        horizontal_alignment: left
+        padding:
+          top: 16
+        margins:
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+        default_value: 'None'
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_trigger
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: skills_ability_trigger
+  - format:
+      element_format:
+        horizontal_alignment: left
+        padding:
+          top: 8
+          bottom: 16
+        margins:
+          left: 12
+          right: 12
+        border:
+          bottom:
+            thickness: 1
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_5
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+        default_value: 'None'
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_requirements
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: skills_ability_requirements
+  - format:
+      element_format:
+        horizontal_alignment: left
+        padding:
+          top: 16
+        margins:
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: skills_ability_description
+## ---------------------------------------------------------------------------------------------
+## | General Feats > Entry
+## ---------------------------------------------------------------------------------------------
+- id: 'c7733727-8b6d-4163-ac86-4410a54f8256'
+  name: 'Feats > Entry'
+  summary: 'Feats > Entry'
+  content_reference_variable:
+    type: variable_tag
+    variable_tag: general_feats_card_reference
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+  rows:
+  - format:
+      element_format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_5
+            thickness: 1
+        padding:
+          top: 16
+          bottom: 16
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: entity_section_label
+            widget_format:
+              width: 2
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: general_feat_name
+    - type: widget_number
+      widget_number:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: entity_section_label_tag
+            widget_format:
+              width: 1.2
+              element_format:
+                horizontal_alignment: right
+                width:
+                  type: width_justify
+                  width_justify: justify
+        prefix_variable_reference:
+          type: variable_id
+          variable_id: term_level
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: general_feat_level
+## ---------------------------------------------------------------------------------------------
+## | General Feat Card
+## ---------------------------------------------------------------------------------------------
+- id: '57212085-5291-45cd-9b00-b202e0d6de73'
+  name: 'General Feat Card'
+  summary: 'General Feat Card'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        bottom: 16
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 16
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: horizontal_box
+            variation: normal
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_use_as
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: skills_ability_actions
+  - format:
+      element_format:
+        horizontal_alignment: left
+        padding:
+          top: 16
+        margins:
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+        default_value: 'None'
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_trigger
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: skills_ability_trigger
+  - format:
+      element_format:
+        horizontal_alignment: left
+        padding:
+          top: 8
+          bottom: 16
+        margins:
+          left: 12
+          right: 12
+        border:
+          bottom:
+            thickness: 1
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_5
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+        default_value: 'None'
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_requirements
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: skills_ability_requirements
+  - format:
+      element_format:
+        horizontal_alignment: left
+        padding:
+          top: 16
+        margins:
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: skills_ability_description

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.taletable.android.activity.search.view.*
+import com.taletable.android.model.session.sessionManifest
 import com.taletable.android.model.theme.Theme
 
 
@@ -148,6 +149,12 @@ class SearchResultsRecyclerViewAdapter(
                 val sessionViewHolder = viewHolder as SearchResultSessionViewHolder
                 sessionViewHolder.setName(item.name)
                 sessionViewHolder.setDescription(item.description)
+
+                val mSession = sessionManifest(context).apply { it.session(item.sessionId) }
+                mSession.doMaybe {
+                    val entityNames = it.persistedEntities(context).take(3).map { it.name }
+                    sessionViewHolder.setEntityList(entityNames)
+                }
 
 //                sessionViewHolder.setOnClick(View.OnClickListener {
 //                    val intent = Intent(homeActivity, SessionActivity::class.java)

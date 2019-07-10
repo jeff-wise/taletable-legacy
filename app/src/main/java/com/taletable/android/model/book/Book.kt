@@ -6,12 +6,10 @@ import android.content.Context
 import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.*
-import com.taletable.android.lib.orm.schema.CollValue
 import com.taletable.android.lib.orm.schema.PrimValue
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
-import com.taletable.android.model.game.Author
 import com.taletable.android.model.engine.Engine
 import com.taletable.android.model.engine.variable.Variable
 import com.taletable.android.model.sheet.group.GroupContext
@@ -304,30 +302,32 @@ data class Book(val bookId : EntityId,
 /**
  * Book Info
  */
-data class BookInfo(override val id : UUID,
-                    val title : BookTitle,
+data class BookInfo(val title : BookTitle,
                     val subtitle : BookSubtitle,
                     val summary : BookSummary,
-                    val authors : List<Author>,
+                    val credits : BookCredits,
+                    val publisher : Maybe<BookPublisher>,
+                    val licenseInfo : Maybe<BookLicenseInfo>,
                     val abstract : BookAbstract)
-                     : ToDocument, ProdType, Serializable
+                     : ToDocument, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(title : BookTitle,
-                subtitle : BookSubtitle,
-                summary : BookSummary,
-                authors : List<Author>,
-                abstract : BookAbstract)
-        : this(UUID.randomUUID(),
-               title,
-               subtitle,
-               summary,
-               authors,
-               abstract)
+//    constructor(title     : BookTitle,
+//                subtitle  : BookSubtitle,
+//                summary   : BookSummary,
+//                authors   : List<Author>,
+//                publisher : BookPublisher,
+//                abstract  : BookAbstract)
+//        : this(UUID.randomUUID(),
+//               title,
+//               subtitle,
+//               summary,
+//               authors,
+//               abstract)
 
 
     companion object : Factory<BookInfo>
@@ -343,8 +343,16 @@ data class BookInfo(override val id : UUID,
                       doc.at("subtitle") apply { BookSubtitle.fromDocument(it) },
                       // Summary
                       doc.at("summary") apply { BookSummary.fromDocument(it) },
-                      // Authors
-                      doc.list("authors") apply { it.map { Author.fromDocument(it) } },
+                      // Credits
+                      doc.at("credits") apply { BookCredits.fromDocument(it) },
+                      // Publisher
+                      split(doc.maybeAt("publisher"),
+                            effValue<ValueError,Maybe<BookPublisher>>(Nothing()),
+                            { apply(::Just, BookPublisher.fromDocument(it)) }),
+                      // License Info
+                      split(doc.maybeAt("license_info"),
+                            effValue<ValueError,Maybe<BookLicenseInfo>>(Nothing()),
+                            { apply(::Just, BookLicenseInfo.fromDocument(it)) }),
                       // Abstract
                       doc.at("abstract") apply { BookAbstract.fromDocument(it) }
                       )
@@ -378,68 +386,43 @@ data class BookInfo(override val id : UUID,
     fun summary() : BookSummary = this.summary
 
 
-    fun authors() : List<Author> = this.authors
-
-
     fun abstract() : BookAbstract = this.abstract
 
 
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    override val prodTypeObject = this
-
-
-    override fun rowValue() : DB_BookInfoValue =
-        RowValue4(bookInfoTable,
-                  PrimValue(this.title),
-                  PrimValue(this.summary),
-                  CollValue(this.authors),
-                  PrimValue(this.abstract))
-
-
-    // -----------------------------------------------------------------------------------------
-    // AUTHORS
+    // | AUTHORS
     // -----------------------------------------------------------------------------------------
 
-    fun authorListString() : String =
-        if (this.authors.isEmpty())
-        {
-            ""
-        }
-        else if (this.authors.size == 1)
-        {
-            this.authors.firstOrNull()?.authorName?.value ?: ""
-        }
-        else if (this.authors.size == 2)
-        {
-            val firstAuthorName = this.authors[0].authorName.value
-            val secondAuthorName = this.authors[1].authorName.value
-            "$firstAuthorName and $secondAuthorName"
-        }
-        else
-        {
-            var s = ""
-            this.authors.forEachIndexed { index, author ->
-                if (index > 0)
-                    s += ", "
-
-                if (index == (authors.size - 1))
-                    s += "and "
-
-                s += author.authorName.value
-            }
-            s
-        }
-
+//    fun authorListString() : String =
+//        if (this.authors.isEmpty())
+//        {
+//            ""
+//        }
+//        else if (this.authors.size == 1)
+//        {
+//            this.authors.firstOrNull()?.authorName?.value ?: ""
+//        }
+//        else if (this.authors.size == 2)
+//        {
+//            val firstAuthorName = this.authors[0].authorName.value
+//            val secondAuthorName = this.authors[1].authorName.value
+//            "$firstAuthorName and $secondAuthorName"
+//        }
+//        else
+//        {
+//            var s = ""
+//            this.authors.forEachIndexed { index, author ->
+//                if (index > 0)
+//                    s += ", "
+//
+//                if (index == (authors.size - 1))
+//                    s += "and "
+//
+//                s += author.authorName.value
+//            }
+//            s
+//        }
 
 }
-
-
 
 
 /**
@@ -942,3 +925,115 @@ data class ChapterButtonFormat(val elementFormat : ElementFormat,
 
 }
 
+
+
+/**
+ * Book Publisher
+ */
+data class BookPublisher(val value : String) : ToDocument, Serializable
+{
+
+    // | CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<BookPublisher>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookPublisher> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::BookPublisher,
+                      // Name
+                      doc.text("name"))
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+    // | TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+}
+
+
+
+/**
+ * Book Credits
+ */
+data class BookCredits(
+        val label : String,
+        val content : Maybe<BookContentId>
+) : ToDocument, Serializable
+{
+
+    // | CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<BookCredits>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookCredits> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::BookCredits,
+                      // Label
+                      doc.text("label"),
+                      // Content Id
+                      split(doc.maybeAt("content_id"),
+                            effValue<ValueError,Maybe<BookContentId>>(Nothing()),
+                            { apply(::Just, BookContentId.fromDocument(it)) }))
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+    // | TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf())
+
+
+    // | TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+}
+
+
+/**
+ * Book License Info
+ */
+data class BookLicenseInfo(
+        val label : String,
+        val content : Maybe<BookContentId>
+) : ToDocument, Serializable
+{
+
+    // | CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<BookLicenseInfo>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<BookLicenseInfo> = when (doc)
+        {
+            is DocDict ->
+            {
+                apply(::BookLicenseInfo,
+                      // Label
+                      doc.text("label"),
+                      // Content Id
+                      split(doc.maybeAt("content_id"),
+                            effValue<ValueError,Maybe<BookContentId>>(Nothing()),
+                            { apply(::Just, BookContentId.fromDocument(it)) }))
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+    // | TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocDict(mapOf())
+
+}

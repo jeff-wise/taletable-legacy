@@ -171,7 +171,7 @@
     <!--<color name="gold_light">#E3D7B4</color>-->
     <!--<color name="gold_medium_light">#D9CDAC</color>-->
 
-    <color name="gold_very_light">#FCEFAE</color>
+    <color name="gold_very_light">#FEF6BF</color>
     <color name="gold_light">#F2E6A7</color>
     <color name="gold_medium_light">#E5D99E</color>
 
@@ -268,9 +268,9 @@
 
     <color name="light_theme_green">#45BD72</color>
     <color name="light_theme_green_90">#E645BD72</color>
-    <color name="light_theme_light_blue">#1887C0</color>
+    <color name="light_theme_light_blue">#1294C7</color>
     <color name="light_theme_light_blue_90">#E61887C0</color>
-    <color name="light_theme_light_blue_tint_1">#2F93C6</color>
+    <color name="light_theme_light_blue_tint_1">#2A9FCD</color>
     <color name="light_theme_light_blue_tint_2">#469FCD</color>
     <color name="light_theme_light_blue_tint_3">#5DABD3</color>
     <color name="light_theme_light_grey_1">#FAFAFA</color>
@@ -284,9 +284,10 @@
     <color name="light_theme_light_grey_12">#CCCCCC</color>
     <color name="light_theme_light_grey_15">#A9A9A9</color>
     <color name="light_theme_light_blue_grey_1">#F9FCFF</color>
+    <color name="light_theme_light_blue_grey_2">#F4F6F8</color>
     <color name="light_theme_light_blue_grey_3">#F1F4F7</color>
-    <color name="light_theme_light_blue_grey_5">#E9ECEF</color>
-    <color name="light_theme_light_blue_grey_7">#E0E3EA</color>
+    <color name="light_theme_light_blue_grey_5">#E9ECFF</color>
+    <color name="light_theme_light_blue_grey_7">#E0E3E6</color>
     <color name="light_theme_light_blue_grey_8">#DCDFE2</color>
     <color name="light_theme_light_blue_grey_9">#D7DAE2</color>
     <color name="light_theme_light_blue_grey_10">#D3D5D9</color>
@@ -314,7 +315,7 @@
     <color name="light_theme_dark_blue_grey_12">#4F5255</color>
     <color name="light_theme_dark_blue_grey_13">#556164</color>
     <color name="light_theme_dark_blue_grey_14">#5A6669</color>
-    <color name="light_theme_dark_blue_grey_15">#5F6265</color>
+    <color name="light_theme_dark_blue_grey_15">#5F6B6E</color>
     <color name="light_theme_dark_blue_grey_16">#657174</color>
     <color name="light_theme_dark_blue_grey_18">#6F7B7E</color>
     <color name="light_theme_dark_blue_grey_20">#7A8689</color>

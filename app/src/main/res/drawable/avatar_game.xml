@@ -10,7 +10,7 @@
     <!--</stroke>-->
 
     <solid
-        android:color="@color/light_theme_light_blue_grey_7">
+        android:color="@color/light_theme_light_blue_grey_3">
     </solid>
 
     <!--<corners-->

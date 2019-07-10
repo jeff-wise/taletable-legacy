@@ -131,15 +131,15 @@ class SimpleAdderDialog : DialogFragment()
     }
 
 
-    override fun onAttach(context : Context?)
-    {
-        super.onAttach(context)
-        try {
-            this.numberUpdater = context as NumberUpdater
-        } catch (e : ClassCastException) {
-            throw ClassCastException("Activity does not satisfy Number Updater interface.")
-        }
-    }
+//    override fun onAttach(context : Context?)
+//    {
+//        super.onAttach(context)
+//        try {
+//            this.numberUpdater = context as NumberUpdater
+//        } catch (e : ClassCastException) {
+//            throw ClassCastException("Activity does not satisfy Number Updater interface.")
+//        }
+//    }
 
 
     // -----------------------------------------------------------------------------------------

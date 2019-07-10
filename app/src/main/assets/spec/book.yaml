@@ -120,19 +120,82 @@ types:
         prim_type: string
       presence: required
       description: The summary of the book.
-    - name: authors
+    - name: credits
       type: 
-        type: custom_coll_type
-        custom_coll_type: author
+        type: custom_type
+        custom_type: book_credits
       presence: required
       description: >
         The game's authors.
+    - name: publisher
+      type:
+        type: custom_type
+        custom_type: book_publisher
+      presence: optional
+      description: A brief description of the game rules.
+    - name: license_info
+      type: 
+        type: custom_type
+        custom_type: book_license_info
+      presence: optional
+      description: License information.
     - name: abstract
       type:
         type: prim_type
         prim_type: string
       presence: required
       description: A brief description of the game rules.
+- type: product_type
+  product_type:
+    name: book_publisher
+    label: Book Publisher
+    description: Book publisher. 
+    group: 'Book'
+    fields:
+    - name: name
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The publisher name.
+- type: product_type
+  product_type:
+    name: book_credits
+    label: Book Credits
+    description: Book credits. 
+    group: 'Book'
+    fields:
+    - name: label
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The publisher name.
+    - name: content_id
+      type:
+        type: custom_type
+        custom_type: book_content_id
+      presence: optional
+      description: The credits content id.
+- type: product_type
+  product_type:
+    name: book_license_info
+    label: Book License Info
+    description: Book license info. 
+    group: 'Book'
+    fields:
+    - name: label
+      type:
+        type: prim_type
+        prim_type: string
+      presence: optional
+      description: The publisher name.
+    - name: content_id
+      type:
+        type: custom_type
+        custom_type: book_content_id
+      presence: optional
+      description: The credits content id.
 - type: product_type
   product_type:
     name: book_settings

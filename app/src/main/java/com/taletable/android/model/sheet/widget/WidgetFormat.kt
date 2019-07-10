@@ -207,11 +207,36 @@ data class WidgetStyle(val value : String) : ToDocument, Serializable
 }
 
 
+/**
+ * Widget Style Variation
+ */
+data class WidgetStyleVariation(val value : String) : ToDocument, Serializable
+{
+
+    // | CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<WidgetStyleVariation>
+    {
+        override fun fromDocument(doc : SchemaDoc) : ValueParser<WidgetStyleVariation> = when (doc) {
+            is DocText -> effValue(WidgetStyleVariation(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+    // | TO DOCUMENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun toDocument() = DocText(this.value)
+
+}
+
 
 
 data class OfficialWidgetFormat(
     val theme : WidgetOfficialTheme,
     val style : WidgetStyle,
+    val variation : Maybe<WidgetStyleVariation>,
     val widgetFormat : Maybe<WidgetFormat>
 )
 {
@@ -233,6 +258,10 @@ data class OfficialWidgetFormat(
                       doc.at("theme").apply { WidgetOfficialTheme.fromDocument(it) },
                       // Widget Style
                       doc.at("style").apply { WidgetStyle.fromDocument(it) },
+                      // Widget Style Variation
+                      split(doc.maybeAt("variation"),
+                            effValue<ValueError, Maybe<WidgetStyleVariation>>(Nothing()),
+                            { apply(::Just, WidgetStyleVariation.fromDocument(it)) }),
                       // Widget Format
                       split(doc.maybeAt("widget_format"),
                             effValue<ValueError, Maybe<WidgetFormat>>(Nothing()),

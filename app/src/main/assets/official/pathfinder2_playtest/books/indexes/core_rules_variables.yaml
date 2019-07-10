@@ -29,6 +29,452 @@ variables:
         speak of a few protagonists, heroes with both the ability and the willpower to do things
         that others could not. Let's learn about how to create our heroes and the world they live in,
         including the races, creatuers, weapons, spells, and more.
+## -------------------------------------------------------------------------------------------------
+## CREDITS
+## -------------------------------------------------------------------------------------------------
+- type: variable_text
+  variable_text:
+    id: credits_header_credits
+    label: 'Credits > Header > Credits'
+    description: 'Credits > Header > Credits'
+    value:
+      type: text_literal
+      text_literal: 'Credits'
+- type: variable_text
+  variable_text:
+    id: credits_header_editorial
+    label: 'Credits > Header > Editorial'
+    description: 'Credits > Header > Editorial'
+    value:
+      type: text_literal
+      text_literal: 'Paizo Editorial'
+- type: variable_text
+  variable_text:
+    id: credits_header_incorporated
+    label: 'Credits > Header > Incorporated'
+    description: 'Credits > Header > Incorporated'
+    value:
+      type: text_literal
+      text_literal: 'Paizo Incorporated'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_designers
+    label: 'Credits > Subheader > Designers'
+    description: 'Credits > subheader > Designers'
+    value:
+      type: text_literal
+      text_literal: 'Designers'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_developers
+    label: 'Credits > Subheader > Developers'
+    description: 'Credits > subheader > Developers'
+    value:
+      type: text_literal
+      text_literal: 'Developers'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_editors
+    label: 'Credits > Subheader > Editors'
+    description: 'Credits > subheader > Editors'
+    value:
+      type: text_literal
+      text_literal: 'Editors'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_graphic_designers
+    label: 'Credits > Subheader > Graphic Designers'
+    description: 'Credits > subheader > Graphic Designers'
+    value:
+      type: text_literal
+      text_literal: 'Graphic Designers'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_cover_interior_artist
+    label: 'Credits > Subheader > Cover and Interior Artist'
+    description: 'Credits > subheader > Cover and Interior Artist'
+    value:
+      type: text_literal
+      text_literal: 'Cover and Interior Artist'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_page_border_design
+    label: 'Credits > Subheader > Page Border Design'
+    description: 'Credits > subheader > Page Border Design'
+    value:
+      type: text_literal
+      text_literal: 'Page Border Design'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_creative_management
+    label: 'Credits > Subheader > Creative Management'
+    description: 'Credits > subheader > Creative Management'
+    value:
+      type: text_literal
+      text_literal: 'Creative Management'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_design
+    label: 'Credits > Subheader > Design'
+    description: 'Credits > Subheader > Design'
+    value:
+      type: text_literal
+      text_literal: 'Design'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_development
+    label: 'Credits > Subheader > Development'
+    description: 'Credits > Subheader > Development'
+    value:
+      type: text_literal
+      text_literal: 'Development'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_editing
+    label: 'Credits > Subheader > Editing'
+    description: 'Credits > Subheader > Editing'
+    value:
+      type: text_literal
+      text_literal: 'Editing'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_graphic_design
+    label: 'Credits > Subheader > Graphic Design'
+    description: 'Credits > Subheader > Graphic Design'
+    value:
+      type: text_literal
+      text_literal: 'Graphic Design'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_executive
+    label: 'Credits > Subheader > Executive'
+    description: 'Credits > Subheader > Executive'
+    value:
+      type: text_literal
+      text_literal: 'Executive'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_customer_service
+    label: 'Credits > Subheader > Customer Service'
+    description: 'Credits > Subheader > Customer Service'
+    value:
+      type: text_literal
+      text_literal: 'Customer Service'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_finance
+    label: 'Credits > Subheader > Finance'
+    description: 'Credits > Subheader > Finance'
+    value:
+      type: text_literal
+      text_literal: 'Finance'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_licensing_marketing
+    label: 'Credits > Subheader > Licensing and Marketing'
+    description: 'Credits > Subheader > Licensing and Marketing'
+    value:
+      type: text_literal
+      text_literal: 'Licensing and Marketing'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_organized_play
+    label: 'Credits > Subheader > Organized Play'
+    description: 'Credits > Subheader > Organized Play'
+    value:
+      type: text_literal
+      text_literal: 'Organized Play'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_sales
+    label: 'Credits > Subheader > Sales'
+    description: 'Credits > Subheader > Sales'
+    value:
+      type: text_literal
+      text_literal: 'Sales'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_technology
+    label: 'Credits > Subheader > Technology'
+    description: 'Credits > Subheader > Technology'
+    value:
+      type: text_literal
+      text_literal: 'Technology'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_warehouse
+    label: 'Credits > Subheader > Warehouse'
+    description: 'Credits > Subheader > Warehouse'
+    value:
+      type: text_literal
+      text_literal: 'Warehouse'
+- type: variable_text
+  variable_text:
+    id: credits_subheader_webstore
+    label: 'Credits > Subheader > Webstore'
+    description: 'Credits > Subheader > Webstore'
+    value:
+      type: text_literal
+      text_literal: 'Webstore'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_designers
+    label: 'Credits > Designers'
+    description: 'Credits > Designers'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Logan Bonner'
+      - 'Jason Bulmahn'
+      - 'Stephen Radney-MacFarland'
+      - 'Mark Seifter'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_developers
+    label: 'Credits > Developers'
+    description: 'Credits > Developers'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Adam Daigle'
+      - 'James Jacobs'
+      - 'Amanda Hamon Kunz'
+      - 'Lyz Liddell'
+      - 'Erik Mona'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_editors
+    label: 'Credits > Editors'
+    description: 'Credits > Editors'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Judy Bauer'
+      - 'Christopher Carey'
+      - 'James Case'
+      - 'Simone Dietzler'
+      - 'Cyrus Eosphoros'
+      - 'Leo Glass'
+      - 'Avi Kool'
+      - 'Lyz Liddell'
+      - 'Erik Mona'
+      - 'Adrian Ng'
+      - 'Lacy Pellazar'
+      - 'Jason Tondro'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_graphic_designers
+    label: 'Credits > Graphic Designers'
+    description: 'Credits > Graphic Designers'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Emily Crowell'
+      - 'Sonja Morris'
+      - 'Sarah Robinson'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_cover_interior_artist
+    label: 'Credits > Cover and Interior Artist'
+    description: 'Credits > Cover and Interior Artist'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Wayne Reynolds'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_page_border_design
+    label: 'Credits > Page Border Design'
+    description: 'Credits > Page Border Design'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Taylor Fischer'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_creative_management
+    label: 'Credits > Creative Management'
+    description: 'Credits > Creative Management'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'James Jacobs'
+      - 'Robert G. McCreary'
+      - 'Erik Mona'
+      - 'Mark Moreland'
+      - 'Sarah Robinson'
+      - 'Gabriel Waluconis'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_design
+    label: 'Credits > Design'
+    description: 'Credits > Design'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Logan Bonner'
+      - 'Jason Bulmahn'
+      - 'Stephen Radney-MacFarland'
+      - 'Mark Seifter'
+      - 'Owen K.C. Stephens'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_development
+    label: 'Credits > Development'
+    description: 'Credits > Development'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'John Compton'
+      - 'Adam Daigle'
+      - 'Eleanor Ferron'
+      - 'Crystal Frasier'
+      - 'Thurston Hillman'
+      - 'Jason Keeley'
+      - 'Amanda Hamon Kunz'
+      - 'Luis Loza'
+      - 'Ron Lundeen'
+      - 'Joe Pasini'
+      - 'Michael Sayre'
+      - 'Chris Sims'
+      - 'Linda Zayas-Palmer'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_editing
+    label: 'Credits > Editing'
+    description: 'Credits > Editing'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Judy Bauer'
+      - 'Christopher Carey'
+      - 'James Case'
+      - 'Leo Glass'
+      - 'Lyz Liddell'
+      - 'Adrian Ng'
+      - 'Lacy Pellazar'
+      - 'Jason Tondro'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_graphic_design
+    label: 'Credits > Graphic Design'
+    description: 'Credits > Graphic Design'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Emily Crowell'
+      - 'Sonja Morris'
+      - 'Adam Vick'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_executive
+    label: 'Credits > Executive'
+    description: 'Credits > Executive'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Jeffery Alvarez'
+      - 'John Parrish'
+      - 'Erik Mona'
+      - 'Lisa Stevens'
+      - 'Vic Wertz'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_customer_service
+    label: 'Credits > Customer Service'
+    description: 'Credits > Customer Service'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Sharaya Copas'
+      - 'Katina Davis'
+      - 'Sara Marie'
+      - 'Samantha Phelan'
+      - 'Diego Valdez'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_finance
+    label: 'Credits > Finance'
+    description: 'Credits > Finance'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Christopher Caldwell'
+      - 'B. Scott Keim'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_licensing_marketing
+    label: 'Credits > Licensing and Marketing'
+    description: 'Credits > Licensing and Marketing'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Jim Butler'
+      - 'Glenn Elliott'
+      - 'Aaron Shanks'
+      - 'Dan Tharp'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_organized_play
+    label: 'Credits > Organized Play'
+    description: 'Credits > Organized Play'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Tonya Woldridge'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_sales
+    label: 'Credits > Sales'
+    description: 'Credits > Sales'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Cosmo Eisele'
+      - 'Pierce Watters'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_technology
+    label: 'Credits > Technology'
+    description: 'Credits > Technology'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Brian Bauman'
+      - 'Robert Brandenburg'
+      - 'Whitney Chatterjee'
+      - 'Lissa Guillet'
+      - 'Erik Keith'
+      - 'Chris Lambertz'
+      - 'Dean Ludwig'
+      - 'Gary Teter'
+      - 'Andrew White'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_warehouse
+    label: 'Credits > Warehouse'
+    description: 'Credits > Warehouse'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Laura Wilkes Carey'
+      - 'Will Chase'
+      - 'Mika Hawkins'
+      - 'Heather Payne'
+      - 'Jeff Strand'
+      - 'Kevin Underwood'
+- type: variable_text_list
+  variable_text_list:
+    id: credits_webstore
+    label: 'Credits > Webstore'
+    description: 'Credits > Webstore'
+    value:
+      type: text_list_literal
+      text_list_literal:
+      - 'Rick Kunz'
+## -------------------------------------------------------------------------------------------------
+## TERMS
+## -------------------------------------------------------------------------------------------------
 - type: variable_text
   variable_text:
     id: term_feet_abbr
@@ -151,12 +597,28 @@ variables:
       text_literal: 'Languages'
 - type: variable_text
   variable_text:
+    id: term_level
+    label: 'Term > Level'
+    description: 'Term > Level'
+    value:
+      type: text_literal
+      text_literal: 'Level'
+- type: variable_text
+  variable_text:
     id: term_price
     label: 'Term > Price'
     description: 'Term > Price'
     value:
       type: text_literal
       text_literal: 'Price'
+- type: variable_text
+  variable_text:
+    id: term_requirements
+    label: 'Term > Requirements'
+    description: 'Term > Requirements'
+    value:
+      type: text_literal
+      text_literal: 'Requirements'
 - type: variable_text
   variable_text:
     id: term_size
@@ -183,12 +645,28 @@ variables:
       text_literal: 'Traits'
 - type: variable_text
   variable_text:
+    id: term_trigger
+    label: 'Term > Trigger'
+    description: 'Term > Trigger'
+    value:
+      type: text_literal
+      text_literal: 'Trigger'
+- type: variable_text
+  variable_text:
     id: term_unburdened
     label: 'Term > Unburdened'
     description: 'Term > Unburdened'
     value:
       type: text_literal
       text_literal: 'Unburdened'
+- type: variable_text
+  variable_text:
+    id: term_use_as
+    label: 'Term > Use as'
+    description: 'Term > Use as'
+    value:
+      type: text_literal
+      text_literal: 'Use as'
 - type: variable_text
   variable_text:
     id: classes_header
@@ -29947,7 +30425,7 @@ variables:
     value:
       type: text_literal
       text_literal: >-
-        Cantrip: ghost sound; 1st: charm; 2nd: hideous laughter; 3rd: enthrall; 4th: freedom of movement; 5th: passwall; 6th: mislead; 7th: regenerate; 8th: irresistible dance; 9th: storm of vengeance
+        Cantrip: ghost sound; 1st: charming_touch; 2nd: hideous laughter; 3rd: enthrall; 4th: freedom of movement; 5th: passwall; 6th: mislead; 7th: regenerate; 8th: irresistible dance; 9th: storm of vengeance
 - type: variable_text
   variable_text:
     id: classes_index_sorcerer_bloodlines_list_fey_bloodline_powers
@@ -31947,7 +32425,7 @@ variables:
     value:
       type: text_literal
       text_literal: >-
-        As an enchanter, you use magic to manipulate the minds of your victims. You might use your abilities to subtly influence others or seize total control over them. You add one 1st-level enchantment spell (such as charm) to your spellbook. You learn the charming words school power (see page 210), which you can cast at a cost of 1 Spell Point.
+        As an enchanter, you use magic to manipulate the minds of your victims. You might use your abilities to subtly influence others or seize total control over them. You add one 1st-level enchantment spell (such as charming_touch) to your spellbook. You learn the charming_touching words school power (see page 210), which you can cast at a cost of 1 Spell Point.
 - type: variable_text
   variable_text:
     id: classes_index_wizard_feature_schools_evocation_header
@@ -33685,8 +34163,6 @@ variables:
       text_literal: >-
         One slot of each level of spell you can cast, except 1st level and cantrips, becomes a spell combination slot. When you prepare your spells, you can fill a combination slot with a combination of two spells. Each spell in the combination must be 1 or more spell levels below the slot’s level and both must target only one creature or object or have the option to target only one creature or object.
 
-
         Each spell in the combination must also have the same means of determining whether it has an effect—both spells must either require a ranged attack roll, the same type of saving throw, or automatically affect the target.
-
 
         When you cast a combined spell, it affects only one target, even if the component spells normally affect more than one target. If any spell in the combination has further restrictions (such as targeting only humanoids or only living creatures), you must abide by all restrictions. Handle the resolution of a combined spell as if were a single spell, but apply the effects of both component spells. For example, if the spell’s target successfully saved against a combined spell, it would take the “Succeed” effect of each spell, and if it critically failed it would take the “Critical Failure” effect of both spells.
