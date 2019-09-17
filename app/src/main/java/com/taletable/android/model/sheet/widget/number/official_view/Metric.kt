@@ -15,9 +15,7 @@ import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
-import com.taletable.android.model.sheet.widget.NumberWidget
-import com.taletable.android.model.sheet.widget.WidgetFormat
-import com.taletable.android.model.sheet.widget.WidgetStyle
+import com.taletable.android.model.sheet.widget.*
 import com.taletable.android.model.theme.ColorId
 import com.taletable.android.model.theme.ColorTheme
 import com.taletable.android.model.theme.ThemeColorId
@@ -25,7 +23,7 @@ import com.taletable.android.model.theme.ThemeId
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.colorOrBlack
 import maybe.Maybe
-import java.lang.NumberFormatException
+
 
 
 /**
@@ -33,6 +31,7 @@ import java.lang.NumberFormatException
  */
 fun numberWidgetOfficialMetricView(
         style : WidgetStyle,
+        variations : List<WidgetStyleVariation>,
         numberWidget : NumberWidget,
         entityId : EntityId,
         context : Context,
@@ -40,7 +39,7 @@ fun numberWidgetOfficialMetricView(
 ) : View = when (style.value)
 {
     "horizontal_box" -> numberWidgetMetricHorizontalBoxView(numberWidget, entityId, groupContext, context)
-    "vertical_box"   -> numberWidgetMetricVerticalBoxView(numberWidget, entityId, groupContext, context)
+    "vertical_box"   -> numberWidgetMetricVerticalBoxView(numberWidget, variations, entityId, groupContext, context)
     "entity_section_tag" -> entitySectionEntryTagView(numberWidget, entityId, groupContext, context)
     "entity_section_label_tag" -> entitySectionLabelTagView(numberWidget, entityId, groupContext, context)
     else             -> numberWidgetMetricHorizontalBoxView(numberWidget, entityId, groupContext, context)
@@ -138,7 +137,7 @@ private fun numberWidgetMetricHorizontalBoxLabelView(
     labelViewBuilder.width      = LinearLayout.LayoutParams.WRAP_CONTENT
     labelViewBuilder.height     = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    numberWidget.prefixValue(entityId).apDo {
+    numberWidget.labelValue(entityId).apDo {
         labelViewBuilder.text = it
     }
 
@@ -237,6 +236,7 @@ private fun numberWidgetMetricHorizontalBoxValueView(
  */
 private fun numberWidgetMetricVerticalBoxView(
         numberWidget : NumberWidget,
+        variations : List<WidgetStyleVariation>,
         entityId : EntityId,
         groupContext : Maybe<GroupContext>,
         context : Context
@@ -246,8 +246,8 @@ private fun numberWidgetMetricVerticalBoxView(
 
     layout.addView(numberWidgetMetricVerticalBoxLabelView(numberWidget, entityId, context))
 
-    val valueLayout = numberWidgetMetricVerticalBoxValueViewLayout(context)
-    valueLayout.addView(numberWidgetMetricVerticalBoxValueView(numberWidget, entityId, groupContext, context))
+    val valueLayout = numberWidgetMetricVerticalBoxValueViewLayout(variations, context)
+    valueLayout.addView(numberWidgetMetricVerticalBoxValueView(numberWidget, variations, entityId, groupContext, context))
     valueLayout.addView(numberWidgetMetricVerticalBoxPostfixView(numberWidget, entityId, context))
     layout.addView(valueLayout)
 
@@ -339,6 +339,7 @@ private fun numberWidgetMetricVerticalBoxLabelView(
  * Vertical Box Value
  */
 private fun numberWidgetMetricVerticalBoxValueViewLayout(
+        variations : List<WidgetStyleVariation>,
         context : Context
 ) : LinearLayout
 {
@@ -351,7 +352,14 @@ private fun numberWidgetMetricVerticalBoxValueViewLayout(
     layoutBuilder.padding.rightDp    = 8f
 
     layoutBuilder.gravity   = Gravity.CENTER_VERTICAL or Gravity.START
-    layoutBuilder.backgroundResource    = R.drawable.bg_style_vertical_box
+
+    if (WidgetStyleVariation("filled") in variations) {
+        layoutBuilder.backgroundResource = R.drawable.bg_style_vertical_box_filled
+        layoutBuilder.margin.topDp = 1f
+
+    } else {
+        layoutBuilder.backgroundResource = R.drawable.bg_style_vertical_box
+    }
 
     return layoutBuilder.linearLayout(context)
 }
@@ -361,6 +369,7 @@ private fun numberWidgetMetricVerticalBoxValueViewLayout(
  */
 private fun numberWidgetMetricVerticalBoxValueView(
         numberWidget : NumberWidget,
+        variations : List<WidgetStyleVariation>,
         entityId : EntityId,
         groupContext : Maybe<GroupContext>,
         context : Context
@@ -386,7 +395,12 @@ private fun numberWidgetMetricVerticalBoxValueView(
     labelViewBuilder.color           = colorOrBlack(labelColorTheme, entityId)
 //    labelViewBuilder.color           = Color.WHITE
 
-    labelViewBuilder.sizeSp     = 21f
+    if (WidgetStyleVariation("large") in variations) {
+        labelViewBuilder.sizeSp = 21f
+    } else {
+        labelViewBuilder.sizeSp = 17f
+    }
+
 
     return labelViewBuilder.textView(context)
 }

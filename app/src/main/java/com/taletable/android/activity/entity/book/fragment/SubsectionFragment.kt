@@ -226,7 +226,7 @@ class SubsectionUI(val subsection : BookSubsection,
 
         layout.addView(this.titleView())
 
-        layout.addView(this.toolbarView())
+        layout.addView(toolbarView(theme, context))
 
         return layout
     }
@@ -417,109 +417,109 @@ class SubsectionUI(val subsection : BookSubsection,
     // VIEWS | Toolbar
     // -----------------------------------------------------------------------------------------
 
-    private fun toolbarView() : LinearLayout
-    {
-        val layout = toolbarViewLayout()
-
-        layout.addView(toolbarButtonView(R.drawable.icon_pencil, 15, R.string.edit))
-
-        layout.addView(toolbarButtonView(R.drawable.icon_questions, 20, R.string.help))
-
-        return layout
-    }
-
-    // VIEWS | Toolbar > Layout
-    // -----------------------------------------------------------------------------------------
-    private fun toolbarViewLayout() : LinearLayout
-    {
-        val layout              = LinearLayoutBuilder()
-
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.orientation      = LinearLayout.HORIZONTAL
-
-        layout.gravity          = Gravity.CENTER_VERTICAL
-
-        layout.padding.topDp    = 48f
-
-        return layout.linearLayout(context)
-    }
-
-    // VIEWS | Toolbar > Button
-    // -----------------------------------------------------------------------------------------
-
-    private fun toolbarButtonView(iconId : Int, iconSize : Int, labelId : Int) : LinearLayout
-    {
-        // (1) Declarations
-        // -------------------------------------------------------------------------------------
-
-        val layout                 = LinearLayoutBuilder()
-        val icon                        = ImageViewBuilder()
-        val label                       = TextViewBuilder()
-
-        // (2) Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.width               = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.corners             = Corners(3.0, 3.0, 3.0, 3.0)
-
-        layout.padding.topDp       = 8f
-        layout.padding.bottomDp    = 8f
-        layout.padding.leftDp      = 12f
-        layout.padding.rightDp     = 14f
-
-        layout.gravity             = Gravity.CENTER
-
-        layout.margin.rightDp       = 12f
-
-        val bgColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_16"))))
-        layout.backgroundColor     = theme.colorOrBlack(bgColorTheme)
-
-        layout.child(icon)
-              .child(label)
-
-        // (3) Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.widthDp            = iconSize
-        icon.heightDp           = iconSize
-
-        icon.image              = iconId
-
-        val iconColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
-        icon.color              = theme.colorOrBlack(iconColorTheme)
-        //icon.color              = Color.WHITE
-
-        icon.margin.rightDp     = 6f
-
-        // (3) Label
-        // -------------------------------------------------------------------------------------
-
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        label.font              = Font.typeface(TextFont.RobotoCondensed,
-                                                TextFontStyle.Bold,
-                                                context)
-
-        label.textId            = labelId
-
-        val labelColorTheme = ColorTheme(setOf(
-                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
-        label.color             = theme.colorOrBlack(labelColorTheme)
-        //label.color             = Color.WHITE
-
-        label.sizeSp            = 18f
-
-        return layout.linearLayout(context)
-    }
+//    private fun toolbarView() : LinearLayout
+//    {
+//        val layout = toolbarViewLayout()
+//
+//        layout.addView(toolbarButtonView(R.drawable.icon_pencil, 15, R.string.edit))
+//
+//        layout.addView(toolbarButtonView(R.drawable.icon_questions, 20, R.string.help))
+//
+//        return layout
+//    }
+//
+//    // VIEWS | Toolbar > Layout
+//    // -----------------------------------------------------------------------------------------
+//    private fun toolbarViewLayout() : LinearLayout
+//    {
+//        val layout              = LinearLayoutBuilder()
+//
+//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        layout.orientation      = LinearLayout.HORIZONTAL
+//
+//        layout.gravity          = Gravity.CENTER_VERTICAL
+//
+//        layout.padding.topDp    = 48f
+//
+//        return layout.linearLayout(context)
+//    }
+//
+//    // VIEWS | Toolbar > Button
+//    // -----------------------------------------------------------------------------------------
+//
+//    private fun toolbarButtonView(iconId : Int, iconSize : Int, labelId : Int) : LinearLayout
+//    {
+//        // (1) Declarations
+//        // -------------------------------------------------------------------------------------
+//
+//        val layout                 = LinearLayoutBuilder()
+//        val icon                        = ImageViewBuilder()
+//        val label                       = TextViewBuilder()
+//
+//        // (2) Layout
+//        // -------------------------------------------------------------------------------------
+//
+//        layout.width               = LinearLayout.LayoutParams.WRAP_CONTENT
+//        layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        layout.corners             = Corners(3.0, 3.0, 3.0, 3.0)
+//
+//        layout.padding.topDp       = 8f
+//        layout.padding.bottomDp    = 8f
+//        layout.padding.leftDp      = 12f
+//        layout.padding.rightDp     = 14f
+//
+//        layout.gravity             = Gravity.CENTER
+//
+//        layout.margin.rightDp       = 12f
+//
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_16"))))
+//        layout.backgroundColor     = theme.colorOrBlack(bgColorTheme)
+//
+//        layout.child(icon)
+//              .child(label)
+//
+//        // (3) Icon
+//        // -------------------------------------------------------------------------------------
+//
+//        icon.widthDp            = iconSize
+//        icon.heightDp           = iconSize
+//
+//        icon.image              = iconId
+//
+//        val iconColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
+//        icon.color              = theme.colorOrBlack(iconColorTheme)
+//        //icon.color              = Color.WHITE
+//
+//        icon.margin.rightDp     = 6f
+//
+//        // (3) Label
+//        // -------------------------------------------------------------------------------------
+//
+//        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+//        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+//
+//        label.font              = Font.typeface(TextFont.RobotoCondensed,
+//                                                TextFontStyle.Bold,
+//                                                context)
+//
+//        label.textId            = labelId
+//
+//        val labelColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
+//        label.color             = theme.colorOrBlack(labelColorTheme)
+//        //label.color             = Color.WHITE
+//
+//        label.sizeSp            = 18f
+//
+//        return layout.linearLayout(context)
+//    }
 
     // | VIEWS > Content
     // --------------------------------------------------------------------------------------------

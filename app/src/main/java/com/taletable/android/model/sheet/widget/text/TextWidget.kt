@@ -12,6 +12,7 @@ import com.taletable.android.model.sheet.widget.TextWidget
 import com.taletable.android.model.sheet.widget.Widget
 import com.taletable.android.model.sheet.widget.WidgetStyle
 import com.taletable.android.model.sheet.widget.WidgetView
+import com.taletable.android.model.theme.Theme
 import com.taletable.android.rts.entity.EntityId
 import com.taletable.android.rts.entity.EntityTypeSheet
 import com.taletable.android.rts.entity.entityType
@@ -20,9 +21,20 @@ import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
+
+
+// -----------------------------------------------------------------------------------------
+// | VIEW DATA
+// -----------------------------------------------------------------------------------------
+
+data class TextWidgetViewData(
+        val value : String,
+        val label : Maybe<String>
+)
 
 
 // -----------------------------------------------------------------------------------------
@@ -79,7 +91,8 @@ private fun configureTextWidgetViewClick(
 
 fun textWidgetView(
         textWidget : TextWidget,
-        entityId : EntityId,
+        data : TextWidgetViewData,
+        theme : Theme,
         context : Context,
         groupContext : Maybe<GroupContext> = Nothing()) : View
 {
@@ -87,9 +100,9 @@ fun textWidgetView(
 
     return when (format) {
         is TextWidgetFormatCustom ->
-            textWidgetCustomView(textWidget, format, entityId, context, groupContext)
+            textWidgetCustomView(format, data, theme, context, groupContext)
         is TextWidgetFormatOfficial ->
-            textWidgetOfficialView(format, textWidget, entityId, context, groupContext)
+            textWidgetOfficialView(format, data, theme, context, groupContext)
     }
 }
 

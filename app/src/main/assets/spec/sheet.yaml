@@ -4100,10 +4100,10 @@ types:
         custom_type: widget_style
       presence: required
       description: The style.
-    - name: variation
+    - name: variations
       type:
-        type: prim_type
-        prim_type: string
+        type: prim_coll_type
+        prim_coll_type: string
       presence: optional
       description: The variation.
     - name: widget_format

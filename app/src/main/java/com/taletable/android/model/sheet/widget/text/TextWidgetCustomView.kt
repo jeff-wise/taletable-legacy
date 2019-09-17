@@ -11,6 +11,7 @@ import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.lib.ui.TextViewBuilder
 import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.widget.TextWidget
+import com.taletable.android.model.theme.Theme
 import com.taletable.android.rts.entity.EntityId
 import effect.Val
 import maybe.Maybe
@@ -21,13 +22,13 @@ import maybe.Maybe
  * Custom view
  */
 fun textWidgetCustomView(
-        textWidget : TextWidget,
         format : TextWidgetFormatCustom,
-        entityId : EntityId,
+        data : TextWidgetViewData,
+        theme : Theme,
         context : Context,
         groupContext : Maybe<GroupContext>) : LinearLayout
 {
-    val layout = mainLayout(textWidget, context)
+    val layout = mainLayout(context)
 
     // > Outside Top/Left Label View
 //        if (format.outsideLabel() != null) {
@@ -38,7 +39,7 @@ fun textWidgetCustomView(
 //        }
 
     // > Value
-    layout.addView(valueMainView(textWidget, format, entityId, context, groupContext))
+    //layout.addView(valueMainView(textWidget, format, entityId, context, groupContext))
 
     // > Outside Bottom/Right Label View
 //        if (format.outsideLabel() != null) {
@@ -53,8 +54,7 @@ fun textWidgetCustomView(
 }
 
 
-private fun mainLayout(textWidget : TextWidget,
-                       context : Context) : LinearLayout
+private fun mainLayout(context : Context) : LinearLayout
 {
     val layout = LinearLayoutBuilder()
 

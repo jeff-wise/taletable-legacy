@@ -251,7 +251,7 @@ class BookUI(val book : Book,
     {
         val layout = this.chapterListViewLayout()
 
-        layout.addView(this.chapterHeaderView("Chapters", 0f))
+        layout.addView(this.chapterHeaderView("Chapters", 4f))
 
         book.chapters().forEach {
             layout.addView(this.chapterSummaryView(it))
@@ -296,7 +296,7 @@ class BookUI(val book : Book,
 
 
         headerViewBuilder.font          = Font.typeface(TextFont.Roboto,
-                                                        TextFontStyle.Bold,
+                                                        TextFontStyle.Medium,
                                                         context)
 
         val colorTheme = ColorTheme(setOf(
@@ -304,7 +304,7 @@ class BookUI(val book : Book,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_18"))))
         headerViewBuilder.color         = theme.colorOrBlack(colorTheme)
 
-        headerViewBuilder.sizeSp              = 16f
+        headerViewBuilder.sizeSp              = 17f
 
         return headerViewBuilder.textView(context)
 
@@ -339,8 +339,8 @@ class BookUI(val book : Book,
 
         layout.backgroundColor      = Color.WHITE
 
-        layout.padding.topDp        = 18f
-        layout.padding.bottomDp     = 18f
+        layout.padding.topDp        = 16f
+        layout.padding.bottomDp     = 16f
         layout.padding.leftDp       = 16f
         layout.padding.rightDp      = 16f
 
@@ -365,12 +365,12 @@ class BookUI(val book : Book,
         summary.text                = summaryString
 
         summary.font                = Font.typeface(TextFont.Roboto,
-                                                    TextFontStyle.Regular,
+                                                    TextFontStyle.Medium,
                                                     context)
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_14"))))
         summary.color               = theme.colorOrBlack(colorTheme)
 
         summary.sizeSp              = 17f
@@ -527,7 +527,7 @@ class BookUI(val book : Book,
 
         subtitleViewBuilder.color               = Color.WHITE
 
-        subtitleViewBuilder.sizeSp              = 21f
+        subtitleViewBuilder.sizeSp              = 19f
 
         subtitleViewBuilder.lineSpacingAdd      = 10f
         subtitleViewBuilder.lineSpacingMult     = 0.85f
@@ -548,7 +548,7 @@ class BookUI(val book : Book,
         title.text              = book.summary()
 
         title.font              = Font.typeface(TextFont.RobotoSlab,
-                                                TextFontStyle.Light,
+                                                TextFontStyle.Regular,
                                                 context)
 
         val colorTheme = ColorTheme(setOf(
@@ -570,7 +570,7 @@ class BookUI(val book : Book,
     {
         val layout = metadataViewLayout()
 
-        layout.addView(chapterHeaderView("About", 0f))
+        layout.addView(chapterHeaderView("About", 4f))
 
         book.bookInfo().publisher.doMaybe {
             layout.addView(metadataButtonView("Published by", it.value))
@@ -679,12 +679,12 @@ class BookUI(val book : Book,
         labelViewBuilder.text       = label
 
         labelViewBuilder.font       = Font.typeface(TextFont.Roboto,
-                                                    TextFontStyle.Regular,
+                                                    TextFontStyle.Medium,
                                                     context)
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_14"))))
         labelViewBuilder.color      = theme.colorOrBlack(labelColorTheme)
 
         labelViewBuilder.sizeSp     = 17f
@@ -698,7 +698,7 @@ class BookUI(val book : Book,
         valueViewBuilder.text       = value
 
         valueViewBuilder.font       = Font.typeface(TextFont.Roboto,
-                                                    TextFontStyle.Regular,
+                                                    TextFontStyle.Medium,
                                                     context)
 
         val valueColorTheme = ColorTheme(setOf(

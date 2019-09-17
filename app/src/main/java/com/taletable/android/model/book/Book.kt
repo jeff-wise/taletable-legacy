@@ -3,6 +3,7 @@ package com.taletable.android.model.book
 
 
 import android.content.Context
+import android.util.Log
 import com.taletable.android.db.*
 import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.*

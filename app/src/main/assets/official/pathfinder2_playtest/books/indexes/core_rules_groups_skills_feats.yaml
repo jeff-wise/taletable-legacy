@@ -97,7 +97,8 @@ groups:
           widget_format_official:
             theme: metric
             style: horizontal_box
-            variation: normal
+            variations:
+            - normal
         label_variable_reference:
           type: variable_id
           variable_id: term_use_as
@@ -106,6 +107,10 @@ groups:
           variable_tag: skills_ability_actions
   - format:
       element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: red
         horizontal_alignment: left
         padding:
           top: 16
@@ -129,6 +134,10 @@ groups:
           variable_tag: skills_ability_trigger
   - format:
       element_format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: light
+            color_id: orange
         horizontal_alignment: left
         padding:
           top: 8
@@ -276,7 +285,8 @@ groups:
           widget_format_official:
             theme: metric
             style: horizontal_box
-            variation: normal
+            variations:
+            - normal
         label_variable_reference:
           type: variable_id
           variable_id: term_use_as

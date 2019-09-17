@@ -236,7 +236,7 @@ data class WidgetStyleVariation(val value : String) : ToDocument, Serializable
 data class OfficialWidgetFormat(
     val theme : WidgetOfficialTheme,
     val style : WidgetStyle,
-    val variation : Maybe<WidgetStyleVariation>,
+    val variations : List<WidgetStyleVariation>,
     val widgetFormat : Maybe<WidgetFormat>
 )
 {
@@ -259,9 +259,9 @@ data class OfficialWidgetFormat(
                       // Widget Style
                       doc.at("style").apply { WidgetStyle.fromDocument(it) },
                       // Widget Style Variation
-                      split(doc.maybeAt("variation"),
-                            effValue<ValueError, Maybe<WidgetStyleVariation>>(Nothing()),
-                            { apply(::Just, WidgetStyleVariation.fromDocument(it)) }),
+                      split(doc.maybeList("variations"),
+                            effValue(listOf()),
+                            { it.map { WidgetStyleVariation.fromDocument(it) } }),
                       // Widget Format
                       split(doc.maybeAt("widget_format"),
                             effValue<ValueError, Maybe<WidgetFormat>>(Nothing()),

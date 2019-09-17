@@ -417,10 +417,11 @@ sealed class BookSectionEntry()
         override fun fromDocument(doc : SchemaDoc): ValueParser<BookSectionEntry> =
             when (doc.case())
             {
-                "book_section_entry_simple"     -> BookSectionEntrySimple.fromDocument(doc) as ValueParser<BookSectionEntry>
-                "book_section_entry_card_group" -> BookSectionEntryCardGroup.fromDocument(doc) as ValueParser<BookSectionEntry>
-                "book_section_entry_card"       -> BookSectionEntryCard.fromDocument(doc) as ValueParser<BookSectionEntry>
-                "book_section_entry_group"      -> BookSectionEntryGroup.fromDocument(doc) as ValueParser<BookSectionEntry>
+                "book_section_entry_simple"             -> BookSectionEntrySimple.fromDocument(doc) as ValueParser<BookSectionEntry>
+                "book_section_entry_inline_expandable"  -> BookSectionEntryInlineExpandable.fromDocument(doc) as ValueParser<BookSectionEntry>
+                "book_section_entry_card_group"         -> BookSectionEntryCardGroup.fromDocument(doc) as ValueParser<BookSectionEntry>
+                "book_section_entry_card"               -> BookSectionEntryCard.fromDocument(doc) as ValueParser<BookSectionEntry>
+                "book_section_entry_group"              -> BookSectionEntryGroup.fromDocument(doc) as ValueParser<BookSectionEntry>
                 else                 -> {
                     effError(UnknownCase(doc.case(), doc.path))
                 }
@@ -452,6 +453,29 @@ data class BookSectionEntrySimple(val subsectionId : BookSubsectionId) : BookSec
 
 }
 
+
+data class BookSectionEntryInlineExpandable(
+        val contentId : BookContentId) : BookSectionEntry()
+{
+
+    companion object : Factory<BookSectionEntryInlineExpandable>
+    {
+
+        override fun fromDocument(doc: SchemaDoc)
+                : ValueParser<BookSectionEntryInlineExpandable> = when (doc)
+        {
+            is DocDict -> {
+                apply(::BookSectionEntryInlineExpandable,
+                      // Content Id
+                      doc.at("content_id").apply { BookContentId.fromDocument(it) }
+                )
+            }
+            else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+    }
+
+}
 
 data class BookSectionEntryCard(
         val entryContent : BookContentId) : BookSectionEntry()

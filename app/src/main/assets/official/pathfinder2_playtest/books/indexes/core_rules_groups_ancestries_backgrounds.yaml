@@ -1,5 +1,34 @@
 groups:
 ## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Introduction
+## ---------------------------------------------------------------------------------------------
+- id: '8735b9af-d5a9-4ef5-a9c8-2984d5216249'
+  name: 'Ancestries and Backgrounds > Introduction'
+  summary: 'Ancestries and Backgrounds > Introduction'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 16
+        bottom: 16
+  rows:
+  - widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+        value_variable_reference:
+          type: variable_id
+          variable_id: ancestries_backgrounds_introduction
+## ---------------------------------------------------------------------------------------------
 ## | Ancestries and Backgrounds > Reading Entries
 ## ---------------------------------------------------------------------------------------------
 - id: '499b584e-3162-488c-92fd-8b02ef3588b9'
@@ -29,11 +58,40 @@ groups:
           type: variable_id
           variable_id: ancestries_backgrounds_rules_introduction
 ## ---------------------------------------------------------------------------------------------
-## | Ancestries and Backgrounds > Reading Entries > Rules > Hit Points
+## | Ancestries and Backgrounds > Background Entry
+## ---------------------------------------------------------------------------------------------
+- id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+  name: 'Background Entry'
+  summary: 'Background Entry'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        bottom: 6
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: background_description
+## ---------------------------------------------------------------------------------------------
+## | Ancestries and Backgrounds > Reading Entries
 ## ---------------------------------------------------------------------------------------------
 - id: '4b487f1f-3440-4ab6-8203-3bba48867e20'
-  name: 'Ancestries and Backgrounds > Reading Entries > Rules > Hit Points'
-  summary: 'Ancestries and Backgrounds > Reading Entries > Rules > Hit Points'
+  name: 'Reading Entry'
+  summary: 'Reading Entry'
   format:
     element_format:
       background_color_theme:
@@ -41,278 +99,11 @@ groups:
         - theme_id: light
           color_id: white
       padding:
-        left: 16
-        right: 16
-        top: 20
-        bottom: 20
-  rows:
-  - widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph
-        value_variable_reference:
-          type: variable_id
-          variable_id: ancestries_backgrounds_rules_hit_points_content
-## ---------------------------------------------------------------------------------------------
-## | Ancestries and Backgrounds > Reading Entries > Rules > Size
-## ---------------------------------------------------------------------------------------------
-- id: '95072f8a-1abe-4fe8-b98a-ccaad2aca36e'
-  name: 'Ancestries and Backgrounds > Reading Entries > Rules > Size'
-  summary: 'Ancestries and Backgrounds > Reading Entries > Rules > Size'
-  format:
-    element_format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: light
-          color_id: white
-      padding:
-        left: 16
-        right: 16
-        top: 24
-        bottom: 20
-  rows:
-  - widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph
-        value_variable_reference:
-          type: variable_id
-          variable_id: ancestries_backgrounds_rules_size_content
-## ---------------------------------------------------------------------------------------------
-## | Ancestries and Backgrounds > Reading Entries > Rules > Speed
-## ---------------------------------------------------------------------------------------------
-- id: 'b5239c39-8fdc-4a1a-b29e-e4a0baea0ce2'
-  name: 'Ancestries and Backgrounds > Reading Entries > Rules > Speed'
-  summary: 'Ancestries and Backgrounds > Reading Entries > Rules > Speed'
-  format:
-    element_format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: light
-          color_id: white
-      padding:
-        left: 16
-        right: 16
-        top: 24
-        bottom: 20
-  rows:
-  - widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph
-        value_variable_reference:
-          type: variable_id
-          variable_id: ancestries_backgrounds_rules_speed_content
-## ---------------------------------------------------------------------------------------------
-## | Ancestries and Backgrounds > Reading Entries > Rules > Ability Boosts
-## ---------------------------------------------------------------------------------------------
-- id: '790e2a53-b8af-49ad-9a2a-010dbe948fd0'
-  name: 'Ancestries and Backgrounds > Reading Entries > Rules > Ability Boosts'
-  summary: 'Ancestries and Backgrounds > Reading Entries > Rules > Ability Boosts'
-  format:
-    element_format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: light
-          color_id: white
-      padding:
-        left: 16
-        right: 16
-        top: 24
-        bottom: 20
-  rows:
-  - widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph
-        value_variable_reference:
-          type: variable_id
-          variable_id: ancestries_backgrounds_rules_ability_boosts_content
-## ---------------------------------------------------------------------------------------------
-## | Ancestries and Backgrounds > Reading Entries > Rules > Ability Flaw
-## ---------------------------------------------------------------------------------------------
-- id: 'cc99d173-2841-4070-a616-80ba7800ae1d'
-  name: 'Ancestries and Backgrounds > Reading Entries > Rules > Ability Flaw'
-  summary: 'Ancestries and Backgrounds > Reading Entries > Rules > Ability Flaw'
-  format:
-    element_format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: light
-          color_id: white
-      padding:
-        left: 16
-        right: 16
-        top: 24
-        bottom: 20
-  rows:
-  - widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph
-        value_variable_reference:
-          type: variable_id
-          variable_id: ancestries_backgrounds_rules_ability_flaw_content
-## ---------------------------------------------------------------------------------------------
-## | Ancestries and Backgrounds > Reading Entries > Languages
-## ---------------------------------------------------------------------------------------------
-- id: '8d0ae461-07b0-417d-8482-45f62bbb9a63'
-  name: 'Ancestries and Backgrounds > Reading Entries > Languages'
-  summary: 'Ancestries and Backgrounds > Reading Entries > Languages'
-  format:
-    element_format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: light
-          color_id: white
-      padding:
-        left: 16
-        right: 16
-        top: 20
-        bottom: 20
-  rows:
-  - widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph
-        value_variable_reference:
-          type: variable_id
-          variable_id: ancestries_backgrounds_rules_languages_content
-## ---------------------------------------------------------------------------------------------
-## | Ancestries and Backgrounds > Reading Entries > Traits
-## ---------------------------------------------------------------------------------------------
-- id: 'f9591e9a-55ae-4b46-9583-ce7f6ed88717'
-  name: 'Ancestries and Backgrounds > Reading Entries > Traits'
-  summary: 'Ancestries and Backgrounds > Reading Entries > Traits'
-  format:
-    element_format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: light
-          color_id: white
-      padding:
-        left: 16
-        right: 16
-        top: 24
-        bottom: 24
-  rows:
-  - widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph
-        value_variable_reference:
-          type: variable_id
-          variable_id: ancestries_backgrounds_rules_traits_content
-## ---------------------------------------------------------------------------------------------
-## | Ancestries and Backgrounds > Reading Entries > Special Abilities
-## ---------------------------------------------------------------------------------------------
-- id: 'f76e8e8b-a437-45c7-b9d9-041b9d0efd2a'
-  name: 'Ancestries and Backgrounds > Reading Entries > Special Abilities'
-  summary: 'Ancestries and Backgrounds > Reading Entries > Special Abilities'
-  format:
-    element_format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: light
-          color_id: white
-      padding:
-        left: 16
-        right: 16
-        top: 24
-        bottom: 24
-  rows:
-  - widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph
-        value_variable_reference:
-          type: variable_id
-          variable_id: ancestries_backgrounds_rules_special_abilities_content
-## ---------------------------------------------------------------------------------------------
-## | Ancestries and Backgrounds > Reading Entries > Adventurers
-## ---------------------------------------------------------------------------------------------
-- id: 'd2179f96-ad16-40ea-9926-4c85ba53f230'
-  name: 'Ancestries and Backgrounds > Reading Entries > Adventurers'
-  summary: 'Ancestries and Backgrounds > Reading Entries > Adventurers'
-  format:
-    element_format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: light
-          color_id: white
-      padding:
-        left: 16
-        right: 16
-        top: 24
-        bottom: 24
-  rows:
-  - widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph
-        value_variable_reference:
-          type: variable_id
-          variable_id: ancestries_backgrounds_rules_adventurers_content
-## ---------------------------------------------------------------------------------------------
-## | Ancestries and Backgrounds > Reading Entries > Feats
-## ---------------------------------------------------------------------------------------------
-- id: '87a63631-cfa1-4c50-9dd6-5bcc7a70de14'
-  name: 'Ancestries and Backgrounds > Reading Entries > Feats'
-  summary: 'Ancestries and Backgrounds > Reading Entries > Feats'
-  format:
-    element_format:
-      background_color_theme:
-        theme_color_ids:
-        - theme_id: light
-          color_id: white
-      padding:
-        left: 16
-        right: 16
-        bottom: 24
-        top: 24
+        bottom: 8
   rows:
   - format:
       element_format:
         horizontal_alignment: left
-        margins:
-          top: 4
-          bottom: 24
     widgets:
     - type: widget_text
       widget_text:
@@ -322,35 +113,8 @@ groups:
             theme: metric
             style: paragraph
         value_variable_reference:
-          type: variable_id
-          variable_id: ancestries_backgrounds_rules_feats_content
-  - format:
-      element_format:
-        horizontal_alignment: left
-        margins:
-          bottom: 12
-    widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph_header
-        value_variable_reference:
-          type: variable_id
-          variable_id: ancestries_backgrounds_rules_heritage_feats_header
-  - widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph
-        value_variable_reference:
-          type: variable_id
-          variable_id: ancestries_backgrounds_rules_heritage_feats_content
+          type: variable_tag
+          variable_tag: ancestry_reading_entries
 ## ---------------------------------------------------------------------------------------------
 ## | Ancestries and Backgrounds > Ancestries > Template > Overview
 ## ---------------------------------------------------------------------------------------------
@@ -747,6 +511,9 @@ groups:
           widget_format_official:
             theme: metric
             style: vertical_box
+            variations:
+            - filled
+            - large
             widget_format:
               width: 1
               element_format:
@@ -781,6 +548,9 @@ groups:
           widget_format_official:
             theme: metric
             style: vertical_box
+            variations:
+            - filled
+            - large
             widget_format:
               width: 3
               element_format:
@@ -816,6 +586,9 @@ groups:
           widget_format_official:
             theme: metric
             style: vertical_box
+            variations:
+            - filled
+            - large
             widget_format:
               width: 2
               element_format:
@@ -959,7 +732,7 @@ groups:
         left: 16
         right: 16
         top: 20
-        bottom: 20
+        bottom: 8
   rows:
   - widgets:
     - type: widget_text
@@ -1030,3 +803,245 @@ groups:
         value_variable_reference:
           type: variable_id
           variable_id: ancestries_backgrounds_languages_in_game_content
+## ---------------------------------------------------------------------------------------------
+## | Language Card Entry
+## ---------------------------------------------------------------------------------------------
+- id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+  name: 'Langauge > Entry'
+  summary: 'Language > Entry'
+  content_reference_variable:
+    type: variable_tag
+    variable_tag: language_card_reference
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+  rows:
+  - format:
+      element_format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_5
+            thickness: 1
+        padding:
+          top: 16
+          bottom: 16
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: entity_section_label
+            widget_format:
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: ancestries_backgrounds_languages_language_name
+## ---------------------------------------------------------------------------------------------
+## | Language Card
+## ---------------------------------------------------------------------------------------------
+- id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+  name: 'Language Card'
+  summary: 'Language Card'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        bottom: 16
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 16
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: horizontal_box
+            variations:
+            - normal
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_use_as
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: skills_ability_actions
+## ---------------------------------------------------------------------------------------------
+## | Ancestry Feat Card Entry
+## ---------------------------------------------------------------------------------------------
+- id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+  name: 'Feats > Entry'
+  summary: 'Feats > Entry'
+  content_reference_variable:
+    type: variable_tag
+    variable_tag: ancestry_feat_card_reference
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+  rows:
+  - format:
+      element_format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_5
+            thickness: 1
+        padding:
+          top: 16
+          bottom: 16
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: entity_section_label
+            widget_format:
+              width: 2
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: feat_name
+    - type: widget_number
+      widget_number:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: entity_section_label_tag
+            widget_format:
+              width: 1.2
+              element_format:
+                horizontal_alignment: right
+                width:
+                  type: width_justify
+                  width_justify: justify
+        prefix_variable_reference:
+          type: variable_id
+          variable_id: term_level
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: feat_level
+## ---------------------------------------------------------------------------------------------
+## | Ancestry Feat Card
+## ---------------------------------------------------------------------------------------------
+- id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+  name: 'General Feat Card'
+  summary: 'General Feat Card'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        bottom: 16
+  rows:
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 16
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_number
+      widget_number:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: horizontal_box
+            variations:
+            - large
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_level
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: feat_level
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: horizontal_box
+            variations:
+            - large
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: feat_actions
+  - format:
+      element_format:
+        horizontal_alignment: left
+        padding:
+          top: 16
+        margins:
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+        values_variable_reference:
+          type: variable_tag
+          variable_tag: feat_traits
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 16
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: feat_description

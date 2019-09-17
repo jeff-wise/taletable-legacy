@@ -181,7 +181,7 @@ private fun entryExpanderHeaderView(
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
     labelViewBuilder.color          = theme.colorOrBlack(colorTheme)
 
     labelViewBuilder.sizeSp         = 17.5f
@@ -275,7 +275,7 @@ fun entryGroupHeaderView(
     headerViewBuilder.text          = header
 
     headerViewBuilder.font          = Font.typeface(TextFont.Roboto,
-                                                    TextFontStyle.Bold,
+                                                    TextFontStyle.Medium,
                                                     context)
 
     val colorTheme = ColorTheme(setOf(
@@ -387,12 +387,12 @@ private fun entrySimpleTitleTextView(
     summary.text                = titleString
 
     summary.font                = Font.typeface(TextFont.Roboto,
-                                                TextFontStyle.Regular,
+                                                TextFontStyle.Medium,
                                                 context)
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_10"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
     summary.color               = theme.colorOrBlack(colorTheme)
 
     summary.sizeSp              = 17f
@@ -517,5 +517,181 @@ private fun entryContentViewLayout(context : Context) : LinearLayout
     return layoutBuilder.linearLayout(context)
 }
 
+
+/**
+ * Entry Content Toolbar View
+ */
+fun toolbarView(theme : Theme, context : Context) : LinearLayout
+{
+    val layout = toolbarViewLayout(context)
+
+    layout.addView(toolbarButtonView(R.drawable.icon_pencil, 16, 8f,  R.string.edit, theme, context))
+
+    layout.addView(toolbarButtonView(R.drawable.icon_questions, 20, 6f, R.string.help, theme, context))
+
+    return layout
+}
+
+
+private fun toolbarViewLayout(context : Context) : LinearLayout
+{
+    val layout              = LinearLayoutBuilder()
+
+    layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+    layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layout.orientation      = LinearLayout.HORIZONTAL
+
+    layout.gravity          = Gravity.CENTER_VERTICAL
+
+    layout.padding.topDp    = 36f
+
+    return layout.linearLayout(context)
+}
+
+
+private fun toolbarButtonView(
+        iconId : Int,
+        iconSize : Int,
+        iconMargin: Float,
+        labelId : Int,
+        theme : Theme,
+        context : Context) : LinearLayout
+{
+    // (1) Declarations
+    // -------------------------------------------------------------------------------------
+
+    val layout                 = LinearLayoutBuilder()
+    val icon                        = ImageViewBuilder()
+    val label                       = TextViewBuilder()
+
+    // (2) Layout
+    // -------------------------------------------------------------------------------------
+
+    layout.width               = LinearLayout.LayoutParams.WRAP_CONTENT
+    layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT
+
+//        layout.corners             = Corners(3.0, 3.0, 3.0, 3.0)
+
+    //layout.backgroundResource   = R.drawable.bg_button_book_toolbar
+
+    layout.padding.topDp       = 8f
+    layout.padding.bottomDp    = 4f
+    layout.padding.leftDp      = 4f
+    layout.padding.rightDp     = 14f
+
+    layout.gravity             = Gravity.CENTER
+
+    layout.margin.rightDp       = 12f
+
+//        val bgColorTheme = ColorTheme(setOf(
+//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_16"))))
+//        layout.backgroundColor     = theme.colorOrBlack(bgColorTheme)
+//        layout.backgroundColor     = Color.TRANSPARENT
+
+    layout.child(icon)
+          .child(label)
+
+    // (3) Icon
+    // -------------------------------------------------------------------------------------
+
+    icon.widthDp            = iconSize
+    icon.heightDp           = iconSize
+
+    icon.image              = iconId
+
+    val iconColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_8"))))
+    icon.color              = theme.colorOrBlack(iconColorTheme)
+    //icon.color              = Color.WHITE
+
+    icon.margin.rightDp     = iconMargin
+
+    // (3) Label
+    // -------------------------------------------------------------------------------------
+
+    label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+    label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    label.font              = Font.typeface(TextFont.Roboto,
+                                            TextFontStyle.Medium,
+                                            context)
+
+    label.textId            = labelId
+
+    val labelColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_8"))))
+    label.color             = theme.colorOrBlack(labelColorTheme)
+    //label.color             = Color.WHITE
+
+    label.sizeSp            = 17f
+
+    return layout.linearLayout(context)
+}
+
+
+
+// ---------------------------------------------------------------------------------------------
+// | SECTION DIVIDER VIEW
+// ---------------------------------------------------------------------------------------------
+
+fun sectionDividerView(theme : Theme, context : Context, marginBottom : Float = 0f): LinearLayout
+{
+    val divider                 = LinearLayoutBuilder()
+
+    divider.width               = LinearLayout.LayoutParams.MATCH_PARENT
+    divider.heightDp            = 8
+
+    divider.margin.bottomDp     = marginBottom
+
+    val colorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("dark_grey_12")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_7"))))
+    divider.backgroundColor     = theme.colorOrBlack(colorTheme)
+
+    return divider.linearLayout(context)
+}
+
+
+// ---------------------------------------------------------------------------------------------
+// | SECTION HEADER VIEW
+// ---------------------------------------------------------------------------------------------
+
+fun sectionHeaderView(
+        headerString : String,
+        theme : Theme,
+        context : Context,
+        paddingBottom : Float = 0f
+) : TextView
+{
+    val title               = TextViewBuilder()
+
+    title.width             = LinearLayout.LayoutParams.MATCH_PARENT
+    title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    title.padding.leftDp    = 16f
+    title.padding.rightDp   = 16f
+
+    title.padding.bottomDp  = paddingBottom
+
+    title.text              = headerString
+
+    title.font              = Font.typeface(TextFont.Roboto,
+                                            TextFontStyle.Medium,
+                                            context)
+
+    val colorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
+    title.color             = theme.colorOrBlack(colorTheme)
+
+    title.backgroundColor   = Color.WHITE
+
+    title.sizeSp             = 21f
+
+    return title.textView(context)
+}
 
 

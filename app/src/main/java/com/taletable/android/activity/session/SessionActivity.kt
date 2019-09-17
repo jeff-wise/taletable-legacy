@@ -387,9 +387,11 @@ class SessionActivity : AppCompatActivity()
                 it.text = session.sessionName.value
             }
 
-            findViewById<RelativeLayout>(R.id.session_toolbar)?.let {
-                it.addView(bottomSheetToolbarEditButtonView(officialAppThemeLight, this))
-                it.addView(entityToolbarButtonsView(officialAppThemeLight, this))
+            findViewById<LinearLayout>(R.id.session_toolbar)?.let {
+                it.addView(bottomSheetToolbarEditButtonView(R.string.edit_session, R.drawable.icon_edit, officialAppThemeLight, this))
+                it.addView(bottomSheetToolbarEditButtonView(R.string.sort_table, R.drawable.icon_slider, officialAppThemeLight, this))
+                it.addView(bottomSheetToolbarEditButtonView(R.string.new_session, R.drawable.icon_plus_bold, officialAppThemeLight, this))
+                //it.addView(entityToolbarButtonsView(officialAppThemeLight, this))
             }
 
 //            findViewById<TextView>(R.id.button_edit_session)?.let {
@@ -846,7 +848,7 @@ fun activeSessionRecyclerView(session : Session,
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_3"))))
     val dividerColor              = theme.colorOrBlack(dividerColorTheme)
-    recyclerView.divider            = SimpleDividerItemDecoration(context, dividerColor)
+    //recyclerView.divider            = SimpleDividerItemDecoration(context, dividerColor)
 
     recyclerView.margin.leftDp      = 16f
     recyclerView.margin.rightDp     = 16f
@@ -1056,7 +1058,7 @@ private fun bottomSheetToolbarSearchButtonView(
 //}
 
 
-private fun bottomSheetToolbarEditButtonView(theme : Theme, context : Context) : LinearLayout
+private fun bottomSheetToolbarEditButtonView(labelId : Int?, iconId : Int?, theme : Theme, context : Context) : LinearLayout
 {
     // 1 | Declarations
     // -----------------------------------------------------------------------------------------
@@ -1070,9 +1072,9 @@ private fun bottomSheetToolbarEditButtonView(theme : Theme, context : Context) :
 
     layoutBuilder.layoutType            = LayoutType.RELATIVE
     layoutBuilder.width                 = RelativeLayout.LayoutParams.WRAP_CONTENT
-    layoutBuilder.height                = RelativeLayout.LayoutParams.WRAP_CONTENT
+    layoutBuilder.heightDp              = 36
 
-    //layoutBuilder.backgroundResource    = R.drawable.bg_session_button
+    layoutBuilder.backgroundResource    = R.drawable.bg_session_button
 
     //layoutBuilder.elevation             = 8f
 
@@ -1080,15 +1082,15 @@ private fun bottomSheetToolbarEditButtonView(theme : Theme, context : Context) :
 
     layoutBuilder.padding.leftDp        = 8f
     layoutBuilder.padding.rightDp       = 8f
-//    layoutBuilder.padding.topDp         = 4f
+//    layoutBuilder.padding.topDp         = 8f
 //    layoutBuilder.padding.bottomDp      = 8f
 
     //layoutBuilder.margin.leftDp         = 0f
-//    layoutBuilder.margin.rightDp         = 4f
+    layoutBuilder.margin.rightDp         = 12f
 //    layoutBuilder.margin.bottomDp         = 4f
 //    layoutBuilder.margin.topDp         = 4f
 
-//    layoutBuilder.orientation           = LinearLayout.HORIZONTAL
+    layoutBuilder.orientation           = LinearLayout.HORIZONTAL
 
 //    layoutBuilder.layoutGravity         = Gravity.END or Gravity.CENTER_VERTICAL
 //    layoutBuilder.gravity               = Gravity.CENTER_VERTICAL
@@ -1096,23 +1098,26 @@ private fun bottomSheetToolbarEditButtonView(theme : Theme, context : Context) :
     layoutBuilder.addRule(RelativeLayout.CENTER_VERTICAL)
     layoutBuilder.addRule(RelativeLayout.ALIGN_PARENT_START)
 
-    layoutBuilder//.child(iconViewBuilder)
-                 .child(labelViewBuilder)
+    if (iconId != null)
+        layoutBuilder.child(iconViewBuilder)
+
+    if (labelId != null)
+        layoutBuilder.child(labelViewBuilder)
 
     // 3 | Icon
     // -----------------------------------------------------------------------------------------
 
-    iconViewBuilder.widthDp             = 19
-    iconViewBuilder.heightDp            = 19
+    iconViewBuilder.widthDp             = 17
+    iconViewBuilder.heightDp            = 17
 
-    iconViewBuilder.image               = R.drawable.icon_edit
+    iconViewBuilder.image               = iconId
 
     val iconColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_18"))))
     iconViewBuilder.color               = theme.colorOrBlack(iconColorTheme)
 
-    iconViewBuilder.margin.rightDp      = 8f
+    iconViewBuilder.margin.rightDp      = 6f
 
     // 3 | Label
     // -----------------------------------------------------------------------------------------
@@ -1120,18 +1125,18 @@ private fun bottomSheetToolbarEditButtonView(theme : Theme, context : Context) :
     labelViewBuilder.width              = LinearLayout.LayoutParams.WRAP_CONTENT
     labelViewBuilder.height             = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    labelViewBuilder.text               = context.getString(R.string.edit_session).toUpperCase()
+    labelViewBuilder.textId             = labelId
 
     labelViewBuilder.font               = Font.typeface(TextFont.Roboto,
-                                                        TextFontStyle.Bold,
+                                                        TextFontStyle.Medium,
                                                         context)
 
     val labelColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_tint_1"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_18"))))
     labelViewBuilder.color              = theme.colorOrBlack(labelColorTheme)
 
-    labelViewBuilder.sizeSp             = 15f
+    labelViewBuilder.sizeSp             = 16f
 
     return layoutBuilder.linearLayout(context)
 }
@@ -1201,8 +1206,8 @@ private fun entityToolbarButtonsView(theme : Theme, context : Context) : LinearL
 {
     val layout = entityToolbarButtonsViewLayout(context)
 
-    layout.addView(entityToolbarButtonView(com.taletable.android.R.drawable.icon_slider, 21, false, theme, context))
-    layout.addView(entityToolbarButtonView(com.taletable.android.R.drawable.icon_plus_bold, 24, true, theme, context))
+    layout.addView(bottomSheetToolbarEditButtonView(null, R.drawable.icon_slider, theme, context))
+    layout.addView(bottomSheetToolbarEditButtonView(null, R.drawable.icon_plus_bold, theme, context))
 
     return layout
 }
@@ -1317,8 +1322,8 @@ private fun entityCardViewLayout(theme : Theme, context : Context) : LinearLayou
 
     layout.gravity              = Gravity.TOP
 
-    layout.padding.topDp        = 12f
-    layout.padding.bottomDp     = 12f
+    layout.padding.topDp        = 8f
+    layout.padding.bottomDp     = 8f
 
 //    layout.padding.leftDp       = 16f
 //    layout.padding.rightDp      = 16f
@@ -1501,7 +1506,7 @@ private fun entityCardNameView(theme : Theme,
     name.color              = theme.colorOrBlack(colorTheme)
     // name.color              = Color.WHITE
 
-    name.sizeSp             = 16.5f
+    name.sizeSp             = 17f
 
     return name.textView(context)
 }

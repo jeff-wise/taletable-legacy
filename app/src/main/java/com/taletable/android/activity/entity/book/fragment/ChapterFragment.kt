@@ -5,6 +5,7 @@ package com.taletable.android.activity.entity.book.fragment
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -278,7 +279,6 @@ class ChapterUI(val chapter : BookChapter,
     }
 
 
-
     // VIEWS > Header > Toolbar
     // --------------------------------------------------------------------------------------------
 
@@ -286,9 +286,9 @@ class ChapterUI(val chapter : BookChapter,
     {
         val layout = toolbarViewLayout()
 
-        layout.addView(toolbarButtonView(R.drawable.icon_pencil, 16, R.string.edit))
+        layout.addView(toolbarButtonView(R.drawable.icon_pencil, 16, 8f,  R.string.edit))
 
-        layout.addView(toolbarButtonView(R.drawable.icon_questions, 20, R.string.help))
+        layout.addView(toolbarButtonView(R.drawable.icon_questions, 20, 6f, R.string.help))
 
         return layout
     }
@@ -311,7 +311,7 @@ class ChapterUI(val chapter : BookChapter,
     }
 
 
-    private fun toolbarButtonView(iconId : Int, iconSize : Int, labelId : Int) : LinearLayout
+    private fun toolbarButtonView(iconId : Int, iconSize : Int, iconMargin: Float, labelId : Int) : LinearLayout
     {
         // (1) Declarations
         // -------------------------------------------------------------------------------------
@@ -328,11 +328,11 @@ class ChapterUI(val chapter : BookChapter,
 
 //        layout.corners             = Corners(3.0, 3.0, 3.0, 3.0)
 
-        layout.backgroundResource   = R.drawable.bg_button_book_toolbar
+        //layout.backgroundResource   = R.drawable.bg_button_book_toolbar
 
         layout.padding.topDp       = 8f
-        layout.padding.bottomDp    = 8f
-        layout.padding.leftDp      = 12f
+        layout.padding.bottomDp    = 4f
+        layout.padding.leftDp      = 4f
         layout.padding.rightDp     = 14f
 
         layout.gravity             = Gravity.CENTER
@@ -357,11 +357,11 @@ class ChapterUI(val chapter : BookChapter,
 
         val iconColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_8"))))
         icon.color              = theme.colorOrBlack(iconColorTheme)
         //icon.color              = Color.WHITE
 
-        icon.margin.rightDp     = 6f
+        icon.margin.rightDp     = iconMargin
 
         // (3) Label
         // -------------------------------------------------------------------------------------
@@ -377,11 +377,11 @@ class ChapterUI(val chapter : BookChapter,
 
         val labelColorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("light_grey_6"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_8"))))
         label.color             = theme.colorOrBlack(labelColorTheme)
         //label.color             = Color.WHITE
 
-        label.sizeSp            = 18f
+        label.sizeSp            = 17f
 
         return layout.linearLayout(context)
     }
@@ -444,7 +444,7 @@ class ChapterUI(val chapter : BookChapter,
         layout.gravity          = Gravity.CENTER_VERTICAL or Gravity.END
 //        layout.layoutGravity    = Gravity.END
 
-        layout.margin.topDp         = -44f
+        layout.margin.topDp         = -36f
 
         return layout.linearLayout(context)
     }
@@ -544,7 +544,6 @@ class ChapterUI(val chapter : BookChapter,
     }
 
 
-
     // VIEWS > Content
     // --------------------------------------------------------------------------------------------
 
@@ -552,7 +551,12 @@ class ChapterUI(val chapter : BookChapter,
     {
         val layout = this.contentViewLayout()
 
+        layout.addView(sectionDividerView(theme, context, 16f))
+
+        layout.addView(sectionHeaderView("Introduction"))
+
         contentList.forEach { content ->
+            Log.d("***CHAPTER FRAGMENT", "writing out content")
             groups(content.groupReferences(), book.entityId()).forEach {
                 layout.addView(it.group.view(book.entityId(), context))
             }
@@ -577,142 +581,35 @@ class ChapterUI(val chapter : BookChapter,
     }
 
 
-    // VIEWS > Section List
-    // -----------------------------------------------------------------------------------------
+    private fun sectionHeaderView(headerString : String, paddingBottom : Float = 0f) : TextView
+    {
+        val title               = TextViewBuilder()
 
-//    private fun sectionListView() : LinearLayout
-//    {
-//        val layout = this.sectionListViewLayout()
-//
-//        chapter.sections().forEach {
-//            layout.addView(this.sectionSummaryView(it))
-//        }
-//
-//        return layout
-//    }
+        title.width             = LinearLayout.LayoutParams.MATCH_PARENT
+        title.height            = LinearLayout.LayoutParams.WRAP_CONTENT
 
+        title.padding.leftDp    = 16f
+        title.padding.rightDp   = 16f
 
-//    private fun sectionSummaryView(section : BookSection, isLast : Boolean = false) : ViewGroup
-//    {
-//        val layout = this.sectionSummaryViewLayout(section.sectionId, isLast)
-//
-//        val textView = this.sectionSummaryTextView(section.title().value, isLast)
-//        val iconView = this.sectionSummaryIconView(isLast)
-//
-//        layout.addView(textView)
-//        layout.addView(iconView)
-//
-//        return layout
-//    }
-//
+        title.padding.bottomDp  = paddingBottom
 
-//    private fun sectionSummaryViewLayout(sectionId : BookSectionId,
-//                                         isProceeding : Boolean) : RelativeLayout
-//    {
-//        val layout                  = RelativeLayoutBuilder()
-//
-//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
-//
-//        layout.orientation          = LinearLayout.HORIZONTAL
-//
-//        layout.backgroundColor      = Color.WHITE
-//
-//
-//        if (isProceeding)
-//            layout.padding.topDp        = 32f
-//        else
-//            layout.padding.topDp        = 16f
-//
-//        layout.padding.bottomDp     = 16f
-//        layout.padding.leftDp       = 16f
-//        layout.padding.rightDp      = 16f
-//
-//        layout.margin.bottomDp      = 1f
-//
-//        layout.onClick              = View.OnClickListener {
-//            val sectionReference = BookReferenceSection(book.entityId(),
-//                                                        this.chapter.chapterId,
-//                                                        sectionId)
-//            sessionActivity.setCurrentBookReference(sectionReference)
-//        }
-//
-//        return layout.relativeLayout(context)
-//    }
-//
-//
-//    private fun sectionSummaryTextView(summaryString : String, isProceeding : Boolean) : TextView
-//    {
-//        val summary                 = TextViewBuilder()
-//
-//        summary.layoutType          = LayoutType.RELATIVE
-//        summary.width               = RelativeLayout.LayoutParams.WRAP_CONTENT
-//        summary.height              = RelativeLayout.LayoutParams.WRAP_CONTENT
-//
-//        if (!isProceeding)
-//            summary.addRule(RelativeLayout.CENTER_VERTICAL)
-//
-//        summary.addRule(RelativeLayout.ALIGN_PARENT_START)
-//
-//        summary.text                = summaryString
-//
-//        summary.font                = Font.typeface(TextFont.Roboto,
-//                                                    TextFontStyle.Regular,
-//                                                    context)
-//
-//        val colorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_10"))))
-//        summary.color               = theme.colorOrBlack(colorTheme)
-//
-//        summary.sizeSp              = 17f
-//
-//        summary.backgroundColor     = Color.WHITE
-//
-//        return summary.textView(context)
-//
-//    }
-//
-//
-//    private fun sectionSummaryIconView(isProceeding: Boolean) : LinearLayout
-//    {
-//        // (1) Declarations
-//        // -------------------------------------------------------------------------------------
-//
-//        val layout                  = LinearLayoutBuilder()
-//        val icon                    = ImageViewBuilder()
-//
-//        // (2) Layout
-//        // -------------------------------------------------------------------------------------
-//
-//        layout.layoutType           = LayoutType.RELATIVE
-//        layout.width                = RelativeLayout.LayoutParams.WRAP_CONTENT
-//        layout.height               = RelativeLayout.LayoutParams.WRAP_CONTENT
-//
-//        if (!isProceeding)
-//            layout.addRule(RelativeLayout.CENTER_VERTICAL)
-//
-//        layout.addRule(RelativeLayout.ALIGN_PARENT_END)
-//
-//        layout.child(icon)
-//
-//        // (3) Icon
-//        // -------------------------------------------------------------------------------------
-//
-//        icon.widthDp                = 17
-//        icon.heightDp               = 17
-//
-//        icon.image                  = R.drawable.icon_arrow_forward
-//
-//        val iconColorTheme = ColorTheme(setOf(
-//                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-//                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_18"))))
-//        icon.color               = theme.colorOrBlack(iconColorTheme)
-//
-//        return layout.linearLayout(context)
-//    }
-//
+        title.text              = headerString
 
+        title.font              = Font.typeface(TextFont.Roboto,
+                                                TextFontStyle.Medium,
+                                                context)
+
+        val colorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
+        title.color             = theme.colorOrBlack(colorTheme)
+
+        title.backgroundColor   = Color.WHITE
+
+        title.sizeSp             = 21f
+
+        return title.textView(context)
+    }
 
 
     // VIEWS > Section List
@@ -721,6 +618,8 @@ class ChapterUI(val chapter : BookChapter,
     private fun sectionListView() : LinearLayout
     {
         val layout = this.subsectionListViewLayout()
+
+        layout.addView(sectionHeaderView("Sections", 8f))
 
         chapter.entries.forEach {
             addEntry(it, layout)

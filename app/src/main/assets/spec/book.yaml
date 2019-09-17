@@ -587,6 +587,8 @@ types:
     cases:
     - type: book_section_entry_simple
       description: Subsection
+    - type: book_section_entry_inline_expandable
+      description: Inline expandable
     - type: book_section_entry_card_group 
       description: Book reference chapter.
     - type: book_section_entry_card
@@ -605,6 +607,20 @@ types:
       type:
         type: prim_type
         prim_type: string
+      presence: required
+      description: The subsection.
+- type: product_type
+  product_type:
+    name: book_section_entry_inline_expandable
+    label: Book section Entry Inline Expandable 
+    description: Book section Entry Inline Expandable 
+    group: 'book'
+    type: product
+    fields:
+    - name: content_id
+      type:
+        type: custom_type
+        custom_type: book_content_id
       presence: required
       description: The subsection.
 - type: product_type

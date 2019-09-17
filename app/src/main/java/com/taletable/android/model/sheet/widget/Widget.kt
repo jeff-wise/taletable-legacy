@@ -137,7 +137,7 @@ sealed class Widget : ToDocument, SheetComponent, Serializable
     abstract fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View
+                      context : Context) : Maybe<View>
 
 
     abstract fun widgetId() : WidgetId
@@ -154,6 +154,17 @@ sealed class Widget : ToDocument, SheetComponent, Serializable
 
 object WidgetView
 {
+
+    fun defaultLayout(context : Context) : LinearLayout
+    {
+        val layoutBuilder = LinearLayoutBuilder()
+
+        layoutBuilder.width        = LinearLayout.LayoutParams.MATCH_PARENT
+        layoutBuilder.height       = LinearLayout.LayoutParams.MATCH_PARENT
+
+        return layoutBuilder.linearLayout(context)
+    }
+
 
     fun layout(widgetFormat : WidgetFormat,
                entityId : EntityId,
@@ -616,9 +627,9 @@ data class ActionWidget(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View {
+                      context : Context) : Maybe<View> {
         val viewBuilder = ActionWidgetViewBuilder(this, entityId, context)
-        return viewBuilder.view()
+        return Just(viewBuilder.view())
     }
 
 
@@ -850,7 +861,7 @@ data class BooleanWidget(private val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View
+                      context : Context) : Maybe<View>
     {
         val viewBuilder = BooleanWidgetViewBuilder(this, entityId, context)
 
@@ -867,7 +878,7 @@ data class BooleanWidget(private val widgetId : WidgetId,
             }
         }
 
-        return viewBuilder.view()
+        return Just(viewBuilder.view())
     }
 
 
@@ -1132,7 +1143,7 @@ data class ExpanderWidget(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View
+                      context : Context) : Maybe<View>
     {
         val layout = expanderWidgetViewGroup(this, rowLayoutType, entityId, context)
         val view = expanderWidgetView(this, entityId, context, groupContext)
@@ -1142,7 +1153,7 @@ data class ExpanderWidget(val widgetId : WidgetId,
 
         this.groupContext = groupContext
 
-        return layout
+        return Just(layout)
     }
 
 
@@ -1427,12 +1438,12 @@ data class WidgetGroup(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View {
+                      context : Context) : Maybe<View> {
         val widgetUI = GroupWidgetUI(this, entityId, context)
 
         this.groupContext = groupContext
 
-        return widgetUI.view()
+        return Just(widgetUI.view())
     }
 
 
@@ -1564,10 +1575,10 @@ data class ImageWidget(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View
+                      context : Context) : Maybe<View>
     {
         val viewBuilder = ImageWidgetUI(this, entityId, context)
-        return viewBuilder.view()
+        return Just(viewBuilder.view())
     }
 
 
@@ -1685,7 +1696,7 @@ data class ListWidget(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View
+                      context : Context) : Maybe<View>
     {
         val layout = listWidgetViewGroup(this, rowLayoutType, entityId, context)
         val view = listWidgetView(this, entityId, context, groupContext)
@@ -1693,7 +1704,7 @@ data class ListWidget(val widgetId : WidgetId,
         this.layoutViewId = layout.id
         layout.addView(view)
 
-        return layout
+        return Just(layout)
     }
 
 
@@ -1991,9 +2002,9 @@ data class LogWidget(private val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View {
+                      context : Context) : Maybe<View> {
         val viewBuilder = LogViewBuilder(this, entityId, context)
-        return viewBuilder.view()
+        return Just(viewBuilder.view())
     }
 
 
@@ -2110,10 +2121,10 @@ data class MechanicWidget(private val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View
+                      context : Context) : Maybe<View>
     {
         val viewBuilder = MechanicWidgetViewBuilder(this, entityId, context)
-        return viewBuilder.view()
+        return Just(viewBuilder.view())
     }
 
 
@@ -2300,7 +2311,7 @@ data class NumberWidget(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View
+                      context : Context) : Maybe<View>
     {
         val layout = numberWidgetViewGroup(this, rowLayoutType, entityId, context)
         val view = numberWidgetView(this, entityId, context, groupContext)
@@ -2308,7 +2319,7 @@ data class NumberWidget(val widgetId : WidgetId,
         this.layoutId = layout.id
         layout.addView(view)
 
-        return layout
+        return Just(layout)
     }
 
 
@@ -2742,10 +2753,10 @@ data class PointsWidget(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View
+                      context : Context) : Maybe<View>
     {
         val viewBuilder = PointsWidgetViewBuilder(this, entityId, context)
-        return viewBuilder.view()
+        return Just(viewBuilder.view())
     }
 
 
@@ -3016,10 +3027,10 @@ data class QuoteWidget(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View
+                      context : Context) : Maybe<View>
     {
         val viewBuilder = QuoteWidgetViewBuilder(this, entityId, context)
-        return viewBuilder.view()
+        return Just(viewBuilder.view())
     }
 
 
@@ -3188,9 +3199,9 @@ data class RollWidget(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View {
+                      context : Context) : Maybe<View> {
         val viewBuilder = RollWidgetViewBuilder(this, entityId, context)
-        return viewBuilder.view()
+        return Just(viewBuilder.view())
     }
 
 
@@ -3334,9 +3345,9 @@ data class WidgetSlider(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View {
+                      context : Context) : Maybe<View> {
         val widgetUI = SliderWidgetUI(this, entityId, context)
-        return widgetUI.view()
+        return Just(widgetUI.view())
     }
 
 
@@ -3441,10 +3452,10 @@ data class StoryWidget(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View
+                      context : Context) : Maybe<View>
     {
         val viewBuilder = StoryWidgetViewBuilder(this, entityId, context)
-        return viewBuilder.view()
+        return Just(viewBuilder.view())
     }
 
 
@@ -3716,12 +3727,12 @@ data class WidgetTab(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View {
+                      context : Context) : Maybe<View> {
         val widgetUI = TabWidgetUI(this, entityId, context)
 
         this.groupContext = groupContext
 
-        return widgetUI.view()
+        return Just(widgetUI.view())
     }
 
 
@@ -4217,10 +4228,10 @@ data class TableWidget(private val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View
+                      context : Context) : Maybe<View>
     {
         val tableWidgetUI = TableWidgetUI(this, entityId, context)
-        return tableWidgetUI.view()
+        return Just(tableWidgetUI.view())
     }
 
 
@@ -4759,15 +4770,19 @@ data class TextWidget(val widgetId : WidgetId,
     override fun view(groupContext : Maybe<GroupContext>,
                       rowLayoutType : RowLayoutType,
                       entityId : EntityId,
-                      context : Context) : View
+                      context : Context) : Maybe<View>
     {
-        val layout = textWidgetViewGroup(this, rowLayoutType, entityId, context)
-        val view = textWidgetView(this, entityId, context, groupContext)
-
-        this.layoutId = layout.id
-        layout.addView(view)
-
-        return layout
+        val viewData = this.viewData(entityId, groupContext)
+        return when (viewData) {
+            is Just -> {
+                val layout = textWidgetViewGroup(this, rowLayoutType, entityId, context)
+                val view = textWidgetView(this, viewData.value, themeOrDefault(entityId), context, groupContext)
+                this.layoutId = layout.id
+                layout.addView(view)
+                Just(layout)
+            }
+            is Nothing -> Nothing()
+        }
     }
 
 
@@ -4807,6 +4822,7 @@ data class TextWidget(val widgetId : WidgetId,
             }
         }
     }
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -4850,14 +4866,39 @@ data class TextWidget(val widgetId : WidgetId,
                 val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
                 // Clear layout and add new version of view
                 contentLayout.removeAllViews()
-                val view = textWidgetView(this, entityId, context, groupContext)
-                contentLayout.addView(view)
+                theme(entityId).apDo { widgetTheme ->
+                    this.viewData(entityId, groupContext).doMaybe { viewData ->
+                        val view = textWidgetView(this, viewData, widgetTheme, context, groupContext)
+                        contentLayout.addView(view)
+                    }
+                }
             }
             catch (e: TypeCastException) {
             }
         }
     }
 
+
+
+    // -----------------------------------------------------------------------------------------
+    // DATA
+    // -----------------------------------------------------------------------------------------
+
+    fun viewData(
+            entityId : EntityId,
+            groupContext : Maybe<GroupContext> = Nothing()
+    ) : Maybe<TextWidgetViewData>
+    {
+        val value = this.value(entityId, groupContext)
+
+        val label = this.labelValue(entityId)
+        val maybeLabel : Maybe<String> = when (label) {
+            is Val -> Just(label.value)
+            is Err -> Nothing()
+        }
+
+        return value.apply { Just(TextWidgetViewData(it, maybeLabel)) }
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -4935,6 +4976,24 @@ data class TextWidget(val widgetId : WidgetId,
     }
 
 
+    /**
+     * The string representation of the widget's current value.
+     */
+    fun value(entityId : EntityId, groupContext : Maybe<GroupContext> = Nothing()) : Maybe<String>
+    {
+        val effValue = this.valueVariable(entityId, groupContext)
+                              .apply { it.value(entityId) }
+
+        return when (effValue)
+        {
+            is Val -> {
+                effValue.value
+            }
+            is Err -> {
+                Nothing()
+            }
+        }
+    }
 
 
 }

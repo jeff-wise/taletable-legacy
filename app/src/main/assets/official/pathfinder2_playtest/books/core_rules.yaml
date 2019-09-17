@@ -247,6 +247,12 @@ content:
   - value:
       type: group_id
       group_id: '726dac9a-c926-4a21-ade5-c8f5f3356dac'
+- id: ancestries_backgrounds_introduction
+  title: 'Ancestries and Backgrounds > Introduction'
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8735b9af-d5a9-4ef5-a9c8-2984d5216249'
 - id: ancestries_backgrounds_reading_introduction
   title: 'Ancestries and Backgrounds > Reading Entries > Introduction'
   group_references:
@@ -254,65 +260,75 @@ content:
       type: group_id
       group_id: '499b584e-3162-488c-92fd-8b02ef3588b9'
 - id: ancestries_backgrounds_reading_rules_hp
-  title: 'Ancestries and Backgrounds > Reading Entries > Rules > Hit Points'
+  title: 'Hit Points'
+  context: ancestry_reading_entries_hit_points
   group_references:
   - value:
       type: group_id
       group_id: '4b487f1f-3440-4ab6-8203-3bba48867e20'
 - id: ancestries_backgrounds_reading_rules_size
-  title: 'Ancestries and Backgrounds > Reading Entries > Rules > Size'
+  title: 'Size'
+  context: ancestry_reading_entries_size
   group_references:
   - value:
       type: group_id
-      group_id: '95072f8a-1abe-4fe8-b98a-ccaad2aca36e'
+      group_id: '4b487f1f-3440-4ab6-8203-3bba48867e20'
 - id: ancestries_backgrounds_reading_rules_speed
-  title: 'Ancestries and Backgrounds > Reading Entries > Rules > Speed'
+  title: 'Speed'
+  context: ancestry_reading_entries_speed
   group_references:
   - value:
       type: group_id
-      group_id: 'b5239c39-8fdc-4a1a-b29e-e4a0baea0ce2'
+      group_id: '4b487f1f-3440-4ab6-8203-3bba48867e20'
 - id: ancestries_backgrounds_reading_rules_ability_boosts
-  title: 'Ancestries and Backgrounds > Reading Entries > Rules > Ability Boosts'
+  title: 'Ability Boosts'
+  context: ancestry_reading_entries_ability_boosts
   group_references:
   - value:
       type: group_id
-      group_id: '790e2a53-b8af-49ad-9a2a-010dbe948fd0'
+      group_id: '4b487f1f-3440-4ab6-8203-3bba48867e20'
 - id: ancestries_backgrounds_reading_rules_ability_flaw
-  title: 'Ancestries and Backgrounds > Reading Entries > Rules > Ability Flaw'
+  title: 'Ability Flaw'
+  context: ancestry_reading_entries_ability_flaw
   group_references:
   - value:
       type: group_id
-      group_id: 'cc99d173-2841-4070-a616-80ba7800ae1d'
-- id: ancestries_backgrounds_reading_languages
-  title: 'Ancestries and Backgrounds > Reading Entries > Languages'
+      group_id: '4b487f1f-3440-4ab6-8203-3bba48867e20'
+- id: ancestries_backgrounds_reading_rules_languages
+  title: 'Languages'
+  context: ancestry_reading_entries_languages
   group_references:
   - value:
       type: group_id
-      group_id: '8d0ae461-07b0-417d-8482-45f62bbb9a63'
-- id: ancestries_backgrounds_reading_traits
-  title: 'Ancestries and Backgrounds > Reading Entries > Traits'
+      group_id: '4b487f1f-3440-4ab6-8203-3bba48867e20'
+- id: ancestries_backgrounds_reading_rules_traits
+  title: 'Traits'
+  context: ancestry_reading_entries_traits
   group_references:
   - value:
       type: group_id
-      group_id: 'f9591e9a-55ae-4b46-9583-ce7f6ed88717'
-- id: ancestries_backgrounds_reading_adventurers
-  title: 'Ancestries and Backgrounds > Reading Entries > Adventurers'
+      group_id: '4b487f1f-3440-4ab6-8203-3bba48867e20'
+- id: ancestries_backgrounds_reading_rules_special_abilities
+  title: 'Special Abilities'
+  context: ancestry_reading_entries_special_abilities
   group_references:
   - value:
       type: group_id
-      group_id: 'd2179f96-ad16-40ea-9926-4c85ba53f230'
-- id: ancestries_backgrounds_reading_special_abilities
-  title: 'Ancestries and Backgrounds > Reading Entries > Special Abilities'
+      group_id: '4b487f1f-3440-4ab6-8203-3bba48867e20'
+- id: ancestries_backgrounds_reading_rules_heritages
+  title: 'Heritages'
+  context: ancestry_reading_entries_heritages
   group_references:
   - value:
       type: group_id
-      group_id: 'f76e8e8b-a437-45c7-b9d9-041b9d0efd2a'
-- id: ancestries_backgrounds_reading_feats
-  title: 'Ancestries and Backgrounds > Reading Entries > Feats'
+      group_id: '4b487f1f-3440-4ab6-8203-3bba48867e20'
+- id: ancestries_backgrounds_reading_rules_ancestry_feats
+  title: 'Ancestry Feats'
+  context: ancestry_reading_entries_ancestry_feats
   group_references:
   - value:
       type: group_id
-      group_id: '87a63631-cfa1-4c50-9dd6-5bcc7a70de14'
+      group_id: '4b487f1f-3440-4ab6-8203-3bba48867e20'
 - id: ancestries_backgrounds_ancestries_dwarf_stats
   title: 'Ancestries and Backgrounds > Ancestries > Dwarf > Stats'
   context: dwarf
@@ -445,157 +461,593 @@ content:
   - value:
       type: group_id
       group_id: '122539bc-cc6a-4158-8edb-242e634dedc8'
-- id: ancestries_backgrounds_list_acolyte
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Acolyte'
-  context: acolyte
+- id: backgrounds_entry_acolyte
+  title: 'Acolyte'
+  context: background_acolyte
   group_references:
   - value:
       type: group_id
-      group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_acrobat
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Acrobat'
-  context: acrobat
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_animal_whisperer
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Animal Whisperer'
-  context: animal_whisperer
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_barkeep
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Barkeep'
-  context: barkeep
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_blacksmith
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Blacksmith'
-  context: blacksmith
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_criminal
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Criminal'
-  context: criminal
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_entertainer
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Entertainer'
-  context: entertainer
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_farmhand
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Farmhand'
-  context: farmhand
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_gladiator
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Gladiator'
-  context: gladiator
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_hunter
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Hunter'
-  context: hunter
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_laborer
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Laborer'
-  context: laborer
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_merchant
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Merchant'
-  context: merchant
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_noble
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Noble'
-  context: noble
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_nomad
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Nomad'
-  context: nomad
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_sailor
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Sailor'
-  context: sailor
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_scholar
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Scholar'
-  context: scholar
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_scout
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Scout'
-  context: scout
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_street_urchin
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Street Urchin'
-  context: street_urchin
-  group_references:
-    - value:
-        type: group_id
-        group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_backgrounds_list_warrior
-  title: 'Ancestries and Backgrounds > Backgrounds > List > Warrior'
-  context: warrior
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_acrobat
+  title: 'Acrobat'
+  context: background_acrobat
   group_references:
   - value:
       type: group_id
-      group_id: 'e6a596f2-5293-49cc-935a-4a2b214748db'
-- id: ancestries_languages_introduction
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_animal_whisperer
+  title: 'Animal Whisperer'
+  context: background_animal_whisperer
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_artisan
+  title: 'Artisan'
+  context: background_artisan
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_artist
+  title: 'Artist'
+  context: background_artist
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_barkeep
+  title: 'Barkeep'
+  context: background_barkeep
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_barrister
+  title: 'Barrister'
+  context: background_barrister
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_bounty_hunter
+  title: 'Bounty Hunter'
+  context: background_bounty_hunter
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_charlatan
+  title: 'Charlatan'
+  context: background_charlatan
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_criminal
+  title: 'Criminal'
+  context: background_criminal
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_detective
+  title: 'Detective'
+  context: background_detective
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_emissary
+  title: 'Emissary'
+  context: background_emissary
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_entertainer
+  title: 'Entertainer'
+  context: background_entertainer
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_farmhand
+  title: 'Farmhand'
+  context: background_farmhand
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_field_medic
+  title: 'Field Medic'
+  context: background_field_medic
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_fortune_teller
+  title: 'Fortune Teller'
+  context: background_fortune_teller
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_gambler
+  title: 'Gambler'
+  context: background_gambler
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_gladiator
+  title: 'Gladiator'
+  context: background_gladiator
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_guard
+  title: 'Guard'
+  context: background_guard
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_herbalist
+  title: 'Herbalist'
+  context: background_herbalist
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_hermit
+  title: 'Hermit'
+  context: background_hermit
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_hunter
+  title: 'Hunter'
+  context: background_hunter
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_laborer
+  title: 'Laborer'
+  context: background_laborer
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_martial_disciple
+  title: 'Martial Disciple'
+  context: background_martial_disciple
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_merchant
+  title: 'Merchant'
+  context: background_merchant
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_miner
+  title: 'Miner'
+  context: background_miner
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_noble
+  title: 'Noble'
+  context: background_noble
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_nomad
+  title: 'Nomad'
+  context: background_nomad
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_prisoner
+  title: 'Prisoner'
+  context: background_prisoner
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_sailor
+  title: 'Sailor'
+  context: background_sailor
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_scholar
+  title: 'Scholar'
+  context: background_scholar
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_scout
+  title: 'Scout'
+  context: background_scout
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_street_urchin
+  title: 'Street Urchin'
+  context: background_street_urchin
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_tinker
+  title: 'Tinker'
+  context: background_tinker
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: backgrounds_entry_warrior
+  title: 'Warrior'
+  context: background_warrior
+  group_references:
+  - value:
+      type: group_id
+      group_id: '4ed9f5e9-b202-47e6-bba3-b1284f391c46'
+- id: ancestries_backgrounds_languages_introduction
   title: 'Ancestries and Backgrounds > Languages > Introduction'
   group_references:
   - value:
       type: group_id
       group_id: 'aa53122b-b700-4ddb-bc70-60a1256951dc'
-- id: ancestries_languages_sign_language
+- id: ancestries_backgrounds_sign_language
   title: 'Ancestries and Backgrounds > Languages > Sign Language'
+  context: ancestries_backgrounds_languages_sign_language
   group_references:
   - value:
       type: group_id
-      group_id: 'abad0786-a274-442c-a2cf-7ff62148f5de'
-- id: ancestries_languages_in_the_game
-  title: 'Ancestries and Backgrounds > Languages > In the game'
+      group_id: '6b27ec65-407e-425f-baa5-52f890f2fd4d'
+- id: ancestries_backgrounds_languages_regional
+  title: 'Ancestries and Backgrounds > Languages > Regional Languages'
+  context: ancestries_backgrounds_languages_regional
   group_references:
   - value:
       type: group_id
-      group_id: '74c29284-7667-4ad6-ad4d-fffc36c665f7'
+      group_id: '6b27ec65-407e-425f-baa5-52f890f2fd4d'
+- id: ancestries_backgrounds_languages_collection_common_common_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Common > Common > Entry'
+  context: language_common
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_common_draconic_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Common > Draconic > Entry'
+  context: language_draconic
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_common_dwarven_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Common > Dwarven > Entry'
+  context: language_dwarven
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_common_elven_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Common > Elven > Entry'
+  context: language_elven
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_common_gnomish_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Common > Gnomish > Entry'
+  context: language_gnomish
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_common_goblin_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Common > Goblin > Entry'
+  context: language_goblin
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_common_halfling_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Common > Halfling > Entry'
+  context: language_halfling
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_common_jotun_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Common > Jotun > Entry'
+  context: language_jotun
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_common_orcish_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Common > Orcish > Entry'
+  context: language_orcish
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_common_sylvan_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Common > Sylvan > Entry'
+  context: language_sylvan
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_common_undercommon_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Common > Undercommon > Entry'
+  context: language_undercommon
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_uncommon_abyssal_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Uncommon > Abyssal > Entry'
+  context: language_abyssal
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_uncommon_aklo_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Uncommon > Aklo > Entry'
+  context: language_aklo
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_uncommon_aquan_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Uncommon > Aquan > Entry'
+  context: language_aquan
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_uncommon_auran_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Uncommon > Auran > Entry'
+  context: language_auran
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_uncommon_celestial_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Uncommon > Celestial > Entry'
+  context: language_celestial
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_uncommon_gnoll_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Uncommon > Gnoll > Entry'
+  context: language_gnoll
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_uncommon_ignan_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Uncommon > Ignan > Entry'
+  context: language_ignan
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_uncommon_infernal_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Uncommon > Infernal > Entry'
+  context: language_infernal
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_uncommon_necril_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Uncommon > Necril > Entry'
+  context: language_necril
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_uncommon_shadowtongue_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Uncommon > Shadowtongue > Entry'
+  context: language_shadowtongue
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_uncommon_terran_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Uncommon > Terran > Entry'
+  context: language_terran
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_collection_secret_druidic_entry
+  title: 'Ancestries and Backgrounds > Languages > Collection > Secret > Druidic > Entry'
+  context: language_druidic
+  group_references:
+  - value:
+      type: group_id
+      group_id: '779de6f4-02c8-4d8e-8ee4-5c2f157c14ae'
+- id: ancestries_backgrounds_languages_index_common_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Common > Card'
+  context: ancestries_backgrounds_languages_index_common
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_draconic_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Draconic > Card'
+  context: ancestries_backgrounds_languages_index_draconic
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_dwarven_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Dwarven > Card'
+  context: ancestries_backgrounds_languages_index_dwarven
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_elven_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Elven > Card'
+  context: ancestries_backgrounds_languages_index_elven
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_gnomish_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Gnomish > Card'
+  context: ancestries_backgrounds_languages_index_gnomish
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_goblin_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Goblin > Card'
+  context: ancestries_backgrounds_languages_index_goblin
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_halfling_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Halfling > Card'
+  context: ancestries_backgrounds_languages_index_halfling
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_jotun_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Jotun > Card'
+  context: ancestries_backgrounds_languages_index_jotun
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_orcish_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Orcish > Card'
+  context: ancestries_backgrounds_languages_index_orcish
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_sylvan_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Sylvan > Card'
+  context: ancestries_backgrounds_languages_index_sylvan
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_undercommon_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Undercommon > Card'
+  context: ancestries_backgrounds_languages_index_undercommon
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_abyssal_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Abyssal > Card'
+  context: ancestries_backgrounds_languages_index_abyssal
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_aklo_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Aklo > Card'
+  context: ancestries_backgrounds_languages_index_aklo
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_aquan_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Aquan > Card'
+  context: ancestries_backgrounds_languages_index_aquan
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_auran_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Auran > Card'
+  context: ancestries_backgrounds_languages_index_auran
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_celestial_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Celestial > Card'
+  context: ancestries_backgrounds_languages_index_celestial
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_gnoll_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Gnoll > Card'
+  context: ancestries_backgrounds_languages_index_gnoll
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_ignan_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Ignan > Card'
+  context: ancestries_backgrounds_languages_index_ignan
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_infernal_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Infernal > Card'
+  context: ancestries_backgrounds_languages_index_infernal
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_necril_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Necril > Card'
+  context: ancestries_backgrounds_languages_index_necril
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_shadowtongue_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Shadowtongue > Card'
+  context: ancestries_backgrounds_languages_index_shadowtongue
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_terran_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Terran > Card'
+  context: ancestries_backgrounds_languages_index_terran
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
+- id: ancestries_backgrounds_languages_index_druidic_card
+  title: 'Ancestries and Backgrounds > Languages > Index > Druidic > Card'
+  context: ancestries_backgrounds_languages_index_druidic
+  group_references:
+  - value:
+      type: group_id
+      group_id: '1abdc92e-caee-456a-8d73-ff073e47be6f'
 - id: skills_acrobatics_balance_entry
   title: 'Skills > Acrobatics > Balance > Entry'
   context: skills_ability_acrobatics_balance
@@ -3228,6 +3680,1196 @@ content:
   - value:
       type: group_id
       group_id: '57212085-5291-45cd-9b00-b202e0d6de73'
+- id: ancestry_feat_dwarf_dwarven_lore_entry
+  title: 'Ancestry Feat > Dwarf > Dwarven Lore > Entry'
+  context: ancestry_feat_dwarf_dwarven_lore
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_dwarf_dwarven_weapon_familiarity_entry
+  title: 'Ancestry Feat > Dwarf > Dwarven Weapon Familiarity > Entry'
+  context: ancestry_feat_dwarf_dwarven_weapon_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_dwarf_rock_runner_entry
+  title: 'Ancestry Feat > Dwarf > Rock Runner > Entry'
+  context: ancestry_feat_dwarf_rock_runner
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_dwarf_stonecunning_entry
+  title: 'Ancestry Feat > Dwarf > Stonecunning > Entry'
+  context: ancestry_feat_dwarf_stonecunning
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_dwarf_unburdened_iron_entry
+  title: 'Ancestry Feat > Dwarf > Unburdened Iron > Entry'
+  context: ancestry_feat_dwarf_unburdened_iron
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_dwarf_vengeful_hatred_entry
+  title: 'Ancestry Feat > Dwarf > Vengeful Hatred > Entry'
+  context: ancestry_feat_dwarf_vengeful_hatred
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_dwarf_boulder_roll_entry
+  title: 'Ancestry Feat > Dwarf > Boulder Roll > Entry'
+  context: ancestry_feat_dwarf_boulder_roll
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_dwarf_dwarven_weapon_cunning_entry
+  title: 'Ancestry Feat > Dwarf > Dwarven Weapon Cunning > Entry'
+  context: ancestry_feat_dwarf_dwarven_weapon_cunning
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_dwarf_mountains_stoutness_entry
+  title: 'Ancestry Feat > Dwarf > Mountain''s Stoutness > Entry'
+  context: ancestry_feat_dwarf_mountains_stoutness
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_dwarf_stonewalker_entry
+  title: 'Ancestry Feat > Dwarf > Stonewalker > Entry'
+  context: ancestry_feat_dwarf_stonewalker
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_dwarf_dwarven_weapon_expertise_entry
+  title: 'Ancestry Feat > Dwarf > Dwarven Weapon Expertise > Entry'
+  context: ancestry_feat_dwarf_dwarven_weapon_expertise
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_ancestral_longevity_entry
+  title: 'Ancestry Feat > Elf > Ancestral Longevity > Entry'
+  context: ancestry_feat_elf_ancestral_longevity
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_elven_lore_entry
+  title: 'Ancestry Feat > Elf > Elven Lore > Entry'
+  context: ancestry_feat_elf_elven_lore
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_elven_weapon_familiarity_entry
+  title: 'Ancestry Feat > Elf > Elven Weapon Familiarity > Entry'
+  context: ancestry_feat_elf_elven_weapon_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_forlorn_entry
+  title: 'Ancestry Feat > Elf > Forlorn > Entry'
+  context: ancestry_feat_elf_forlorn
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_keen_hearing_entry
+  title: 'Ancestry Feats > Elf > Keen Hearing > Entry'
+  context: ancestry_feat_elf_keen_hearing
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_nimble_elf_entry
+  title: 'Ancestry Feats > Elf > Nimble Elf > Entry'
+  context: ancestry_feat_elf_nimble_elf
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_otherworldly_magic_entry
+  title: 'Ancestry Feat > Elf > Otherworldly Magic > Entry'
+  context: ancestry_feat_elf_otherworldly_magic
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_unwavering_mien_entry
+  title: 'Ancestry Feat > Elf > Unwavering Mien > Entry'
+  context: ancestry_feat_elf_unwavering_mien
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_ageless_patience_entry
+  title: 'Ancestry Feat > Elf > Ageless Patience > Entry'
+  context: ancestry_feat_elf_ageless_patience
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_elven_weapon_elegance_entry
+  title: 'Ancestry Feat > Elf > Elven Weapon Elegance > Entry'
+  context: ancestry_feat_elf_elven_weapon_elegance
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_elf_step_entry
+  title: 'Ancestry Feat > Elf > Elf Step > Entry'
+  context: ancestry_feat_elf_elf_step
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_expert_longevity_entry
+  title: 'Ancestry Feat > Elf > Expert Longevity > Entry'
+  context: ancestry_feat_elf_expert_longevity
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_universal_longevity_entry
+  title: 'Ancestry Feat > Elf > Universal Longevity > Entry'
+  context: ancestry_feat_elf_universal_longevity
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_elf_elven_weapon_expertise_entry
+  title: 'Ancestry Feat > Elf > Elven Weapon Expertise > Entry'
+  context: ancestry_feat_elf_elven_weapon_expertise
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_gnome_animal_accomplice_entry
+  title: 'Ancestry Feat > Elf > Animal Accomplice > Entry'
+  context: ancestry_feat_gnome_animal_accomplice
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_gnome_burrow_elocutionist_entry
+  title: 'Ancestry Feats > Gnome > Burrow Elocutionist > Entry'
+  context: ancestry_feat_gnome_burrow_elocutionist
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_gnome_fey_fellowship_entry
+  title: 'Ancestry Feat > Gnome > Fey Fellowship > Entry'
+  context: ancestry_feat_gnome_fey_fellowship
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_gnome_first_world_magic_entry
+  title: 'Ancestry Feat > Gnome > First World Magic > Entry'
+  context: ancestry_feat_gnome_first_world_magic
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_gnome_gnome_obsession_entry
+  title: 'Ancestry Feat > Gnome > Gnome Obsession > Entry'
+  context: ancestry_feat_gnome_gnome_obsession
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_gnome_gnome_weapon_familiarity_entry
+  title: 'Ancestry Feat > Gnome > Gnome Weapon Familiarity > Entry'
+  context: ancestry_feat_gnome_gnome_weapon_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_gnome_illusion_sense_entry
+  title: 'Ancestry Feat > Gnome > Illusion Sense > Entry'
+  context: ancestry_feat_gnome_illusion_sense
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_gnome_animal_elocutionist_entry
+  title: 'Ancestry Feat > Gnome > Animal Elocutionist > Entry'
+  context: ancestry_feat_gnome_animal_elocutionist
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_gnome_energized_font_entry
+  title: 'Ancestry Feat > Gnome > Energized Font > Entry'
+  context: ancestry_feat_gnome_energized_font
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_gnome_gnome_weapon_innovator_entry
+  title: 'Ancestry Feat > Gnome > Gnome Weapon Innovator > Entry'
+  context: ancestry_feat_gnome_gnome_weapon_innovator
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_gnome_first_world_adept_entry
+  title: 'Ancestry Feat > Gnome > First World Adept > Entry'
+  context: ancestry_feat_gnome_first_world_adept
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_gnome_vivacious_conduit_entry
+  title: 'Ancestry Feat > Gnome > Vivacious Conduit > Entry'
+  context: ancestry_feat_gnome_vivacious_conduit
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_gnome_gnome_weapon_expertise_entry
+  title: 'Ancestry Feat > Gnome > Gnome Weapon Expertise > Entry'
+  context: ancestry_feat_gnome_gnome_weapon_expertise
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_burn_it_entry
+  title: 'Ancestry Feat > Goblin > Burn It > Entry'
+  context: ancestry_feat_goblin_burn_it
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_city_scavenger_entry
+  title: 'Ancestry Feat > Goblin > City Scavenger > Entry'
+  context: ancestry_feat_goblin_city_scavenger
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_goblin_lore_entry
+  title: 'Ancestry Feat > Goblin > Goblin Lore > Entry'
+  context: ancestry_feat_goblin_goblin_lore
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_goblin_scuttle_entry
+  title: 'Ancestry Feat > Goblin > Goblin Scuttle > Entry'
+  context: ancestry_feat_goblin_goblin_scuttle
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_goblin_song_entry
+  title: 'Ancestry Feat > Goblin > Goblin Song > Entry'
+  context: ancestry_feat_goblin_goblin_song
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_goblin_weapon_familiarity_entry
+  title: 'Ancestry Feat > Goblin > Goblin Weapon Familiarity > Entry'
+  context: ancestry_feat_goblin_goblin_weapon_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_junk_tinker_entry
+  title: 'Ancestry Feat > Goblin > Junk Tinker > Entry'
+  context: ancestry_feat_goblin_junk_tinker
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_rough_rider_entry
+  title: 'Ancestry Feat > Goblin > Rough Rider > Entry'
+  context: ancestry_feat_goblin_rough_rider
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_very_sneaky_entry
+  title: 'Ancestry Feat > Goblin > Very Sneaky > Entry'
+  context: ancestry_feat_goblin_very_sneaky
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_goblin_weapon_frenzy_entry
+  title: 'Ancestry Feat > Goblin > Goblin Weapon Frenzy > Entry'
+  context: ancestry_feat_goblin_goblin_weapon_frenzy
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_cave_climber_entry
+  title: 'Ancestry Feat > Goblin > Cave Climber > Entry'
+  context: ancestry_feat_goblin_cave_climber
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_skittering_scuttle_entry
+  title: 'Ancestry Feat > Goblin > Skittering Scuttle > Entry'
+  context: ancestry_feat_goblin_skittering_scuttle
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_goblin_weapon_expertise_entry
+  title: 'Ancestry Feat > Goblin > Goblin Weapon Expertise > Entry'
+  context: ancestry_feat_goblin_goblin_weapon_expertise
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_goblin_very_very_sneaky_entry
+  title: 'Ancestry Feat > Goblin > Very, Very Sneaky > Entry'
+  context: ancestry_feat_goblin_very_very_sneaky
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_distracting_shadows_entry
+  title: 'Ancestry Feat > Halfling > Distracting Shadows > Entry'
+  context: ancestry_feat_halfling_distracting_shadows
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_halfling_lore_entry
+  title: 'Ancestry Feat > Halfling > Halfling Lore > Entry'
+  context: ancestry_feat_halfling_halfling_lore
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_halfling_luck_entry
+  title: 'Ancestry Feat > Halfling > Halfling Luck > Entry'
+  context: ancestry_feat_halfling_halfling_luck
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_halfling_weapon_familiarity_entry
+  title: 'Ancestry Feat > Halfling > Halfling Weapon Familiarity > Entry'
+  context: ancestry_feat_halfling_halfling_weapon_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_sure_feet_entry
+  title: 'Ancestry Feat > Halfling > Sure Feet > Entry'
+  context: ancestry_feat_halfling_sure_feet
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_titan_slinger_entry
+  title: 'Ancestry Feat > Halfling > Titan Slinger > Entry'
+  context: ancestry_feat_halfling_titan_slinger
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_unfettered_halfling_entry
+  title: 'Ancestry Feat > Halfling > Unfettered Halfling > Entry'
+  context: ancestry_feat_halfling_unfettered_halfling
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_watchful_halfling_entry
+  title: 'Ancestry Feat > Halfling > Watchful Halfling > Entry'
+  context: ancestry_feat_halfling_watchful_halfling
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_cultural_adaptability_entry
+  title: 'Ancestry Feat > Halfling > Cultural Adaptability > Entry'
+  context: ancestry_feat_halfling_cultural_adaptability
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_halfling_weapon_trickster_entry
+  title: 'Ancestry Feat > Halfling > Halfling Weapon Trickster > Entry'
+  context: ancestry_feat_halfling_halfling_weapon_trickster
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_guiding_luck_entry
+  title: 'Ancestry Feats > Halfling > Guiding Luck > Entry'
+  context: ancestry_feat_halfling_guiding_luck
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_irrepressible_entry
+  title: 'Ancestry Feat > Halfling > Irrepressible > Entry'
+  context: ancestry_feat_halfling_irrepressible
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_ceaseless_shadows_entry
+  title: 'Ancestry Feat > Halfling > Ceaseless Shadows > Entry'
+  context: ancestry_feat_halfling_ceaseless_shadows
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfling_halfling_weapon_expertise_entry
+  title: 'Ancestry Feat > Halfling > Halfling Weapon Expertise > Entry'
+  context: ancestry_feat_halfling_halfling_weapon_expertise
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_human_adapted_cantrip_entry
+  title: 'Ancestry Feat > Human > Adapted Cantrip > Entry'
+  context: ancestry_feat_human_adapted_cantrip
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_human_cooperative_nature_entry
+  title: 'Ancestry Feat > Human > Cooperative Nature > Entry'
+  context: ancestry_feat_human_cooperative_nature
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_human_general_training_entry
+  title: 'Ancestry Feat > Human > General Training > Entry'
+  context: ancestry_feat_human_general_training
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_human_haughty_obstinacy_entry
+  title: 'Ancestry Feat > Human > Haughty Obstinancy > Entry'
+  context: ancestry_feat_human_haughty_obstinancy
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_human_natural_ambition_entry
+  title: 'Ancestry Feat > Human > Natural Ambition > Entry'
+  context: ancestry_feat_human_natural_ambition
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_human_natural_skill_entry
+  title: 'Ancestry Feat > Human > Natural Skill > Entry'
+  context: ancestry_feat_human_natural_skill
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_human_unconventional_weaponry_entry
+  title: 'Ancestry Feat > Human > Unconventional Weaponry > Entry'
+  context: ancestry_feat_human_unconventional_weaponry
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_human_adaptive_adept_entry
+  title: 'Ancestry Feat > Human > Adaptive Adept > Entry'
+  context: ancestry_feat_human_adaptive_adept
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_human_clever_improviser_entry
+  title: 'Ancestry Feat > Human > Clever Improviser > Entry'
+  context: ancestry_feat_human_clever_improviser
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_human_cooperative_soul_entry
+  title: 'Ancestry Feat > Human > Cooperative Soul > Entry'
+  context: ancestry_feat_human_cooperative_soul
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_human_incredible_improvisation_entry
+  title: 'Ancestry Feat > Human > Incredible Improvisation > Entry'
+  context: ancestry_feat_human_incredible_improvisation
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_human_multitalented_entry
+  title: 'Ancestry Feat > Human > Multitalented > Entry'
+  context: ancestry_feat_human_multitalented
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_human_unconventional_expertise_entry
+  title: 'Ancestry Feat > Human > Unconventional Expertise > Entry'
+  context: ancestry_feat_human_unconventional_expertise
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfelf_elf_atavism_entry
+  title: 'Ancestry Feat > Halfelf > Elf Atavism > Entry'
+  context: ancestry_feat_halfelf_elf_atavism
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfelf_inspire_imitation_entry
+  title: 'Ancestry Feat > Halfelf > Inspire Imitation > Entry'
+  context: ancestry_feat_halfelf_inspire_imitation
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halfelf_supernatural_charm_entry
+  title: 'Ancestry Feat > Halfelf > Supernatural Charm > Entry'
+  context: ancestry_feat_halfelf_supernatural_charm
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halforc_monstrous_peacemaker_entry
+  title: 'Ancestry Feat > Halforc > Monstrous Peacemaker > Entry'
+  context: ancestry_feat_halforc_monstrous_peacemaker
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halforc_orc_ferocity_entry
+  title: 'Ancestry Feat > Halforc > Orc Ferocity > Entry'
+  context: ancestry_feat_halforc_orc_ferocity
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halforc_orc_sight_entry
+  title: 'Ancestry Feat > Halforc > Orc Sight > Entry'
+  context: ancestry_feat_halforc_orc_sight
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halforc_orc_superstition_entry
+  title: 'Ancestry Feat > Halforc > Orc Superstition > Entry'
+  context: ancestry_feat_halforc_orc_superstition
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halforc_orc_weapon_familiarity_entry
+  title: 'Ancestry Feat > Halforc > Orc Weapon Familiarity > Entry'
+  context: ancestry_feat_halforc_orc_weapon_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halforc_orc_weapon_carnage_entry
+  title: 'Ancestry Feat > Halforc > Orc Weapon Carnage > Entry'
+  context: ancestry_feat_halforc_orc_weapon_carnage
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halforc_victorious_vigor_entry
+  title: 'Ancestry Feat > Halforc > Victorious Vigor > Entry'
+  context: ancestry_feat_halforc_victorious_vigor
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halforc_pervasive_superstition_entry
+  title: 'Ancestry Feat > Halforc > Pervasive Superstition > Entry'
+  context: ancestry_feat_halforc_pervasive_superstition
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halforc_incredible_ferocity_entry
+  title: 'Ancestry Feat > Halforc > Incredible Ferocity > Entry'
+  context: ancestry_feat_halforc_incredible_ferocity
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_halforc_orc_weapon_expertise_entry
+  title: 'Ancestry Feat > Halforc > Orc Weapon Expertise > Entry'
+  context: ancestry_feat_halforc_orc_weapon_expertise
+  group_references:
+  - value:
+      type: group_id
+      group_id: 'a67f84d3-ed5d-43a9-b164-00b89ea24401'
+- id: ancestry_feat_dwarf_dwarven_lore_card
+  title: 'Ancestry Feat > Dwarf > Dwarven Lore > Card'
+  context: ancestry_feat_dwarf_dwarven_lore
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_dwarf_dwarven_weapon_familiarity_card
+  title: 'Ancestry Feat > Dwarf > Dwarven Weapon Familiarity > Card'
+  context: ancestry_feat_dwarf_dwarven_weapon_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feats_dwarf_rock_runner_card
+  title: 'Ancestry Feat > Dwarf > Rock Runner > Card'
+  context: ancestry_feat_dwarf_ancients_blood
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_dwarf_stonecunning_card
+  title: 'Ancestry Feat > Dwarf > Stonecunning > Card'
+  context: ancestry_feat_dwarf_stonecunning
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_dwarf_unburdened_iron_card
+  title: 'Ancestry Feat > Dwarf > Unburdened Iron > Card'
+  context: ancestry_feat_dwarf_unburdened_iron
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_dwarf_vengeful_hatred_card
+  title: 'Ancestry Feat > Dwarf > Vengeful Hatred > Card'
+  context: ancestry_feat_dwarf_vengeful_hatred
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_dwarf_boulder_roll_card
+  title: 'Ancestry Feat > Dwarf > Boulder Roll > Card'
+  context: ancestry_feat_dwarf_boulder_roll
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_dwarf_dwaven_weapon_cunning_card
+  title: 'Ancestry Feat > Dwarf > Dwarven Weapon Cunning > Card'
+  context: ancestry_feat_dwarf_dwarven_weapon_cunning
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_dwarf_mountains_stoutness_card
+  title: 'Ancestry Feat > Dwarf > Mountain''s Stoutness > Card'
+  context: ancestry_feat_dwarf_mountains_stoutness
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_dwarf_stonewalker_card
+  title: 'Ancestry Feat > Dwarf > Stonewalker > Card'
+  context: ancestry_feat_dwarf_stonewalker
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_dwarf_dwarven_weapon_expertise_card
+  title: 'Ancestry Feat > Dwarf > Dwarven Weapon Expertise > Card'
+  context: ancestry_feat_dwarf_dwarven_weapon_expertise
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_elf_ancestral_longevity_card
+  title: 'Ancestry Feat > Elf > Ancestral Longevity > Card'
+  context: ancestry_feat_elf_ancestral_longevity
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_elf_elven_lore_card
+  title: 'Ancestry Feat > Elf > Elven Lore > Card'
+  context: ancestry_feat_elf_elven_lore
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_elf_elven_weapon_familiarity_card
+  title: 'Ancestry Feat > Elf > Elven Weapon Familiarity > Card'
+  context: ancestry_feat_elf_elven_weapon_familiarity
+  group_references:
+    - value:
+        type: group_id
+        group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_elf_forlorn_card
+  title: 'Ancestry Feat > Elf > Forlorn > Card'
+  context: ancestry_feat_elf_forlorn
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_elf_nimble_elf_card
+  title: 'Ancestry Feat > Elf > Nimble Elf > Card'
+  context: ancestry_feat_elf_nimble_elf
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_elf_otherworldly_magic_card
+  title: 'Ancestry Feat > Elf > Otherworldly Magic > Card'
+  context: ancestry_feat_elf_otherworldly_magic
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_elf_unwavering_mien_card
+  title: 'Ancestry Feat > Elf > Unwavering Mien > Card'
+  context: ancestry_feat_elf_unwavering_mien
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_elf_ageless_patience_card
+  title: 'Ancestry Feat > Elf > Ageless Patience > Card'
+  context: ancestry_feat_elf_ageless_patience
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_elf_elven_weapon_elegance_card
+  title: 'Ancestry Feat > Elf > Elven Weapon Elegance > Card'
+  context: ancestry_feat_elf_elven_weapon_elegance
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_elf_elf_step_card
+  title: 'Ancestry Feat > Elf > Elf Step > Card'
+  context: ancestry_feat_elf_elf_step
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_elf_expert_longevity_card
+  title: 'Ancestry Feat > Elf > Expert Longevity > Card'
+  context: ancestry_feat_elf_expert_longevity
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_elf_universal_longevity_card
+  title: 'Ancestry Feat > Elf > Universal Longevity > Card'
+  context: ancestry_feat_elf_universal_longevity
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_elf_elven_weapon_expertise_card
+  title: 'Ancestry Feat > Elf > Elven Weapon Expertise > Card'
+  context: ancestry_feat_elf_elven_weapon_expertise
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_gnome_animal_accomplice_card
+  title: 'Ancestry Feat > Gnome > Animal Accomplice > Card'
+  context: ancestry_feat_gnome_animal_accomplice
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_gnome_burrow_elocutionist_card
+  title: 'Ancestry Feat > Gnome > Burrow Elocutionist > Card'
+  context: ancestry_feat_gnome_burrow_elocutionist
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_gnome_fey_fellowship_card
+  title: 'Ancestry Feat > Gnome > Fey Fellowship > Card'
+  context: ancestry_feat_gnome_fey_fellowship
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_gnome_first_world_magic_card
+  title: 'Ancestry Feat > Gnome > First World Magic > Card'
+  context: ancestry_feat_gnome_first_world_magic
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_gnome_gnome_obsession_card
+  title: 'Ancestry Feat > Gnome > Gnome Obsession > Card'
+  context: ancestry_feat_gnome_gnome_obsession
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_gnome_gnome_weapon_familiarity_card
+  title: 'Ancestry Feat > Gnome > Gnome Weapon Familiarity > Card'
+  context: ancestry_feat_gnome_gnome_weapon_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_gnome_illusion_sense_card
+  title: 'Ancestry Feat > Gnome > Illusion Sense > Card'
+  context: ancestry_feat_gnome_illusion_sense
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_gnome_animal_elocutionist_card
+  title: 'Ancestry Feat > Gnome > Animal Elocutionist > Card'
+  context: ancestry_feat_gnome_animal_elocutionist
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_gnome_energized_font_card
+  title: 'Ancestry Feat > Gnome > Energized Font > Card'
+  context: ancestry_feat_gnome_energized_font
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_gnome_gnome_weapon_innovator_card
+  title: 'Ancestry Feat > Gnome > Gnome Weapon Innovator > Card'
+  context: ancestry_feat_gnome_gnome_weapon_innovator
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_gnome_first_world_adept_card
+  title: 'Ancestry Feat > Gnome > First World Adept > Card'
+  context: ancestry_feat_gnome_first_world_adept
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_gnome_vivacious_conduit_card
+  title: 'Ancestry Feat > Gnome > Vivacious Conduit > Card'
+  context: ancestry_feat_gnome_vivacious_conduit
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_gnome_gnome_weapon_expertise_card
+  title: 'Ancestry Feat > Gnome > Gnome Weapon Expertise > Card'
+  context: ancestry_feat_gnome_gnome_weapon_expertise
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_burn_it_card
+  title: 'Ancestry Feat > Goblin > Burn It > Card'
+  context: ancestry_feat_goblin_burn_it
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_city_scavenger_card
+  title: 'Ancestry Feat > Goblin > City Scavenger > Card'
+  context: ancestry_feat_goblin_city_scavenger
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_goblin_lore_card
+  title: 'Ancestry Feat > Goblin > Goblin Lore > Card'
+  context: ancestry_feat_goblin_goblin_lore
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_goblin_scuttle_card
+  title: 'Ancestry Feat > Goblin > Goblin Scuttle > Card'
+  context: ancestry_feat_goblin_goblin_scuttle
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_goblin_song_card
+  title: 'Ancestry Feat > Goblin > Goblin Song > Card'
+  context: ancestry_feat_goblin_goblin_song
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_goblin_weapon_familiarity_card
+  title: 'Ancestry Feat > Goblin > Goblin Weapon Familiarity > Card'
+  context: ancestry_feat_goblin_goblin_weapon_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_junk_tinker_card
+  title: 'Ancestry Feat > Goblin > Junk Tinker > Card'
+  context: ancestry_feat_goblin_junk_tinker
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_rough_rider_card
+  title: 'Ancestry Feat > Goblin > Rough Rider > Card'
+  context: ancestry_feat_goblin_rough_rider
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_very_sneaky_card
+  title: 'Ancestry Feat > Goblin > Very Sneaky > Card'
+  context: ancestry_feat_goblin_very_sneaky
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_goblin_weapon_frenzy_card
+  title: 'Ancestry Feat > Goblin > Goblin Weapon Frenzy > Card'
+  context: ancestry_feat_goblin_goblin_weapon_frenzy
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_cave_climber_card
+  title: 'Ancestry Feat > Goblin > Cave Climber > Card'
+  context: ancestry_feat_goblin_cave_climber
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_skittering_scuttle_card
+  title: 'Ancestry Feat > Goblin > Skittering Scuttle > Card'
+  context: ancestry_feat_goblin_skittering_scuttle
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_goblin_weapon_expertise_card
+  title: 'Ancestry Feat > Goblin > Goblin Weapon Expertise > Card'
+  context: ancestry_feat_goblin_goblin_weapon_expertise
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_goblin_very_very_sneaky_card
+  title: 'Ancestry Feat > Goblin > Very, Very Sneaky > Card'
+  context: ancestry_feat_goblin_very_very_sneaky
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halfling_distracting_shadows_card
+  title: 'Ancestry Feat > Halfling > Distracting Shadows > Card'
+  context: ancestry_feat_halfling_distracting_shadows
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halfling_halfling_lore_card
+  title: 'Ancestry Feat > Halfling > Halfling Lore > Card'
+  context: ancestry_feat_halfling_halfling_lore
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halfling_halfling_luck_card
+  title: 'Ancestry Feat > Halfling > Halfling Luck > Card'
+  context: ancestry_feat_halfling_halfling_luck
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halfling_halfling_weapon_familiarity_card
+  title: 'Ancestry Feat > Halfling > Halfling Weapon Familiarity > Card'
+  context: ancestry_feat_halfling_halfling_weapon_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halfling_sure_footed_card
+  title: 'Ancestry Feat > Halfling > Sure-footed > Card'
+  context: ancestry_feat_halfling_sure_footed
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halfling_titan_slinger_card
+  title: 'Ancestry Feat > Halfling > Titan Slinger > Card'
+  context: ancestry_feat_halfling_titan_slinger
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halfling_unfettered_card
+  title: 'Ancestry Feat > Halfling > Unfettered > Card'
+  context: ancestry_feat_halfling_unfettered
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halfling_weapon_familiarity_card
+  title: 'Ancestry Feat > Halfling > Weapon Familiarity > Card'
+  context: ancestry_feat_halfling_weapon_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halfling_weapon_trickster_card
+  title: 'Ancestry Feat > Halfling > Weapon Trickster > Card'
+  context: ancestry_feat_halfling_weapon_trickster
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_human_adapted_spell_card
+  title: 'Ancestry Feat > Human > Adapted Spell > Card'
+  context: ancestry_feat_human_adpated_spell
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_human_clever_improviser_card
+  title: 'Ancestry Feat > Human > Clever Improviser > Card'
+  context: ancestry_feat_human_clever_improviser
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_human_cooperative_nature_card
+  title: 'Ancestry Feat > Human > Cooperative Nature > Card'
+  context: ancestry_feat_human_cooperative_nature
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_human_general_training_card
+  title: 'Ancestry Feat > Human > General Training > Card'
+  context: ancestry_feat_human_general_training
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_human_halfelf_card
+  title: 'Ancestry Feat > Human > Half-Elf > Card'
+  context: ancestry_feat_human_halfelf
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_human_halforc_card
+  title: 'Ancestry Feat > Human > Half-Orc > Card'
+  context: ancestry_feat_human_halforc
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_human_haughty_obstinancy_card
+  title: 'Ancestry Feat > Human > Haughty Obstinancy > Card'
+  context: ancestry_feat_human_haughty_obstinancy
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_human_natural_ambition_card
+  title: 'Ancestry Feat > Human > Natural Ambition > Card'
+  context: ancestry_feat_human_natural_ambition
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_human_skilled_card
+  title: 'Ancestry Feat > Human > Skilled > Card'
+  context: ancestry_feat_human_skilled
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_human_unconventional_weaponry_card
+  title: 'Ancestry Feat > Human > Unconventional Weaponry > Card'
+  context: ancestry_feat_human_unconventional_weaponry
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halfelf_inspire_imitation_card
+  title: 'Ancestry Feat > Halfelf > Inspire Imitation > Card'
+  context: ancestry_feat_halfelf_inspire_imitation
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halfelf_supernatural_charm_card
+  title: 'Ancestry Feat > Halfelf > Supernatural Charm > Card'
+  context: ancestry_feat_halfelf_supernatural_charm
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halforc_orc_ferocity_card
+  title: 'Ancestry Feat > Halforc > Orc Ferocity > Card'
+  context: ancestry_feat_halforc_orc_ferocity
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halforc_orc_sight_card
+  title: 'Ancestry Feat > Halforc > Orc Sight > Card'
+  context: ancestry_feat_halforc_orc_sight
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halforc_orc_weapon_carnage_card
+  title: 'Ancestry Feat > Halforc > Orc Weapon Carnage > Card'
+  context: ancestry_feat_halforc_orc_weapon_carnage
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halforc_orc_weapon_familiarity_card
+  title: 'Ancestry Feat > Halforc > Orc Weapon Familiarity > Card'
+  context: ancestry_feat_halforc_orc_weapon_familiarity
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halforc_superstition_card
+  title: 'Ancestry Feat > Halforc > Superstition > Card'
+  context: ancestry_feat_halforc_superstition
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
+- id: ancestry_feat_halforc_superstition_card
+  title: 'Ancestry Feat > Halforc > Superstition > Card'
+  context: ancestry_feat_halforc_superstition
+  group_references:
+  - value:
+      type: group_id
+      group_id: '8626bd06-9e93-4c4a-86fe-5b35dea09afc'
 - id: classes_introduction
   title: 'Classes > Introduction'
   group_references:
@@ -5310,10 +6952,18 @@ chapters:
 - id: ancestries_and_backgrounds
   title: 'Ancestries and Backgrounds'
   summary: 'The ancestries and backgrounds available for player characters.'
+  content:
+  - ancestries_backgrounds_introduction
   entries:
   - type: book_chapter_entry_simple
     book_chapter_entry_simple:
       section_id: ancestries_backgrounds_reading
+  - type: book_chapter_entry_simple
+    book_chapter_entry_simple:
+      section_id: ancestries_backgrounds_backgrounds
+  - type: book_chapter_entry_simple
+    book_chapter_entry_simple:
+      section_id: ancestries_backgrounds_languages
   - type: book_chapter_entry_group
     book_chapter_entry_group:
       title: 'Ancestries'
@@ -5343,87 +6993,37 @@ chapters:
     introduction:
     - ancestries_backgrounds_reading_introduction
     entries:
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_reading_rules_languages
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_reading_rules_traits
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_reading_rules_special_abilities
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_reading_rules_feats
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_reading_rules_adventurers
-    - type: book_section_entry_group
-      book_section_entry_group:
-        title: 'Rules'
-        entries:
-        - type: book_section_entry_simple
-          book_section_entry_simple:
-            subsection_id: ancestries_backgrounds_reading_rules_hp
-        - type: book_section_entry_simple
-          book_section_entry_simple:
-            subsection_id: ancestries_backgrounds_reading_rules_size
-        - type: book_section_entry_simple
-          book_section_entry_simple:
-            subsection_id: ancestries_backgrounds_reading_rules_speed
-        - type: book_section_entry_simple
-          book_section_entry_simple:
-            subsection_id: ancestries_backgrounds_reading_rules_ability_boosts
-        - type: book_section_entry_simple
-          book_section_entry_simple:
-            subsection_id: ancestries_backgrounds_reading_rules_ability_flaw
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_backgrounds
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_languages
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: ancestries_backgrounds_reading_rules_hp
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: ancestries_backgrounds_reading_rules_size
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: ancestries_backgrounds_reading_rules_speed
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: ancestries_backgrounds_reading_rules_ability_boosts
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: ancestries_backgrounds_reading_rules_ability_flaw
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: ancestries_backgrounds_reading_rules_languages
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: ancestries_backgrounds_reading_rules_traits
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: ancestries_backgrounds_reading_rules_special_abilities
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: ancestries_backgrounds_reading_rules_heritages
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: ancestries_backgrounds_reading_rules_ancestry_feats
     subsections:
-    - id: ancestries_backgrounds_reading_rules_hp
-      title: 'Hit Points'
-      body:
-      - ancestries_backgrounds_reading_rules_hp
-    - id: ancestries_backgrounds_reading_rules_size
-      title: 'Size'
-      body:
-      - ancestries_backgrounds_reading_rules_size
-    - id: ancestries_backgrounds_reading_rules_speed
-      title: 'Speed'
-      body:
-      - ancestries_backgrounds_reading_rules_speed
-    - id: ancestries_backgrounds_reading_rules_ability_boosts
-      title: 'Ability Boosts'
-      body:
-      - ancestries_backgrounds_reading_rules_ability_boosts
-    - id: ancestries_backgrounds_reading_rules_ability_flaw
-      title: 'Ability Flaw'
-      body:
-      - ancestries_backgrounds_reading_rules_ability_flaw
-    - id: ancestries_backgrounds_reading_rules_languages
-      title: 'Languages and Bonus Languages'
-      body:
-      - ancestries_backgrounds_reading_languages
-    - id: ancestries_backgrounds_reading_rules_traits
-      title: 'Traits'
-      body:
-      - ancestries_backgrounds_reading_traits
-    - id: ancestries_backgrounds_reading_rules_special_abilities
-      title: 'Special Abilities'
-      body:
-      - ancestries_backgrounds_reading_special_abilities
-    - id: ancestries_backgrounds_reading_rules_feats
-      title: 'Ancestry Feats'
-      body:
-      - ancestries_backgrounds_reading_feats
-    - id: ancestries_backgrounds_reading_rules_adventurers
-      title: 'Adventurers'
-      body:
-      - ancestries_backgrounds_reading_adventurers
   - id: ancestries_backgrounds_ancestries_dwarf
     title: 'Dwarf'
     entry_position: 2
@@ -5450,6 +7050,37 @@ chapters:
       - ancestries_backgrounds_ancestries_dwarf_basic_rules
     - id: ancestries_backgrounds_ancestries_dwarf_feats
       title: 'Feats'
+      entries:
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_dwarf_dwarven_lore_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_dwarf_ancients_blood_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_dwarf_boulder_roll_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_dwarf_giant_bane_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_dwarf_hardy_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_dwarf_mountain_roots_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_dwarf_rock_runner_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_dwarf_stonecunning_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_dwarf_weapon_cunning_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_dwarf_weapon_familiarity_entry
   - id: ancestries_backgrounds_ancestries_elf
     title: 'Elf'
     introduction:
@@ -5475,6 +7106,37 @@ chapters:
       - ancestries_backgrounds_ancestries_elf_basic_rules
     - id: ancestries_backgrounds_ancestries_elf_feats
       title: 'Feats'
+      entries:
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_elf_ageless_patience_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_elf_ancestral_longevity_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_elf_demon_skirmisher_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_elf_forlorn_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_elf_keen_hearing_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_elf_nimble_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_elf_otherworldly_magic_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_elf_unwavering_mien_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_elf_weapon_elegance_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_elf_weapon_familiarity_entry
   - id: ancestries_backgrounds_ancestries_gnome
     title: 'Gnome'
     introduction:
@@ -5500,6 +7162,37 @@ chapters:
       - ancestries_backgrounds_ancestries_gnome_basic_rules
     - id: ancestries_backgrounds_ancestries_gnome_feats
       title: 'Feats'
+      entries:
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_gnome_animal_accomplice_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_gnome_animal_speaker_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_gnome_animal_whisperer_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_gnome_discerning_smell_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_gnome_fey_fellowship_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_gnome_first_world_magic_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_gnome_illusion_sense_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_gnome_obsessive_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_gnome_weapon_familiarity_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_gnome_weapon_innovator_entry
   - id: ancestries_backgrounds_ancestries_goblin
     title: 'Goblin'
     introduction:
@@ -5525,6 +7218,37 @@ chapters:
       - ancestries_backgrounds_ancestries_goblin_basic_rules
     - id: ancestries_backgrounds_ancestries_goblin_feats
       title: 'Feats'
+      entries:
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_goblin_burn_it_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_goblin_city_scavenger_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_goblin_eat_anything_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_goblin_flame_heart_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_goblin_junk_tinker_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_goblin_razor_teeth_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_goblin_rough_rider_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_goblin_very_sneaky_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_goblin_weapon_familiarity_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_goblin_weapon_frenzy_entry
   - id: ancestries_backgrounds_ancestries_halfling
     title: 'Halfling'
     introduction:
@@ -5550,6 +7274,37 @@ chapters:
       - ancestries_backgrounds_ancestries_halfling_basic_rules
     - id: ancestries_backgrounds_ancestries_halfling_feats
       title: 'Feats'
+      entries:
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_halfling_attentive_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_halfling_distracting_shadows_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_halfling_keen_eyes_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_halfling_lucky_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_halfling_plucky_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_halfling_surefooted_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_halfling_titan_slinger_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_halfling_unfettered_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_halfling_weapon_familiarity_entry
+      - type: book_subsection_entry_card
+        book_subsection_entry_card:
+          entry_content: ancestry_feats_halfling_weapon_trickster_entry
   - id: ancestries_backgrounds_ancestries_human
     title: 'Human'
     introduction:
@@ -5575,172 +7330,213 @@ chapters:
       - ancestries_backgrounds_ancestries_human_basic_rules
     - id: ancestries_backgrounds_ancestries_human_feats
       title: 'Feats'
+      entries:
+      - type: book_subsection_entry_card_group
+        book_subsection_entry_card_group:
+          title: 'Human'
+          card_entries:
+          - ancestry_feats_human_adapted_spell_entry
+          - ancestry_feats_human_clever_improviser_entry
+          - ancestry_feats_human_cooperative_nature_entry
+          - ancestry_feats_human_general_training_entry
+          - ancestry_feats_human_halfelf_entry
+          - ancestry_feats_human_haughty_obstinacy_entry
+          - ancestry_feats_human_natural_ambition_entry
+          - ancestry_feats_human_skilled_entry
+          - ancestry_feats_human_unconventional_weaponry_entry
+      - type: book_subsection_entry_card_group
+        book_subsection_entry_card_group:
+          title: 'Half-Elf'
+          card_entries:
+          - ancestry_feats_halfelf_inspire_imitation_entry
+          - ancestry_feats_halfelf_supernatural_charm_entry
+      - type: book_subsection_entry_card_group
+        book_subsection_entry_card_group:
+          title: 'Half-Orc'
+          card_entries:
+          - ancestry_feats_halforc_orc_ferocity_entry
+          - ancestry_feats_halforc_orc_sight_entry
+          - ancestry_feats_halforc_orc_weapon_carnage_entry
+          - ancestry_feats_halforc_orc_weapon_familiarity_entry
+          - ancestry_feats_halforc_superstition_entry
   - id: ancestries_backgrounds_backgrounds
     title: 'Backgrounds'
     entry_position: 3
     introduction:
     - ancestries_backgrounds_backgrounds
     entries:
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_acolyte
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_acrobat
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_animal_whisperer
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_barkeep
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_blacksmith
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_criminal
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_entertainer
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_farmhand
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_gladiator
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_hunter
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_laborer
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_merchant
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_noble
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_nomad
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_sailor
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_scholar
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_scout
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_street_urchin
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_backgrounds_list_warrior
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_acolyte
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_acrobat
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_animal_whisperer
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_artisan
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_artist
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_barkeep
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_barrister
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_bounty_hunter
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_charlatan
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_criminal
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_detective
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_emissary
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_entertainer
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_farmhand
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_field_medic
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_fortune_teller
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_gambler
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_gladiator
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_guard
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_herbalist
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_hermit
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_hunter
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_laborer
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_martial_disciple
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_merchant
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_miner
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_noble
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_nomad
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_prisoner
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_sailor
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_scholar
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_scout
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_street_urchin
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_tinker
+    - type: book_section_entry_inline_expandable
+      book_section_entry_inline_expandable:
+        content_id: backgrounds_entry_warrior
     subsections:
-    - id: ancestries_backgrounds_list_acolyte
-      title: 'Acolyte'
-      body:
-      - ancestries_backgrounds_list_acolyte
-    - id: ancestries_backgrounds_list_acrobat
-      title: 'Acrobat'
-      body:
-      - ancestries_backgrounds_list_acrobat
-    - id: ancestries_backgrounds_list_animal_whisperer
-      title: 'Animal Whisperer'
-      body:
-      - ancestries_backgrounds_list_animal_whisperer
-    - id: ancestries_backgrounds_list_barkeep
-      title: 'Barkeep'
-      body:
-      - ancestries_backgrounds_list_barkeep
-    - id: ancestries_backgrounds_list_blacksmith
-      title: 'Blacksmith'
-      body:
-      - ancestries_backgrounds_list_blacksmith
-    - id: ancestries_backgrounds_list_criminal
-      title: 'Criminal'
-      body:
-      - ancestries_backgrounds_list_criminal
-    - id: ancestries_backgrounds_list_entertainer
-      title: 'Entertainer'
-      body:
-      - ancestries_backgrounds_list_entertainer
-    - id: ancestries_backgrounds_list_farmhand
-      title: 'Farmhand'
-      body:
-      - ancestries_backgrounds_list_farmhand
-    - id: ancestries_backgrounds_list_gladiator
-      title: 'Gladiator'
-      body:
-      - ancestries_backgrounds_list_gladiator
-    - id: ancestries_backgrounds_list_hunter
-      title: 'Hunter'
-      body:
-      - ancestries_backgrounds_list_hunter
-    - id: ancestries_backgrounds_list_laborer
-      title: 'Laborer'
-      body:
-      - ancestries_backgrounds_list_laborer
-    - id: ancestries_backgrounds_list_merchant
-      title: 'Merchant'
-      body:
-      - ancestries_backgrounds_list_merchant
-    - id: ancestries_backgrounds_list_noble
-      title: 'Noble'
-      body:
-      - ancestries_backgrounds_list_noble
-    - id: ancestries_backgrounds_list_nomad
-      title: 'Nomad'
-      body:
-      - ancestries_backgrounds_list_nomad
-    - id: ancestries_backgrounds_list_sailor
-      title: 'Sailor'
-      body:
-      - ancestries_backgrounds_list_sailor
-    - id: ancestries_backgrounds_list_scholar
-      title: 'Scholar'
-      body:
-      - ancestries_backgrounds_list_scholar
-    - id: ancestries_backgrounds_list_scout
-      title: 'Scout'
-      body:
-      - ancestries_backgrounds_list_scout
-    - id: ancestries_backgrounds_list_street_urchin
-      title: 'Street Urchin'
-      body:
-      - ancestries_backgrounds_list_street_urchin
-    - id: ancestries_backgrounds_list_warrior
-      title: 'Warrior'
-      body:
-      - ancestries_backgrounds_list_warrior
   - id: ancestries_backgrounds_languages
-    title: 'Languages'
+    title: 'Language'
     entry_position: 4
     introduction:
-    - ancestries_languages_introduction
+    - ancestries_backgrounds_languages_introduction
     entries:
     - type: book_section_entry_simple
       book_section_entry_simple:
-        subsection_id: ancestries_languages_list
+        subsection_id: ancestries_backgrounds_languages_regional
     - type: book_section_entry_simple
       book_section_entry_simple:
-        subsection_id: ancestries_languages_sign_language
-    - type: book_section_entry_simple
-      book_section_entry_simple:
-        subsection_id: ancestries_languages_in_the_game
+        subsection_id: ancestries_backgrounds_sign_language
+    - type: book_section_entry_group
+      book_section_entry_group:
+        title: 'Languages'
+        entries:
+        - type: book_section_entry_card_group
+          book_section_entry_card_group:
+            title: 'Common'
+            card_entries:
+            - ancestries_backgrounds_languages_collection_common_common_entry
+            - ancestries_backgrounds_languages_collection_common_draconic_entry
+            - ancestries_backgrounds_languages_collection_common_dwarven_entry
+            - ancestries_backgrounds_languages_collection_common_elven_entry
+            - ancestries_backgrounds_languages_collection_common_gnomish_entry
+            - ancestries_backgrounds_languages_collection_common_goblin_entry
+            - ancestries_backgrounds_languages_collection_common_halfing_entry
+            - ancestries_backgrounds_languages_collection_common_jotun_entry
+            - ancestries_backgrounds_languages_collection_common_orcish_entry
+            - ancestries_backgrounds_languages_collection_common_sylvan_entry
+            - ancestries_backgrounds_languages_collection_common_undercommon_entry
+        - type: book_section_entry_card_group
+          book_section_entry_card_group:
+            title: 'Uncommon'
+            card_entries:
+            - ancestries_backgrounds_languages_collection_uncommon_abyssal_entry
+            - ancestries_backgrounds_languages_collection_uncommon_aklo_entry
+            - ancestries_backgrounds_languages_collection_uncommon_aquan_entry
+            - ancestries_backgrounds_languages_collection_uncommon_auran_entry
+            - ancestries_backgrounds_languages_collection_uncommon_celestial_entry
+            - ancestries_backgrounds_languages_collection_uncommon_gnoll_entry
+            - ancestries_backgrounds_languages_collection_uncommon_ignan_entry
+            - ancestries_backgrounds_languages_collection_uncommon_infernal_entry
+            - ancestries_backgrounds_languages_collection_uncommon_necril_entry
+            - ancestries_backgrounds_languages_collection_uncommon_shadowtongue_entry
+            - ancestries_backgrounds_languages_collection_uncommon_terran_entry
+        - type: book_section_entry_card_group
+          book_section_entry_card_group:
+            title: 'Secret'
+            card_entries:
+            - ancestries_backgrounds_languages_collection_secret_druidic_entry
     subsections:
-    - id: ancestries_languages_list
-      title: 'Languages'
-    - id: ancestries_languages_sign_language
-      title: 'Sign Language'
+    - id: ancestries_languages_common
+      title: 'Common Languages'
+    - id: ancestries_languages_uncommon
+      title: 'Uncommon Languages'
+    - id: ancestries_languages_secret
+      title: 'Secret Languages'
+    - id: ancestries_backgrounds_languages_regional
+      title: 'Regional Languages'
       body:
-      - ancestries_languages_sign_language
-    - id: ancestries_languages_in_the_game
-      title: 'In the Game'
+      - ancestries_backgrounds_languages_regional
+    - id: ancestries_backgrounds_sign_language
+      title: 'Sign Language and Reading Lips'
       body:
-      - ancestries_languages_in_the_game
+      - ancestries_backgrounds_sign_language
 - id: classes
   title: 'Classes'
   summary: 'The twelve classes available to player characters.'
@@ -6748,7 +8544,7 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_quick_recognition_entry
   - id: feats_acrobatics_feats
-    title: 'Acrobatics Skill Feats'
+    title: 'Acrobatics Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -6769,13 +8565,13 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_legendary_contortionist_entry
   - id: feats_arcana_feats
-    title: 'Arcana Skill Feats'
+    title: 'Arcana Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
         entry_content: general_feats_arcane_sense_entry
   - id: feats_athletics_feats
-    title: 'Athletics Skill Feats'
+    title: 'Athletics Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -6811,7 +8607,7 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_legendary_swimmer_entry
   - id: feats_crafting_feats
-    title: 'Crafting Skill Feats'
+    title: 'Crafting Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -6835,7 +8631,7 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_impeccable_craft_entry
   - id: feats_deception_feats
-    title: 'Deception Skill Feats'
+    title: 'Deception Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -6865,7 +8661,7 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_legendary_impersonator_entry
   - id: feats_diplomacy_feats
-    title: 'Diplomacy Skill Feats'
+    title: 'Diplomacy Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -6886,7 +8682,7 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_legendary_negotiator_entry
   - id: feats_intimidation_feats
-    title: 'Intimidation Skill Feats'
+    title: 'Intimidation Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -6910,7 +8706,7 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_scare_to_death_entry
   - id: feats_lore_feats
-    title: 'Lore Skill Feats'
+    title: 'Lore Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -6925,7 +8721,7 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_legendary_professional_entry
   - id: feats_medicine_feats
-    title: 'Medicine Skill Feats'
+    title: 'Medicine Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -6937,7 +8733,7 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_legendary_medic_entry
   - id: feats_nature_feats
-    title: 'Nature Skill Feats'
+    title: 'Nature Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -6949,13 +8745,13 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_natural_medicine_entry
   - id: feats_occultism_feats
-    title: 'Occultism Skill Feats'
+    title: 'Occultism Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
         entry_content: general_feats_oddity_identification_entry
   - id: feats_performance_feats
-    title: 'Performance Skill Feats'
+    title: 'Performance Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -6970,13 +8766,13 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_legendary_performer_entry
   - id: feats_religion_feats
-    title: 'Religion Skill Feats'
+    title: 'Religion Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
         entry_content: general_feats_student_canon_entry
   - id: feats_society_feats
-    title: 'Society Skill Feats'
+    title: 'Society Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -7006,7 +8802,7 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_legendary_linguist_entry
   - id: feats_stealth_feats
-    title: 'Stealth Skill Feats'
+    title: 'Stealth Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -7027,7 +8823,7 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_legendary_sneak_entry
   - id: feats_survival_feats
-    title: 'Survival Skill Feats'
+    title: 'Survival Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -7045,7 +8841,7 @@ chapters:
       book_section_entry_card:
         entry_content: general_feats_legendary_survivalist_entry
   - id: feats_thievery_feats
-    title: 'Thievery Skill Feats'
+    title: 'Thievery Feats'
     entries:
     - type: book_section_entry_card
       book_section_entry_card:
@@ -9161,3 +10957,466 @@ cards:
   name: 'Legendary Thief'
   content_ids:
   - general_feats_legendary_thief_card
+#-----------------------------------------------------------------------------------------------
+# ANCESTRY FEATS
+#-----------------------------------------------------------------------------------------------
+- id: '2cac0ac4-efaa-4b13-896b-0743662b70f0'
+  name: 'Dwarven Lore'
+  content_ids:
+  - ancestry_feat_dwarf_dwarven_lore_card
+- id: 'ae6b9566-cf43-4d9c-bd14-4141dc75ab95'
+  name: 'Dwarven Weapon Familiarity'
+  content_ids:
+  - ancestry_feat_dwarf_dwarven_weapon_familiarity_card
+- id: '4dd03351-95cb-465d-81d8-71d6ef955ed2'
+  name: 'Rock Runner'
+  content_ids:
+  - ancestry_feat_dwarf_rock_runner_card
+- id: 'b589b39d-e90e-42d6-8a07-42c2ec6d3ae7'
+  name: 'Stonecunning'
+  content_ids:
+  - ancestry_feat_dwarf_stonecunning_card
+- id: '557f5903-2227-4ac9-a0c7-d70c588ef008'
+  name: 'Unburdened Iron'
+  content_ids:
+  - ancestry_feat_dwarf_unburdened_iron_card
+- id: '81cd9846-65e8-4a8f-876e-8410ef636841'
+  name: 'Vengeful Hatred'
+  content_ids:
+  - ancestry_feat_dwarf_vengeful_hatred_card
+- id: 'fc814cfd-fc04-4ecd-bff9-1d532abc0b49'
+  name: 'Boulder Roll'
+  content_ids:
+  - ancestry_feat_dwarf_boulder_roll_card
+- id: 'bfea3a3e-6ce3-4707-963c-ecb65da28879'
+  name: 'Dwarven Weapon Cunning'
+  content_ids:
+  - ancestry_feat_dwarf_dwarven_weapon_cunning_card
+- id: '45308ffa-006a-45f0-a6a5-2918bd5b3b85'
+  name: 'Mountain''s Stoutness'
+  content_ids:
+  - ancestry_feat_dwarf_mountains_stoutness_card
+- id: '94823b64-99da-42b9-adea-be77541144c7'
+  name: 'Stonewalker'
+  content_ids:
+  - ancestry_feat_dwarf_stonewalker_card
+- id: 'b254987c-99e8-49b8-abf1-56197c0f6261'
+  name: 'Dwarven Weapon Expertise'
+  content_ids:
+  - ancestry_feat_elf_dwarven_weapon_expertise_card
+- id: 'f8a43335-a1f8-4360-8551-813f77c2a410'
+  name: 'Ancestral Longevity'
+  content_ids:
+  - ancestry_feat_elf_ancestral_longevity_card
+- id: '6fdad1bf-2778-447f-9e99-2d817508d5e5'
+  name: 'Elven Lore'
+  content_ids:
+  - ancestry_feat_elf_elven_lore_card
+- id: 'fd231581-00fc-43b8-a087-0b2e9bfdc302'
+  name: 'Elven Weapon Familiarity'
+  content_ids:
+  - ancestry_feat_elf_elven_weapon_familiarity_card
+- id: '90effbc8-559a-497d-9314-0d40740a63d6'
+  name: 'Forlorn'
+  content_ids:
+  - ancestry_feat_elf_forlorn_card
+- id: '03eb4378-6dee-4f6a-8399-6e33a215a6e0'
+  name: 'Nimble Elf'
+  content_ids:
+  - ancestry_feat_elf_nimble_elf_card
+- id: '14071c44-c167-4e7a-9425-8c313aaa242d'
+  name: 'Otherworldly Magic'
+  content_ids:
+  - ancestry_feat_elf_otherworldly_magic_card
+- id: '1f2b31dc-e44a-4ad9-b06e-916f75996f7c'
+  name: 'Unwavering Mien'
+  content_ids:
+  - ancestry_feat_elf_unwavering_mien_card
+- id: 'ce810c61-50bd-4f0b-96b1-3287df8e15ba'
+  name: 'Ageless Patience'
+  content_ids:
+  - ancestry_feat_elf_ageless_patience_card
+- id: 'a401a70b-73a3-4b22-9735-0320b30ce5bb'
+  name: 'Elven Weapon Elegance'
+  content_ids:
+  - ancestry_feat_elf_elven_weapon_elegance_card
+- id: 'ef29981f-e5c5-4f88-981c-1447fad1225c'
+  name: 'Elf Step'
+  content_ids:
+  - ancestry_feat_elf_elf_step_card
+- id: '7d2329fa-2494-41a4-ad3f-43664d1fca36'
+  name: 'Expert Longevity'
+  content_ids:
+  - ancestry_feat_elf_expert_longevity_card
+- id: '3b6d5d4b-81e6-4eb5-8d7f-4d210c7a47f5'
+  name: 'Universal Longevity'
+  content_ids:
+  - ancestry_feat_elf_universal_longevity_card
+- id: '3e96ba4f-809c-4c53-825a-f6aaa9f96be1'
+  name: 'Elven Weapon Expertise'
+  content_ids:
+  - ancestry_feat_elf_elven_weapon_expertise_card
+- id: 'b3eb2b82-cc75-40f4-9614-5a59b693bab9'
+  name: 'Animal Accomplice'
+  content_ids:
+  - ancestry_feat_gnome_animal_accomplice_card
+- id: 'a07c6525-d3f0-4c4e-8a54-7b2bba9a54f3'
+  name: 'Burrow Elocutionist'
+  content_ids:
+  - ancestry_feat_gnome_burrow_elocutionist_card
+- id: 'e96f9f7b-7163-4d38-8e47-4f6dcb050e15'
+  name: 'Fey Fellowship'
+  content_ids:
+  - ancestry_feat_gnome_fey_fellowship_card
+- id: '72aa59c9-664e-4ebe-bd45-05eb69caa2cd'
+  name: 'First World Magic'
+  content_ids:
+  - ancestry_feat_gnome_first_world_magic_card
+- id: '728c8388-c9d9-4039-8cbc-8399299c74d3'
+  name: 'Gnome Obsession'
+  content_ids:
+  - ancestry_feat_gnome_gnome_obsession_card
+- id: 'f9287b15-aa73-442b-8790-afabac68eb73'
+  name: 'Gnome Weapon Familiarity'
+  content_ids:
+  - ancestry_feat_gnome_gnome_weapon_familiarity_card
+- id: 'a1bcdd32-898f-480d-84db-b252483b8ded'
+  name: 'Illusion Sense'
+  content_ids:
+  - ancestry_feat_gnome_illusion_sense_card
+- id: '89afce53-b790-4df6-9063-c287f04d78d4'
+  name: 'Animal Elocutionist'
+  content_ids:
+  - ancestry_feat_gnome_animal_elocutionist_card
+- id: 'b30e2df3-5103-465a-97ae-99dc172c8fb5'
+  name: 'Energized Font'
+  content_ids:
+  - ancestry_feat_gnome_energized_font_card
+- id: '4b63ce28-ed77-4cfb-a27d-e474d5bdf41f'
+  name: 'Gnome Weapon Innovator'
+  content_ids:
+  - ancestry_feat_gnome_gnome_weapon_innovator_card
+- id: '06f11b93-7553-48c5-8cbc-9e44fee50c50'
+  name: 'First World Adept'
+  content_ids:
+  - ancestry_feat_gnome_first_world_adept_card
+- id: 'f08fac93-51aa-42e1-9bb0-5bb88e3f7e5f'
+  name: 'Vivacious Conduit'
+  content_ids:
+  - ancestry_feat_gnome_vivacious_conduit_card
+- id: 'b2312bb0-e78c-45d6-90ac-336a91598d79'
+  name: 'Gnome Weapon Expertise'
+  content_ids:
+  - ancestry_feat_gnome_gnome_weapon_expertise_card
+- id: 'cc722873-ddef-4150-b9dd-c2a0ef08c9bd'
+  name: 'Burn It!'
+  content_ids:
+  - ancestry_feat_goblin_burn_it_card
+- id: 'b3f5350b-f896-42a6-ae6c-4f0724630f5b'
+  name: 'City Scavenger'
+  content_ids:
+  - ancestry_feat_goblin_city_scavenger_card
+- id: '17d3f388-997c-42ea-b3d3-584e14d9cb91'
+  name: 'Goblin Lore'
+  content_ids:
+  - ancestry_feats_goblin_goblin_lore_card
+- id: '0b073803-7f60-4e8b-9506-9625d4c356fa'
+  name: 'Goblin Scuttle'
+  content_ids:
+  - ancestry_feat_goblin_goblin_scuttle_card
+- id: '9202b60c-d36e-4fd9-a007-82055249bc05'
+  name: 'Goblin Song'
+  content_ids:
+  - ancestry_feat_goblin_goblin_song_card
+- id: '5755dcf8-52dd-4b3a-aa70-20e024b312c7'
+  name: 'Goblin Weapon Familiarity'
+  content_ids:
+  - ancestry_feat_goblin_goblin_weapon_familiarity_card
+- id: 'cda4fed5-5ae5-49ac-9317-4adb9dd476d0'
+  name: 'Junk Tinker'
+  content_ids:
+  - ancestry_feat_goblin_junk_tinker_card
+- id: '904f1d06-3be7-4a1e-a023-3da2a421cb1f'
+  name: 'Rough Rider'
+  content_ids:
+  - ancestry_feat_goblin_rough_rider_card
+- id: '1d89d433-ecf9-4172-a610-9d2b97e2a019'
+  name: 'Very Sneaky'
+  content_ids:
+  - ancestry_feat_goblin_very_sneaky_card
+- id: 'af5f1db8-9e3b-4188-9e7b-19afa50b64da'
+  name: 'Goblin Weapon Frenzy'
+  content_ids:
+  - ancestry_feat_goblin_goblin_weapon_frenzy_card
+- id: 'b0c85333-82a6-45bf-a6d6-af2374b0e7bb'
+  name: 'Cave Climber'
+  content_ids:
+  - ancestry_feat_goblin_cave_climber_card
+- id: 'b8168b26-4a69-44e2-9160-b8871a0285f3'
+  name: 'Skittering Scuttle'
+  content_ids:
+  - ancestry_feat_goblin_skittering_scutttle_card
+- id: 'eeb8a3ff-7c23-41bc-b597-54ba1179c195'
+  name: 'Goblin Weapon Expertise'
+  content_ids:
+  - ancestry_feat_goblin_goblin_weapon_expertise_card
+- id: '6c8f3446-cc19-42c8-b8f1-ce0e8ef48bc9'
+  name: 'Very, Very Sneaky'
+  content_ids:
+  - ancestry_feat_goblin_very_very_sneaky_card
+- id: '54437649-6e0c-4402-8d15-243f248eda2b'
+  name: 'Distracting Shadows'
+  content_ids:
+  - ancestry_feat_halfling_distracting_shadows_card
+- id: '0c3346df-33f7-4d37-9f7d-93113b7f5fb2'
+  name: 'Halfling Lore'
+  content_ids:
+  - ancestry_feat_halfling_halfling_lore_card
+- id: '5f0c8c7a-d457-4a34-8fb6-9dc103706bcb'
+  name: 'Halfling Luck'
+  content_ids:
+  - ancestry_feat_halfling_halfling_luck_card
+- id: 'bad24da9-0c71-4d51-b3f4-3d2616bbc5a8'
+  name: 'Halfling Weapon Familiarity'
+  content_ids:
+  - ancestry_feat_halfling_halfling_weapon_familiarity_card
+- id: '75b1ea02-e7b3-42a5-9bc4-9d944c862637'
+  name: 'Sure Feet'
+  content_ids:
+  - ancestry_feat_halfling_sure_feet_card
+- id: '7ce7b214-36c7-49ca-8c3f-22ede75b5d52'
+  name: 'Titan Slinger'
+  content_ids:
+  - ancestry_feat_halfling_titan_slinger_card
+- id: 'a6712a3f-a920-4b1d-90e1-fc9e1e9e57be'
+  name: 'Unfettered Halfling'
+  content_ids:
+  - ancestry_feat_halfling_unfettered_halfling_card
+- id: '7f0d02b6-3a3c-4ea7-bf92-a6ef9c60c0c4'
+  name: 'Watchful Halfling'
+  content_ids:
+  - ancestry_feat_halfling_watching_halfling_card
+- id: '4acd5d35-f2e6-4cf3-be97-fa461cd870f6'
+  name: 'Cultural Adaptability'
+  content_ids:
+  - ancestry_feat_halfling_cultural_adaptability_card
+- id: '6f78d2ba-6434-4d4d-8fb4-bb52153d0f10'
+  name: 'Halfling Weapon Trickster'
+  content_ids:
+  - ancestry_feat_halfling_halfling_weapon_trickster_card
+- id: '33ba64e2-8d6c-43e7-86fd-90b3dd44f531'
+  name: 'Guiding Luck'
+  content_ids:
+  - ancestry_feat_halfling_guiding_luck_card
+- id: 'd4e8cd21-22c5-4663-93ed-a0720429dfd7'
+  name: 'Irrepressible'
+  content_ids:
+  - ancestry_feat_halfling_irrepressible_card
+- id: '16ee713e-01d7-48bf-9b2a-3ca5c392f7fe'
+  name: 'Ceaseless Shadows'
+  content_ids:
+  - ancestry_feat_halfling_ceaseless_shadows_card
+- id: '6e8e2f03-12e7-4fde-bfce-c9ab395b9b86'
+  name: 'Halfling Weapon Expertise'
+  content_ids:
+  - ancestry_feat_halfling_halfling_weapon_expertise_card
+- id: '5ee24c0f-99e2-41a8-8a83-b4531b57b6e2'
+  name: 'Adapted Cantrip'
+  content_ids:
+  - ancestry_feat_human_adapted_spell_card
+- id: 'a3fa08b8-284e-484d-89ff-9a3e883fd36c'
+  name: 'Cooperative Nature'
+  content_ids:
+  - ancestry_feat_human_cooperative_nture_card
+- id: '8a972b09-7315-46c9-9fd8-3aacee0eaa07'
+  name: 'General Training'
+  content_ids:
+  - ancestry_feat_human_general_training_card
+- id: 'a49a24f9-8f08-4de8-8fe6-7ac820999850'
+  name: 'Haughty Obstinacy'
+  content_ids:
+  - ancestry_feat_human_haughty_obstinacy_card
+- id: 'b5bb0c95-e061-4bed-a7d7-ea9af4a67ff6'
+  name: 'Natural Ambition'
+  content_ids:
+  - ancestry_feat_human_natural_ambition_card
+- id: '1d279946-57bf-4850-979c-26d5e8fe0055'
+  name: 'Natural Skill'
+  content_ids:
+  - ancestry_feat_human_natural_skill_card
+- id: '036de746-108c-4d46-a4fe-4780015c59f6'
+  name: 'Unconventional Weaponry'
+  content_ids:
+  - ancestry_feat_human_unconventional_weaponry_card
+- id: '1ae8f87d-c0c1-41e8-a6e5-d0dc2987a455'
+  name: 'Adaptive Adept'
+  content_ids:
+  - ancestry_feat_human_adaptive_adept_card
+- id: '79860ef5-40b5-4581-934f-beabf97945cb'
+  name: 'Clever Improviser'
+  content_ids:
+  - ancestry_feat_human_clever_improviser_card
+- id: '5ca01d91-c1ae-4c0d-ad15-d1767ce9a1a9'
+  name: 'Cooperative Soul'
+  content_ids:
+  - ancestry_feat_human_cooperative_soul_card
+- id: '8cc35102-040d-44c4-9d8f-a64876af69a9'
+  name: 'Incredible Improvisation'
+  content_ids:
+  - ancestry_feat_human_incredible_improvisation_card
+- id: 'c0ed3432-27eb-4acb-924d-4eddf8d2ce99'
+  name: 'Multitalented'
+  content_ids:
+  - ancestry_feat_human_multitalented_card
+- id: '8c342254-24a8-453f-a479-6b2243459436'
+  name: 'Unconventional Expertise'
+  content_ids:
+  - ancestry_feat_human_unconventional_expertise_card
+- id: '0b0c83c4-ffae-43ed-b57c-ea7f98bd623e'
+  name: 'Elf Atavism'
+  content_ids:
+  - ancestry_feat_halfelf_elf_atavism_card
+- id: '618af381-ae9e-46da-a307-42c4fef0ac60'
+  name: 'Inspire Imitation'
+  content_ids:
+  - ancestry_feat_halfelf_inspire_imitation_card
+- id: '70ab28dd-c21f-4bb6-9898-b607f1e7a28f'
+  name: 'Supernatural Charm'
+  content_ids:
+  - ancestry_feat_halfelf_inspire_imitation_card
+- id: 'd0287458-8d52-4275-aad2-90fb2fe90f39'
+  name: 'Monstrous Peacemaker'
+  content_ids:
+  - ancestry_feat_halforc_monstrous_peacemaker_card
+- id: '036e0267-12ca-4beb-90f5-4c0e82909bdd'
+  name: 'Orc Ferocity'
+  content_ids:
+  - ancestry_feat_halforc_orc_ferocity_card
+- id: '1409d3db-1b3b-4ada-b0b6-a6062a957c31'
+  name: 'Orc Sight'
+  content_ids:
+  - ancestry_feat_halforc_orc_sight_card
+- id: 'e7225f61-64ca-466e-8d5d-ac4870d69198'
+  name: 'Orc Superstition'
+  content_ids:
+  - ancestry_feat_halforc_orc_superstition_card
+- id: '6d2ec3db-26c2-4710-b76a-1e86602bb10f'
+  name: 'Orc Weapon Familiarity'
+  content_ids:
+  - ancestry_feat_halforc_orc_weapon_familiarity_card
+- id: '72b6479a-0de0-4bc5-a6f5-8bb8392d6ea1'
+  name: 'Orc Weapon Carnage'
+  content_ids:
+  - ancestry_feats_halforc_orc_weapon_carnage_card
+- id: '07cf3274-1540-46ee-8396-e47ac2727b97'
+  name: 'Victorious Vigor'
+  content_ids:
+  - ancestry_feat_halforc_victorious_vigor_card
+- id: '2f60b4f6-925e-4a99-9519-c69623541b7a'
+  name: 'Pervasive Superstition'
+  content_ids:
+  - ancestry_feat_halforc_pervasive_superstition_card
+- id: 'bfe3b27d-6788-4a7e-80ca-4976b48cfe6d'
+  name: 'Incredible Ferocity'
+  content_ids:
+  - ancestry_feat_halforc_incredible_ferocity_card
+- id: 'd23b688c-fe3a-4dc7-9f0e-2b8968dc7d54'
+  name: 'Orc Weapon Expertise'
+  content_ids:
+  - ancestry_feat_halforc_orc_weapon_expertise_card
+#-----------------------------------------------------------------------------------------------
+# LANGUAGES
+#-----------------------------------------------------------------------------------------------
+- id: '5bd8eaa3-27ef-4b33-81ed-613b5f49c292'
+  name: 'Common'
+  content_ids:
+  - ancestries_backgrounds_languages_index_common
+- id: 'e09dea7d-cb72-41e5-8102-a3677f402777'
+  name: 'Draconic'
+  content_ids:
+  - ancestries_backgrounds_languages_index_draconic
+- id: '639491b9-ec61-491e-ba15-c0bb26e68282'
+  name: 'Dwarven'
+  content_ids:
+  - ancestries_backgrounds_languages_index_dwarven
+- id: 'b96f111c-4d01-461d-852a-1b9c7cb64e65'
+  name: 'Elven'
+  content_ids:
+  - ancestries_backgrounds_languages_index_elven
+- id: '780a9f03-2963-41cf-8cc1-79e0457bae3e'
+  name: 'Gnomish'
+  content_ids:
+  - ancestries_backgrounds_languages_index_gnomish
+- id: 'affdee3f-1378-4424-92f7-d3a4e01fe923'
+  name: 'Goblin'
+  content_ids:
+  - ancestries_backgrounds_languages_index_goblin
+- id: '32099195-9ecd-4e46-9f62-d8955a0bf4f6'
+  name: 'Halfling'
+  content_ids:
+  - ancestries_backgrounds_languages_index_halfling
+- id: '75550dbb-2766-4e25-befa-1605e04f4e36'
+  name: 'Jotun'
+  content_ids:
+  - ancestries_backgrounds_languages_index_jotun
+- id: '968544e6-262a-4730-a9d3-eca9c1870d46'
+  name: 'Orcish'
+  content_ids:
+  - ancestries_backgrounds_languages_index_orcish
+- id: 'aa373b18-3ff0-4840-a356-4f1f9389c02d'
+  name: 'Sylvan'
+  content_ids:
+  - ancestries_backgrounds_languages_index_sylvan
+- id: '1cd2e8b9-c5ed-4799-b74a-0255f1bb4732'
+  name: 'Undercommon'
+  content_ids:
+  - ancestries_backgrounds_languages_index_undercommon
+- id: '40acbac1-2053-4d0b-98ae-1a8a0dea2b8e'
+  name: 'Abyssal'
+  content_ids:
+  - ancestries_backgrounds_languages_index_abyssal
+- id: 'c3c7802a-523d-43e4-a099-7b1973980251'
+  name: 'Aklo'
+  content_ids:
+  - ancestries_backgrounds_languages_index_aklo
+- id: 'a90ce205-ffbf-4f59-9e7e-936420ca917e'
+  name: 'Aquan'
+  content_ids:
+  - ancestries_backgrounds_languages_index_aquan
+- id: 'f2d3ddbf-d308-4bef-8f50-f3c86770bfc5'
+  name: 'Auran'
+  content_ids:
+  - ancestries_backgrounds_languages_index_auran
+- id: '69905d2b-a29f-4a25-bd21-d8797cf11a8f'
+  name: 'Celestial'
+  content_ids:
+  - ancestries_backgrounds_languages_index_celestial
+- id: '6e3db9cb-e17d-4f45-b68f-2a5b79e14c6a'
+  name: 'Gnoll'
+  content_ids:
+  - ancestries_backgrounds_languages_index_gnoll
+- id: '2c5faec1-eb7f-4608-a4b0-e69939d95a0a'
+  name: 'Ignan'
+  content_ids:
+  - ancestries_backgrounds_languages_index_ignan
+- id: 'a87ea708-c7e5-484f-8e03-609e52068384'
+  name: 'Infernal'
+  content_ids:
+  - ancestries_backgrounds_languages_index_infernal
+- id: 'fc319540-5621-4841-989b-3c8bf097d6d2'
+  name: 'Necril'
+  content_ids:
+  - ancestries_backgrounds_languages_index_necril
+- id: 'aa7406f6-667d-4f15-a732-c0c3bd559ea5'
+  name: 'Shadowtongue'
+  content_ids:
+  - ancestries_backgrounds_languages_index_shadowtongue
+- id: '160390ac-d222-4a63-840d-e8be62c130d8'
+  name: 'Terran'
+  content_ids:
+  - ancestries_backgrounds_languages_index_terran
+- id: 'a4b358e5-39f7-4bb7-865c-f11752baaa22'
+  name: 'Druidic'
+  content_ids:
+  - ancestries_backgrounds_languages_index_druidic
+

@@ -27,5 +27,5 @@ fun numberWidgetOfficialView(
 ) : View = when (format.format.theme)
 {
     is WidgetOfficialTheme.Metric ->
-        numberWidgetOfficialMetricView(format.format.style, numberWidget, entityId, context, groupContext)
+        numberWidgetOfficialMetricView(format.format.style, format.format.variations, numberWidget, entityId, context, groupContext)
 }

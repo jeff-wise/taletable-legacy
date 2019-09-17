@@ -34,7 +34,9 @@ import com.taletable.android.model.sheet.Sheet
 import com.taletable.android.model.sheet.group.*
 import com.taletable.android.model.theme.ColorId
 import com.taletable.android.model.theme.ColorTheme
+import com.taletable.android.model.theme.Theme
 import com.taletable.android.model.theme.ThemeId
+import com.taletable.android.model.theme.official.officialAppThemeLight
 import com.taletable.android.rts.entity.engine.TextReferenceIsNull
 import com.taletable.android.rts.entity.sheet.SheetData
 import com.taletable.android.rts.entity.theme.ThemeManager
@@ -1068,6 +1070,18 @@ fun entityThemeId(entityId : EntityId) : AppEff<ThemeId> =
         note<AppError,ThemeId>(it.themeId, AppEntityError(EntityDoesNotHaveTheme(entityId)))
     }
 
+
+fun theme(entityId : EntityId) : AppEff<Theme> =
+    entityThemeId(entityId).apply(ThemeManager::theme)
+
+fun themeOrDefault(entityId : EntityId) : Theme
+{
+    val entityTheme = entityThemeId(entityId).apply(ThemeManager::theme)
+    return when (entityTheme) {
+        is Val -> entityTheme.value
+        is Err -> officialAppThemeLight
+    }
+}
 
 fun color(colorTheme : ColorTheme, entityId : EntityId) : AppEff<Int> =
     entityThemeId(entityId)                 ap { themeId ->

@@ -53,6 +53,7 @@ object Font
     private val robotoMediumItalicFilePath          = "fonts/Roboto-MediumItalic.ttf"
     private val robotoBoldFilePath                  = "fonts/Roboto-Bold.ttf"
     private val robotoBoldItalicFilePath            = "fonts/Roboto-BoldItalic.ttf"
+    private val robotoBlackFilePath                 = "fonts/Roboto-Black.ttf"
 
     private val robotoSlabLightFilePath             = "fonts/RobotoSlab-Light.ttf"
     private val robotoSlabRegularFilePath           = "fonts/RobotoSlab-Regular.ttf"
@@ -134,7 +135,7 @@ object Font
                 is TextFontStyle.Bold           -> getTypeface(robotoBoldFilePath, context)
                 is TextFontStyle.BoldItalic     -> getTypeface(robotoBoldItalicFilePath, context)
                 is TextFontStyle.ExtraBold      -> getTypeface(robotoBoldFilePath, context)
-                is TextFontStyle.Black          -> getTypeface(robotoBoldFilePath, context)
+                is TextFontStyle.Black          -> getTypeface(robotoBlackFilePath, context)
             }
             is TextFont.RobotoSlab -> when (fontStyle)
             {

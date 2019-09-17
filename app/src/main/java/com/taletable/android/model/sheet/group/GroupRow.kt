@@ -5,7 +5,6 @@ package com.taletable.android.model.sheet.group
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.PaintDrawable
 import android.util.Log
 import android.view.Gravity
@@ -132,8 +131,15 @@ data class GroupRow(private val format : GroupRowFormat,
         }
 
         // > Widgets
-        layout.addView(widgetsView(groupContext, entityId, context))
-
+        val view = widgetsView(groupContext, entityId, context)
+        when (view) {
+            is Just -> {
+                layout.addView(view.value)
+            }
+            is Nothing -> {
+                return emptyViewLayout(context)
+            }
+        }
 
         this.format().elementFormat().border().bottom().doMaybe {
             layout.addView(dividerView(it, entityId, context))
@@ -142,6 +148,20 @@ data class GroupRow(private val format : GroupRowFormat,
         return layout
     }
 
+
+    private fun emptyViewLayout(context : Context) : ViewGroup
+    {
+        val layout = GroupRowTouchView(context)
+
+        val elementFormat = this.format().elementFormat()
+
+        layout.orientation = LinearLayout.VERTICAL
+
+        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                                     LinearLayout.LayoutParams.WRAP_CONTENT)
+
+        return layout
+    }
 
 
     private fun viewLayout(entityId : EntityId, context : Context) : ViewGroup
@@ -189,7 +209,7 @@ data class GroupRow(private val format : GroupRowFormat,
 
     private fun widgetsView(groupContext : Maybe<GroupContext>,
                             entityId : EntityId,
-                            context : Context) : ViewGroup
+                            context : Context) : Maybe<ViewGroup>
     {
         val layout = if (this.format().spaceApart) {
             this.widgetsSpaceApartLayout(context)
@@ -197,41 +217,59 @@ data class GroupRow(private val format : GroupRowFormat,
             this.widgetsViewLayout(context)
         }
 
-        if (this.format().hasColumns().value)
+        return if (this.format().hasColumns().value)
         {
-
-            Log.d("***GROUP ROW", "has columns ")
-
             val colIndiceSet = this.widgets().map { it.widgetFormat().column() }
             val largestColIndex = colIndiceSet.max()
 
             if (largestColIndex == 1) {
-                this.widgets().forEach { layout.addView(it.view(groupContext, this.format().layoutType(), entityId, context)) }
+                val maybeViews = this.widgets().map { it.view(groupContext, this.format().layoutType(), entityId, context) }
+                val views = mutableListOf<View>()
+                maybeViews.forEach { it.doMaybe { views.add(it) } }
+                return if (views.isNotEmpty()) {
+                    views.forEach { layout.addView(it) }
+                    Just(layout)
+                }
+                else {
+                    Nothing()
+                }
             }
             else {
-                val colToLayout : MutableMap<Int,LinearLayout> = mutableMapOf()
-                colIndiceSet.forEach {
-                    colToLayout.put(it, this.widgetsColumnLayout(it, context))
-                }
+//                val colToLayout : MutableMap<Int,LinearLayout> = mutableMapOf()
+//                colIndiceSet.forEach {
+//                    colToLayout.put(it, this.widgetsColumnLayout(it, context))
+//                }
+//
+//                this.widgets().forEach {
+//                    val layout = colToLayout[it.widgetFormat().column()]
+//                    layout?.addView(it.view(groupContext, this.format().layoutType(), entityId, context))
+//                }
+//
+//                colToLayout.keys.sorted().forEach {
+//                    layout.addView(colToLayout[it])
+//                }
 
-                this.widgets().forEach {
-                    val layout = colToLayout[it.widgetFormat().column()]
-                    layout?.addView(it.view(groupContext, this.format().layoutType(), entityId, context))
-                }
-
-                colToLayout.keys.sorted().forEach {
-                    layout.addView(colToLayout[it])
-                }
+                return Nothing()
             }
         }
         else
         {
-            this.widgets().forEach {
-                layout.addView(it.view(groupContext, this.format().layoutType(), entityId, context))
+            val maybeViews = this.widgets().map { it.view(groupContext, this.format().layoutType(), entityId, context) }
+            val views = mutableListOf<View>()
+            maybeViews.forEach { it.doMaybe { views.add(it) } }
+            Log.d("***GROUP ROW", "views: ${views.size}")
+            if (views.isNotEmpty()) {
+                views.forEach { layout.addView(it) }
+                return Just(layout)
             }
+            else {
+                return Nothing()
+            }
+//            this.widgets().forEach {
+//                layout.addView(it.view(groupContext, this.format().layoutType(), entityId, context))
+//            }
+            //return layout
         }
-
-        return layout
     }
 
 

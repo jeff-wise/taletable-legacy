@@ -258,7 +258,7 @@ class BookCardUI(val book : Book,
                 ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
         nameViewBuilder.color           = theme.colorOrBlack(colorTheme)
 
-        nameViewBuilder.sizeSp          = 20f
+        nameViewBuilder.sizeSp          = 18f
 
         nameViewBuilder.backgroundColor = Color.WHITE
 
@@ -326,12 +326,6 @@ class BookCardUI(val book : Book,
         val scrollView = this.cardScrollView()
         val cardLayout = this.cardLayout()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            scrollView.elevation = 8f
-            cardLayout.elevation = 8f
-        }
-
         cardLayout.addView(cardHeaderView())
 
         cardLayout.addView(cardHeaderDividerView())
@@ -369,7 +363,7 @@ class BookCardUI(val book : Book,
 
         scrollView.margin.leftDp    = 8f
         scrollView.margin.rightDp   = 8f
-        scrollView.margin.topDp     = 16f
+
 
         return scrollView.scrollView(context)
     }
@@ -384,8 +378,9 @@ class BookCardUI(val book : Book,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.padding.bottomDp = 70f
+        layout.padding.bottomDp = 82f
         layout.margin.bottomDp  = 10f
+        layout.margin.topDp  = 16f
 
         return layout.linearLayout(context)
     }
