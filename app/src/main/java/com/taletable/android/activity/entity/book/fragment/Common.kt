@@ -38,7 +38,8 @@ import maybe.Nothing
 fun entryExpanderView(
         title : String,
         theme : Theme,
-        contentList : List<BookContent>,
+        //contentList : List<BookContent>,
+        contentView : View,
         entityId : EntityId,
         context : Context,
         isInline : Boolean = false
@@ -72,23 +73,22 @@ fun entryExpanderView(
             headerView.findViewById<ImageView>(R.id.icon_view)?.let {
                 it.setImageDrawable(closedDrawable)
             }
-//            headerView.findViewById<TextView>(R.id.label_view)?.let {
-//                it.setTextColor(labelClosedColor)
-//            }
             false
         } else {
             contentLayout.visibility = View.VISIBLE
 
             if (!hasViews) {
-                contentList.forEach { content ->
-                    groups(content.groupReferences(), entityId).forEach {
-                        val groupContext = when (content.context()) {
-                            is Just -> content.context()
-                            is Nothing -> it.groupContext
-                        }
-                        contentLayout.addView(it.group.view(entityId, context, groupContext))
-                    }
-                }
+//                contentList.forEach { content ->
+//                    groups(content.groupReferences(), entityId).forEach {
+//                        val groupContext = when (content.context()) {
+//                            is Just -> content.context()
+//                            is Nothing -> it.groupContext
+//                        }
+//                        contentLayout.addView(it.group.view(entityId, context, groupContext))
+//                    }
+//                }
+
+                contentLayout.addView(contentView)
 
                 hasViews = true
             }
@@ -96,9 +96,6 @@ fun entryExpanderView(
             headerView.findViewById<ImageView>(R.id.icon_view)?.let {
                 it.setImageDrawable(openDrawable)
             }
-//            headerView.findViewById<TextView>(R.id.label_view)?.let {
-//                it.setTextColor(labelOpenColor)
-//            }
             true
         }
     }
@@ -296,10 +293,11 @@ fun entrySimpleView(
         label : String,
         onClick : View.OnClickListener,
         theme : Theme,
+        withPadding : Boolean,
         sessionActivity : SessionActivity
 ) : ViewGroup
 {
-    val layout = entrySimpleViewLayout(sessionActivity)
+    val layout = entrySimpleViewLayout(withPadding, sessionActivity)
 
     layout.addView(entrySimpleTitleView(label, theme, sessionActivity))
 
@@ -318,7 +316,7 @@ fun entrySimpleView(
 }
 
 
-private fun entrySimpleViewLayout(context : Context) : RelativeLayout
+private fun entrySimpleViewLayout(withPadding : Boolean, context : Context) : RelativeLayout
 {
     val layout                  = RelativeLayoutBuilder()
 
@@ -333,8 +331,11 @@ private fun entrySimpleViewLayout(context : Context) : RelativeLayout
 
     layout.padding.topDp        = 16f
     layout.padding.bottomDp     = 16f
-    layout.padding.leftDp       = 16f
-    layout.padding.rightDp      = 16f
+
+    if (withPadding) {
+        layout.padding.leftDp       = 16f
+        layout.padding.rightDp      = 16f
+    }
 
     layout.margin.bottomDp      = 1f
 
@@ -694,4 +695,84 @@ fun sectionHeaderView(
     return title.textView(context)
 }
 
+
+// ---------------------------------------------------------------------------------------------
+// | SIMPLE ENTRY LIST VIEW
+// ---------------------------------------------------------------------------------------------
+
+
+data class EntryViewData(
+    val title : String,
+    val onClick : View.OnClickListener
+)
+
+fun simpleEntryListView(
+        entries : List<EntryViewData>,
+        theme : Theme,
+        sessionActivity: SessionActivity
+) : View
+{
+    val layout = simpleEntryListViewLayout(sessionActivity)
+
+    for (entry in entries) {
+        layout.addView(entrySimpleView(entry.title, entry.onClick, theme, false, sessionActivity))
+    }
+
+    return layout
+}
+
+
+
+fun simpleEntryListViewLayout(context : Context): LinearLayout
+{
+    val layoutBuilder               = LinearLayoutBuilder()
+
+    layoutBuilder.width             = LinearLayout.LayoutParams.MATCH_PARENT
+    layoutBuilder.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layoutBuilder.orientation       = LinearLayout.VERTICAL
+
+    return layoutBuilder.linearLayout(context)
+}
+
+
+
+// ---------------------------------------------------------------------------------------------
+// | CONTENT LIST VIEW
+// ---------------------------------------------------------------------------------------------
+
+fun contentListView(
+        contentList : List<BookContent>,
+        entityId : EntityId,
+        context : Context
+) : View
+{
+    val layout = contentListViewLayout(context)
+
+    contentList.forEach { content ->
+        groups(content.groupReferences(), entityId).forEach {
+            val groupContext = when (content.context()) {
+                is Just -> content.context()
+                is Nothing -> it.groupContext
+            }
+            layout.addView(it.group.view(entityId, context, groupContext))
+        }
+    }
+
+    return layout
+}
+
+
+
+fun contentListViewLayout(context : Context): LinearLayout
+{
+    val layoutBuilder               = LinearLayoutBuilder()
+
+    layoutBuilder.width             = LinearLayout.LayoutParams.MATCH_PARENT
+    layoutBuilder.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layoutBuilder.orientation       = LinearLayout.VERTICAL
+
+    return layoutBuilder.linearLayout(context)
+}
 

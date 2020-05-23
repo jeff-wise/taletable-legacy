@@ -8,6 +8,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.PaintDrawable;
+import android.os.Build;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -45,6 +46,8 @@ public class LinearLayoutBuilder implements ViewBuilder
     public Integer                  widthDp;
 
     public Float                    weight;
+
+    public Integer                    zIndex;
 
     public Integer                  visibility;
 
@@ -169,8 +172,7 @@ public class LinearLayoutBuilder implements ViewBuilder
     // > Layout
     // ------------------------------------------------------------------------------------------
 
-    public LinearLayout linearLayout(Context context)
-    {
+    public LinearLayout linearLayout(Context context) {
         LinearLayout linearLayout = new LinearLayout(context);
 
         PaintDrawable bgDrawable = new PaintDrawable();
@@ -191,6 +193,14 @@ public class LinearLayoutBuilder implements ViewBuilder
         if (this.orientation != null)
             linearLayout.setOrientation(this.orientation);
 
+
+        if (this.zIndex != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                linearLayout.setZ(this.zIndex);
+                linearLayout.setTranslationZ(this.zIndex);
+            }
+        }
+
         // > Padding
         // --------------------------------------------------------------------------------------
 
@@ -198,6 +208,7 @@ public class LinearLayoutBuilder implements ViewBuilder
                                 this.padding.top(context),
                                 this.padding.right(context),
                                 this.padding.bottom(context));
+
 
         // > Padding Spacing
         // --------------------------------------------------------------------------------------

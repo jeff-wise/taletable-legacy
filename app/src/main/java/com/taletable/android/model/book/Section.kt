@@ -6,12 +6,14 @@ import com.taletable.android.lib.Factory
 import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
+import com.taletable.android.model.engine.variable.VariableReference
+import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.style.ElementFormat
 import com.taletable.android.model.sheet.style.TextFormat
-import effect.apply
-import effect.effError
-import effect.effValue
-import effect.split
+import com.taletable.android.rts.entity.EntityId
+import com.taletable.android.rts.entity.textListVariable
+import com.taletable.android.rts.entity.textVariable
+import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
@@ -31,7 +33,8 @@ import java.io.Serializable
 data class BookSection(val sectionId : BookSectionId,
                        val title : BookSectionTitle,
                        val introduction : List<BookContentId>,
-                       val conclusion : List<BookContentId>,
+                       val introductionLabel : Maybe<VariableReference>,
+                       val header : List<BookContentId>,
                        val group: Maybe<BookSectionGroup>,
                        val position : Maybe<BookSectionEntryPosition>,
                        val format : BookSectionFormat,
@@ -65,8 +68,12 @@ data class BookSection(val sectionId : BookSectionId,
                       split(doc.maybeList("introduction"),
                             effValue(listOf()),
                             { it.map { BookContentId.fromDocument(it) } }),
-                      // Conclusion
-                      split(doc.maybeList("conclusion"),
+                      // Introduction Label
+                      split(doc.maybeAt("introduction_label"),
+                            effValue<ValueError,Maybe<VariableReference>>(Nothing()),
+                            { apply(::Just, VariableReference.fromDocument(it)) }),
+                      // Header
+                      split(doc.maybeList("header"),
                             effValue(listOf()),
                             { it.map { BookContentId.fromDocument(it) } }),
                       // Group
@@ -123,7 +130,7 @@ data class BookSection(val sectionId : BookSectionId,
     fun introduction() : List<BookContentId> = this.introduction
 
 
-    fun conclusion() : List<BookContentId> = this.conclusion
+    fun conclusion() : List<BookContentId> = this.header
 
 
     fun subsections() : List<BookSubsection> = this.subsections
@@ -143,6 +150,25 @@ data class BookSection(val sectionId : BookSectionId,
 
     fun introductionContent(book : Book) : List<BookContent> =
             this.introduction.map { book.content(it) }.filterJust()
+
+    fun headerContent(book : Book) : List<BookContent> =
+            this.header.map { book.content(it) }.filterJust()
+
+
+    fun introductionLabelValue(entityId : EntityId) : Maybe<String>
+    {
+        val maybeVarRef = this.introductionLabel
+        return when (maybeVarRef) {
+            is Just -> {
+                val effValue = textVariable(maybeVarRef.value, entityId).apply { it.value(entityId) }
+                when (effValue) {
+                    is Val -> effValue.value
+                    is Eff -> Nothing()
+                }
+            }
+            is Nothing -> Nothing()
+        }
+    }
 
 }
 
@@ -453,7 +479,6 @@ data class BookSectionEntrySimple(val subsectionId : BookSubsectionId) : BookSec
 
 }
 
-
 data class BookSectionEntryInlineExpandable(
         val contentId : BookContentId) : BookSectionEntry()
 {
@@ -532,7 +557,9 @@ data class BookSectionEntryCardGroup(
 
 data class BookSectionEntryGroup(
         val title : String,
-        val entries : List<BookSectionEntry>) : BookSectionEntry()
+        val entries : List<BookSectionEntry>,
+        val isExpandable : Boolean = false
+) : BookSectionEntry()
 {
 
     companion object : Factory<BookSectionEntryGroup>
@@ -548,7 +575,10 @@ data class BookSectionEntryGroup(
                       // Entries
                       split(doc.maybeList("entries"),
                             effValue(listOf()),
-                            { it.map { BookSectionEntry.fromDocument(it) } })
+                            { it.map { BookSectionEntry.fromDocument(it) } }),
+                      split(doc.maybeBoolean("is_expandable"),
+                            effValue(false),
+                            { effValue(it) })
                 )
             }
             else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))

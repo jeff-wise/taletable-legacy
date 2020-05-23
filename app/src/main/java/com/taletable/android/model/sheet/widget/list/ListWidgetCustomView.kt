@@ -6,8 +6,7 @@ import android.content.Context
 import android.widget.LinearLayout
 import com.taletable.android.lib.ui.LinearLayoutBuilder
 import com.taletable.android.model.sheet.group.GroupContext
-import com.taletable.android.model.sheet.widget.ListWidget
-import com.taletable.android.rts.entity.EntityId
+import com.taletable.android.model.theme.Theme
 import maybe.Maybe
 
 
@@ -16,9 +15,9 @@ import maybe.Maybe
  * Custom view
  */
 fun listWidgetCustomView(
-        listWidget : ListWidget,
         format : ListWidgetFormatCustom,
-        entityId : EntityId,
+        data : ListWidgetViewData,
+        theme : Theme,
         context : Context,
         groupContext : Maybe<GroupContext>) : LinearLayout
 {

@@ -203,7 +203,7 @@ engine:
       short_name: Hit Dice
     tuples:
     - parameters:
-      - barbarian
+      - bard
       result:
         quantities:
         - sides: 12
@@ -286,7 +286,7 @@ engine:
       short_name: Saving Throws
     tuples:
     - parameters:
-      - barbarian
+      - bard
       result:
       - strength
       - constitution
@@ -476,7 +476,7 @@ engine:
         quantities:
         - sides: 6
           quantity: 10
-  - name: barbarian_rages_per_day
+  - name: bard_rages_per_day
     label: Barbarian Rages Per Day
     description:
       The number of rages a Barbarian can do without a long rest by level.

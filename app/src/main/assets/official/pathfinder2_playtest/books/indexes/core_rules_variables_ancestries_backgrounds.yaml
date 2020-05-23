@@ -5534,7 +5534,7 @@ variables:
     label: 'Ancestry Feat > Half-Orc > Victorious Vigor > Name'
     description: 'Ancestry Feat > Half-Orc > Victorious Vigor > Name'
     tags:
-    - ancestry_feat_halforc_victorious vigor
+    - ancestry_feat_halforc_victorious_vigor
     - feat_name
     value:
       type: text_literal
@@ -5545,7 +5545,7 @@ variables:
     label: 'Ancestry Feat > Half-Orc > Victorious Vigor > Level'
     description: 'Ancestry Feat > Half-Orc > Victorious Vigor > Level'
     tags:
-    - ancestry_feat_halforc_victorious vigor
+    - ancestry_feat_halforc_victorious_vigor
     - feat_level
     value:
       type: number_literal
@@ -5556,7 +5556,7 @@ variables:
     label: 'Ancestry Feat > Half-Orc > Victorious Vigor > Actions'
     description: 'Ancestry Feat > Half-Orc > Victorious Vigor > Actions'
     tags:
-    - ancestry_feat_halforc_victorious vigor
+    - ancestry_feat_halforc_victorious_vigor
     - feat_actions
     value:
       type: text_literal
@@ -5567,7 +5567,7 @@ variables:
     label: 'Ancestry Feat > Half-Orc > Victorious Vigor > Traits'
     description: 'Ancestry Feat > Half-Orc > Victorious Vigor > Traits'
     tags:
-    - ancestry_feat_halforc_victorious vigor
+    - ancestry_feat_halforc_victorious_vigor
     - feat_traits
     value:
       type: text_list_literal
@@ -5579,7 +5579,7 @@ variables:
     label: 'Ancestry Feat > Half-Orc > Victorious Vigor > Trigger'
     description: 'Ancestry Feat > Half-Orc > Victorious Vigor > Trigger'
     tags:
-    - ancestry_feat_halforc_victorious vigor
+    - ancestry_feat_halforc_victorious_vigor
     - feat_trigger
     value:
       type: text_literal
@@ -5590,7 +5590,7 @@ variables:
     label: 'Ancestry Feat > Half-Orc > Victorious Vigor > Description'
     description: 'Ancestry Feat > Half-Orc > Victorious Vigor > Description'
     tags:
-    - ancestry_feat_halforc_victorious vigor
+    - ancestry_feat_halforc_victorious_vigor
     - feat_description
     value:
       type: text_literal
@@ -6925,7 +6925,7 @@ variables:
 # ----------------------------------------------------------------------------------------------
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_dwarf_dwarven_lore
+    id: reference_card_ancestry_feat_dwarf_dwarven_lore
     label: 'Reference > Card > Ancestry Feat > Dwarf > Dwarven Lore'
     description: 'Reference > Card > Ancestry Feat > Dwarf > Dwarven Lore'
     tags:
@@ -6942,12 +6942,12 @@ variables:
             card_id: '2cac0ac4-efaa-4b13-896b-0743662b70f0'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_dwarf_ancients_blood
-    label: 'Reference > Card > Ancestry Feats > Dwarf > Ancient''s Blood'
-    description: 'Reference > Card > Ancestry Feats > Dwarf > Ancient''s Blood'
+    id: reference_card_ancestry_feat_dwarf_dwarven_weapon_familiarity
+    label: 'Reference > Card > Ancestry Feats > Dwarf > Dwarven Weapon Familiarity'
+    description: 'Reference > Card > Ancestry Feats > > Dwarf > Dwarven Weapon Familiarity'
     tags:
-    - ancestry_feats_dwarf_ancients_blood
-    - ancestry_feats_card_reference
+    - ancestry_feat_dwarf_dwarven_weapon_familiarity
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -6959,12 +6959,12 @@ variables:
             card_id: 'ae6b9566-cf43-4d9c-bd14-4141dc75ab95'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_dwarf_boulder_roll
-    label: 'Reference > Card > Ancestry Feats > Dwarf > Boulder Roll'
-    description: 'Reference > Card > Ancestry Feats > Dwarf > Boulder Roll'
+    id: reference_card_ancestry_feat_dwarf_rock_runner
+    label: 'Reference > Card > Ancestry Feats > Dwarf > Rock Runner'
+    description: 'Reference > Card > Ancestry Feats > Dwarf > Rock Runner'
     tags:
-    - ancestry_feats_dwarf_boulder_roll
-    - ancestry_feats_card_reference
+    - ancestry_feat_dwarf_rock_runner
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -6976,12 +6976,12 @@ variables:
             card_id: '4dd03351-95cb-465d-81d8-71d6ef955ed2'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_dwarf_giant_bane
-    label: 'Reference > Card > Ancestry Feats > Dwarf > Giant Bane'
-    description: 'Reference > Card > Ancestry Feats > Dwarf > Giant Bane'
+    id: reference_card_ancestry_feat_dwarf_stonecunning
+    label: 'Reference > Card > Ancestry Feats > Dwarf > Stonecunning'
+    description: 'Reference > Card > Ancestry Feats > Dwarf > Stonecunning'
     tags:
-    - ancestry_feats_dwarf_giant_bane
-    - ancestry_feats_card_reference
+    - ancestry_feat_dwarf_stonecunning
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -6993,12 +6993,12 @@ variables:
             card_id: 'b589b39d-e90e-42d6-8a07-42c2ec6d3ae7'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_dwarf_hardy
-    label: 'Reference > Card > Ancestry Feats > Dwarf > Hardy'
-    description: 'Reference > Card > Ancestry Feats > Dwarf > Hardy'
+    id: reference_card_ancestry_feat_dwarf_unburdened_iron
+    label: 'Reference > Card > Ancestry Feats > Dwarf > Unburdened Iron'
+    description: 'Reference > Card > Ancestry Feats > Dwarf > Unburdened Iron'
     tags:
-    - ancestry_feats_dwarf_hardy
-    - ancestry_feats_card_reference
+    - ancestry_feat_dwarf_unburdened_iron
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7010,12 +7010,12 @@ variables:
             card_id: '557f5903-2227-4ac9-a0c7-d70c588ef008'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_dwarf_mountain_roots
-    label: 'Reference > Card > Ancestry Feats > Dwarf > Mountain Roots'
-    description: 'Reference > Card > Ancestry Feats > Dwarf > Mountain Roots'
+    id: reference_card_ancestry_feat_dwarf_vengeful_hatred
+    label: 'Reference > Card > Ancestry Feats > Dwarf > Vengeful Hatred'
+    description: 'Reference > Card > Ancestry Feats > Dwarf > Vengeful Hatred'
     tags:
-    - ancestry_feats_dwarf_mountain_roots
-    - ancestry_feats_card_reference
+    - ancestry_feat_dwarf_vengeful_hatred
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7027,12 +7027,12 @@ variables:
             card_id: '81cd9846-65e8-4a8f-876e-8410ef636841'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_dwarf_rock_runner
-    label: 'Reference > Card > Ancestry Feats > Dwarf > Rock Runner'
-    description: 'Reference > Card > Ancestry Feats > Dwarf > Rock Runner'
+    id: reference_card_ancestry_feat_dwarf_boulder_roll
+    label: 'Reference > Card > Ancestry Feats > Dwarf > Boulder Roll'
+    description: 'Reference > Card > Ancestry Feats > Dwarf > Boulder Roll'
     tags:
-    - ancestry_feats_dwarf_rock_runner
-    - ancestry_feats_card_reference
+    - ancestry_feat_dwarf_boulder_roll
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7044,12 +7044,12 @@ variables:
             card_id: 'fc814cfd-fc04-4ecd-bff9-1d532abc0b49'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_dwarf_stonecunning
-    label: 'Reference > Card > Ancestry Feats > Dwarf > Stonecunning'
-    description: 'Reference > Card > Ancestry Feats > Dwarf > Stonecunning'
+    id: reference_card_ancestry_feat_dwarf_dwarven_weapon_cunning
+    label: 'Reference > Card > Ancestry Feats > Dwarf > Dwarven Weapon Cunning'
+    description: 'Reference > Card > Ancestry Feats > Dwarf > Dwarven Weapon Cunning'
     tags:
-    - ancestry_feats_dwarf_stonecunning
-    - ancestry_feats_card_reference
+    - ancestry_feat_dwarf_dwarven_weapon_cunning
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7061,12 +7061,12 @@ variables:
             card_id: 'bfea3a3e-6ce3-4707-963c-ecb65da28879'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_dwarf_weapon_cunning
-    label: 'Reference > Card > Ancestry Feats > Dwarf > Weapon Cunning'
-    description: 'Reference > Card > Ancestry Feats > Dwarf > Weapon Cunning'
+    id: reference_card_ancestry_feat_dwarf_mountains_stoutness
+    label: 'Reference > Card > Ancestry Feats > Dwarf > Mountain''s Stoutness'
+    description: 'Reference > Card > Ancestry Feats > Dwarf > Mountain''s Stoutness'
     tags:
-    - ancestry_feats_dwarf_weapon_cunning
-    - ancestry_feats_card_reference
+    - ancestry_feat_dwarf_mountains_stoutness
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7078,12 +7078,12 @@ variables:
             card_id: '45308ffa-006a-45f0-a6a5-2918bd5b3b85'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_dwarf_weapon_familarity
-    label: 'Reference > Card > Ancestry Feats > Dwarf > Weapon Familiarity'
-    description: 'Reference > Card > Ancestry Feats > Dwarf > Weapon Familarity'
+    id: reference_card_ancestry_feat_dwarf_stonewalker
+    label: 'Reference > Card > Ancestry Feats > Dwarf > Stonewalker'
+    description: 'Reference > Card > Ancestry Feats > Dwarf > Stonewalker'
     tags:
-    - ancestry_feats_dwarf_weapon_familarity
-    - ancestry_feats_card_reference
+    - ancestry_feat_dwarf_stonewalker
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7095,12 +7095,12 @@ variables:
             card_id: '94823b64-99da-42b9-adea-be77541144c7'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_elf_ageless_patience
-    label: 'Reference > Card > Ancestry Feats > Elf > Ageless Patience'
-    description: 'Reference > Card > Ancestry Feats > Elf > Ageless Patience'
+    id: reference_card_ancestry_feat_dwarf_dwarven_weapon_expertise
+    label: 'Reference > Card > Ancestry Feats > Dwarf > Dwarven Weapon Expertise'
+    description: 'Reference > Card > Ancestry Feats > Dwarf > Dwarven Weapon Expertise'
     tags:
-    - ancestry_feats_elf_ageless_patience
-    - ancestry_feats_card_reference
+    - ancestry_feat_dwarf_dwarven_weapon_expertise
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7112,12 +7112,12 @@ variables:
             card_id: 'b254987c-99e8-49b8-abf1-56197c0f6261'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_elf_ancestral_longevity
+    id: reference_card_ancestry_feat_elf_ancestral_longevity
     label: 'Reference > Card > Ancestry Feats > Elf > Ancestral Longevity'
     description: 'Reference > Card > Ancestry Feats > Elf > Ancestral Longevity'
     tags:
-    - ancestry_feats_elf_ancestral_longevity
-    - ancestry_feats_card_reference
+    - ancestry_feat_elf_ancestral_longevity
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7129,12 +7129,12 @@ variables:
             card_id: 'f8a43335-a1f8-4360-8551-813f77c2a410'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_elf_demon_skirmisher
-    label: 'Reference > Card > Ancestry Feats > Elf > Demon Skirmisher'
-    description: 'Reference > Card > Ancestry Feats > Elf > Demon Skirmisher'
+    id: reference_card_ancestry_feat_elf_elven_lore
+    label: 'Reference > Card > Ancestry Feats > Elf > Elven Lore'
+    description: 'Reference > Card > Ancestry Feats > Elf > Elven Lore'
     tags:
-    - ancestry_feats_elf_ancestral_longevity
-    - ancestry_feats_card_reference
+    - ancestry_feat_elf_elven_lore
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7146,12 +7146,12 @@ variables:
             card_id: '6fdad1bf-2778-447f-9e99-2d817508d5e5'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_elf_forlorn
-    label: 'Reference > Card > Ancestry Feats > Elf > Forlorn'
-    description: 'Reference > Card > Ancestry Feats > Elf > Forlorn'
+    id: reference_card_ancestry_feat_elf_elven_weapon_familarity
+    label: 'Reference > Card > Ancestry Feats > Elf > Elven Weapon Familiarity'
+    description: 'Reference > Card > Ancestry Feats > Elf > Elven Weapon Familiarity'
     tags:
-    - ancestry_feats_elf_forlorn
-    - ancestry_feats_card_reference
+    - ancestry_feat_elf_elven_weapon_familiarity
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7163,12 +7163,12 @@ variables:
             card_id: 'fd231581-00fc-43b8-a087-0b2e9bfdc302'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_elf_keen_hearing
-    label: 'Reference > Card > Ancestry Feats > Elf > Keen Hearing'
-    description: 'Reference > Card > Ancestry Feats > Elf > Keen Hearing'
+    id: reference_card_ancestry_feat_elf_forlorn
+    label: 'Reference > Card > Ancestry Feats > Elf > Forlorn'
+    description: 'Reference > Card > Ancestry Feats > Elf > Forlorn'
     tags:
-    - ancestry_feats_elf_keen_hearing
-    - ancestry_feats_card_reference
+    - ancestry_feat_elf_forlorn
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7180,12 +7180,12 @@ variables:
             card_id: '90effbc8-559a-497d-9314-0d40740a63d6'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_elf_nimble
-    label: 'Reference > Card > Ancestry Feats > Elf > Nimble'
-    description: 'Reference > Card > Ancestry Feats > Elf > Nimble'
+    id: reference_card_ancestry_feat_elf_nimble_elf
+    label: 'Reference > Card > Ancestry Feats > Elf > Nimble Elf'
+    description: 'Reference > Card > Ancestry Feats > Elf > Nimble Elf'
     tags:
-    - ancestry_feats_elf_nimble
-    - ancestry_feats_card_reference
+    - ancestry_feat_elf_nimble_elf
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7197,12 +7197,12 @@ variables:
             card_id: '03eb4378-6dee-4f6a-8399-6e33a215a6e0'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_elf_otherworldly_magic
+    id: reference_card_ancestry_feat_elf_otherworldly_magic
     label: 'Reference > Card > Ancestry Feats > Elf > Otherworldly Magic'
     description: 'Reference > Card > Ancestry Feats > Elf > Otherworldly Magic'
     tags:
-    - ancestry_feats_elf_otherworldly_magic
-    - ancestry_feats_card_reference
+    - ancestry_feat_elf_otherworldly_magic
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7214,12 +7214,12 @@ variables:
             card_id: '14071c44-c167-4e7a-9425-8c313aaa242d'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_elf_unwavering_mien
+    id: reference_card_ancestry_feat_elf_unwavering_mien
     label: 'Reference > Card > Ancestry Feats > Elf > Unwavering Mien'
     description: 'Reference > Card > Ancestry Feats > Elf > Unwavering Mien'
     tags:
-    - ancestry_feats_elf_unwavering_mien
-    - ancestry_feats_card_reference
+    - ancestry_feat_elf_unwavering_mien
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7231,12 +7231,12 @@ variables:
             card_id: '1f2b31dc-e44a-4ad9-b06e-916f75996f7c'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_elf_weapon_elegance
-    label: 'Reference > Card > Ancestry Feats > Elf > Weapon Elegance'
-    description: 'Reference > Card > Ancestry Feats > Elf > Weapon Elegance'
+    id: reference_card_ancestry_feat_elf_ageless_patience
+    label: 'Reference > Card > Ancestry Feats > Elf > Ageless Patience'
+    description: 'Reference > Card > Ancestry Feats > Elf > Ageless Patience'
     tags:
-    - ancestry_feats_elf_weapon_elegance
-    - ancestry_feats_card_reference
+    - ancestry_feat_elf_ageless_patience
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7248,12 +7248,12 @@ variables:
             card_id: 'ce810c61-50bd-4f0b-96b1-3287df8e15ba'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_elf_weapon_familarity
-    label: 'Reference > Card > Ancestry Feats > Elf > Weapon Familiarity'
-    description: 'Reference > Card > Ancestry Feats > Elf > Weapon Familiarity'
+    id: reference_card_ancestry_feat_elf_elven_weapon_elegance
+    label: 'Reference > Card > Ancestry Feats > Elf > Elven Weapon Elegance'
+    description: 'Reference > Card > Ancestry Feats > Elf > Elven Weapon Elegance'
     tags:
-    - ancestry_feats_elf_weapon_familiarity
-    - ancestry_feats_card_reference
+    - ancestry_feat_elf_elven_weapon_elegance
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7265,12 +7265,80 @@ variables:
             card_id: 'a401a70b-73a3-4b22-9735-0320b30ce5bb'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_gnome_animal_accomplice
+    id: reference_card_ancestry_feat_elf_elf_step
+    label: 'Reference > Card > Ancestry Feats > Elf > Elf Step'
+    description: 'Reference > Card > Ancestry Feats > Elf > Elf Step'
+    tags:
+    - ancestry_feat_elf_elf_step
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'ef29981f-e5c5-4f88-981c-1447fad1225c'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_elf_expert_longevity
+    label: 'Reference > Card > Ancestry Feats > Elf > Expert Longevity'
+    description: 'Reference > Card > Ancestry Feats > Elf > Expert Longevity'
+    tags:
+    - ancestry_feat_elf_expert_longevity
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '7d2329fa-2494-41a4-ad3f-43664d1fca36'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_elf_universal_longevity
+    label: 'Reference > Card > Ancestry Feats > Elf > Universal Longevity'
+    description: 'Reference > Card > Ancestry Feats > Elf > Universal Longevity'
+    tags:
+    - ancestry_feat_elf_universal_longevity
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '3b6d5d4b-81e6-4eb5-8d7f-4d210c7a47f5'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_elf_elven_weapon_expertise
+    label: 'Reference > Card > Ancestry Feats > Elf > Elven Weapon Expertise'
+    description: 'Reference > Card > Ancestry Feats > Elf > Elven Weapon Expertise'
+    tags:
+    - ancestry_feat_elf_elven_weapon_expertise
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '3e96ba4f-809c-4c53-825a-f6aaa9f96be1'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_gnome_animal_accomplice
     label: 'Reference > Card > Ancestry Feats > Gnome > Animal Accomplice'
     description: 'Reference > Card > Ancestry Feats > Gnome > Animal Accomplice'
     tags:
-    - ancestry_feats_gnome_animal_accomplice
-    - ancestry_feats_card_reference
+    - ancestry_feat_gnome_animal_accomplice
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7282,12 +7350,12 @@ variables:
             card_id: 'b3eb2b82-cc75-40f4-9614-5a59b693bab9'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_gnome_animal_speaker
-    label: 'Reference > Card > Ancestry Feats > Gnome > Animal Speaker'
-    description: 'Reference > Card > Ancestry Feats > Gnome > Animal Speaker'
+    id: reference_card_ancestry_feat_gnome_burrow_elocutionist
+    label: 'Reference > Card > Ancestry Feats > Gnome > Burrow Elocutionist'
+    description: 'Reference > Card > Ancestry Feats > Gnome > Burrow Elocutionist'
     tags:
-    - ancestry_feats_gnome_animal_speaker
-    - ancestry_feats_card_reference
+    - ancestry_feat_gnome_burrow_elocutionist
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7299,12 +7367,12 @@ variables:
             card_id: 'a07c6525-d3f0-4c4e-8a54-7b2bba9a54f3'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_gnome_animal_whisperer
-    label: 'Reference > Card > Ancestry Feats > Gnome > Animal Whisperer'
-    description: 'Reference > Card > Ancestry Feats > Gnome > Animal Whisperer'
+    id: reference_card_ancestry_feat_gnome_fey_fellowship
+    label: 'Reference > Card > Ancestry Feats > Gnome > Fey Fellowship'
+    description: 'Reference > Card > Ancestry Feats > Gnome > Fey Fellowship'
     tags:
-    - ancestry_feats_gnome_animal_whisperer
-    - ancestry_feats_card_reference
+    - ancestry_feat_gnome_fey_fellowship
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7316,46 +7384,12 @@ variables:
             card_id: 'e96f9f7b-7163-4d38-8e47-4f6dcb050e15'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_gnome_discerning_smell
-    label: 'Reference > Card > Ancestry Feats > Gnome > Discerning Smell'
-    description: 'Reference > Card > Ancestry Feats > Gnome > Discerning Smell'
-    tags:
-    - ancestry_feats_gnome_discerning_smell
-    - ancestry_feats_card_reference
-    value:
-      type: content_reference
-      content_reference:
-        type: book_reference
-        book_reference:
-          type: book_reference_card
-          book_reference_card:
-            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
-            card_id: 'c6a9a1a9-d179-4f1e-99b7-1377db369cc9'
-- type: variable_content_reference
-  variable_content_reference:
-    id: reference_card_ancestry_feats_gnome_fey_fellowship
-    label: 'Reference > Card > Ancestry Feats > Gnome > Fey Fellowship'
-    description: 'Reference > Card > Ancestry Feats > Gnome > Fey Fellowship'
-    tags:
-    - ancestry_feats_gnome_discerning_smell
-    - ancestry_feats_card_reference
-    value:
-      type: content_reference
-      content_reference:
-        type: book_reference
-        book_reference:
-          type: book_reference_card
-          book_reference_card:
-            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
-            card_id: '0502b8a9-5bbd-446a-b4e2-e70f314e500b'
-- type: variable_content_reference
-  variable_content_reference:
-    id: reference_card_ancestry_feats_gnome_first_world_magic
+    id: reference_card_ancestry_feat_gnome_first_world_magic
     label: 'Reference > Card > Ancestry Feats > Gnome > First World Magic'
     description: 'Reference > Card > Ancestry Feats > Gnome > First World Magic'
     tags:
-    - ancestry_feats_gnome_first_world_magic
-    - ancestry_feats_card_reference
+    - ancestry_feat_gnome_first_world_magic
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7367,12 +7401,12 @@ variables:
             card_id: '72aa59c9-664e-4ebe-bd45-05eb69caa2cd'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_gnome_illusion_sense
-    label: 'Reference > Card > Ancestry Feats > Gnome > Illusion Sense'
-    description: 'Reference > Card > Ancestry Feats > Gnome > Illusion Sense'
+    id: reference_card_ancestry_feat_gnome_gnome_obsession
+    label: 'Reference > Card > Ancestry Feats > Gnome > Gnome Obsession'
+    description: 'Reference > Card > Ancestry Feats > Gnome > Gnome Obsession'
     tags:
-    - ancestry_feats_gnome_illusion_sense
-    - ancestry_feats_card_reference
+    - ancestry_feat_gnome_gnome_obsession
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7384,29 +7418,12 @@ variables:
             card_id: '728c8388-c9d9-4039-8cbc-8399299c74d3'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_gnome_obsessive
-    label: 'Reference > Card > Ancestry Feats > Gnome > Obsessive'
-    description: 'Reference > Card > Ancestry Feats > Gnome > Obsessive'
+    id: reference_card_ancestry_feat_gnome_gnome_weapon_familiarity
+    label: 'Reference > Card > Ancestry Feats > Gnome > Gnome Weapon Familarity'
+    description: 'Reference > Card > Ancestry Feats > Gnome > Gnome Weapon Familarity'
     tags:
-    - ancestry_feats_gnome_obsessive
-    - ancestry_feats_card_reference
-    value:
-      type: content_reference
-      content_reference:
-        type: book_reference
-        book_reference:
-          type: book_reference_card
-          book_reference_card:
-            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
-            card_id: '0882b884-f656-4c93-8da7-55298947dc1b'
-- type: variable_content_reference
-  variable_content_reference:
-    id: reference_card_ancestry_feats_gnome_weapon_familiarity
-    label: 'Reference > Card > Ancestry Feats > Gnome > Weapon Familarity'
-    description: 'Reference > Card > Ancestry Feats > Gnome > Weapon Familarity'
-    tags:
-    - ancestry_feats_gnome_weapon_familiarity
-    - ancestry_feats_card_reference
+    - ancestry_feat_gnome_gnome_weapon_familiarity
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7418,12 +7435,12 @@ variables:
             card_id: 'f9287b15-aa73-442b-8790-afabac68eb73'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_gnome_weapon_innovator
-    label: 'Reference > Card > Ancestry Feats > Gnome > Weapon Innovator'
-    description: 'Reference > Card > Ancestry Feats > Gnome > Weapon Innovator'
+    id: reference_card_ancestry_feat_gnome_illusion_sense
+    label: 'Reference > Card > Ancestry Feats > Gnome > Illusion Sense'
+    description: 'Reference > Card > Ancestry Feats > Gnome > Illusion Sense'
     tags:
-    - ancestry_feats_gnome_weapon_innovator
-    - ancestry_feats_card_reference
+    - ancestry_feat_gnome_illusion_sense
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7435,12 +7452,114 @@ variables:
             card_id: 'a1bcdd32-898f-480d-84db-b252483b8ded'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_goblin_burn_it
+    id: reference_card_ancestry_feat_gnome_animal_elocutionist
+    label: 'Reference > Card > Ancestry Feats > Gnome > Animal Elocutionist'
+    description: 'Reference > Card > Ancestry Feats > Gnome > Animal Elocutionist'
+    tags:
+    - ancestry_feat_gnome_animal_elocutionist
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '89afce53-b790-4df6-9063-c287f04d78d4'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_gnome_energized_font
+    label: 'Reference > Card > Ancestry Feats > Gnome > Energized Font'
+    description: 'Reference > Card > Ancestry Feats > Gnome > Energized Font'
+    tags:
+    - ancestry_feat_gnome_energized_font
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'b30e2df3-5103-465a-97ae-99dc172c8fb5'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_gnome_gnome_weapon_innovator
+    label: 'Reference > Card > Ancestry Feats > Gnome > Gnome Weapon Innovator'
+    description: 'Reference > Card > Ancestry Feats > Gnome > Gnome Weapon Innovator'
+    tags:
+    - ancestry_feat_gnome_gnome_weapon_innovator
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '4b63ce28-ed77-4cfb-a27d-e474d5bdf41f'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_gnome_first_world_adept
+    label: 'Reference > Card > Ancestry Feats > Gnome > First World Adept'
+    description: 'Reference > Card > Ancestry Feats > Gnome > First World Adept'
+    tags:
+    - ancestry_feat_gnome_first_world_adept
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '06f11b93-7553-48c5-8cbc-9e44fee50c50'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_gnome_vivacious_conduit
+    label: 'Reference > Card > Ancestry Feats > Gnome > Vivacious Conduit'
+    description: 'Reference > Card > Ancestry Feats > Gnome > Vivacious Conduit'
+    tags:
+    - ancestry_feat_gnome_vivacious_conduit
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'f08fac93-51aa-42e1-9bb0-5bb88e3f7e5f'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_gnome_gnome_weapon_expertise
+    label: 'Reference > Card > Ancestry Feats > Gnome > Gnome Weapon Expertise'
+    description: 'Reference > Card > Ancestry Feats > Gnome > Gnome Weapon Expertise'
+    tags:
+    - ancestry_feat_gnome_gnome_weapon_expertise
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'b2312bb0-e78c-45d6-90ac-336a91598d79'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_goblin_burn_it
     label: 'Reference > Card > Ancestry Feats > Goblin > Burn It'
     description: 'Reference > Card > Ancestry Feats > Goblin > Burn It'
     tags:
-    - ancestry_feats_goblin_burn_it
-    - ancestry_feats_card_reference
+    - ancestry_feat_goblin_burn_it
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7452,12 +7571,12 @@ variables:
             card_id: 'cc722873-ddef-4150-b9dd-c2a0ef08c9bd'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_goblin_city_scavenger
+    id: reference_card_ancestry_feat_goblin_city_scavenger
     label: 'Reference > Card > Ancestry Feats > Goblin > City Scavenger'
     description: 'Reference > Card > Ancestry Feats > Goblin > City Scavenger'
     tags:
-    - ancestry_feats_goblin_city_scavenger
-    - ancestry_feats_card_reference
+    - ancestry_feat_goblin_city_scavenger
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7469,12 +7588,12 @@ variables:
             card_id: 'b3f5350b-f896-42a6-ae6c-4f0724630f5b'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_goblin_eat_anything
-    label: 'Reference > Card > Ancestry Feats > Goblin > Eat Anything'
-    description: 'Reference > Card > Ancestry Feats > Goblin > Eat Anything'
+    id: reference_card_ancestry_feat_goblin_goblin_lore
+    label: 'Reference > Card > Ancestry Feats > Goblin > Goblin Lore'
+    description: 'Reference > Card > Ancestry Feats > Goblin > Goblin Lore'
     tags:
-    - ancestry_feats_goblin_eat_anything
-    - ancestry_feats_card_reference
+    - ancestry_feat_goblin_goblin_lore
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7486,12 +7605,12 @@ variables:
             card_id: '17d3f388-997c-42ea-b3d3-584e14d9cb91'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_goblin_flame_heart
-    label: 'Reference > Card > Ancestry Feats > Goblin > Flame Heart'
-    description: 'Reference > Card > Ancestry Feats > Goblin > Flame Heart'
+    id: reference_card_ancestry_feat_goblin_goblin_scuttle
+    label: 'Reference > Card > Ancestry Feats > Goblin > Goblin Scuttle'
+    description: 'Reference > Card > Ancestry Feats > Goblin > Goblin Scuttle'
     tags:
-    - ancestry_feats_goblin_flame_heart
-    - ancestry_feats_card_reference
+    - ancestry_feat_goblin_goblin_scuttle
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7503,12 +7622,12 @@ variables:
             card_id: '0b073803-7f60-4e8b-9506-9625d4c356fa'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_goblin_junk_tinker
-    label: 'Reference > Card > Ancestry Feats > Goblin > Junk Tinker'
-    description: 'Reference > Card > Ancestry Feats > Goblin > Junk Tinker'
+    id: reference_card_ancestry_feat_goblin_goblin_song
+    label: 'Reference > Card > Ancestry Feats > Goblin > Goblin Song'
+    description: 'Reference > Card > Ancestry Feats > Goblin > Goblin Song'
     tags:
-    - ancestry_feats_goblin_junk_tinker
-    - ancestry_feats_card_reference
+    - ancestry_feat_goblin_goblin_song
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7520,12 +7639,12 @@ variables:
             card_id: '9202b60c-d36e-4fd9-a007-82055249bc05'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_goblin_razor_teeth
-    label: 'Reference > Card > Ancestry Feats > Goblin > Razor Teeth'
-    description: 'Reference > Card > Ancestry Feats > Goblin > Razor Teeth'
+    id: reference_card_ancestry_feat_goblin_goblin_weapon_familiarity
+    label: 'Reference > Card > Ancestry Feats > Goblin > Goblin Weapon Familiarity'
+    description: 'Reference > Card > Ancestry Feats > Goblin > Goblin Weapon Familiarity'
     tags:
-    - ancestry_feats_goblin_razor_teeth
-    - ancestry_feats_card_reference
+    - ancestry_feat_goblin_goblin_weapon_familiarity
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7537,12 +7656,12 @@ variables:
             card_id: '5755dcf8-52dd-4b3a-aa70-20e024b312c7'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_goblin_rough_rider
-    label: 'Reference > Card > Ancestry Feats > Goblin > Rough Rider'
-    description: 'Reference > Card > Ancestry Feats > Goblin > Rough Rider'
+    id: reference_card_ancestry_feat_goblin_junk_tinker
+    label: 'Reference > Card > Ancestry Feats > Goblin > Junk Tinker'
+    description: 'Reference > Card > Ancestry Feats > Goblin > Junk Tinker'
     tags:
-    - ancestry_feats_goblin_rough_rider
-    - ancestry_feats_card_reference
+    - ancestry_feat_goblin_junk_tinker
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7554,12 +7673,12 @@ variables:
             card_id: 'cda4fed5-5ae5-49ac-9317-4adb9dd476d0'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_goblin_very_sneaky
-    label: 'Reference > Card > Ancestry Feats > Goblin > Very Sneaky'
-    description: 'Reference > Card > Ancestry Feats > Goblin > Very Sneaky'
+    id: reference_card_ancestry_feat_goblin_rough_rider
+    label: 'Reference > Card > Ancestry Feats > Goblin > Rough Rider'
+    description: 'Reference > Card > Ancestry Feats > Goblin > Rough Rider'
     tags:
-    - ancestry_feats_goblin_very_sneaky
-    - ancestry_feats_card_reference
+    - ancestry_feat_goblin_rough_rider
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7571,12 +7690,12 @@ variables:
             card_id: '904f1d06-3be7-4a1e-a023-3da2a421cb1f'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_goblin_weapon_familiarity
-    label: 'Reference > Card > Ancestry Feats > Goblin > Weapon Familiarity'
-    description: 'Reference > Card > Ancestry Feats > Goblin > Weapon Familiarity'
+    id: reference_card_ancestry_feat_goblin_very_sneaky
+    label: 'Reference > Card > Ancestry Feats > Goblin > Very Sneaky'
+    description: 'Reference > Card > Ancestry Feats > Goblin > Very Sneaky'
     tags:
-    - ancestry_feats_goblin_weapon_familiarity
-    - ancestry_feats_card_reference
+    - ancestry_feat_goblin_very_sneaky
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7588,12 +7707,12 @@ variables:
             card_id: '1d89d433-ecf9-4172-a610-9d2b97e2a019'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_goblin_weapon_frenzy
-    label: 'Reference > Card > Ancestry Feats > Goblin > Weapon Frenzy'
-    description: 'Reference > Card > Ancestry Feats > Goblin > Weapon Frenzy'
+    id: reference_card_ancestry_feat_goblin_goblin_weapon_frenzy
+    label: 'Reference > Card > Ancestry Feats > Goblin > Goblin Weapon Frenzy'
+    description: 'Reference > Card > Ancestry Feats > Goblin > Goblin Weapon Frenzy'
     tags:
-    - ancestry_feats_goblin_weapon_frenzy
-    - ancestry_feats_card_reference
+    - ancestry_feat_goblin_goblin_weapon_frenzy
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7605,12 +7724,80 @@ variables:
             card_id: 'af5f1db8-9e3b-4188-9e7b-19afa50b64da'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halfling_attentive
-    label: 'Reference > Card > Ancestry Feats > Halfling > Attentive'
-    description: 'Reference > Card > Ancestry Feats > Halfling > Attentive'
+    id: reference_card_ancestry_feat_goblin_cave_climber
+    label: 'Reference > Card > Ancestry Feats > Goblin > Cave Climber'
+    description: 'Reference > Card > Ancestry Feats > Goblin > Cave Climber'
     tags:
-    - ancestry_feats_halfling_attentive
-    - ancestry_feats_card_reference
+    - ancestry_feat_goblin_cave_climber
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'b0c85333-82a6-45bf-a6d6-af2374b0e7bb'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_goblin_skittering_scuttle
+    label: 'Reference > Card > Ancestry Feats > Goblin > Skittering Scuttle'
+    description: 'Reference > Card > Ancestry Feats > Goblin > Skittering Scuttle'
+    tags:
+    - ancestry_feat_goblin_skittering_scuttle
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'b8168b26-4a69-44e2-9160-b8871a0285f3'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_goblin_goblin_weapon_expertise
+    label: 'Reference > Card > Ancestry Feats > Goblin > Goblin Weapon Expertise'
+    description: 'Reference > Card > Ancestry Feats > Goblin > Goblin Weapon Expertise'
+    tags:
+    - ancestry_feat_goblin_goblin_weapon_expertise
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'eeb8a3ff-7c23-41bc-b597-54ba1179c195'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_goblin_very_very_sneaky
+    label: 'Reference > Card > Ancestry Feats > Goblin > Very, Very Sneaky'
+    description: 'Reference > Card > Ancestry Feats > Goblin > Very, Very Sneaky'
+    tags:
+    - ancestry_feat_goblin_very_very_sneaky
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '6c8f3446-cc19-42c8-b8f1-ce0e8ef48bc9'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_halfling_distracting_shadows
+    label: 'Reference > Card > Ancestry Feats > Halfling > Distracting Shadows'
+    description: 'Reference > Card > Ancestry Feats > Halfling > Distracting Shadows'
+    tags:
+    - ancestry_feat_halfling_distracting_shadows
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7622,12 +7809,12 @@ variables:
             card_id: '54437649-6e0c-4402-8d15-243f248eda2b'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halfling_distracting_shadows
-    label: 'Reference > Card > Ancestry Feats > Halfling > Distracting Shadows'
-    description: 'Reference > Card > Ancestry Feats > Halfling > Distracting Shadows'
+    id: reference_card_ancestry_feat_halfling_halfling_lore
+    label: 'Reference > Card > Ancestry Feats > Halfling > Halfling Lore'
+    description: 'Reference > Card > Ancestry Feats > Halfling > Halfling Lore'
     tags:
-    - ancestry_feats_halfling_distracting_shadows
-    - ancestry_feats_card_reference
+    - ancestry_feat_halfling_halfling_lore
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7639,12 +7826,12 @@ variables:
             card_id: '0c3346df-33f7-4d37-9f7d-93113b7f5fb2'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halfling_keen_eyes
-    label: 'Reference > Card > Ancestry Feats > Halfling > Keen Eyes'
-    description: 'Reference > Card > Ancestry Feats > Halfling > Keen Eyes'
+    id: reference_card_ancestry_feat_halfling_halfling_luck
+    label: 'Reference > Card > Ancestry Feats > Halfling > Halfling Luck'
+    description: 'Reference > Card > Ancestry Feats > Halfling > Halfling Luck'
     tags:
-    - ancestry_feats_halfling_keen_eyes
-    - ancestry_feats_card_reference
+    - ancestry_feat_halfling_halfling_luck
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7656,12 +7843,12 @@ variables:
             card_id: '5f0c8c7a-d457-4a34-8fb6-9dc103706bcb'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halfling_lucky_halfling
-    label: 'Reference > Card > Ancestry Feats > Halfling > Lucky Halfling'
-    description: 'Reference > Card > Ancestry Feats > Halfling > Lucky Halfling'
+    id: reference_card_ancestry_feat_halfling_halfling_weapon_familiarity
+    label: 'Reference > Card > Ancestry Feats > Halfling > Halfling Weapon Familiarity'
+    description: 'Reference > Card > Ancestry Feats > Halfling > Halfling Weapon Familiarity'
     tags:
-    - ancestry_feats_halfling_lucky_halfling
-    - ancestry_feats_card_reference
+    - ancestry_feat_halfling_halfling_weapon_unfamiliarity
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7673,12 +7860,12 @@ variables:
             card_id: 'bad24da9-0c71-4d51-b3f4-3d2616bbc5a8'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halfling_plucky
-    label: 'Reference > Card > Ancestry Feats > Halfling > Plucky'
-    description: 'Reference > Card > Ancestry Feats > Halfling > Plucky'
+    id: reference_card_ancestry_feat_halfling_sure_feet
+    label: 'Reference > Card > Ancestry Feats > Halfling > Sure Feet'
+    description: 'Reference > Card > Ancestry Feats > Halfling > Sure Feet'
     tags:
-    - ancestry_feats_halfling_plucky
-    - ancestry_feats_card_reference
+    - ancestry_feat_halfling_sure_feet
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7690,29 +7877,12 @@ variables:
             card_id: '75b1ea02-e7b3-42a5-9bc4-9d944c862637'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halfling_surefooted
-    label: 'Reference > Card > Ancestry Feats > Halfling > Surefooted'
-    description: 'Reference > Card > Ancestry Feats > Halfling > Surefooted'
-    tags:
-    - ancestry_feats_halfling_surefooted
-    - ancestry_feats_card_reference
-    value:
-      type: content_reference
-      content_reference:
-        type: book_reference
-        book_reference:
-          type: book_reference_card
-          book_reference_card:
-            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
-            card_id: 'e592d0b9-d952-4971-8f70-34034ceb6900'
-- type: variable_content_reference
-  variable_content_reference:
-    id: reference_card_ancestry_feats_halfling_titan_slinger
+    id: reference_card_ancestry_feat_halfling_titan_slinger
     label: 'Reference > Card > Ancestry Feats > Halfling > Titan Slinger'
     description: 'Reference > Card > Ancestry Feats > Halfling > Titan Slinger'
     tags:
-    - ancestry_feats_halfling_titan_slinger
-    - ancestry_feats_card_reference
+    - ancestry_feat_halfling_titan_slinger
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7724,12 +7894,12 @@ variables:
             card_id: '7ce7b214-36c7-49ca-8c3f-22ede75b5d52'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halfling_unfettered
-    label: 'Reference > Card > Ancestry Feats > Halfling > Unfettered'
-    description: 'Reference > Card > Ancestry Feats > Halfling > Unfettered'
+    id: reference_card_ancestry_feat_halfling_unfettered_halfling
+    label: 'Reference > Card > Ancestry Feats > Halfling > Unfettered Halfling'
+    description: 'Reference > Card > Ancestry Feats > Halfling > Unfettered Halfling'
     tags:
-    - ancestry_feats_halfling_unfettered
-    - ancestry_feats_card_reference
+    - ancestry_feat_halfling_unfettered_halfling
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7741,12 +7911,12 @@ variables:
             card_id: 'a6712a3f-a920-4b1d-90e1-fc9e1e9e57be'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halfling_weapon_familiarity
-    label: 'Reference > Card > Ancestry Feats > Halfling > Weapon Familiarity'
-    description: 'Reference > Card > Ancestry Feats > Halfling > Weapon Familiarity'
+    id: reference_card_ancestry_feat_halfling_watchful_halfling
+    label: 'Reference > Card > Ancestry Feats > Halfling > Watchful Halfling'
+    description: 'Reference > Card > Ancestry Feats > Halfling > Watchful Halfling'
     tags:
-    - ancestry_feats_halfling_weapon_unfamiliarity
-    - ancestry_feats_card_reference
+    - ancestry_feat_halfling_watchful_halfling
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7758,12 +7928,12 @@ variables:
             card_id: '7f0d02b6-3a3c-4ea7-bf92-a6ef9c60c0c4'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halfling_weapon_trickster
-    label: 'Reference > Card > Ancestry Feats > Halfling > Weapon Trickster'
-    description: 'Reference > Card > Ancestry Feats > Halfling > Weapon Trickster'
+    id: reference_card_ancestry_feat_halfling_cultural_adaptability
+    label: 'Reference > Card > Ancestry Feats > Halfling > Cultural Adaptability'
+    description: 'Reference > Card > Ancestry Feats > Halfling > Cultural Adaptability'
     tags:
-    - ancestry_feats_halfling_weapon_trickster
-    - ancestry_feats_card_reference
+    - ancestry_feat_halfling_cultural_adaptability
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7775,12 +7945,97 @@ variables:
             card_id: '4acd5d35-f2e6-4cf3-be97-fa461cd870f6'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_human_adapted_spell
-    label: 'Reference > Card > Ancestry Feats > Human > Adapted Spell'
-    description: 'Reference > Card > Ancestry Feats > Human > Adapted Spell'
+    id: reference_card_ancestry_feat_halfling_halfling_weapon_trickster
+    label: 'Reference > Card > Ancestry Feats > Halfling > Halfling Weapon Trickster'
+    description: 'Reference > Card > Ancestry Feats > Halfling > Halfling Weapon Trickster'
     tags:
-    - ancestry_feats_human_adapted_spell
-    - ancestry_feats_card_reference
+    - ancestry_feat_halfling_halfling_weapon_trickster
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '6f78d2ba-6434-4d4d-8fb4-bb52153d0f10'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_halfling_guiding_luck
+    label: 'Reference > Card > Ancestry Feats > Halfling > Guiding Luck'
+    description: 'Reference > Card > Ancestry Feats > Halfling > Guiding Luck'
+    tags:
+      - ancestry_feat_halfling_guiding_luck
+      - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '33ba64e2-8d6c-43e7-86fd-90b3dd44f531'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_halfling_irrepressible
+    label: 'Reference > Card > Ancestry Feats > Halfling > Irrepressible'
+    description: 'Reference > Card > Ancestry Feats > Halfling > Irrepressible'
+    tags:
+    - ancestry_feat_halfling_irrepressible
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'd4e8cd21-22c5-4663-93ed-a0720429dfd7'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_halfling_ceaseless_shadows
+    label: 'Reference > Card > Ancestry Feats > Halfling > Ceaseless Shadows'
+    description: 'Reference > Card > Ancestry Feats > Halfling > Ceaseless Shadows'
+    tags:
+    - ancestry_feat_halfling_ceaseless_shadows
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '16ee713e-01d7-48bf-9b2a-3ca5c392f7fe'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_halfling_halfling_weapon_expertise
+    label: 'Reference > Card > Ancestry Feats > Halfling > Halfling Weapon Expertise'
+    description: 'Reference > Card > Ancestry Feats > Halfling > Halfling Weapon Expertise'
+    tags:
+    - ancestry_feat_halfling_halfling_weapon_expertise
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '6e8e2f03-12e7-4fde-bfce-c9ab395b9b86'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_human_adapted_cantrip
+    label: 'Reference > Card > Ancestry Feats > Human > Adapted Cantrip'
+    description: 'Reference > Card > Ancestry Feats > Human > Adapted Cantrip'
+    tags:
+    - ancestry_feat_human_adapted_cantrip
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7792,12 +8047,12 @@ variables:
             card_id: '5ee24c0f-99e2-41a8-8a83-b4531b57b6e2'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_human_clever_improviser
-    label: 'Reference > Card > Ancestry Feats > Human > Clever Improviser'
-    description: 'Reference > Card > Ancestry Feats > Human > Clever Improviser'
+    id: reference_card_ancestry_feat_human_cooperative_nature
+    label: 'Reference > Card > Ancestry Feats > Human > Cooperative Nature'
+    description: 'Reference > Card > Ancestry Feats > Human > Cooperative Nature'
     tags:
-    - ancestry_feats_human_clever_improviser
-    - ancestry_feats_card_reference
+    - ancestry_feat_human_cooperative_nature
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7809,29 +8064,12 @@ variables:
             card_id: 'a3fa08b8-284e-484d-89ff-9a3e883fd36c'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_human_cooperative_nature
-    label: 'Reference > Card > Ancestry Feats > Human > Cooperative Nature'
-    description: 'Reference > Card > Ancestry Feats > Human > Cooperative Nature'
-    tags:
-    - ancestry_feats_human_cooperative_nature
-    - ancestry_feats_card_reference
-    value:
-      type: content_reference
-      content_reference:
-        type: book_reference
-        book_reference:
-          type: book_reference_card
-          book_reference_card:
-            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
-            card_id: '65e52a52-710c-49fa-82cc-3f0635933157'
-- type: variable_content_reference
-  variable_content_reference:
-    id: reference_card_ancestry_feats_human_general_training
+    id: reference_card_ancestry_feat_human_general_training
     label: 'Reference > Card > Ancestry Feats > Human > General Training'
     description: 'Reference > Card > Ancestry Feats > Human > General Training'
     tags:
-    - ancestry_feats_human_general_training
-    - ancestry_feats_card_reference
+    - ancestry_feat_human_general_training
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7843,46 +8081,12 @@ variables:
             card_id: '8a972b09-7315-46c9-9fd8-3aacee0eaa07'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_human_halfelf
-    label: 'Reference > Card > Ancestry Feats > Human > Half-Elf'
-    description: 'Reference > Card > Ancestry Feats > Human > Half-Elf'
-    tags:
-    - ancestry_feats_human_halfelf
-    - ancestry_feats_card_reference
-    value:
-      type: content_reference
-      content_reference:
-        type: book_reference
-        book_reference:
-          type: book_reference_card
-          book_reference_card:
-            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
-            card_id: 'bd8eb94b-ab93-4a17-a3eb-7cb2c5d784ff'
-- type: variable_content_reference
-  variable_content_reference:
-    id: reference_card_ancestry_feats_human_halforc
-    label: 'Reference > Card > Ancestry Feats > Human > Half-Orc'
-    description: 'Reference > Card > Ancestry Feats > Human > Half-Orc'
-    tags:
-    - ancestry_feats_human_halforc
-    - ancestry_feats_card_reference
-    value:
-      type: content_reference
-      content_reference:
-        type: book_reference
-        book_reference:
-          type: book_reference_card
-          book_reference_card:
-            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
-            card_id: '1ab245b3-4480-47f0-b3cd-f030c6da044f'
-- type: variable_content_reference
-  variable_content_reference:
-    id: reference_card_ancestry_feats_human_haughty_obstinacy
+    id: reference_card_ancestry_feat_human_haughty_obstinacy
     label: 'Reference > Card > Ancestry Feats > Human > Haughty Obstinacy'
     description: 'Reference > Card > Ancestry Feats > Human > Haughty Obstinacy'
     tags:
-    - ancestry_feats_human_haughty_obstinacy
-    - ancestry_feats_card_reference
+    - ancestry_feat_human_haughty_obstinacy
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7894,12 +8098,12 @@ variables:
             card_id: 'a49a24f9-8f08-4de8-8fe6-7ac820999850'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_human_natural_ambition
+    id: reference_card_ancestry_feat_human_natural_ambition
     label: 'Reference > Card > Ancestry Feats > Human > Natural Ambition'
     description: 'Reference > Card > Ancestry Feats > Human > Natural Ambition'
     tags:
-    - ancestry_feats_human_natural_ambition
-    - ancestry_feats_card_reference
+    - ancestry_feat_human_natural_ambition
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7911,12 +8115,12 @@ variables:
             card_id: 'b5bb0c95-e061-4bed-a7d7-ea9af4a67ff6'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_human_skilled
-    label: 'Reference > Card > Ancestry Feats > Human > Skilled'
-    description: 'Reference > Card > Ancestry Feats > Human > Skilled'
+    id: reference_card_ancestry_feat_human_natural_skill
+    label: 'Reference > Card > Ancestry Feats > Human > Natural Skill'
+    description: 'Reference > Card > Ancestry Feats > Human > Natural Skill'
     tags:
-    - ancestry_feats_human_skilled
-    - ancestry_feats_card_reference
+    - ancestry_feat_human_natural_skill
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7928,12 +8132,12 @@ variables:
             card_id: '1d279946-57bf-4850-979c-26d5e8fe0055'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_human_unconventional_weaponry
+    id: reference_card_ancestry_feat_human_unconventional_weaponry
     label: 'Reference > Card > Ancestry Feats > Human > Unconventional Weaponry'
     description: 'Reference > Card > Ancestry Feats > Human > Unconventional Weaponry'
     tags:
-    - ancestry_feats_human_unconventional_weaponry
-    - ancestry_feats_card_reference
+    - ancestry_feat_human_unconventional_weaponry
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7945,12 +8149,114 @@ variables:
             card_id: '036de746-108c-4d46-a4fe-4780015c59f6'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halfelf_inspire_imitation
-    label: 'Reference > Card > Ancestry Feats > Half-Elf > Inspire Imitation'
-    description: 'Reference > Card > Ancestry Feats > Half-Elf > Inspire Imitation'
+    id: reference_card_ancestry_feat_human_adaptive_adept
+    label: 'Reference > Card > Ancestry Feats > Human > Adaptive Adept'
+    description: 'Reference > Card > Ancestry Feats > Human > Adaptive Adept'
     tags:
-    - ancestry_feats_halfelf_inspire_imitation
-    - ancestry_feats_card_reference
+    - ancestry_feat_human_adaptive_adept
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '1ae8f87d-c0c1-41e8-a6e5-d0dc2987a455'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_human_clever_improviser
+    label: 'Reference > Card > Ancestry Feats > Human > Clever Improviser'
+    description: 'Reference > Card > Ancestry Feats > Human > Clever Improviser'
+    tags:
+      - ancestry_feat_human_clever_improviser
+      - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '79860ef5-40b5-4581-934f-beabf97945cb'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_human_cooperative_soul
+    label: 'Reference > Card > Ancestry Feats > Human > Cooperative Soul'
+    description: 'Reference > Card > Ancestry Feats > Human > Cooperative Soul'
+    tags:
+    - ancestry_feat_human_cooperative_soul
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '5ca01d91-c1ae-4c0d-ad15-d1767ce9a1a9'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_human_incredible_improvisation
+    label: 'Reference > Card > Ancestry Feats > Human > Incredible Improvisation'
+    description: 'Reference > Card > Ancestry Feats > Human > Incredible Improvisation'
+    tags:
+    - ancestry_feat_human_incredible_improvisation
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '8cc35102-040d-44c4-9d8f-a64876af69a9'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_human_multitalented
+    label: 'Reference > Card > Ancestry Feats > Human > Multitalented'
+    description: 'Reference > Card > Ancestry Feats > Human > Multitalented'
+    tags:
+    - ancestry_feat_human_multitalented
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'c0ed3432-27eb-4acb-924d-4eddf8d2ce99'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_human_unconventional_expertise
+    label: 'Reference > Card > Ancestry Feats > Human > Unconventional Expertise'
+    description: 'Reference > Card > Ancestry Feats > Human > Unconventional Expertise'
+    tags:
+    - ancestry_feat_human_unconventional_expertise
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '8c342254-24a8-453f-a479-6b2243459436'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_halfelf_elf_atavism
+    label: 'Reference > Card > Ancestry Feats > Half-Elf > Elf Atavism'
+    description: 'Reference > Card > Ancestry Feats > Half-Elf > Elf Atavism'
+    tags:
+    - ancestry_feat_halfelf_elf_atavism
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7962,12 +8268,12 @@ variables:
             card_id: '0b0c83c4-ffae-43ed-b57c-ea7f98bd623e'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halfelf_supernatural_charm
-    label: 'Reference > Card > Ancestry Feats > Half-Elf > Supernatural Charm'
-    description: 'Reference > Card > Ancestry Feats > Half-Elf > Supernatural Charm'
+    id: reference_card_ancestry_feat_halfelf_inspire_imitation
+    label: 'Reference > Card > Ancestry Feats > Half-Elf > Inspire Imitation'
+    description: 'Reference > Card > Ancestry Feats > Half-Elf > Inspire Imitation'
     tags:
-    - ancestry_feats_halfelf_supernatural_charm
-    - ancestry_feats_card_reference
+    - ancestry_feat_halfelf_inspire_imitation
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7979,12 +8285,46 @@ variables:
             card_id: '618af381-ae9e-46da-a307-42c4fef0ac60'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halforc_orc_ferocity
+    id: reference_card_ancestry_feat_halfelf_supernatural_charm
+    label: 'Reference > Card > Ancestry Feats > Half-Elf > Supernatural Charm'
+    description: 'Reference > Card > Ancestry Feats > Half-Elf > Supernatural Charm'
+    tags:
+    - ancestry_feat_halfelf_supernatural_charm
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '70ab28dd-c21f-4bb6-9898-b607f1e7a28f'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_halforc_monstrous_peacemaker
+    label: 'Reference > Card > Ancestry Feats > Half-Orc > Monstrous Peacemaker'
+    description: 'Reference > Card > Ancestry Feats > Half-Ord > Monstrous Peacemaker'
+    tags:
+    - ancestry_feat_halforc_monstrous_peacemaker
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'd0287458-8d52-4275-aad2-90fb2fe90f39'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_halforc_orc_ferocity
     label: 'Reference > Card > Ancestry Feats > Half-Orc > Orc Ferocity'
     description: 'Reference > Card > Ancestry Feats > Half-Ord > Orc Ferocity'
     tags:
-    - ancestry_feats_halforc_orc_ferocity
-    - ancestry_feats_card_reference
+    - ancestry_feat_halforc_orc_ferocity
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -7996,12 +8336,12 @@ variables:
             card_id: '036e0267-12ca-4beb-90f5-4c0e82909bdd'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halforc_orc_sight
+    id: reference_card_ancestry_feat_halforc_orc_sight
     label: 'Reference > Card > Ancestry Feats > Half-Orc > Orc Sight'
     description: 'Reference > Card > Ancestry Feats > Half-Ord > Orc Sight'
     tags:
-    - ancestry_feats_halforc_orc_sight
-    - ancestry_feats_card_reference
+    - ancestry_feat_halforc_orc_sight
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -8013,12 +8353,12 @@ variables:
             card_id: '1409d3db-1b3b-4ada-b0b6-a6062a957c31'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halforc_orc_weapon_carnage
-    label: 'Reference > Card > Ancestry Feats > Half-Orc > Orc Weapon Carnage'
-    description: 'Reference > Card > Ancestry Feats > Half-Ord > Orc Weapon Carnage'
+    id: reference_card_ancestry_feat_halforc_orc_superstition
+    label: 'Reference > Card > Ancestry Feats > Half-Orc > Orc Superstition'
+    description: 'Reference > Card > Ancestry Feats > Half-Ord > Orc Superstition'
     tags:
-    - ancestry_feats_halforc_orc_weapon_carnage
-    - ancestry_feats_card_reference
+    - ancestry_feat_halforc_orc_superstition
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -8027,15 +8367,15 @@ variables:
           type: book_reference_card
           book_reference_card:
             book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
-            card_id: '72b6479a-0de0-4bc5-a6f5-8bb8392d6ea1'
+            card_id: 'e7225f61-64ca-466e-8d5d-ac4870d69198'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halforc_orc_weapon_familiarity
+    id: reference_card_ancestry_feat_halforc_orc_weapon_familiarity
     label: 'Reference > Card > Ancestry Feats > Half-Orc > Orc Weapon Familiarity'
     description: 'Reference > Card > Ancestry Feats > Half-Ord > Orc Weapon Familiarity'
     tags:
-    - ancestry_feats_halforc_orc_weapon_familiarity
-    - ancestry_feats_card_reference
+      - ancestry_feat_halforc_orc_weapon_familiarity
+      - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -8047,12 +8387,12 @@ variables:
             card_id: '6d2ec3db-26c2-4710-b76a-1e86602bb10f'
 - type: variable_content_reference
   variable_content_reference:
-    id: reference_card_ancestry_feats_halforc_superstition
-    label: 'Reference > Card > Ancestry Feats > Half-Orc > Superstition'
-    description: 'Reference > Card > Ancestry Feats > Half-Ord > Superstition'
+    id: reference_card_ancestry_feat_halforc_orc_weapon_carnage
+    label: 'Reference > Card > Ancestry Feats > Half-Orc > Orc Weapon Carnage'
+    description: 'Reference > Card > Ancestry Feats > Half-Ord > Orc Weapon Carnage'
     tags:
-    - ancestry_feats_halforc_superstition
-    - ancestry_feats_card_reference
+    - ancestry_feat_halforc_orc_weapon_carnage
+    - ancestry_feat_card_reference
     value:
       type: content_reference
       content_reference:
@@ -8061,7 +8401,75 @@ variables:
           type: book_reference_card
           book_reference_card:
             book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
-            card_id: 'e7225f61-64ca-466e-8d5d-ac4870d69198'
+            card_id: '72b6479a-0de0-4bc5-a6f5-8bb8392d6ea1'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_halforc_victorious_vigor
+    label: 'Reference > Card > Ancestry Feats > Half-Orc > Victorious Vigor'
+    description: 'Reference > Card > Ancestry Feats > Half-Ord > Victorious Vigor'
+    tags:
+    - ancestry_feat_halforc_victorious_vigor
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '07cf3274-1540-46ee-8396-e47ac2727b97'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_halforc_pervasive_superstition
+    label: 'Reference > Card > Ancestry Feats > Half-Orc > Pervasive Superstition'
+    description: 'Reference > Card > Ancestry Feats > Half-Ord > Pervasive Superstition'
+    tags:
+    - ancestry_feat_halforc_pervasive_superstition
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: '2f60b4f6-925e-4a99-9519-c69623541b7a'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_halforc_incredible_ferocity
+    label: 'Reference > Card > Ancestry Feats > Half-Orc > Incredible Ferocity'
+    description: 'Reference > Card > Ancestry Feats > Half-Ord > Incredible Ferocity'
+    tags:
+    - ancestry_feat_halforc_incredible_ferocity
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'bfe3b27d-6788-4a7e-80ca-4976b48cfe6d'
+- type: variable_content_reference
+  variable_content_reference:
+    id: reference_card_ancestry_feat_halforc_orc_weapon_expertise
+    label: 'Reference > Card > Ancestry Feats > Half-Orc > Orc Weapon Expertise'
+    description: 'Reference > Card > Ancestry Feats > Half-Ord > Orc Weapon Expertise'
+    tags:
+    - ancestry_feat_halforc_orc_weapon_expertise
+    - ancestry_feat_card_reference
+    value:
+      type: content_reference
+      content_reference:
+        type: book_reference
+        book_reference:
+          type: book_reference_card
+          book_reference_card:
+            book_id: '11c7073a-783f-4fdb-b99b-fdd4d4b1232b'
+            card_id: 'd23b688c-fe3a-4dc7-9f0e-2b8968dc7d54'
 - type: variable_content_reference
   variable_content_reference:
     id: reference_card_language_common

@@ -5,6 +5,8 @@ package com.taletable.android.model.sheet.widget.text.official_view
 import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -23,9 +25,10 @@ import com.taletable.android.model.sheet.widget.WidgetStyle
 import com.taletable.android.model.sheet.widget.WidgetStyleVariation
 import com.taletable.android.model.sheet.widget.text.TextWidgetViewData
 import com.taletable.android.model.theme.*
+import com.taletable.android.util.Util
 import maybe.Just
 import maybe.Maybe
-
+import maybe.Nothing
 
 
 /**
@@ -40,7 +43,7 @@ fun textWidgetOfficialMetricView(
         groupContext : Maybe<GroupContext>
 ) : View = when (style.value)
 {
-    "paragraph"        -> paragraphView(data, theme, groupContext, context)
+    "paragraph"        -> paragraphView(data, variations, theme, groupContext, context)
     "paragraph_header" ->
         textWidgetMetricParagraphHeaderView(data, variations, theme, groupContext, context)
     "vertical_box"     ->
@@ -52,7 +55,7 @@ fun textWidgetOfficialMetricView(
     "entity_section_tag" ->
         entitySectionEntryTagView(data, theme, groupContext, context)
     else               ->
-        paragraphView(data, theme, groupContext, context)
+        paragraphView(data, variations, theme, groupContext, context)
 }
 
 
@@ -67,6 +70,7 @@ fun textWidgetOfficialMetricView(
  */
 private fun paragraphView(
         data : TextWidgetViewData,
+        variations : List<WidgetStyleVariation>,
         theme : Theme,
         groupContext : Maybe<GroupContext>,
         context : Context
@@ -75,16 +79,20 @@ private fun paragraphView(
     // Get paragraphs
     var paragraphs = data.value.split("\n")
 
+
+    Log.d("***TEXT METRIC", "header: ${data.label}  body: ${data.value}")
+
     if (paragraphs.isEmpty()) {
         paragraphs = listOf(data.value)
     }
+
 
     // Get label
     val layout = paragraphViewLayout(context)
 
     // Add first paragraph
     paragraphs.firstOrNull()?.let { paragraph ->
-        layout.addView(paragraphTextView(data.label.toNullable(), paragraph, paragraphs.size > 1, theme, context))
+        layout.addView(paragraphTextView(data.label.toNullable(), paragraph, paragraphs.size > 1, variations, theme, context))
         //val labelString =
 //        when (data.label) {
 //            is Just -> {
@@ -101,6 +109,7 @@ private fun paragraphView(
                         null,
                        paragraphString,
                        isParagraph,
+                        variations,
                        theme,
                        context)
         layout.addView(view)
@@ -129,6 +138,7 @@ private fun paragraphTextView(
         header : String?,
         body : String,
         isParagraph : Boolean,
+        variations : List<WidgetStyleVariation>,
         theme : Theme,
         context : Context
 ) : TextView
@@ -141,7 +151,7 @@ private fun paragraphTextView(
     if (isParagraph)
         textViewBuilder.margin.bottomDp = 16f
 
-    textViewBuilder.textSpan        = paragraphSpannable(header, body, context)
+    textViewBuilder.textSpan        = paragraphSpannable(header, variations, body, theme, context)
 
     textViewBuilder.font            = Font.typeface(TextFont.RobotoSlab,
                                                     TextFontStyle.Regular,
@@ -154,8 +164,8 @@ private fun paragraphTextView(
 
     textViewBuilder.sizeSp          = 15.7f
 
-    textViewBuilder.lineSpacingAdd  = 8f
-    textViewBuilder.lineSpacingMult = 1.1f
+    textViewBuilder.lineSpacingAdd  = 2f
+    textViewBuilder.lineSpacingMult = 1.05f
 
     return textViewBuilder.textView(context)
 }
@@ -163,7 +173,9 @@ private fun paragraphTextView(
 
 private fun paragraphSpannable(
         header : String?,
+        variations : List<WidgetStyleVariation>,
         body : String,
+        theme : Theme,
         context : Context
 ) : SpannableStringBuilder
 {
@@ -177,6 +189,29 @@ private fun paragraphSpannable(
         val typeface = Font.typeface(TextFont.RobotoSlab, TextFontStyle.Bold, context)
         val typefaceSpan = CustomTypefaceSpan(typeface)
         builder.setSpan(typefaceSpan, 0, header.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+
+        var labelSizeSpan = AbsoluteSizeSpan(Util.spToPx(16.7f, context))
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
+        var labelColor = theme.colorOrBlack(labelColorTheme)
+        val labelColorSpan = ForegroundColorSpan(labelColor)
+
+        if (variations.isNotEmpty()) {
+            val variation = variations[0]
+            when (variation.value) {
+                "normal" -> {
+                    labelSizeSpan = AbsoluteSizeSpan(Util.spToPx(16.7f, context))
+                }
+                "large" -> {
+                    labelSizeSpan = AbsoluteSizeSpan(Util.spToPx(17.5f, context))
+                }
+            }
+        }
+
+        builder.setSpan(labelSizeSpan, 0, header.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+        builder.setSpan(labelColorSpan, 0, header.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
     }
 
     builder.append(body)
@@ -253,6 +288,9 @@ private fun textWidgetMetricParagraphHeaderTextView(
     if (variations.isNotEmpty()) {
         val variation = variations[0]
         when (variation.value) {
+            "small" -> {
+                textViewBuilder.sizeSp = 15.7f
+            }
             "normal" -> {
                 textViewBuilder.sizeSp = 17f
             }
@@ -369,7 +407,7 @@ private fun textWidgetMetricVerticalBoxLabelView(
             ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_20"))))
     labelViewBuilder.color      = theme.colorOrBlack(textColorTheme)
 
-    labelViewBuilder.sizeSp     = 12f
+    labelViewBuilder.sizeSp     = 11.5f
 
     return layoutBuilder.linearLayout(context)
 }
@@ -429,11 +467,11 @@ private fun textWidgetMetricVerticalBoxValueView(
 
     val labelColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_11"))))
     labelViewBuilder.color           = theme.colorOrBlack(labelColorTheme)
 
     if (WidgetStyleVariation("large") in variations) {
-        labelViewBuilder.sizeSp     = 21f
+        labelViewBuilder.sizeSp     = 19.2f
     }
     else {
         labelViewBuilder.sizeSp     = 17f
@@ -554,8 +592,16 @@ private fun horizontalBoxView(
 {
     val layout = horizontalBoxViewLayout(context)
 
-    layout.addView(horizontalBoxLabelView(data, variation, theme, context))
-    layout.addView(horizontalBoxValueView(data, variation, theme, groupContext, context))
+    val maybeLabel = data.label
+    when (maybeLabel) {
+        is Just -> {
+            layout.addView(horizontalBoxLabelView(maybeLabel.value, variation, theme, context))
+            layout.addView(horizontalBoxValueView(data, variation, theme, false, groupContext, context))
+        }
+        is Nothing -> {
+            layout.addView(horizontalBoxValueView(data, variation, theme, true, groupContext, context))
+        }
+    }
 
     return layout
 }
@@ -576,6 +622,7 @@ private fun horizontalBoxViewLayout(
 
     layoutBuilder.orientation   = LinearLayout.HORIZONTAL
 
+
     return layoutBuilder.linearLayout(context)
 }
 
@@ -584,7 +631,7 @@ private fun horizontalBoxViewLayout(
  * Horizontal box
  */
 private fun horizontalBoxLabelView(
-        data : TextWidgetViewData,
+        label : String,
         variations : List<WidgetStyleVariation>,
         theme : Theme,
         context : Context
@@ -623,9 +670,7 @@ private fun horizontalBoxLabelView(
     labelViewBuilder.width      = LinearLayout.LayoutParams.WRAP_CONTENT
     labelViewBuilder.height     = LinearLayout.LayoutParams.WRAP_CONTENT
 
-    data.label.doMaybe {
-        labelViewBuilder.text = it
-    }
+    labelViewBuilder.text = label
 
     labelViewBuilder.font       = Font.typeface(TextFont.RobotoSlab,
                                                 TextFontStyle.Bold,
@@ -659,6 +704,7 @@ private fun horizontalBoxValueView(
         data : TextWidgetViewData,
         variations : List<WidgetStyleVariation>,
         theme : Theme,
+        withoutLabel : Boolean,
         groupContext : Maybe<GroupContext>,
         context : Context
 ) : LinearLayout
@@ -674,14 +720,32 @@ private fun horizontalBoxValueView(
     // -----------------------------------------------------------------------------------------
 
     layoutBuilder.width     = LinearLayout.LayoutParams.WRAP_CONTENT
-    layoutBuilder.heightDp  = 44
+
+    if (variations.size > 0)
+    {
+        val variation = variations[0]
+        when (variation.value) {
+            "normal" -> {
+                layoutBuilder.heightDp  = 38
+            }
+            "large" -> {
+                layoutBuilder.heightDp  = 44
+            }
+        }
+    }
 
     layoutBuilder.padding.leftDp    = 12f
     layoutBuilder.padding.rightDp    = 12f
 
     layoutBuilder.gravity   = Gravity.CENTER
 
-    layoutBuilder.backgroundResource    = R.drawable.bg_style_horizontal_box
+
+    if (withoutLabel) {
+        layoutBuilder.backgroundResource = R.drawable.bg_style_horizontal_box_without_label
+    }
+    else {
+        layoutBuilder.backgroundResource = R.drawable.bg_style_horizontal_box
+    }
 
     layoutBuilder.child(labelViewBuilder)
 
@@ -699,7 +763,8 @@ private fun horizontalBoxValueView(
 
     val labelColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+            //ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
     labelViewBuilder.color           = theme.colorOrBlack(labelColorTheme)
 //    labelViewBuilder.color           = Color.WHITE
 
@@ -709,7 +774,7 @@ private fun horizontalBoxValueView(
         val variation = variations[0]
         when (variation.value) {
             "normal" -> {
-                labelViewBuilder.sizeSp     = 17f
+                labelViewBuilder.sizeSp     = 16f
             }
             "large" -> {
                 labelViewBuilder.sizeSp     = 21f

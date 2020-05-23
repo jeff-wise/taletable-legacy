@@ -55,9 +55,13 @@ object Font
     private val robotoBoldItalicFilePath            = "fonts/Roboto-BoldItalic.ttf"
     private val robotoBlackFilePath                 = "fonts/Roboto-Black.ttf"
 
+    private val robotoSlabThinFilePath             = "fonts/RobotoSlab-Thin.ttf"
     private val robotoSlabLightFilePath             = "fonts/RobotoSlab-Light.ttf"
+    private val robotoSlabMediumFilePath             = "fonts/RobotoSlab-Medium.ttf"
     private val robotoSlabRegularFilePath           = "fonts/RobotoSlab-Regular.ttf"
     private val robotoSlabBoldFilePath              = "fonts/RobotoSlab-Bold.ttf"
+    private val robotoSlabExtraBoldFilePath              = "fonts/RobotoSlab-ExtraBold.ttf"
+    private val robotoSlabBlackFilePath              = "fonts/RobotoSlab-Black.ttf"
 
 
     private val latoLightFilePath                   = "fonts/Lato-Light.ttf"
@@ -142,13 +146,13 @@ object Font
                 is TextFontStyle.Light          -> getTypeface(robotoSlabLightFilePath, context)
                 is TextFontStyle.Regular        -> getTypeface(robotoSlabRegularFilePath, context)
                 is TextFontStyle.Italic         -> getTypeface(robotoSlabRegularFilePath, context)
-                is TextFontStyle.Medium         -> getTypeface(robotoSlabRegularFilePath, context)
+                is TextFontStyle.Medium         -> getTypeface(robotoSlabMediumFilePath, context)
                 is TextFontStyle.MediumItalic   -> getTypeface(robotoSlabRegularFilePath, context)
                 is TextFontStyle.SemiBold       -> getTypeface(robotoSlabBoldFilePath, context)
                 is TextFontStyle.Bold           -> getTypeface(robotoSlabBoldFilePath, context)
                 is TextFontStyle.BoldItalic     -> getTypeface(robotoSlabBoldFilePath, context)
-                is TextFontStyle.ExtraBold      -> getTypeface(robotoSlabBoldFilePath, context)
-                is TextFontStyle.Black          -> getTypeface(robotoSlabBoldFilePath, context)
+                is TextFontStyle.ExtraBold      -> getTypeface(robotoSlabExtraBoldFilePath, context)
+                is TextFontStyle.Black          -> getTypeface(robotoSlabBlackFilePath, context)
             }
             is TextFont.RobotoCondensed -> when (fontStyle)
             {

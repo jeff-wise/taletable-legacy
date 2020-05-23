@@ -1698,17 +1698,44 @@ data class ListWidget(val widgetId : WidgetId,
                       entityId : EntityId,
                       context : Context) : Maybe<View>
     {
-        val layout = listWidgetViewGroup(this, rowLayoutType, entityId, context)
-        val view = listWidgetView(this, entityId, context, groupContext)
-
-        this.layoutViewId = layout.id
-        layout.addView(view)
-
-        return Just(layout)
+//        val layout = listWidgetViewGroup(this, rowLayoutType, entityId, context)
+//        val view = listWidgetView(this, entityId, context, groupContext)
+//
+//        this.layoutViewId = layout.id
+//        layout.addView(view)
+//
+//        return Just(layout)
+        val viewData = this.viewData(entityId, groupContext)
+        return when (viewData) {
+            is Just -> {
+                val layout = listWidgetViewGroup(this, rowLayoutType, entityId, context)
+                val view = listWidgetView(this, viewData.value, themeOrDefault(entityId), context, groupContext)
+                this.layoutViewId = layout.id
+                layout.addView(view)
+                Just(layout)
+            }
+            is Nothing -> Nothing()
+        }
     }
 
 
     override fun widgetId() = this.widgetId
+
+    private fun viewData(
+            entityId : EntityId,
+            groupContext : Maybe<GroupContext> = Nothing()
+    ) : Maybe<ListWidgetViewData>
+    {
+        val values = this.valueOrEmptyList(entityId, groupContext)
+        return when (values) {
+            is Val -> {
+                Just(ListWidgetViewData(values.value, maybeLabelValue(entityId)))
+            }
+            is Err -> Nothing()
+        }
+    }
+
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -1744,6 +1771,29 @@ data class ListWidget(val widgetId : WidgetId,
     fun value(entityId : EntityId, groupContext : Maybe<GroupContext> = Nothing()) : AppEff<List<String>> =
         textListVariable(this.valuesVariableReference, entityId, groupContext.apply { Just(VariableNamespace(it.value)) })
           .apply { it.value(entityId) }
+
+    fun valueOrEmptyList(entityId : EntityId, groupContext : Maybe<GroupContext> = Nothing()) : AppEff<List<String>>
+    {
+        val maybeGroupContext = groupContext.apply { Just(VariableNamespace(it.value)) }
+
+        val listVar = textListVariable(this.valuesVariableReference,
+                                       entityId,
+                                       maybeGroupContext)
+
+        return when (listVar) {
+            is Val -> {
+                when (listVar.value.valueSetId()) {
+                    is Just -> {
+                        valueIdStrings(entityId, groupContext)
+                    }
+                    is Nothing -> {
+                        listVar.value.value(entityId)
+                    }
+                }
+            }
+            is Err -> effError(AppSheetError(WidgetDoesNotHaveValue(this.widgetId)))
+        }
+    }
 
 
     fun valuesOrBlank(entityId : EntityId,
@@ -1801,35 +1851,34 @@ data class ListWidget(val widgetId : WidgetId,
     }
 
 
-    fun labelValueVariable(entityId : EntityId) : AppEff<TextVariable> =
+    fun labelValue(entityId : EntityId) : AppEff<Maybe<String>> =
             note<AppError,VariableReference>(this.labelVariableReference, AppVoidError())
                 .apply { textVariable(it, entityId) }
+                .apply { it.value(entityId) }
 
 
-    fun labelValue(entityId : EntityId) : AppEff<String> =
-            labelValueVariable(entityId).apply { it.valueString(entityId) }
-
-
-    fun labelValueOrBlank(entityId : EntityId) : String
+    fun maybeLabelValue(entityId : EntityId) : Maybe<String>
     {
-        val label = labelValue(entityId)
-
-        return when (label) {
-            is Val -> label.value
-            is Err -> ""
+        val effValue = labelValue(entityId)
+        return when (effValue) {
+            is Val -> {
+                effValue.value
+            }
+            is Err -> Nothing()
         }
     }
 
 
-//    fun baseValueSets(entityId : EntityId) : List<ValueSetBase> =
-//        this.variable(entityId)
-//        .apply {
-//            note<AppError, ValueSetId>(it.valueSetId().toNullable(),
-//                    AppStateError(VariableDoesNotHaveValueSet(it.variableId())))
+
+//    fun labelValueOrBlank(entityId : EntityId) : String
+//    {
+//        val label = labelValue(entityId)
+//
+//        return when (label) {
+//            is Val -> label.value
+//            is Err -> ""
 //        }
-//        .apply {
-//            valueSet(it, entityId)
-//        }
+//    }
 
 
     // | TITLE
@@ -1913,8 +1962,11 @@ data class ListWidget(val widgetId : WidgetId,
                 val contentLayout = layout.findViewById<LinearLayout>(R.id.widget_content_layout)
                 // Clear layout and add new version of view
                 contentLayout.removeAllViews()
-                val view = listWidgetView(this, entityId, context, groupContext)
-                contentLayout.addView(view)
+
+                this.viewData(entityId).doMaybe {
+                    val view = listWidgetView(this, it, themeOrDefault(entityId), context, groupContext)
+                    contentLayout.addView(view)
+                }
             }
             catch (e: TypeCastException) {
             }

@@ -381,7 +381,13 @@ types:
         custom_coll_type: book_content_id 
       presence: optional
       description: A brief description of the game rules.
-    - name: conclusion
+    - name: introduction_label
+      type:
+        type: custom_type
+        custom_type: variable_reference 
+      presence: optional
+      description: A brief description of the game rules.
+    - name: header
       type:
         type: custom_coll_type
         custom_coll_type: book_content_id 
@@ -676,6 +682,12 @@ types:
         type: custom_coll_type
         custom_coll_type: book_section_entry
       presence: required
+      description: The entries.
+    - name: is_expandable
+      type:
+        type: prim_type
+        prim_type: boolean
+      presence: optional
       description: The entries.
 - type: sum_type
   sum_type:

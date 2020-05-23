@@ -244,6 +244,7 @@ public class TextViewBuilder implements ViewBuilder
         // Fading Edge
         // --------------------------------------------------------------------------------------
 
+
 //        if (this.ems != null)
         if (this.verticalFadeLength != null)
         {

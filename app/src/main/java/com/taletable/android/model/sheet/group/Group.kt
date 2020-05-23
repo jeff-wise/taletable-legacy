@@ -804,19 +804,19 @@ fun groupView(group : Group, entityId : EntityId, context : Context) : View
     entityType(entityId).apDo { entityType ->
         when (entityType) {
             is EntityTypeBook -> {
-                //Log.d("***GROUP", "getting content ref var")
+                Log.d("***GROUP", "getting content ref var")
                 group.contentReferenceVariable().doMaybe {
                     val namespace = group.context().apply { Just(VariableNamespace(it.value)) }
-//                    Log.d("***GROUP", "found namespace $namespace")
-//                    Log.d("***GROUP", "content ref var reference $it")
+                    Log.d("***GROUP", "found namespace $namespace")
+                    Log.d("***GROUP", "content ref var reference $it")
                     val contentRef = contentReferenceVariable(it, entityId, namespace)
                                         .apply {
-                                            //Log.d("***GROUP", "got content ref var $it")
+                                            Log.d("***GROUP", "got content ref var $it")
                                             it.value() }
                     contentRef.apDo {
-//                        Log.d("***GROUP", "found content ref: $it")
+                        Log.d("***GROUP", "found content ref: $it")
                         it.bookReference().doMaybe { bookRef ->
-//                            Log.d("***GROUP", "setting on click listener")
+                //            Log.d("***GROUP", "setting on click listener")
                             layout.setOnClickListener {
                                 val sessionActivity = context as SessionActivity
                                 sessionActivity.setCurrentBookReference(bookRef)

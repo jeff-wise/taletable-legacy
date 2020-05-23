@@ -4,7 +4,6 @@ package com.taletable.android.activity.entity.book.fragment
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +17,6 @@ import com.taletable.android.R
 import com.taletable.android.activity.session.SessionActivity
 import com.taletable.android.lib.ui.*
 import com.taletable.android.model.book.*
-import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
 import com.taletable.android.model.theme.*
@@ -223,14 +221,12 @@ class BookCardUI(val book : Book,
 
         layout.orientation      = LinearLayout.HORIZONTAL
 
-        //layout.backgroundColor  = Color.TRANSPARENT
-
-        layout.backgroundResource   = R.drawable.bg_book_card_header
-
         layout.padding.leftDp   = 12f
         layout.padding.rightDp  = 12f
         layout.padding.topDp    = 12f
         layout.padding.bottomDp = 12f
+
+        layout.backgroundColor  = Color.WHITE
 
         return layout.relativeLayout(context)
     }
@@ -255,10 +251,10 @@ class BookCardUI(val book : Book,
 
         val colorTheme = ColorTheme(setOf(
                 ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
         nameViewBuilder.color           = theme.colorOrBlack(colorTheme)
 
-        nameViewBuilder.sizeSp          = 18f
+        nameViewBuilder.sizeSp          = 19f
 
         nameViewBuilder.backgroundColor = Color.WHITE
 
@@ -326,12 +322,16 @@ class BookCardUI(val book : Book,
         val scrollView = this.cardScrollView()
         val cardLayout = this.cardLayout()
 
+        val contentLayout = this.cardContentLayout()
+//
         cardLayout.addView(cardHeaderView())
+
+        // cardLayout.addView(contentLayout)
 
         cardLayout.addView(cardHeaderDividerView())
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            scrollView.z = 200000f
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+//            scrollView.z = 200000f
 
         card.content(book).forEach { content ->
             groups(content.groupReferences(), book.entityId()).forEach {
@@ -339,7 +339,7 @@ class BookCardUI(val book : Book,
             }
         }
 
-        cardLayout.addView(cardFooterView())
+        //cardLayout.addView(cardFooterView())
 
         scrollView.addView(cardLayout)
 
@@ -361,9 +361,8 @@ class BookCardUI(val book : Book,
 
         //scrollView.backgroundResource   = R.drawable.bg_book_card_header
 
-        scrollView.margin.leftDp    = 8f
-        scrollView.margin.rightDp   = 8f
-
+//        scrollView.padding.leftDp    = 8f
+//        scrollView.padding.rightDp   = 8f
 
         return scrollView.scrollView(context)
     }
@@ -378,9 +377,30 @@ class BookCardUI(val book : Book,
 
         layout.orientation      = LinearLayout.VERTICAL
 
-        layout.padding.bottomDp = 82f
-        layout.margin.bottomDp  = 10f
+        //layout.padding.bottomDp = 82f
+        layout.padding.bottomDp  = 82f
         layout.margin.topDp  = 16f
+
+        layout.margin.leftDp = 4f
+        layout.margin.rightDp = 4f
+
+//        layout.elevation        = 7f
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun cardContentLayout() : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.orientation      = LinearLayout.VERTICAL
+
+//        layout.margin.leftDp    = 1f
+//        layout.margin.rightDp    = 1f
 
         return layout.linearLayout(context)
     }
@@ -392,9 +412,9 @@ class BookCardUI(val book : Book,
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
         layout.heightDp         = 4
 
-        layout.corners          = Corners(0.0, 0.0, 4.0, 4.0)
+//        layout.corners          = Corners(0.0, 0.0, 4.0, 4.0)
 
-        layout.backgroundColor  = Color.WHITE
+        //layout.backgroundColor  = Color.WHITE
 
         return layout.linearLayout(context)
     }

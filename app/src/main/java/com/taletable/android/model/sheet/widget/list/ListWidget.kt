@@ -3,16 +3,7 @@ package com.taletable.android.model.sheet.widget.list
 
 
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-import android.text.style.AbsoluteSizeSpan
-import android.text.style.BackgroundColorSpan
-import android.text.style.ForegroundColorSpan
-import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -26,18 +17,12 @@ import com.taletable.android.lib.orm.sql.SQLSerializable
 import com.taletable.android.lib.orm.sql.SQLText
 import com.taletable.android.lib.orm.sql.SQLValue
 import com.taletable.android.lib.ui.*
-import com.taletable.android.model.engine.constraint.ConstraintTypeTextListMaxSize
-import com.taletable.android.model.engine.constraint.TextListConstraintMaxSize
 import com.taletable.android.model.engine.value.ValueId
 import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.group.RowLayoutType
-import com.taletable.android.model.sheet.style.*
 import com.taletable.android.model.sheet.widget.ListWidget
 import com.taletable.android.model.sheet.widget.WidgetView
-import com.taletable.android.model.theme.ColorId
-import com.taletable.android.model.theme.ColorTheme
-import com.taletable.android.model.theme.ThemeColorId
-import com.taletable.android.model.theme.ThemeId
+import com.taletable.android.model.theme.Theme
 import com.taletable.android.rts.entity.*
 import com.taletable.android.rts.entity.sheet.*
 import com.taletable.android.util.Util
@@ -49,6 +34,17 @@ import maybe.Just
 import maybe.Maybe
 import maybe.Nothing
 import java.io.Serializable
+
+
+
+// -----------------------------------------------------------------------------------------
+// | VIEW DATA
+// -----------------------------------------------------------------------------------------
+
+data class ListWidgetViewData(
+        val values : List<String>,
+        val label : Maybe<String>
+)
 
 
 
@@ -1031,7 +1027,8 @@ fun listWidgetViewGroup(
 
 fun listWidgetView(
         listWidget : ListWidget,
-        entityId : EntityId,
+        data : ListWidgetViewData,
+        theme : Theme,
         context : Context,
         groupContext : Maybe<GroupContext> = Nothing()) : View
 {
@@ -1039,9 +1036,9 @@ fun listWidgetView(
 
     return when (format) {
         is ListWidgetFormatCustom ->
-            listWidgetCustomView(listWidget, format, entityId, context, groupContext)
+            listWidgetCustomView(format, data, theme, context, groupContext)
         is ListWidgetFormatOfficial ->
-            listWidgetOfficialView(format, listWidget, entityId, context, groupContext)
+            listWidgetOfficialView(format, data, theme, context, groupContext)
     }
 }
 

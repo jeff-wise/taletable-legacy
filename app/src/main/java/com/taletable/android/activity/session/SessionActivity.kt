@@ -458,7 +458,7 @@ class SessionActivity : AppCompatActivity()
 
             val toolbarColorTheme = ColorTheme(setOf(
                     ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_9"))))
+                    ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_5"))))
             window.statusBarColor = theme.colorOrBlack(toolbarColorTheme)
         }
 
@@ -688,9 +688,9 @@ class SessionActivity : AppCompatActivity()
             it.visibility = View.GONE
         }
 
-        this.findViewById<LinearLayout>(com.taletable.android.R.id.toolbar_bottom_padding)?.let {
-            it.visibility = View.VISIBLE
-        }
+//        this.findViewById<LinearLayout>(com.taletable.android.R.id.toolbar_bottom_padding)?.let {
+//            it.visibility = View.VISIBLE
+//        }
 
         this.findViewById<LinearLayout>(com.taletable.android.R.id.session_content)?.let {
             it.visibility = View.VISIBLE

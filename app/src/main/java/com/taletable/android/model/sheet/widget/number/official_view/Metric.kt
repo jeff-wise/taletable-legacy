@@ -38,11 +38,11 @@ fun numberWidgetOfficialMetricView(
         groupContext : Maybe<GroupContext>
 ) : View = when (style.value)
 {
-    "horizontal_box" -> numberWidgetMetricHorizontalBoxView(numberWidget, entityId, groupContext, context)
+    "horizontal_box" -> numberWidgetMetricHorizontalBoxView(numberWidget, variations, entityId, groupContext, context)
     "vertical_box"   -> numberWidgetMetricVerticalBoxView(numberWidget, variations, entityId, groupContext, context)
     "entity_section_tag" -> entitySectionEntryTagView(numberWidget, entityId, groupContext, context)
     "entity_section_label_tag" -> entitySectionLabelTagView(numberWidget, entityId, groupContext, context)
-    else             -> numberWidgetMetricHorizontalBoxView(numberWidget, entityId, groupContext, context)
+    else             -> numberWidgetMetricHorizontalBoxView(numberWidget, variations, entityId, groupContext, context)
 }
 
 
@@ -57,6 +57,7 @@ fun numberWidgetOfficialMetricView(
  */
 private fun numberWidgetMetricHorizontalBoxView(
         numberWidget : NumberWidget,
+        variations : List<WidgetStyleVariation>,
         entityId : EntityId,
         groupContext : Maybe<GroupContext>,
         context : Context
@@ -64,8 +65,8 @@ private fun numberWidgetMetricHorizontalBoxView(
 {
     val layout = numberWidgetMetricHorizontalBoxViewLayout(context)
 
-    layout.addView(numberWidgetMetricHorizontalBoxLabelView(numberWidget, entityId, context))
-    layout.addView(numberWidgetMetricHorizontalBoxValueView(numberWidget, entityId, groupContext, context))
+    layout.addView(numberWidgetMetricHorizontalBoxLabelView(numberWidget, variations, entityId, context))
+    layout.addView(numberWidgetMetricHorizontalBoxValueView(numberWidget, variations, entityId, groupContext, context))
 
     return layout
 }
@@ -95,6 +96,7 @@ private fun numberWidgetMetricHorizontalBoxViewLayout(
  */
 private fun numberWidgetMetricHorizontalBoxLabelView(
         numberWidget : NumberWidget,
+        variations : List<WidgetStyleVariation>,
         entityId : EntityId,
         context : Context
 ) : LinearLayout
@@ -110,7 +112,18 @@ private fun numberWidgetMetricHorizontalBoxLabelView(
     // -----------------------------------------------------------------------------------------
 
     layoutBuilder.width     = LinearLayout.LayoutParams.WRAP_CONTENT
-    layoutBuilder.heightDp  = 44
+
+    if (variations.size > 0) {
+        val variation = variations[0]
+        when (variation.value) {
+            "normal" -> {
+                layoutBuilder.heightDp  = 38
+            }
+            "large" -> {
+                layoutBuilder.heightDp  = 44
+            }
+        }
+    }
 
     layoutBuilder.gravity   = Gravity.CENTER
 
@@ -119,7 +132,7 @@ private fun numberWidgetMetricHorizontalBoxLabelView(
 
     val bgColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_3"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_2"))))
     layoutBuilder.backgroundColor   = colorOrBlack(bgColorTheme, entityId)
 
     layoutBuilder.corners   = Corners(4.0, 0.0, 0.0, 4.0)
@@ -147,11 +160,22 @@ private fun numberWidgetMetricHorizontalBoxLabelView(
 
     val labelColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_20"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_14"))))
+            //ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_20"))))
     labelViewBuilder.color           = colorOrBlack(labelColorTheme, entityId)
     //labelViewBuilder.color           = Color.WHITE
 
-    labelViewBuilder.sizeSp     = 20f
+    if (variations.size > 0) {
+        val variation = variations[0]
+        when (variation.value) {
+            "normal" -> {
+                labelViewBuilder.sizeSp = 16f
+            }
+            "large" -> {
+                labelViewBuilder.sizeSp = 21f
+            }
+        }
+    }
 
     return layoutBuilder.linearLayout(context)
 }
@@ -162,6 +186,7 @@ private fun numberWidgetMetricHorizontalBoxLabelView(
  */
 private fun numberWidgetMetricHorizontalBoxValueView(
         numberWidget : NumberWidget,
+        variations : List<WidgetStyleVariation>,
         entityId : EntityId,
         groupContext : Maybe<GroupContext>,
         context : Context
@@ -179,7 +204,18 @@ private fun numberWidgetMetricHorizontalBoxValueView(
 
     layoutBuilder.width     = LinearLayout.LayoutParams.WRAP_CONTENT
     //layoutBuilder.height    = LinearLayout.LayoutParams.WRAP_CONTENT
-    layoutBuilder.heightDp  = 44
+
+    if (variations.size > 0) {
+        val variation = variations[0]
+        when (variation.value) {
+            "normal" -> {
+                layoutBuilder.heightDp  = 38
+            }
+            "large" -> {
+                layoutBuilder.heightDp  = 44
+            }
+        }
+    }
 
     layoutBuilder.padding.leftDp    = 12f
     layoutBuilder.padding.rightDp    = 12f
@@ -217,11 +253,23 @@ private fun numberWidgetMetricHorizontalBoxValueView(
 
     val labelColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue"))))
+            //ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
     labelViewBuilder.color           = colorOrBlack(labelColorTheme, entityId)
 //    labelViewBuilder.color           = Color.WHITE
 
-    labelViewBuilder.sizeSp     = 22f
+    if (variations.size > 0) {
+        val variation = variations[0]
+        when (variation.value) {
+            "normal" -> {
+                labelViewBuilder.sizeSp = 16f
+            }
+            "large" -> {
+                labelViewBuilder.sizeSp = 22f
+            }
+        }
+    }
+
 
     return layoutBuilder.linearLayout(context)
 }

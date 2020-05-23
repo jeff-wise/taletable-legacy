@@ -96,6 +96,21 @@ class SheetDoesNotHaveWidget(val widgetId : WidgetId) : SheetError()
 
 
 /**
+ * The theme does not have a color with the given id.
+ */
+class WidgetDoesNotHaveValue(val widgetId : WidgetId) : SheetError()
+{
+    override fun debugMessage(): String =
+            """
+            Sheet Error: Widget Does Not Have Value
+                Widget Id: $widgetId
+            """
+
+    override fun logMessage(): String = userMessage()
+}
+
+
+/**
  * The expander widget doesn't have a checkbox variable
  */
 class ExpanderWidgetDoesNotHaveCheckboxVariable(val widgetId : WidgetId) : SheetError()

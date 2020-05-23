@@ -107,6 +107,9 @@ persisted_entities:
   - entity_id: '111ddf7b-92da-4106-9ee3-6a2fe9d6c2fa'
     index_type: variable
     path: 'pathfinder2_playtest/books/indexes/core_rules_variables_ancestries_backgrounds.yaml'
+  - entity_id: '21404d4a-6cd3-4762-af53-42d7d52dc2e5'
+    index_type: variable
+    path: 'pathfinder2_playtest/books/indexes/core_rules_variables_classes.yaml'
   - entity_id: 'af03c0bd-62e8-42af-8d29-25b84a5c0660'
     index_type: variable
     path: 'pathfinder2_playtest/books/indexes/core_rules_variables_skills_feats.yaml'

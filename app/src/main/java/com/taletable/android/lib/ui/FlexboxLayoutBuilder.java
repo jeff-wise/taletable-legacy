@@ -5,8 +5,11 @@ package com.taletable.android.lib.ui;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.view.View;
+
+import androidx.core.content.ContextCompat;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.taletable.android.model.sheet.style.Corners;
@@ -21,7 +24,7 @@ import java.util.List;
 /**
  * Flexbox Layout Builder
  */
-public class FlexboxLayoutBuilder
+public class FlexboxLayoutBuilder implements ViewBuilder
 {
 
     // PROPERTIES
@@ -235,15 +238,9 @@ public class FlexboxLayoutBuilder
         // > Background Resource
         // --------------------------------------------------------------------------------------
 
-//        if (this.backgroundResource != null && this.backgroundColor != null) {
-//            Drawable bgDrawable = ContextCompat.getDrawable(context, this.backgroundResource);
-//            int      color      = ContextCompat.getColor(context, this.backgroundColor);
-//            bgDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
-//            flexboxLayout.setBackground(bgDrawable);
-//        }
-//        else if (this.backgroundResource != null) {
-//            flexboxLayout.setBackgroundResource(this.backgroundResource);
-//        }
+        if (this.backgroundResource != null) {
+            flexboxLayout.setBackgroundResource(this.backgroundResource);
+        }
 
         // > Corners
         // --------------------------------------------------------------------------------------

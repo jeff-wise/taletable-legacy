@@ -105,7 +105,7 @@ data class Book(val bookId : EntityId,
                             effValue(listOf()),
                             { it.map { BookContentId.fromDocument(it) } }),
                       // Conclusion
-                      split(doc.maybeList("conclusion"),
+                      split(doc.maybeList("header"),
                             effValue(listOf()),
                             { it.map { BookContentId.fromDocument(it) } }),
                       // Chapters

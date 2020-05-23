@@ -556,9 +556,8 @@ class ChapterUI(val chapter : BookChapter,
         layout.addView(sectionHeaderView("Introduction"))
 
         contentList.forEach { content ->
-            Log.d("***CHAPTER FRAGMENT", "writing out content")
             groups(content.groupReferences(), book.entityId()).forEach {
-                layout.addView(it.group.view(book.entityId(), context))
+                layout.addView(it.group.view(book.entityId(), context, content.context()))
             }
         }
 
@@ -628,7 +627,6 @@ class ChapterUI(val chapter : BookChapter,
         return layout
     }
 
-
     private fun addEntry(entry : BookChapterEntry, layout : LinearLayout)
     {
         when (entry)
@@ -641,13 +639,14 @@ class ChapterUI(val chapter : BookChapter,
                                                                     section.sectionId())
                         sessionActivity.setCurrentBookReference(sectionReference)
                     }
-                    val entryView = entrySimpleView(section.title.value, onClickListener, theme, sessionActivity)
+                    val entryView = entrySimpleView(section.title.value, onClickListener, theme, true, sessionActivity)
                     layout.addView(entryView)
                 }
             }
             is BookChapterEntryCardGroup -> {
                 val contentList = entry.cardEntries.map { book.content(it) }.filterJust()
-                layout.addView(entryExpanderView(entry.title, theme, contentList, book.entityId(), context))
+                val view = contentListView(contentList, book.entityId(), context)
+                layout.addView(entryExpanderView(entry.title, theme, view, book.entityId(), context))
             }
             is BookChapterEntryGroup -> {
                 layout.addView(entryGroupHeaderView(entry.title, theme, context))

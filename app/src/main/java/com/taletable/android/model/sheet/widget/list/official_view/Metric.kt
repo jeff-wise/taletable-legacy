@@ -3,33 +3,28 @@ package com.taletable.android.model.sheet.widget.list.official_view
 
 
 import android.content.Context
+import android.graphics.Color
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
+import com.google.android.flexbox.AlignContent
+import com.google.android.flexbox.FlexWrap
 import com.taletable.android.R
-import com.taletable.android.app.ApplicationLog
-import com.taletable.android.lib.ui.CustomTypefaceSpan
-import com.taletable.android.lib.ui.Font
-import com.taletable.android.lib.ui.LinearLayoutBuilder
-import com.taletable.android.lib.ui.TextViewBuilder
+import com.taletable.android.lib.ui.*
 import com.taletable.android.model.sheet.group.GroupContext
 import com.taletable.android.model.sheet.style.Corners
 import com.taletable.android.model.sheet.style.TextFont
 import com.taletable.android.model.sheet.style.TextFontStyle
-import com.taletable.android.model.sheet.widget.ListWidget
 import com.taletable.android.model.sheet.widget.WidgetStyle
-import com.taletable.android.model.theme.ColorId
-import com.taletable.android.model.theme.ColorTheme
-import com.taletable.android.model.theme.ThemeColorId
-import com.taletable.android.model.theme.ThemeId
-import com.taletable.android.rts.entity.EntityId
-import com.taletable.android.rts.entity.colorOrBlack
+import com.taletable.android.model.sheet.widget.WidgetStyleVariation
+import com.taletable.android.model.sheet.widget.list.ListWidgetViewData
+import com.taletable.android.model.theme.*
 import com.taletable.android.util.Util
-import effect.Err
-import effect.Val
 import maybe.Maybe
 
 
@@ -39,15 +34,18 @@ import maybe.Maybe
  */
 fun listWidgetOfficialMetricView(
         style : WidgetStyle,
-        listWidget : ListWidget,
-        entityId : EntityId,
+        variations : List<WidgetStyleVariation>,
+        data : ListWidgetViewData,
+        theme : Theme,
         context : Context,
         groupContext : Maybe<GroupContext>
 ) : View = when (style.value)
 {
-    "rows" -> rowsView(listWidget, entityId, groupContext, context)
-    "inline" -> inlineView(listWidget, entityId, groupContext, context)
-    else   -> rowsView(listWidget, entityId, groupContext, context)
+    "rows" -> rowsView(data, theme, groupContext, context)
+    "inline" -> inlineView(data, theme, groupContext, context)
+    "inline_textual" -> inlineTextualView(data, variations, theme, groupContext, context)
+    "bullet" -> bulletView(data, variations, theme, context)
+    else   -> rowsView(data, theme, groupContext, context)
 }
 
 
@@ -61,20 +59,19 @@ fun listWidgetOfficialMetricView(
  * Paragraph Style
  */
 private fun rowsView(
-        listWidget : ListWidget,
-        entityId : EntityId,
+        data : ListWidgetViewData,
+        theme : Theme,
         groupContext : Maybe<GroupContext>,
         context : Context
 ) : View
 {
     val layout = rowsViewLayout(context)
 
-    val label = listWidget.labelValue(entityId)
-    label.apDo {
-        layout.addView(rowsLabelView(it, entityId, context))
+    data.label.doMaybe {
+        layout.addView(rowsLabelView(it, theme, context))
     }
 
-    layout.addView(rowsValuesView(listWidget, entityId, groupContext, context))
+    layout.addView(rowsValuesView(data.values, theme, groupContext, context))
 
     return layout
 }
@@ -100,7 +97,7 @@ private fun rowsViewLayout(
  */
 private fun rowsLabelView(
         label : String,
-        entityId : EntityId,
+        theme : Theme,
         context : Context
 ) : LinearLayout
 {
@@ -127,7 +124,7 @@ private fun rowsLabelView(
     val bgColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_7"))))
-    layoutBuilder.backgroundColor   = colorOrBlack(bgColorTheme, entityId)
+    layoutBuilder.backgroundColor   = theme.colorOrBlack(bgColorTheme)
 
     layoutBuilder.corners   = Corners(4.0, 4.0, 0.0, 0.0)
 
@@ -147,11 +144,9 @@ private fun rowsLabelView(
     val textColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_18"))))
-    labelViewBuilder.color      = colorOrBlack(textColorTheme, entityId)
+    labelViewBuilder.color      = theme.colorOrBlack(textColorTheme)
 
     labelViewBuilder.sizeSp     = 12f
-
-
 
     return layoutBuilder.linearLayout(context)
 }
@@ -159,27 +154,18 @@ private fun rowsLabelView(
 
 
 private fun rowsValuesView(
-        listWidget : ListWidget,
-        entityId : EntityId,
+        values : List<String>,
+        theme : Theme,
         groupContext : Maybe<GroupContext>,
         context : Context
 ) : LinearLayout
 {
     val layout = rowsValuesLayout(context)
 
-    val itemStrings = listWidget.valueIdStrings(entityId, groupContext)
-    when (itemStrings)
-    {
-        is Val -> {
-            itemStrings.value.forEachIndexed { index, s ->
-                val hasDivider = index > 0
-                val rowView = rowsValueView(s, hasDivider, entityId, context)
-                layout.addView(rowView)
-            }
-        }
-        is Err -> {
-            ApplicationLog.error(itemStrings.error)
-        }
+    values.forEachIndexed { index, s ->
+        val hasDivider = index > 0
+        val rowView = rowsValueView(s, hasDivider, theme, context)
+        layout.addView(rowView)
     }
 
     return layout
@@ -213,7 +199,7 @@ private fun rowsValuesLayout(
 private fun rowsValueView(
         label : String,
         hasDivider : Boolean,
-        entityId : EntityId,
+        theme : Theme,
         context : Context
 ) : LinearLayout
 {
@@ -247,7 +233,7 @@ private fun rowsValueView(
     val dividerColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_7"))))
-    dividerViewBuilder.backgroundColor  = colorOrBlack(dividerColorTheme, entityId)
+    dividerViewBuilder.backgroundColor  = theme.colorOrBlack(dividerColorTheme)
 
     // | Label
     // -----------------------------------------------------------------------------------------
@@ -269,7 +255,7 @@ private fun rowsValueView(
     val labelColorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
             ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-    labelViewBuilder.color           = colorOrBlack(labelColorTheme, entityId)
+    labelViewBuilder.color           = theme.colorOrBlack(labelColorTheme)
 
     labelViewBuilder.sizeSp     = 18f
 
@@ -277,225 +263,434 @@ private fun rowsValueView(
 }
 
 
-/**
- * Inline Style
- */
+
 private fun inlineView(
-        listWidget : ListWidget,
-        entityId : EntityId,
+        data : ListWidgetViewData,
+        theme : Theme,
         groupContext : Maybe<GroupContext>,
         context : Context
 ) : View
 {
+    val linearLayoutBuilder             = LinearLayoutBuilder()
+
+    linearLayoutBuilder.width           = LinearLayout.LayoutParams.MATCH_PARENT
+    linearLayoutBuilder.height          = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    linearLayoutBuilder.backgroundResource   = R.drawable.bg_book_card_header
+    linearLayoutBuilder.padding.topDp        = 8f
+    linearLayoutBuilder.padding.bottomDp        = 8f
+    linearLayoutBuilder.padding.leftDp        = 16f
+    linearLayoutBuilder.padding.rightDp        = 16f
+
+    linearLayoutBuilder.child(inlineFlexView(data, theme, groupContext, context))
+
+    return linearLayoutBuilder.linearLayout(context)
+}
+
+
+/**
+ * Inline Style
+ */
+private fun inlineFlexView(
+        data : ListWidgetViewData,
+        theme : Theme,
+        groupContext : Maybe<GroupContext>,
+        context : Context
+) : ViewBuilder
+{
+    val layout          = FlexboxLayoutBuilder()
+
+    layout.width        = LinearLayout.LayoutParams.MATCH_PARENT
+    layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layout.contentAlignment         = AlignContent.CENTER
+    layout.wrap                     = FlexWrap.WRAP
+
+    data.values.forEach { value ->
+        layout.child(inlineItemView(value, theme, context))
+    }
+
+    return layout
+}
+
+
+private fun inlineItemView(
+        value : String,
+        theme: Theme,
+        context : Context
+) : TextViewBuilder
+{
+
     val textViewBuilder         = TextViewBuilder()
 
+    textViewBuilder.width       = LinearLayout.LayoutParams.WRAP_CONTENT
+    textViewBuilder.heightDp      = 26
+
+    textViewBuilder.gravity     = Gravity.CENTER
+
+    textViewBuilder.font        = Font.typeface(TextFont.RobotoSlab,
+                                                TextFontStyle.Bold,
+                                                context)
+
+    val textColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_14"))))
+    textViewBuilder.color = theme.colorOrBlack(textColorTheme)
+
+    val bgColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_2"))))
+    textViewBuilder.backgroundColor = theme.colorOrBlack(bgColorTheme)
+    textViewBuilder.backgroundColor = Color.WHITE
+
+    textViewBuilder.sizeSp          = 11.5f
+
+    textViewBuilder.text        = value
+
+    textViewBuilder.padding.leftDp      = 10f
+    textViewBuilder.padding.rightDp      = 10f
+//    textViewBuilder.padding.topDp      = 8f
+//    textViewBuilder.padding.bottomDp      = 8f
+
+    textViewBuilder.corners             = Corners(8.0, 8.0, 8.0, 8.0)
+
+    return textViewBuilder
+}
+
+
+
+private fun inlineTextualView(
+        data : ListWidgetViewData,
+        variations : List<WidgetStyleVariation>,
+        theme : Theme,
+        groupContext : Maybe<GroupContext>,
+        context : Context
+) : LinearLayout
+{
+    val layout = inlineTextualViewLayout(context)
+
+    layout.addView(inlineTextualItemsView(data.label, variations, data.values, theme, context))
+
+    return layout
+}
+
+
+private fun inlineTextualViewLayout(context : Context) : LinearLayout
+{
+    val linearLayoutBuilder = LinearLayoutBuilder()
+
+    linearLayoutBuilder.width           = LinearLayout.LayoutParams.MATCH_PARENT
+    linearLayoutBuilder.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    return linearLayoutBuilder.linearLayout(context)
+}
+
+
+private fun inlineTextualItemsView(
+        label : Maybe<String>,
+        variations : List<WidgetStyleVariation>,
+        values : List<String>,
+        theme : Theme,
+        context : Context
+) : TextView
+{
+    val textViewBuilder         = TextViewBuilder()
+//
     textViewBuilder.width       = LinearLayout.LayoutParams.MATCH_PARENT
     textViewBuilder.height      = LinearLayout.LayoutParams.WRAP_CONTENT
 
     textViewBuilder.font        = Font.typeface(TextFont.RobotoSlab,
                                                 TextFontStyle.Regular,
                                                 context)
-    val colorTheme = ColorTheme(setOf(
-            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_12"))))
-    textViewBuilder.color           = colorOrBlack(colorTheme, entityId)
 
-    textViewBuilder.sizeSp          = 17f
+    val defaultColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+    textViewBuilder.color = theme.colorOrBlack(defaultColorTheme)
+
+
+    if (variations.isNotEmpty()) {
+        val variation = variations[0]
+        when (variation.value) {
+            "normal" -> {
+                textViewBuilder.sizeSp          = 15.7f
+            }
+            "large" -> {
+                textViewBuilder.sizeSp          = 17.3f
+            }
+        }
+    }
 
     textViewBuilder.lineSpacingAdd  = 4f
     textViewBuilder.lineSpacingMult = 1f
 
-    val builder = SpannableStringBuilder()
+    val valuesText            = when (values.size) {
+        0 -> ""
+        1 -> values[0]
+        else -> values.joinToString(", ")
+    }
 
-    val label = listWidget.labelValueOrBlank(entityId)
-    val values = listWidget.valuesOrBlank(entityId, groupContext)
-
-    builder.append(label)
-    builder.append("  ")
-    builder.append(values)
-
-    val typeface = Font.typeface(TextFont.RobotoSlab, TextFontStyle.Bold, context)
-    val typefaceSpan = CustomTypefaceSpan(typeface)
-    builder.setSpan(typefaceSpan, 0, label.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-
-    val sizePx = Util.spToPx(15.5f, context)
-    val sizeSpan = AbsoluteSizeSpan(sizePx)
-    builder.setSpan(sizeSpan, label.length, label.length + values.length + 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-
-    textViewBuilder.textSpan        = builder
+    textViewBuilder.textSpan        = inlineTextualItemsSpanView(label, variations, valuesText, theme, context)
 
     return textViewBuilder.textView(context)
 }
 
 
+private fun inlineTextualItemsSpanView(
+        maybeLabel : Maybe<String>,
+        variations : List<WidgetStyleVariation>,
+        valuesText : String,
+        theme : Theme,
+        context : Context
+) : SpannableStringBuilder
+{
+    val stringBuilder = SpannableStringBuilder()
+
+    var index = 0
+
+    maybeLabel.doMaybe { label ->
+        stringBuilder.append(label)
 
 
-//private fun inlineView(
-//        listWidget : ListWidget,
-//        entityId : EntityId,
-//        groupContext : Maybe<GroupContext>,
-//        context : Context
-//) : View
-//{
-//    val paragraph           = TextViewBuilder()
-//
-//    paragraph.width         = LinearLayout.LayoutParams.MATCH_PARENT
-//    paragraph.height        = LinearLayout.LayoutParams.WRAP_CONTENT
-//
-//    val description = listWidget.description
-//    val valueSetId = listWidget.variable(entityId).apply {
-//                        note<AppError, ValueSetId>(it.valueSetId().toNullable(),
-//                                                  AppStateError(VariableDoesNotHaveValueSet(it.variableId())))
-//                     }
-//    when (description) {
-//        is Just -> {
-//            when (valueSetId) {
-//                is Val -> {
-//                    val values = listWidget.value(entityId) ap { valueIds ->
-//                                        valueIds.mapM { valueId ->
-//                                            val valueRef = ValueReference(TextReferenceLiteral(valueSetId.value.value),
-//                                                                          TextReferenceLiteral(valueId))
-//                                            value(valueRef, entityId)
-//                                        }
-//                                 }
-//                    when (values) {
-//                        is Val -> {
-//                            val valueStrings = values.value.map { it.valueString() }
-//                            paragraph.textSpan = inlineViewSpannableString(description.value.value, valueStrings)
-//                        }
-//                        is Err -> ApplicationLog.error(values.error)
-//                    }
-//                }
-//            }
-//        }
-//        is Nothing -> {
-//            listWidget.value(entityId).apDo { valueStrings ->
-//                val joinedStrings = valueStrings.joinToString()
-//                paragraph.text = joinedStrings
-//
-//                paragraph.sizeSp    = 17f
-//                paragraph.font      = Font.typeface(TextFont.RobotoSlab,
-//                                                    TextFontStyle.Regular,
-//                                                    context)
-//                val paragraphColorTheme = ColorTheme(setOf(
-//                        ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
-//                        ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
-//                paragraph.color           = colorOrBlack(paragraphColorTheme, entityId)
-//            }
-//        }
-//    }
-//
-//    paragraph.onClick       = View.OnClickListener {
-//
-//        val textListVariable =  listWidget.variable(entityId)
-//        when (textListVariable) {
-//            is Val -> {
-//                openVariableEditorDialog(textListVariable.value,
-//                                         null,
-//                                         UpdateTargetListWidget(listWidget.widgetId()),
-//                                         entityId,
-//                                         context)
-//            }
-//        }
-//
-//    }
-//
-//    return paragraph.textView(context)
-//}
+        var labelSizeSpan = AbsoluteSizeSpan(Util.spToPx(15.7f, context))
+
+        if (variations.isNotEmpty()) {
+            val variation = variations[0]
+            when (variation.value) {
+                "normal" -> {
+                    labelSizeSpan = AbsoluteSizeSpan(Util.spToPx(15.7f, context))
+                }
+                "large" -> {
+                    labelSizeSpan = AbsoluteSizeSpan(Util.spToPx(17.8f, context))
+                }
+            }
+        }
 
 
-//private fun inlineViewSpannableString(
-//        listWidget : ListWidget,
-//        description : String,
-//        valueStrings : List<String>) : SpannableStringBuilder
-//{
-//    val builder = SpannableStringBuilder()
-//    var currentIndex = 0
-//
-//    val parts = description.split("$$$")
-//    val part1 : String = parts[0]
-//
-//    // > Part 1
-//    builder.append(part1)
-//
-////    inlineViewFormatSpans(listWidget.format.descriptionFormat).forEach {
-////        builder.setSpan(it, 0, part1.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-////    }
-//
-//    currentIndex += part1.length
-//
-//    val items = valueStrings.take(valueStrings.size - 1)
-//    val lastItem = valueStrings.elementAt(valueStrings.size - 1)
-//
-//    // > Items
-//    items.forEach { item ->
-//        builder.append(item)
-//
-//        this.formatSpans(listWidget.format.itemFormat).forEach {
-//            builder.setSpan(it, currentIndex, currentIndex + item.length, SPAN_INCLUSIVE_EXCLUSIVE)
-//        }
-//
-//        currentIndex += item.length
-//
-//        if (items.size > 1) {
-//            builder.append(", ")
-//
-//            inlineViewFormatSpans(listWidget.format.descriptionFormat).forEach {
-//                builder.setSpan(it, currentIndex, currentIndex + 2, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-//            }
-//
-//            currentIndex += 2
-//        }
-//    }
-//
-//    if (items.size == 1)
-//    {
-//        builder.append(" and ")
-//
-//        inlineViewFormatSpans(listWidget.format.descriptionFormat).forEach {
-//            builder.setSpan(it, currentIndex, currentIndex + 5, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-//        }
-//
-//        currentIndex += 5
-//    }
-//    else if (items.size > 1)
-//    {
-//        builder.append("and ")
-//
-//        inlineViewFormatSpans(listWidget.format.descriptionFormat).forEach {
-//            builder.setSpan(it, currentIndex, currentIndex + 4, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-//        }
-//
-//        currentIndex += 4
-//
-//    }
-//
-//    builder.append(lastItem)
-//
-//    inlineViewFormatSpans(listWidget.format.itemFormat).forEach {
-//        builder.setSpan(it, currentIndex, currentIndex + lastItem.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-//    }
-//
-//    return builder
-//}
+        val typeface = Font.typeface(TextFont.RobotoSlab, TextFontStyle.Bold, context)
+        val labelTypefaceSpan = CustomTypefaceSpan(typeface)
+
+        val labelColorTheme = ColorTheme(setOf(
+                ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+                ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_12"))))
+        var labelColor = theme.colorOrBlack(labelColorTheme)
+        val labelColorSpan = ForegroundColorSpan(labelColor)
+
+        stringBuilder.setSpan(labelSizeSpan, 0, label.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+        stringBuilder.setSpan(labelTypefaceSpan, 0, label.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+        stringBuilder.setSpan(labelColorSpan, 0, label.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+
+        index = label.length
+    }
+
+    stringBuilder.append(" $valuesText")
+
+    return stringBuilder
+}
 
 
-//private fun inlineViewFormatSpans(textFormat : TextFormat) : List<Any>
-//{
-//    val sizePx = Util.spToPx(textFormat.sizeSp(), context)
-//    val sizeSpan = AbsoluteSizeSpan(sizePx)
-//
-//    val typeface = Font.typeface(textFormat.font(), textFormat.fontStyle(), context)
-//
-//    val typefaceSpan = CustomTypefaceSpan(typeface)
-//
-//    var color = colorOrBlack(textFormat.colorTheme(), entityId)
-//    val colorSpan = ForegroundColorSpan(color)
-//
-//    var bgColor = colorOrBlack(textFormat.elementFormat().backgroundColorTheme(), entityId)
-//    val bgColorSpan = BackgroundColorSpan(bgColor)
-//
-//    return listOf(sizeSpan, typefaceSpan, colorSpan, bgColorSpan)
-//}
+// -------------------------------------------------------------------------------------------------
+// BULLET_VIEW
+// -------------------------------------------------------------------------------------------------
 
+private fun bulletView(
+        data : ListWidgetViewData,
+        variations : List<WidgetStyleVariation>,
+        theme : Theme,
+        context : Context
+) : LinearLayout
+{
+    val layout = bulletViewLayout(context)
+
+    data.label.doMaybe {
+        layout.addView(bulletHeaderView(it, variations, theme, context))
+    }
+
+    data.values.forEachIndexed { index, value ->
+        val isFirst = index == 0
+        layout.addView(bulletItemView(value, variations, isFirst, theme, context))
+    }
+
+    return layout
+}
+
+
+private fun bulletViewLayout(context : Context) : LinearLayout
+{
+    val linearLayoutBuilder = LinearLayoutBuilder()
+
+    linearLayoutBuilder.width           = LinearLayout.LayoutParams.MATCH_PARENT
+    linearLayoutBuilder.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    linearLayoutBuilder.orientation     = LinearLayout.VERTICAL
+
+    return linearLayoutBuilder.linearLayout(context)
+}
+
+private fun bulletHeaderView(
+        header : String,
+        variations : List<WidgetStyleVariation>,
+        theme : Theme,
+        context : Context
+) : TextView
+{
+    val textViewBuilder         = TextViewBuilder()
+//
+    textViewBuilder.width       = LinearLayout.LayoutParams.MATCH_PARENT
+    textViewBuilder.height      = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    textViewBuilder.font        = Font.typeface(TextFont.RobotoSlab,
+                                                TextFontStyle.Bold,
+                                                context)
+
+    textViewBuilder.margin.bottomDp = 6f
+
+    val defaultColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_blue_grey_8"))))
+    textViewBuilder.color = theme.colorOrBlack(defaultColorTheme)
+
+    textViewBuilder.sizeSp                      = 16.7f
+
+    if (variations.isNotEmpty()) {
+        val variation = variations[0]
+        when (variation.value) {
+            "normal" -> {
+                textViewBuilder.sizeSp          = 16.7f
+            }
+            "large" -> {
+                textViewBuilder.sizeSp          = 17.3f
+            }
+        }
+    }
+
+    textViewBuilder.lineSpacingAdd  = 4f
+    textViewBuilder.lineSpacingMult = 1f
+
+    textViewBuilder.text            = header
+
+    return textViewBuilder.textView(context)
+}
+
+
+private fun bulletItemView(
+        value : String,
+        variations : List<WidgetStyleVariation>,
+        isFirst : Boolean,
+        theme : Theme,
+        context : Context
+) : LinearLayout
+{
+    val layoutBuilder           = LinearLayoutBuilder()
+
+    layoutBuilder.width         = LinearLayout.LayoutParams.MATCH_PARENT
+    layoutBuilder.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    if (!isFirst) {
+        layoutBuilder.margin.topDp  = 8f
+    }
+
+    layoutBuilder.orientation   = LinearLayout.HORIZONTAL
+
+    layoutBuilder.gravity       = Gravity.TOP
+
+    //layoutBuilder.child(bulletItemBulletViewBuilder(variations, theme, context))
+    layoutBuilder.child(bulletItemTextViewBuilder(value, variations, theme, context))
+
+    return layoutBuilder.linearLayout(context)
+}
+
+
+private fun bulletItemBulletViewBuilder(
+        variations : List<WidgetStyleVariation>,
+        theme : Theme,
+        context : Context
+) : TextViewBuilder
+{
+    val textViewBuilder         = TextViewBuilder()
+//
+    textViewBuilder.width       = LinearLayout.LayoutParams.WRAP_CONTENT
+    textViewBuilder.height      = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    textViewBuilder.font        = Font.typeface(TextFont.RobotoSlab,
+                                                TextFontStyle.Regular,
+                                                context)
+
+    textViewBuilder.margin.leftDp   = 4f
+    textViewBuilder.margin.rightDp   = 4f
+    textViewBuilder.padding.topDp   = 4f
+
+    val defaultColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+    textViewBuilder.color = theme.colorOrBlack(defaultColorTheme)
+
+    textViewBuilder.sizeSp                      = 23f
+
+    if (variations.isNotEmpty()) {
+        val variation = variations[0]
+        when (variation.value) {
+            "normal" -> {
+                textViewBuilder.sizeSp          = 23f
+            }
+            "large" -> {
+                textViewBuilder.sizeSp          = 17.3f
+            }
+        }
+    }
+
+//    textViewBuilder.lineSpacingAdd  = 4f
+//    textViewBuilder.lineSpacingMult = 1f
+
+    textViewBuilder.text            = "•"
+
+
+    return textViewBuilder
+}
+
+private fun bulletItemTextViewBuilder(
+        value : String,
+        variations : List<WidgetStyleVariation>,
+        theme : Theme,
+        context : Context
+) : TextViewBuilder
+{
+    val textViewBuilder         = TextViewBuilder()
+//
+    textViewBuilder.width       = LinearLayout.LayoutParams.MATCH_PARENT
+    textViewBuilder.height      = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    textViewBuilder.font        = Font.typeface(TextFont.RobotoSlab,
+                                                TextFontStyle.Regular,
+                                                context)
+
+    val defaultColorTheme = ColorTheme(setOf(
+            ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_7")),
+            ThemeColorId(ThemeId.Light, ColorId.Theme("dark_grey_10"))))
+    textViewBuilder.color = theme.colorOrBlack(defaultColorTheme)
+
+    textViewBuilder.sizeSp                      = 15.7f
+
+    if (variations.isNotEmpty()) {
+        val variation = variations[0]
+        when (variation.value) {
+            "normal" -> {
+                textViewBuilder.sizeSp          = 15.7f
+            }
+            "large" -> {
+                textViewBuilder.sizeSp          = 17.3f
+            }
+        }
+    }
+
+//    textViewBuilder.lineSpacingAdd  = 4f
+//    textViewBuilder.lineSpacingMult = 1f
+
+    textViewBuilder.lineSpacingAdd  = 2f
+    textViewBuilder.lineSpacingMult = 1.05f
+
+    textViewBuilder.text            = value
+
+    return textViewBuilder
+}
 

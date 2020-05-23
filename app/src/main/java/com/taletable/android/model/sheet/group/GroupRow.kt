@@ -258,17 +258,13 @@ data class GroupRow(private val format : GroupRowFormat,
             val views = mutableListOf<View>()
             maybeViews.forEach { it.doMaybe { views.add(it) } }
             Log.d("***GROUP ROW", "views: ${views.size}")
-            if (views.isNotEmpty()) {
+            return if (views.isNotEmpty()) {
                 views.forEach { layout.addView(it) }
-                return Just(layout)
+                Just(layout)
             }
             else {
-                return Nothing()
+                Nothing()
             }
-//            this.widgets().forEach {
-//                layout.addView(it.view(groupContext, this.format().layoutType(), entityId, context))
-//            }
-            //return layout
         }
     }
 

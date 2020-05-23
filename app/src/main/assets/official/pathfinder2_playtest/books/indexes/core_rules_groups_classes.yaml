@@ -79,3 +79,405 @@ groups:
         value_variable_reference:
           type: variable_id
           variable_id: classes_entries_introduction
+## ---------------------------------------------------------------------------------------------
+## | Template > Summary
+## ---------------------------------------------------------------------------------------------
+- id: 'ad1ee99b-50b6-49a3-803f-d7b5b173b00b'
+  name: 'Template > Summary'
+  summary: 'Template > Summary'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 20
+        bottom: 20
+  rows:
+  - format:
+      element_format:
+        margins:
+          bottom: 0
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: vertical_box
+            variations:
+            - filled
+            - large
+            widget_format:
+              width: 1
+              element_format:
+                margins:
+                  right: 4
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_key_ability
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: classes_class_summary_key_ability
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: vertical_box
+            variations:
+            - filled
+            - large
+            widget_format:
+              width: 1
+              element_format:
+                margins:
+                  left: 4
+                  right: 4
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_hit_points
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: classes_class_summary_hit_points
+## ---------------------------------------------------------------------------------------------
+## | Class > Overview
+## ---------------------------------------------------------------------------------------------
+- id: '84f50cb3-c22e-45bb-80dd-094fe61d4057'
+  name: 'Classes > Class > Overview'
+  summary: 'Classes > Class > Overview'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 20
+        bottom: 20
+  rows:
+  - format:
+      element_format:
+        margins:
+          bottom: 0
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+            widget_format:
+              element_format:
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: classes_class_overview_during_combat_header
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: classes_class_overview_during_combat
+  - format:
+      element_format:
+        margins:
+          top: 16
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+            widget_format:
+              element_format:
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: classes_class_overview_during_social_header
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: classes_class_overview_during_social
+  - format:
+      element_format:
+        margins:
+          top: 16
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+            widget_format:
+              element_format:
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: classes_class_overview_while_exploring_header
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: classes_class_overview_while_exploring
+  - format:
+      element_format:
+        margins:
+          top: 16
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+            widget_format:
+              element_format:
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: classes_class_overview_in_downtime_header
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: classes_class_overview_in_downtime
+  - format:
+      element_format:
+        margins:
+          top: 16
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: bullet
+        values_variable_reference:
+          type: variable_tag
+          variable_tag: classes_class_overview_you_might
+        label_variable_reference:
+          type: variable_id
+          variable_id: classes_class_overview_you_might_header
+  - format:
+      element_format:
+        margins:
+          top: 16
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: bullet
+            widget_format:
+              element_format:
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: classes_class_overview_others_probably_header
+        values_variable_reference:
+          type: variable_tag
+          variable_tag: classes_class_overview_others_probably
+## ---------------------------------------------------------------------------------------------
+## | Class > Initial Proficiencies
+## ---------------------------------------------------------------------------------------------
+- id: 'a27764df-386d-4110-861f-bad577067717'
+  name: 'Classes > Class > Initial Proficiencies'
+  summary: 'Classes > Class > Initial Proficiencies'
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+        top: 20
+        bottom: 20
+  rows:
+  - format:
+      element_format:
+        margins:
+          bottom: 0
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+            widget_format:
+              element_format:
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: classes_class_overview_during_combat_header
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: classes_class_overview_during_combat
+  - format:
+      element_format:
+        margins:
+          top: 16
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+            widget_format:
+              element_format:
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: classes_class_overview_during_social_header
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: classes_class_overview_during_social
+  - format:
+      element_format:
+        margins:
+          top: 16
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+            widget_format:
+              element_format:
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: classes_class_overview_while_exploring_header
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: classes_class_overview_while_exploring
+  - format:
+      element_format:
+        margins:
+          top: 16
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+            widget_format:
+              element_format:
+                width:
+                  type: width_justify
+                  width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: classes_class_overview_in_downtime_header
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: classes_class_overview_in_downtime
+## ---------------------------------------------------------------------------------------------
+## | Class Feat Entry
+## ---------------------------------------------------------------------------------------------
+- id: 'b7228e83-cfff-45ac-9944-b4987db7aecd'
+  name: 'Classes > Feat > Entry'
+  summary: 'Classes > Feat > Entry'
+  content_reference_variable:
+    type: variable_tag
+    variable_tag: class_feat_card_reference
+  format:
+    element_format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: light
+          color_id: white
+      padding:
+        left: 16
+        right: 16
+  rows:
+  - format:
+      element_format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_5
+            thickness: 1
+        padding:
+          top: 16
+          bottom: 16
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: entity_section_label
+            widget_format:
+              width: 2
+              element_format:
+                horizontal_alignment: left
+                width:
+                  type: width_justify
+                  width_justify: justify
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: feat_name
+    - type: widget_number
+      widget_number:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: entity_section_label_tag
+            widget_format:
+              width: 1.2
+              element_format:
+                horizontal_alignment: right
+                width:
+                  type: width_justify
+                  width_justify: justify
+        prefix_variable_reference:
+          type: variable_id
+          variable_id: term_level
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: feat_level

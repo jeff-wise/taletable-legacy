@@ -161,8 +161,8 @@ private fun navViewLayout(context : Context) : LinearLayout
     layout.gravity              = Gravity.CENTER_VERTICAL
 
     layout.padding.leftDp       = 15f
-    layout.padding.topDp        = 9f
-    layout.padding.bottomDp     = 2f
+    layout.padding.topDp        = 10f
+    layout.padding.bottomDp     = 15f
     layout.padding.rightDp      = 15f
 
     return layout.linearLayout(context)
@@ -188,7 +188,7 @@ private fun navLinkView(label : String,
 
     val colorTheme = ColorTheme(setOf(
             ThemeColorId(ThemeId.Dark, ColorId.Theme("light_grey_23")),
-            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_20"))))
+            ThemeColorId(ThemeId.Light, ColorId.Theme("light_blue_grey_12"))))
     link.color              = theme.colorOrBlack(colorTheme)
 
     link.sizeSp             = 18f

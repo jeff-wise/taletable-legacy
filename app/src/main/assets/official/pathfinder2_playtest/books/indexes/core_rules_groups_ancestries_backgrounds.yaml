@@ -178,32 +178,33 @@ groups:
   - format:
       element_format:
         horizontal_alignment: left
-        margins:
-          bottom: 12
+        padding:
+          bottom: 16
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_3
+            thickness: 1
     widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph_header
-        value_variable_reference:
-          type: variable_id
-          variable_id: term_ability_boosts
-  - widgets:
     - type: widget_list
       widget_list:
         format:
           type: widget_format_official
           widget_format_official:
             theme: metric
-            style: rows
+            style: inline_textual
+            variations:
+            - large
             widget_format:
               element_format:
                 width:
                   type: width_justify
                   width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_ability_boosts
         values_variable_reference:
           type: variable_template
           variable_template:
@@ -222,34 +223,36 @@ groups:
               variable_id: ancestries_backgrounds_human_ability_boosts
   - format:
       element_format:
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_3
+            thickness: 1
         horizontal_alignment: left
+        padding:
+          bottom: 16
         margins:
-          top: 24
-          bottom: 12
+          top: 16
     widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph_header
-        value_variable_reference:
-          type: variable_id
-          variable_id: term_ability_flaw
-  - widgets:
     - type: widget_list
       widget_list:
         format:
           type: widget_format_official
           widget_format_official:
             theme: metric
-            style: rows
+            style: inline_textual
+            variations:
+            - large
             widget_format:
               element_format:
                 width:
                   type: width_justify
                   width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_ability_flaw
         values_variable_reference:
           type: variable_template
           variable_template:
@@ -270,32 +273,34 @@ groups:
       element_format:
         horizontal_alignment: left
         margins:
-          top: 24
-          bottom: 12
+          top: 16
+        padding:
+          bottom: 16
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+              - theme_id: light
+                color_id: light_blue_grey_3
+            thickness: 1
     widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph_header
-        value_variable_reference:
-          type: variable_id
-          variable_id: term_languages
-  - widgets:
     - type: widget_list
       widget_list:
         format:
           type: widget_format_official
           widget_format_official:
             theme: metric
-            style: rows
+            style: inline_textual
+            variations:
+            - large
             widget_format:
               element_format:
                 width:
                   type: width_justify
                   width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_languages
         values_variable_reference:
           type: variable_template
           variable_template:
@@ -312,12 +317,36 @@ groups:
               variable_id: ancestries_backgrounds_halfling_languages
             - context: human
               variable_id: ancestries_backgrounds_human_languages
+#  - format:
+#      element_format:
+#        horizontal_alignment: left
+#        margins:
+#          top: 16
+#    widgets:
+#    - type: widget_text
+#      widget_text:
+#        format:
+#          type: widget_format_official
+#          widget_format_official:
+#            theme: metric
+#            style: paragraph_header
+#        value_variable_reference:
+#          type: variable_id
+#          variable_id: term_bonus_languages
   - format:
       element_format:
         horizontal_alignment: left
         margins:
-          top: 24
-          bottom: 10
+          top: 16
+        padding:
+          bottom: 16
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_3
+            thickness: 1
     widgets:
     - type: widget_text
       widget_text:
@@ -325,18 +354,10 @@ groups:
           type: widget_format_official
           widget_format_official:
             theme: metric
-            style: paragraph_header
-        value_variable_reference:
+            style: paragraph
+        label_variable_reference:
           type: variable_id
           variable_id: term_bonus_languages
-  - widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -357,32 +378,34 @@ groups:
       element_format:
         horizontal_alignment: left
         margins:
-          top: 24
-          bottom: 12
+          top: 16
+        padding:
+          bottom: 16
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_3
+            thickness: 1
     widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph_header
-        value_variable_reference:
-          type: variable_id
-          variable_id: term_traits
-  - widgets:
     - type: widget_list
       widget_list:
         format:
           type: widget_format_official
           widget_format_official:
             theme: metric
-            style: rows
+            style: inline_textual
+            variations:
+            - large
             widget_format:
               element_format:
                 width:
                   type: width_justify
                   width_justify: justify
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_traits
         values_variable_reference:
           type: variable_template
           variable_template:
@@ -401,10 +424,17 @@ groups:
               variable_id: ancestries_backgrounds_human_traits
   - format:
       element_format:
-        horizontal_alignment: left
         margins:
-          top: 24
-          bottom: 10
+          top: 16
+        padding:
+          bottom: 16
+        border:
+          bottom:
+            color_theme:
+              theme_color_ids:
+                - theme_id: light
+                  color_id: light_blue_grey_3
+            thickness: 1
     widgets:
     - type: widget_text
       widget_text:
@@ -412,18 +442,10 @@ groups:
           type: widget_format_official
           widget_format_official:
             theme: metric
-            style: paragraph_header
-        value_variable_reference:
+            style: paragraph
+        label_variable_reference:
           type: variable_id
           variable_id: term_darkvision
-  - widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -444,8 +466,7 @@ groups:
       element_format:
         horizontal_alignment: left
         margins:
-          top: 24
-          bottom: 10
+          top: 16
     widgets:
     - type: widget_text
       widget_text:
@@ -453,18 +474,10 @@ groups:
           type: widget_format_official
           widget_format_official:
             theme: metric
-            style: paragraph_header
-        value_variable_reference:
+            style: paragraph
+        label_variable_reference:
           type: variable_id
           variable_id: term_unburdened
-  - widgets:
-    - type: widget_text
-      widget_text:
-        format:
-          type: widget_format_official
-          widget_format_official:
-            theme: metric
-            style: paragraph
         value_variable_reference:
           type: variable_template
           variable_template:
@@ -989,7 +1002,7 @@ groups:
             theme: metric
             style: horizontal_box
             variations:
-            - large
+            - normal
         label_variable_reference:
           type: variable_id
           variable_id: term_level
@@ -1004,16 +1017,19 @@ groups:
             theme: metric
             style: horizontal_box
             variations:
-            - large
+            - normal
+            widget_format:
+              element_format:
+                margins:
+                  left: 12
         value_variable_reference:
           type: variable_tag
           variable_tag: feat_actions
   - format:
       element_format:
         horizontal_alignment: left
-        padding:
-          top: 16
         margins:
+          top: 16
           left: 12
           right: 12
     widgets:
@@ -1023,10 +1039,55 @@ groups:
           type: widget_format_official
           widget_format_official:
             theme: metric
-            style: inline
+            style: inline_textual
         values_variable_reference:
           type: variable_tag
-          variable_tag: feat_traits
+          variable_tag: feat_prerequisites
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_prerequisites
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 16
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: feat_frequency
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_frequency
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          top: 16
+          left: 12
+          right: 12
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph
+        value_variable_reference:
+          type: variable_tag
+          variable_tag: feat_trigger
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_trigger
   - format:
       element_format:
         horizontal_alignment: left
@@ -1045,3 +1106,48 @@ groups:
         value_variable_reference:
           type: variable_tag
           variable_tag: feat_description
+  - format:
+      element_format:
+        horizontal_alignment: left
+        margins:
+          left: 12
+          right: 12
+          top: 16
+    widgets:
+    - type: widget_text
+      widget_text:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: paragraph_header
+            variations:
+            - small
+        value_variable_reference:
+          type: variable_id
+          variable_id: term_traits
+  - format:
+      element_format:
+        margins:
+          left: 12
+          right: 12
+          top: 4
+    widgets:
+    - type: widget_list
+      widget_list:
+        format:
+          type: widget_format_official
+          widget_format_official:
+            theme: metric
+            style: inline
+            widget_format:
+              element_format:
+                width:
+                  type: width_justify
+                  width_justify: justify
+        values_variable_reference:
+          type: variable_tag
+          variable_tag: feat_traits
+        label_variable_reference:
+          type: variable_id
+          variable_id: term_traits

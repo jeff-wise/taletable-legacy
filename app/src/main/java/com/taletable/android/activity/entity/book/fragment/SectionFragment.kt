@@ -5,6 +5,7 @@ package com.taletable.android.activity.entity.book.fragment
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -170,6 +171,8 @@ class SectionUI(val section : BookSection,
         cardLayout.addView(this.headerView())
 
         cardLayout.addView(this.floatingBarView())
+
+        cardLayout.addView(this.headerView(section.headerContent(book)))
 
         cardLayout.addView(this.subsectionListView())
 
@@ -523,13 +526,37 @@ class SectionUI(val section : BookSection,
     // VIEWS > Content
     // --------------------------------------------------------------------------------------------
 
+    private fun headerView(contentList : List<BookContent>) : LinearLayout
+    {
+        val layout = this.contentViewLayout()
+
+        contentList.forEach { content ->
+            groups(content.groupReferences(), book.entityId()).forEach {
+                val groupContext = when (content.context()) {
+                    is Just -> content.context()
+                    is Nothing -> it.groupContext
+                }
+                layout.addView(it.group.view(book.entityId(), context, groupContext))
+            }
+        }
+
+        layout.addView(sectionDividerView(theme, context, 16f))
+
+        return layout
+    }
+
+
     private fun contentView(contentList : List<BookContent>) : LinearLayout
     {
         val layout = this.contentViewLayout()
 
         layout.addView(sectionDividerView(theme, context, 16f))
 
-        layout.addView(sectionHeaderView("Introduction", theme, context))
+        val maybeLabel = section.introductionLabelValue(entityId)
+        when (maybeLabel) {
+            is Just -> layout.addView(sectionHeaderView(maybeLabel.value, theme, context))
+            is Nothing -> layout.addView(sectionHeaderView("Introduction", theme, context))
+        }
 
         contentList.forEach { content ->
             groups(content.groupReferences(), book.entityId()).forEach {
@@ -577,20 +604,24 @@ class SectionUI(val section : BookSection,
     }
 
 
+    private fun subsectionOnClickListener(subsectionId : BookSubsectionId) : View.OnClickListener =
+        View.OnClickListener {
+            val subsectionReference = BookReferenceSubsection(book.entityId(),
+                                                              chapter.chapterId,
+                                                              section.sectionId(),
+                                                              subsectionId)
+            sessionActivity.setCurrentBookReference(subsectionReference)
+        }
+
+
     private fun addEntry(entry : BookSectionEntry, layout : LinearLayout)
     {
         when (entry)
         {
             is BookSectionEntrySimple -> {
                 section.subsectionWithId(entry.subsectionId)?.let { subsection ->
-                    val onClickListener = View.OnClickListener {
-                        val subsectionReference = BookReferenceSubsection(book.entityId(),
-                                                                          chapter.chapterId,
-                                                                          section.sectionId(),
-                                                                          subsection.subsectionId())
-                        sessionActivity.setCurrentBookReference(subsectionReference)
-                    }
-                    val entryView = entrySimpleView(subsection.title.value, onClickListener, theme, sessionActivity)
+                    val onClickListener = this.subsectionOnClickListener(entry.subsectionId)
+                    val entryView = entrySimpleView(subsection.title.value, onClickListener, theme, true, sessionActivity)
                     layout.addView(entryView)
                 }
             }
@@ -602,16 +633,39 @@ class SectionUI(val section : BookSection,
             is BookSectionEntryInlineExpandable -> {
                 book.content(entry.contentId).doMaybe { entryContent ->
                     val contentList = listOf(entryContent)
-                    layout.addView(entryExpanderView(entryContent.title().value, theme, contentList, entityId, context, true))
+                    val view = contentListView(contentList, entityId, context)
+                    layout.addView(entryExpanderView(entryContent.title().value, theme, view, entityId, context, true))
                 }
             }
             is BookSectionEntryCardGroup -> {
                 val contentList = entry.cardEntries.map { book.content(it) }.filterJust()
-                layout.addView(entryExpanderView(entry.title, theme, contentList, entityId, context))
+                val view = contentListView(contentList, entityId, context)
+                layout.addView(entryExpanderView(entry.title, theme, view, entityId, context))
             }
             is BookSectionEntryGroup -> {
-                layout.addView(entryGroupHeaderView(entry.title, theme, context))
-                entry.entries.forEach { addEntry(it, layout) }
+                if (entry.isExpandable) {
+                    Log.d("***SECTION FRAGMENT", "IS ----------------EXANADABPLE" )
+                    val entryDataList = entry.entries.mapNotNull {
+                        when (it) {
+                            is BookSectionEntrySimple -> {
+                                val subsection = section.subsectionWithId(it.subsectionId)
+                                if (subsection != null) {
+                                    EntryViewData(subsection.title.value, subsectionOnClickListener(subsection.subsectionId))
+                                } else {
+                                    null
+                                }
+                            }
+                            else -> null
+                        }
+                    }
+                    val view = simpleEntryListView(entryDataList, theme, context)
+                    layout.addView(entryExpanderView(entry.title, theme, view, entityId, context, true))
+
+                } else {
+                    Log.d("***SECTION FRAGMENT", "IS DEF NOT----------------EXANADABPLE" )
+                    layout.addView(entryGroupHeaderView(entry.title, theme, context))
+                    entry.entries.forEach { addEntry(it, layout) }
+                }
             }
         }
     }
